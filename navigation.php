@@ -24,5 +24,4 @@
 	</div> <!-- headerbg -->
 </div> <!-- header -->
 
-<button class="menu btn btn-1 btn-1a"  style="background-color: #091D42;color:#fff;font-weight:bold">
-	<a style="text-decoration:none;color:#fff;" href="menu.php">MENU</a></button>
+<a  class="menu" href="menu.php"><div class="menu"></div></a>

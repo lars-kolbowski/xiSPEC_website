@@ -15,7 +15,7 @@
 				<h1 class="page-header">Example:&nbsp;
 					<select class="btn btn-1 btn-1a" id="dataSets"  onchange="loadData();" >
 						<option value="TFIIF">TFIIF</option>
-						<option value="PolII">PolII</option>
+						<option selected value="PolII">PolII</option>
 						<option value="PP2A">PP2A</option>
 						<option value="NPC">NPC</option>
 					</select>
@@ -70,9 +70,16 @@
 				d3.text(path, "text/csv", function(text) {
 					xlv.clear();
 					xlv.readCSV(text);
-					//~ document.getElementById('scoreLabel1').innerHTML = xlv.scores.min.toFixed(2);
-					//~ document.getElementById('scoreLabel2').innerHTML = xlv.scores.max.toFixed(2) + '&nbsp;&nbsp;';
-					//~ document.getElementById('cutoffLabel').innerHTML = 'Cut-off:&nbsp;' + xlv.scores.min.toFixed(2);
+					
+					if (xlv.scores === null){
+						d3.select('#scoreSlider').style('display', 'none');
+					}
+					else {
+						document.getElementById('scoreLabel1').innerHTML = xlv.scores.min.toFixed(2);
+						document.getElementById('scoreLabel2').innerHTML = xlv.scores.max.toFixed(2);
+						sliderChanged();
+						d3.select('#scoreSlider').style('display', 'inline-block');
+					}
 				});						
 			}
 			

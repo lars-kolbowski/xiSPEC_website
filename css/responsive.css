@@ -99,6 +99,12 @@
 
 .menu{
 	display: block;
+	width: 50px;
+	height: 50px;
+	background:url('../images/menu/white-blue.png') center top no-repeat;
+}
+.menu:hover {
+   background-image: url('../images/menu/blue-white.png');
 }
 
 #main{

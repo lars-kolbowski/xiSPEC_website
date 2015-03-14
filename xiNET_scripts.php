@@ -5,7 +5,9 @@
         <!--libraries-->
         <script type="text/javascript" src="../crosslink-viewer/vendor/d3.js"></script>
         <script type="text/javascript" src="../crosslink-viewer/vendor/colorbrewer.js"></script>
+<!--
         <script type="text/javascript" src="../crosslink-viewer/vendor/Blob.js"></script>
+-->
        	<script type="text/javascript" src="../crosslink-viewer/vendor/FileSaver.js"></script>
         <script type="text/javascript" src="../crosslink-viewer/vendor/rgbcolor.js"></script>   
         <!--xiNET-->
