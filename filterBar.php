@@ -15,7 +15,7 @@
 						</label>
 						<div id="scoreSlider">&nbsp;
 							<p class="scoreLabel" id="scoreLabel1"></p>
-							<input id="slide" type="range" min="1" max="100" step="1" value="0" oninput="sliderChanged()"/>
+							<input id="slide" type="range" min="0" max="100" step="1" value="0" oninput="sliderChanged()"/>
 							&nbsp;<p class="scoreLabel" id="scoreLabel2"></p>
 							<p id="cutoffLabel">&nbsp;Cut-Off:</p>
 							
@@ -35,23 +35,33 @@
 					<script type="text/javascript">	
 							//<![CDATA[
 							
-							//not right
-							
+							var sliderDecimalPlaces = 3;
+							function getMinScore(){
+								if (xlv.scores){
+									var powerOfTen = Math.pow(10, sliderDecimalPlaces); 
+									return (Math.floor(xlv.scores.min * powerOfTen) / powerOfTen)
+											.toFixed(sliderDecimalPlaces);
+								}
+							}
+							function getMaxScore(){
+								if (xlv.scores){
+									var powerOfTen = Math.pow(10, sliderDecimalPlaces); 
+									return (Math.ceil(xlv.scores.max * powerOfTen) / powerOfTen)
+											.toFixed(sliderDecimalPlaces);
+								}
+							}
 							function sliderChanged(){
 								var slide = document.getElementById('slide');
-								var cut = calcCutOff(slide.value / 100.0);
+								var powerOfTen = Math.pow(10, sliderDecimalPlaces); 
+								
+								var cut = ((slide.value / 100) 
+											* (getMaxScore() - getMinScore()))
+											+ (getMinScore() / 1);
+								cut = cut.toFixed(sliderDecimalPlaces);
 								var cutoffLabel = document.getElementById("cutoffLabel");
 								cutoffLabel.innerHTML = '&nbsp;(' + cut + ')';
 								xlv.setCutOff(cut);
 							}
 							
-							function calcCutOff(v) {
-								var result = (v * (xlv.scores.max - xlv.scores.min)) + xlv.scores.min;
-								result = result.toFixed(2);
-								return result;
-							}			
-							
-							
-												
 							//]]>
 					</script>

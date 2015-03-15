@@ -14,7 +14,9 @@
 			<div class="container">   	 				
 				<h1 class="page-header">Example:&nbsp;
 					<select class="btn btn-1 btn-1a" id="dataSets"  onchange="loadData();" >
+<!--
 						<option value="TFIIF">TFIIF</option>
+-->
 						<option selected value="PolII">PolII</option>
 						<option value="PP2A">PP2A</option>
 						<option value="NPC">NPC</option>
@@ -45,10 +47,10 @@
 	  	<script type="text/javascript">
 	  	//<![CDATA[	  	
 			var config = [				
-				{//TFIIF
-					file:"./data/TFIIF.csv",
-					cite:"<p>Data from <a href='http://www.nature.com/emboj/journal/v29/n4/full/emboj2009401a.html' target='_blank'>Chen ZA, Jawhari A, Fischer L, Buchen C, Tahir S, Kamenski T, Rasmussen M, Lariviere L, Bukowski-Wills J-C, Nilges M, Cramer P &amp; Rappsilber J (2010) Architecture of the RNA polymerase II–TFIIF complex revealed by cross-linking and mass spectrometry. The EMBO Journal 29: 717–726</a>.</p>"
-				},
+				//~ {//TFIIF
+					//~ file:"./data/TFIIF.csv",
+					//~ cite:"<p>Data from <a href='http://www.nature.com/emboj/journal/v29/n4/full/emboj2009401a.html' target='_blank'>Chen ZA, Jawhari A, Fischer L, Buchen C, Tahir S, Kamenski T, Rasmussen M, Lariviere L, Bukowski-Wills J-C, Nilges M, Cramer P &amp; Rappsilber J (2010) Architecture of the RNA polymerase II–TFIIF complex revealed by cross-linking and mass spectrometry. The EMBO Journal 29: 717–726</a>.</p>"
+				//~ },
 				{//PolII
 					file:"./data/PolII.csv",
 					cite:"<p>Data from <a href='http://www.nature.com/emboj/journal/v29/n4/full/emboj2009401a.html' target='_blank'>Chen ZA, Jawhari A, Fischer L, Buchen C, Tahir S, Kamenski T, Rasmussen M, Lariviere L, Bukowski-Wills J-C, Nilges M, Cramer P &amp; Rappsilber J (2010) Architecture of the RNA polymerase II–TFIIF complex revealed by cross-linking and mass spectrometry. The EMBO Journal 29: 717–726</a>.</p>"
@@ -75,8 +77,8 @@
 						d3.select('#scoreSlider').style('display', 'none');
 					}
 					else {
-						document.getElementById('scoreLabel1').innerHTML = xlv.scores.min.toFixed(2);
-						document.getElementById('scoreLabel2').innerHTML = xlv.scores.max.toFixed(2);
+						document.getElementById('scoreLabel1').innerHTML = getMinScore();
+						document.getElementById('scoreLabel2').innerHTML = getMaxScore();
 						sliderChanged();
 						d3.select('#scoreSlider').style('display', 'inline-block');
 					}
@@ -99,6 +101,8 @@
 					var annotationSelect = document.getElementById('annotationsSelect');
 					xlv.setAnnotations(annotationSelect.options[annotationSelect.selectedIndex].value);
 				 }
+                  
+                 
                   
                  //]]>
 	  	</script>
