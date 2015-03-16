@@ -1,15 +1,15 @@
 					<div class="controlsexamplespage">						
 						<label>Self-Links
 								<input checked="checked" 
-									   id="internal" 			
-									   onclick="xlv.hideInternal(!document.getElementById('internal').checked)" 
+									   id="selfLinks" 			
+									   onclick="xlv.showSelfLinks(document.getElementById('selfLinks').checked)" 
 									   type="checkbox"
 								/>
 						</label>
 						<label>Ambig.
 								<input checked="checked" 
-									   id="internal" 			
-									   onclick="xlv.hideInternal(!document.getElementById('internal').checked)" 
+									   id="ambig" 			
+									   onclick="xlv.showAmbig(document.getElementById('internal').checked)" 
 									   type="checkbox"
 								/>
 						</label>
@@ -17,11 +17,11 @@
 							<p class="scoreLabel" id="scoreLabel1"></p>
 							<input id="slide" type="range" min="0" max="100" step="1" value="0" oninput="sliderChanged()"/>
 							&nbsp;<p class="scoreLabel" id="scoreLabel2"></p>
-							<p id="cutoffLabel">&nbsp;Cut-Off:</p>
+							<p id="cutoffLabel">(cut-off)</p>
 							
 						</div> <!-- outlined scoreSlider -->
 						<div style='float:right'>
-							<label>Annot's:
+							<label>Annot.
 							<select id="annotationsSelect" onChange="changeAnnotations();">
 								<option selected='selected'>Custom</option> 
 								<option>UniprotKB</option> 
@@ -35,7 +35,7 @@
 					<script type="text/javascript">	
 							//<![CDATA[
 							
-							var sliderDecimalPlaces = 3;
+							var sliderDecimalPlaces = 1;
 							function getMinScore(){
 								if (xlv.scores){
 									var powerOfTen = Math.pow(10, sliderDecimalPlaces); 
@@ -59,7 +59,7 @@
 											+ (getMinScore() / 1);
 								cut = cut.toFixed(sliderDecimalPlaces);
 								var cutoffLabel = document.getElementById("cutoffLabel");
-								cutoffLabel.innerHTML = '&nbsp;(' + cut + ')';
+								cutoffLabel.innerHTML = '(' + cut + ')';
 								xlv.setCutOff(cut);
 							}
 							

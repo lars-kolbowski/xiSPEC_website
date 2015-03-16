@@ -77,7 +77,7 @@
 						d3.select('#scoreSlider').style('display', 'none');
 					}
 					else {
-						document.getElementById('scoreLabel1').innerHTML = getMinScore();
+						document.getElementById('scoreLabel1').innerHTML = "Score:" + getMinScore();
 						document.getElementById('scoreLabel2').innerHTML = getMaxScore();
 						sliderChanged();
 						d3.select('#scoreSlider').style('display', 'inline-block');
