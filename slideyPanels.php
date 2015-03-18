@@ -35,20 +35,29 @@
 			<td>Right-click on protein</td>
 		</tr>
 		<tr>
-			<td>Hide/show links between two specific proteins</td>
+			<td>Hide links between two specific proteins</td>
 			<td>Right click on any link between those proteins</td>
 		</tr>
 		<tr>
-			<td>'Flip' side of bar on which self-links are shown</td>
+			<td>Show all hidden links</td>
+			<td>Right click on background</td>
+		</tr>
+		<tr>
+			<td>'Flip' self-links</td>
 			<td>Right-click on self-link</td>
 		</tr>
 	</table> 
+</div>	
+
+<div class="overlay-box" id="legendPanel">
+	<div><img src="./images/fig3_1.svg"></div>
 </div>	
 
 <script type="text/javascript">
 				//<![CDATA[
 				helpShown = false;
 				infoShown = false;
+				legendShown = false;
 				function toggleHelpPanel() {
 					if (helpShown){
 						hideHelpPanel();
@@ -64,6 +73,14 @@
 					}
 					else {
 						showInfoPanel();
+					}
+				}
+				function toggleLegendPanel() {
+					if (legendShown){
+						hideLegendPanel();
+					}
+					else {
+						showLegendPanel();
 					}
 				}
 				
@@ -83,6 +100,16 @@
 				function hideInfoPanel() {
 						infoShown = false;
 						d3.select("#infoPanel").transition().style("height", "0px").style("bottom", "-95px").duration(700);
+
+				}
+				function showLegendPanel() {
+						legendShown = true;
+						d3.select("#legendPanel").transition().style("height", "500px").style("top", "202px").duration(700);
+
+				}
+				function hideLegendPanel() {
+						legendShown = false;
+						d3.select("#legendPanel").transition().style("height", "0px").style("top", "-95px").duration(700);
 
 				}
 				//]]>

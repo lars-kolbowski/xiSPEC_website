@@ -927,6 +927,9 @@ form table td {
     margin-left: 80px;
     margin-right: 80px;
 }
+.overlay-box div{
+    background: white;
+}
 .long-citation {
     background-color: #ecedf2;
 	z-index: -99;
@@ -1060,7 +1063,9 @@ p.citation {
     font-size: 14px;
     left: auto;
     right: auto;
+/*
     top: 10px;
+*/
     position: relative;
     margin-left: auto;
     margin-right: auto;

@@ -7,7 +7,9 @@
 			</div>
 			<nav class="hover-effect">
 				<a href="index.php" data-hover="Home" data-no-instant>Home</a><br/>
+<!--
 				<a href="features.php" data-hover="Features">Features</a><br/>
+-->
 				<a href="examples.php" data-hover="Examples" data-no-instant>Examples</a><br/>
 				<a href="upload.php" data-hover="Upload">Upload</a><br/>
 				<a href="contact.php" data-hover="Contact">Contact</a><br/>

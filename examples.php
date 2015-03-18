@@ -29,7 +29,11 @@
 						<button class="btn btn-1 btn-1a network-control" onclick="xlv.exportSVG('networkSVG');">Export SVG</button>
 						-->
 						<label class="btn">
-								Selection Details
+								Legend
+								<input id="selection" onclick="toggleLegendPanel()" type="checkbox">
+						</label>
+						<label class="btn">
+								Details
 								<input id="selection" onclick="toggleInfoPanel()" type="checkbox">
 						</label>
 						<label class="btn">
