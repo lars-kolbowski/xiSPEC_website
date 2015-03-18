@@ -6,10 +6,10 @@
 									   type="checkbox"
 								/>
 						</label>
-						<label>Ambig.
+						<label>&nbsp;Ambig.
 								<input checked="checked" 
 									   id="ambig" 			
-									   onclick="xlv.showAmbig(document.getElementById('internal').checked)" 
+									   onclick="xlv.showAmbig(document.getElementById('ambig').checked)" 
 									   type="checkbox"
 								/>
 						</label>

@@ -53,7 +53,8 @@
 				//~ },
 				{//PolII
 					file:"./data/PolII.csv",
-					cite:"<p>Data from <a href='http://www.nature.com/emboj/journal/v29/n4/full/emboj2009401a.html' target='_blank'>Chen ZA, Jawhari A, Fischer L, Buchen C, Tahir S, Kamenski T, Rasmussen M, Lariviere L, Bukowski-Wills J-C, Nilges M, Cramer P &amp; Rappsilber J (2010) Architecture of the RNA polymerase II–TFIIF complex revealed by cross-linking and mass spectrometry. The EMBO Journal 29: 717–726</a>.</p>"
+					cite:"<p>Data from <a href='http://www.nature.com/emboj/journal/v29/n4/full/emboj2009401a.html' target='_blank'>Chen ZA, Jawhari A, Fischer L, Buchen C, Tahir S, Kamenski T, Rasmussen M, Lariviere L, Bukowski-Wills J-C, Nilges M, Cramer P &amp; Rappsilber J (2010) Architecture of the RNA polymerase II–TFIIF complex revealed by cross-linking and mass spectrometry. The EMBO Journal 29: 717–726</a>.</p>",
+					customAnnot:"./data/TFIIF_annot.csv"
 				},
 				{//PP2A
 					file:"./data/PP2A.csv",
@@ -69,20 +70,23 @@
 				var dataSetsSelect = document.getElementById('dataSets');
 				var path = config[dataSetsSelect.selectedIndex].file;
 				document.getElementById('citation').innerHTML = config[dataSetsSelect.selectedIndex].cite;
-				d3.text(path, "text/csv", function(text) {
-					xlv.clear();
-					xlv.readCSV(text);
-					
-					if (xlv.scores === null){
-						d3.select('#scoreSlider').style('display', 'none');
-					}
-					else {
-						document.getElementById('scoreLabel1').innerHTML = "Score:" + getMinScore();
-						document.getElementById('scoreLabel2').innerHTML = getMaxScore();
-						sliderChanged();
-						d3.select('#scoreSlider').style('display', 'inline-block');
-					}
-				});						
+				
+				if (config[dataSetsSelect.selectedIndex].customAnnot){
+					d3.text(config[dataSetsSelect.selectedIndex].customAnnot, "text/csv", function(annot) {
+						d3.text(path, "text/csv", function(text) {
+							xlv.clear();
+							xlv.readCSV(text, null, annot);
+							initSlider();
+						});
+					});
+				}
+				else {
+					d3.text(path, "text/csv", function(text) {
+						xlv.clear();
+						xlv.readCSV(text);
+						initSlider();
+					});
+				}						
 			}
 			
 			//~ window.addEventListener('load', function() {
@@ -95,12 +99,25 @@
                 xlv.setMessageElement(messageDiv);
 				loadData();
                 changeAnnotations();
+                xlv.showSelfLinks(document.getElementById('selfLinks').checked);
+                xlv.showAmbig(document.getElementById('ambig').checked);
 			//~ }, false);
             	 
 				 function changeAnnotations(){
 					var annotationSelect = document.getElementById('annotationsSelect');
 					xlv.setAnnotations(annotationSelect.options[annotationSelect.selectedIndex].value);
-				 }
+				 };
+				 function initSlider(){
+								if (xlv.scores === null){
+							d3.select('#scoreSlider').style('display', 'none');
+						}
+						else {
+							document.getElementById('scoreLabel1').innerHTML = "Score:" + getMinScore();
+							document.getElementById('scoreLabel2').innerHTML = getMaxScore();
+							sliderChanged();
+							d3.select('#scoreSlider').style('display', 'inline-block');
+						}
+				  };
                   
                  
                   
