@@ -95,9 +95,6 @@
 			
 			//~ window.addEventListener('load', function() {
 				var targetDiv = document.getElementById('networkContainer');
-                xlv = new xiNET.Controller(targetDiv);
-                
-			    var targetDiv = document.getElementById('networkContainer');
                 var messageDiv = document.getElementById('networkCaption');
                 xlv = new xiNET.Controller(targetDiv);
                 xlv.setMessageElement(messageDiv);
