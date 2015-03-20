@@ -1,5 +1,4 @@
 		<link rel="stylesheet" href="./css/xiNET.css">
-
 		<script type="text/javascript" src="./xiNET_2.0.0.js"></script>
 <!--
         <script type="text/javascript" src="../crosslink-viewer/vendor/d3.js"></script>
