@@ -26,6 +26,7 @@
 								<option selected='selected'>Custom</option> 
 								<option>UniprotKB</option> 
 								<option>SuperFamily</option>  
+								<option>Lysines</option>  
 								<option>None</option>  
 							</select>
 							</label>	

@@ -25,9 +25,7 @@
 						<button class="btn btn-1 btn-1a network-control resetzoom" onclick="xlv.reset();">
 							Reset
 						</button>
-						<!--
-						<button class="btn btn-1 btn-1a network-control" onclick="xlv.exportSVG('networkSVG');">Export SVG</button>
-						-->
+						<button class="btn btn-1 btn-1a network-control" onclick="xlv.exportSVG();">Export SVG</button>
 						<label class="btn">
 								Legend
 								<input id="selection" onclick="toggleLegendPanel()" type="checkbox">
