@@ -17,28 +17,25 @@
 					<section id="top" class="one">
 						<div class="container">
 							<h1 class="page-header">Upload Your Own Data</h1>
-							<form class="fileupload"  action="http://129.215.14.125/crosslink-viewer/php/fup.php" enctype="multipart/form-data" method="POST">
+							<form class="fileupload"  action="http://129.215.14.125/xiNET_web/crosslink-viewer/php/fup.php" enctype="multipart/form-data" method="POST">
 							<table>
 								<tr>
 									
-										<td>	
-											<div class="cross-link-csv">
+										<td>	<div class="cross-link-csv">
 												<label for="csvFile">Cross-link CSV file:</label>
 												<input style="margin: 0;padding: 0;" class="file btn btn-1 btn-1a-inputbtn" name="upfile" type="file" id="csvFile"/>
-											</div> <!-- CROSS-LINK-CSV -->
-										</td>
-										<td>	
-											<div class="fasta-file">
+											</div> <!-- CROSS-LINK-CSV --></td>
+											
+										<td>	<div class="fasta-file">
 												<label for="fastaFile">FASTA file:</label>
 												<input style="margin: 0;padding: 0;" class="file btn btn-1 btn-1a-inputbtn" name="upfasta" type="file" id="fastFile"/> 
-											</div> <!-- FASTA-FILE -->
-										</td>
-										<td>	
-											<div class="annotation-csv-file">
+											</div> <!-- FASTA-FILE --></td>
+											                   
+										<td>	<div class="annotation-csv-file">
 												<label for="annotFile">Annotation CSV file:</label>
 												<input style="margin: 0;padding: 0;"  class="file btn btn-1 btn-1a-inputbtn" name="upannot" type="file" id="annotFile"/>
-											</div> <!-- ANNOTATION-CSV-FILE -->
-										</td>	
+											</div> <!-- ANNOTATION-CSV-FILE --></td>
+											
 										
 								</tr>
 							  </table>
@@ -47,13 +44,12 @@
 											<input class="upload" value="Upload" type="submit"/>
 									  	</div> <!-- CUSTOM_FILE_UPLOAD -->
 									</div>
-								<br>	
 								<p class="center" style="margin-bottom:-40px;top:-50px;position:relative;">You will be redirected to a unique URL for your data which you can share with others.</p>				
 			            		</form>
 						
 								<h4>Getting Started</h4>
 								<a title="Click here to view larger." class="image-link" href="images/diagrams/workflow.svg"><img class="image full" src="images/diagrams/workflow.svg"></a>	<div class="external-link">
-								<p>You can view your results by uploading <a href="#crosslinkCSV">cross-link data</a> in a Comma Separated Values (CSV) file. Optionally, this can be accompanied by a <a href="http://en.wikipedia.org/wiki/FASTA_format" target="_blank">FASTA file</a> giving the protein sequences and/or a CSV file containing <a href="#annotCSV">annotations</a>. If the FASTA file is omitted then protein sequences are retrieved by looking up accession numbers via the <a href="http://www.biodas.org/wiki/Main_Page" target="_blank">Distributed Annotation System</a>. This assumes that the sequences used in the search correspond exactly with those of valid, current UniprotKB accession numbers. 	</div></p>
+								<p>You can view your results by uploading <a href="#crosslinkCSV">cross-link data</a> in a Comma Separated Values (CSV) file. Optionally, this can be accompanied by a <a href="http://en.wikipedia.org/wiki/FASTA_format" target="_blank">FASTA file</a> giving the protein sequences and/or a CSV file containing <a href="#Annotations">annotations</a>. If the FASTA file is omitted then protein sequences are retrieved by looking up accession numbers via the <a href="http://www.biodas.org/wiki/Main_Page" target="_blank">Distributed Annotation System</a>. This assumes that the sequences used in the search correspond exactly with those of valid, current UniprotKB accession numbers. 	</div></p>
 						
 							
 							<div class="columnNames">
@@ -85,11 +81,7 @@
 							<div class="container">
 								<h3 id="CLMS-CSV">CLMS-CSV File format</h3>
 								<div class="link-arrow">
--->
-					            <p>Download example files: <a href="./data/PolII.csv" target="_blank">Pol II</a>, <a href="./data/Herzog.csv" target="_blank">PP2A</a></p>
-<!--
-					            </div>
--->
+					            <p>Download example files: <a href="./crosslink-viewer/data/Pol2.csv" target="_blank">Pol II</a>, <a href="./crosslink-viewer/data/Herzog.csv" target="_blank">PP2A</a></p></div>
 					
 					<p>xiNET can display data either with or without information on the sequences of the linked peptides. The fields PepSeq1, LinkPos1, PepSeq2 and LinkPos2 are only used when peptide sequence information is being supplied.</p>
 
@@ -228,15 +220,15 @@
 					                        </p>
 					                    </td>
 					                    <td width=390>
-					                        <p>Id for link</p>
+					                        <p>Id for matched spectra</p>
 					                    </td>
 					                </tr>
 					            </table>
 							</div><!-- CONTAINER -->
 						</section>
 						<section class="one">
-							<div class="container">								
-									<h4>Ambiguous Linkage Sites</h4>								
+							<div class="container">
+									<h4>Ambiguous Linkage Sites</h4>
 									<p>Ambiguous links are represented by listing the alternative linkage sites separated 
 									by commas or semi-colons in the protein and position fields. For example:</p>
 									<table cellpadding=7 cellspacing=0 class="hor-minimalist-a" style="position:relative;border:1px solid #000;background-color:#eee;">
@@ -272,10 +264,7 @@
 						            </tr>
 						        </table>
 						        <p>would result in these four ambiguous links being displayed:</p> from O43815, residue 89	to O43815, residue 96 <br/> from O43815, residue 89	to Q13033, residue 112<br/> from Q13033, residue 105 to O43815, residue 96 <br/>from Q13033, residue 105 to Q13033, residue 112<br/></p>
-						</section>
-						<section class="two">
-							<div class="container">
-				
+
 							<h4>Product types</h4>
 
 							<p>The figures below show the representation of different product types.
@@ -311,14 +300,12 @@
 								</table>
 							</div>
 						</section>
-						<section class="one">
+						<section class="two">
 							<div class="container">
 								<h3 id="Annotations">Annotations CSV File format</h3>
 								<div class="link-arrow">
-					          	  	<p>Download example files: <a href="./data/TFIIF_annot.csv" target="_blank">TFIIF annotations</a></p>
-<!--
+					          	  	<p>Download example files: <a href="./crosslink-viewer/data/tfiif_annot.csv" target="_blank">TFIIF annotations</a></p>
  								</div>
--->
 
 					            <table width=642 cellpadding=7 cellspacing=0 class="hor-minimalist-a" style="border:1px solid #000;background-color:#eee;">
 					                <col width=121>
@@ -399,5 +386,7 @@
 							</div> <!--CONTAINER-->
 						</section>
 			</div>
+			<script src="js/instantclick.min.js" data-no-instant></script>
+			<script data-no-instant>InstantClick.init();</script>
 	</body>
 </html>

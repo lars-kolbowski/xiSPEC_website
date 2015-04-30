@@ -1,139 +1,170 @@
  <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>xiNET | Rappsilber Laboratory</title>
-		<link rel="stylesheet" href="./css/xiNET.css">
-		<link rel="stylesheet" href="./css/bootstrap.css">
-		<link rel="stylesheet" href="./css/flat-ui.css" >
-		<link rel="stylesheet" href="./css/demo.css">
-        <!--libraries-->    
-		<script type="text/javascript" src="./xiNET_1.0.0.js"></script>
+		<?php $pageName = "Figure 7";include("head.php");?>
+		<?php include("xiNET_scripts.php");?>
+		<link rel="stylesheet" href="css/noNav.css" />
     </head>
     <body>
-	<div id="outerDiv">
-			<div class="controls">
-				<button class="btn btn-inverse help" onclick="toggleHelpPanel()">Help</button>
-				<button class="btn btn-inverse exportsvg" onclick="xlv.exportSVG('networkSVG');">Export Graphic</button>
-				<button class="btn btn-inverse autolayout" onclick="xlv.autoLayout();">Auto Layout</button>
-				<button class="btn btn-inverse resetzoom" onclick="xlv.resetZoom();">Reset Zoom</button>		
-				<div class="controlGroup" id="scoreSlider" >
-					<p class="scoreLabel" id="scoreLabel1"></p>
-					<div id="track1" class="sliderbar">
-						<div class="selected" id="handle1"></div> 
-					</div> <!-- track1 sliderbar -->
-					<p class="scoreLabel" id="scoreLabel2"></p>
-					<p id="debug1">&nbsp;&nbsp;Score Cut-Off:</p>
-				</div> <!-- outlined scoreSlider -->
-				<div class="controlGroup"><p>Self-links&nbsp;
-					<input checked="checked" id="internal" onclick=
-						"xlv.hideInternal(!document.getElementById('internal').checked)" 
-					type="checkbox"></p>
-				</div>
 				
-				 <div class="controlGroup"><p>Ambiguous&nbsp;
-					<input checked="checked" id="ambig" onclick=
-						"xlv.hideAmbig(!document.getElementById('ambig').checked)" 
-					type="checkbox"></p>
-                </div>
-			</div>
-					
-			<div id="networkContainer"></div>
-				
-			<div class="overlay overlay-box" id="helpPanel">
-					<table class="hor-minimalist-a"  bordercolor="#eee" >
-						<tr>
-							<td>Toggle between circle and bar</td>
-							<td>Click on protein</td>
-						</tr>
-						<tr>
-							<td>Zoom</td>
-							<td>Mouse wheel</td>
-						</tr>
-						<tr>
-							<td>Pan</td>
-							<td>Click and drag on background</td>
-						</tr>
-						<tr>
-							<td>Move protein</td>
-							<td>Click and drag on protein</td>
-						</tr>
-						<tr>
-							<td>Expand bar</td>
-							<td>Shift_left-click on protein</td>
-						</tr>
-						<tr>
-							<td>Rotate bar</td>
-							<td>Hover over end of bar; drag handle</td>
-						</tr>
-						<tr>
-							<td>Hide/show protein (and links to it)</td>
-							<td>Right-click on protein</td>
-						</tr>
-						<tr>
-							<td>Hide/show links between proteins</td>
-							<td>Right click on link</td>
-						</tr>
-						<tr>
-							<td>Flip side for self-links</td>
-							<td>Right-click on self-link</td>
-						</tr>
-					</table> 
-					<p>&nbsp;</p>
-					<p>Tip: To change the size of proteins in relation to the size of
-						 the page press Ctrl/- or Ctrl/+. 
-						 (This zooms the browser, on a Mac its Cmd/- or Cmd/+.) 
-					</p>
-				</div>
-			</div>	
-	
-			<div class="info overlay-box"  id="infoPanel">
-				<div>
-					<button class="btn btn-inverse" id="infoButton" onclick="toggleInfoPanel()">Show More&#x25B2</button>
-		
-					<div id="networkCaption">
-						<h5>No Selection.</h5>
-					</div>
-				</div>
-			</div>	
-				
-		</div>
+	<!-- Slidey panels -->	
+	<div class="overlay-box" id="infoPanel">
+	<div id="networkCaption">
+		<p>No selection.</p>
+	</div>
+	</div>
 
-            <script type="text/javascript">//<![CDATA[
+	<div class="overlay-box" id="helpPanel">
+	<table class="overlay-table"  bordercolor="#eee" >
+		<tr>
+			<td>Toggle the proteins between a bar and a circle</td>
+			<td>Click on protein</td>
+		</tr>
+		<tr>
+			<td>Zoom</td>
+			<td>Mouse wheel</td>
+		</tr>
+		<tr>
+			<td>Pan</td>
+			<td>Click and drag on background</td>
+		</tr>
+		<tr>
+			<td>Move protein</td>
+			<td>Click and drag on protein</td>
+		</tr>
+		<tr>
+			<td>Expand bar <br>(increases bar length until sequence is visible)</td>
+			<td>Shift_left-click on protein</td>
+		</tr>
+		<tr>
+			<td>Rotate bar</td>
+			<td>Click and drag on handles that appear at end of bar</td>
+		</tr>
+		<tr>
+			<td>Hide/show protein (and all links to it)</td>
+			<td>Right-click on protein</td>
+		</tr>
+		<tr>
+			<td>Hide links between two specific proteins</td>
+			<td>Right click on any link between those proteins</td>
+		</tr>
+		<tr>
+			<td>Show all hidden links</td>
+			<td>Right click on background</td>
+		</tr>
+		<tr>
+			<td>'Flip' self-links</td>
+			<td>Right-click on self-link</td>
+		</tr>
+	</table> 
+</div>	
+
+<div class="overlay-box" id="legendPanel">
+	<div><img src="./images/fig3_1.svg"></div>
+</div>	
+
+		<script type="text/javascript">
+				//<![CDATA[
+				helpShown = false;
+				infoShown = false;
+				legendShown = false;
+				function toggleHelpPanel() {
+					if (helpShown){
+						hideHelpPanel();
+					}
+					else {
+						showHelpPanel();
+					}
+				}
+				
+				function toggleInfoPanel() {
+					if (infoShown){
+						hideInfoPanel();
+					}
+					else {
+						showInfoPanel();
+					}
+				}
+				function toggleLegendPanel() {
+					if (legendShown){
+						hideLegendPanel();
+					}
+					else {
+						showLegendPanel();
+					}
+				}
+				
+				function showHelpPanel() {
+						helpShown = true;
+						d3.select("#helpPanel").transition().style("height", "500px").style("top", "100px").duration(700);
+				}
+				function hideHelpPanel() {
+						helpShown = false;
+						d3.select("#helpPanel").transition().style("height", "0px").style("top", "-95px").duration(700);
+				}
+				function showInfoPanel() {
+						infoShown = true;
+						d3.select("#infoPanel").transition().style("height", "300px").style("bottom", "115px").duration(700);
+
+				}
+				function hideInfoPanel() {
+						infoShown = false;
+						d3.select("#infoPanel").transition().style("height", "0px").style("bottom", "-95px").duration(700);
+
+				}
+				function showLegendPanel() {
+						legendShown = true;
+						d3.select("#legendPanel").transition().style("height", "500px").style("top", "100px").duration(700);
+
+				}
+				function hideLegendPanel() {
+						legendShown = false;
+						d3.select("#legendPanel").transition().style("height", "0px").style("top", "-95px").duration(700);
+
+				}
+				//]]>
+		</script>
+		<!-- Main -->
+		<div id="main">
+			<div class="container">   	 				
+				<h1 class="page-header">Figure 7.
+					<div style='float:right'>
+						<button class="btn btn-1 btn-1a network-control resetzoom" onclick="xlv.reset();">
+							Reset
+						</button>
+						<!--
+						<button class="btn btn-1 btn-1a network-control" onclick="xlv.exportSVG('networkSVG');">Export SVG</button>
+						-->
+						<label class="btn">
+								Legend
+								<input id="selection" onclick="toggleLegendPanel()" type="checkbox">
+						</label>
+						<label class="btn">
+								Details
+								<input id="selection" onclick="toggleInfoPanel()" type="checkbox">
+						</label>
+						<label class="btn">
+								Help
+								<input id="help" onclick="toggleHelpPanel()" type="checkbox">
+						</label>
+                </div>
+				</h1>
+			</div>
+<!--
+			<div class="long-citation" id="citation"></div> 				
+-->
+			<div id="networkContainer"></div>
+			<?php include("filterBar.php"); ?>						
+		</div> <!-- MAIN -->
+				
+		<script type="text/javascript">
+                //<![CDATA[
+	
 	var targetDiv = document.getElementById('networkContainer');
 	var messageDiv = document.getElementById('networkCaption');
 	xlv = new xiNET.Controller(targetDiv);
 	xlv.setMessageElement(messageDiv);
-	xlv.cutOff = 0;
-    //
-    //    jQuery.noConflict();
-    //
-    PV = {};
-    PV.hideA = false;
-    PV.hideB = false;
-    PV.hideC = false;
-    PV.hideQ = false;
-    PV.hideAUTOTRUE = false;
-    
-    xlv.filter = function (match) {
-		var vChar = match.validated;//.toUpperCase()[0];
-		if (vChar == 'A' && !PV.hideA) return true;
-		else if (vChar == 'B' && !PV.hideB) return true;
-		else if (vChar == 'C' && !PV.hideC) return true;
-		else if (vChar == '?' && !PV.hideQ) return true;
-		else{
-			if (match.autovalidated){
-				if (!PV.hideAUTOTRUE && (match.score >= xlv.cutOff))  return true;
-			}
-		//        else {
-		//            if (!PV.hideAUTOFALSE && (this.score >= PV.cutOff))  return true;
-		//            }
-		//            }
-		}
-		return false;
-	}
+
 	
 xlv.sid = "1559";//SELECT has_protein.peptide_id, has_protein.protein_id, (peptide_position + 1) as peptide_position INTO TEMPORARY tempHasProtein109_150_74_29_1393665870 FROM has_protein, tempMatchedPeptides109_150_74_29_1393665870 WHERE tempMatchedPeptides109_150_74_29_1393665870.peptide_id = has_protein.peptide_id GROUP BY  has_protein.peptide_id, has_protein.protein_id, peptide_position;
 //SELECT t1.layout AS l  FROM layouts AS t1  LEFT OUTER JOIN layouts AS t2  ON (t1.search_id = t2.search_id AND t1.time &lt; t2.time)  WHERE t1.search_id = 1559 AND t2.search_id IS NULL;
@@ -212,98 +243,27 @@ xlv.addMatch("595292",[197],"595300",[113],105668414,7.6620272752396925,10,1,"FI
 xlv.addMatch("595292",[197],"595297",[155],105667739,7.602036972505289,6,4,"FIDEETKDTK","VREEYPDR",'t','C','f');
 xlv.addMatch("595292",[184],"595300",[423],105666457,7.122282069502989,2,2,"KSMoxNSVTR","EDMAALEK",'f','C','f');
     
-    xlv.init();            
-		
+				xlv.initLayout();            
+				xlv.initProteins();
+				initSlider();
+				changeAnnotations();	
                 
-                //~ document.onkeypress = function (e) {
-					//e = e || window.event;
-					//alert(e.keyCode);
-					//~ xlv.exportSVG('networkSVG');
-				//~ };
-                
-                
+				function changeAnnotations(){
+					var annotationSelect = document.getElementById('annotationsSelect');
+					xlv.setAnnotations(annotationSelect.options[annotationSelect.selectedIndex].value);
+				 };
 				function initSlider(){
-					if (xlv.scores != null){
-						document.getElementById('scoreLabel1').innerHTML = (xlv.scores.min - 0.01).toFixed(2);
-						document.getElementById('scoreLabel2').innerHTML = (xlv.scores.max + 0.01).toFixed(2) + '&nbsp;&nbsp;';
-						document.getElementById('debug1').innerHTML = 'Cut-Off:' + (xlv.scores.min - 0.01).toFixed(2);
-						//~ new Control.Slider('handle1', 'track1', {
-							//~ sliderValue: 0,
-							//~ onSlide: function(v) {
-								//~ var cut = calcCutOff(v);
-								//~ document.getElementById('debug1').innerHTML = 'Cut-Off: ' + cut.toFixed(2);
-								//~ xlv.setCutOff(cut);
-							//~ },
-							//~ onChange: function(v) {
-								//~ var cut = calcCutOff(v);
-								//~ document.getElementById('debug1').innerHTML = 'Cut-Off: ' + cut.toFixed(2);
-								//~ xlv.setCutOff(cut);
-							//~ }
-						//~ });
-						function calcCutOff(v) {
-							var result = (v * (xlv.scores.max - xlv.scores.min + 0.02)) + xlv.scores.min - 0.01;
-							return result;
-						}
+						if (xlv.scores === null){
+							d3.select('#scoreSlider').style('display', 'none');
 					}
 					else {
-						//no score
-						document.getElementById('scoreSlider').setAttribute("style", "display:none;");
+							document.getElementById('scoreLabel1').innerHTML = "Score:" + getMinScore();
+							document.getElementById('scoreLabel2').innerHTML = getMaxScore();
+							sliderChanged();
+							d3.select('#scoreSlider').style('display', 'inline-block');
 					}
-				}
+				  };
 				
-				initSlider();				
-                //]]>
-        </script>
-		<script type="text/javascript">
-				//<![CDATA[
-				helpShown = false;
-				infoShown = false;
-				function toggleHelpPanel() {
-					if (helpShown){
-						hideHelpPanel();
-					}
-					else {
-						showHelpPanel();
-					}
-				}
-				
-				function toggleInfoPanel() {
-					if (infoShown){
-						hideInfoPanel();
-					}
-					else {
-						showInfoPanel();
-					}
-				}
-				
-				function showHelpPanel() {
-						helpShown = true;
-						d3.select("#helpPanel").style('display','block');
-						d3.select("#helpPanel").transition().style("top", "0%").duration(700);
-						d3.select(".help").attr('class', "btn help");
-				}
-				function hideHelpPanel() {
-						helpShown = false;
-						d3.select("#helpPanel").transition().style("top", "100%").duration(700);
-						//~ d3.select("#helpPanel").transition().style('display','none').delay(700);;
-						d3.select(".help").attr('class', "btn btn-inverse help");
-				}
-				function showInfoPanel() {
-						infoShown = true;
-						d3.select("#infoPanel").transition().style("height", "300px").duration(700)
-						.each("end", 
-							function () {
-								d3.select("#infoButton").html("Show Less&#x25BC;");
-							});
-				}
-				function hideInfoPanel() {
-						infoShown = false;
-						d3.select("#infoPanel").transition().style("height", "60px").duration(700)
-						.each("end", 
-							function () {
-								d3.select("#infoButton").html("Show More&#x25B2;");
-							});
-				}
 				//]]>
 		</script>
 	</body>

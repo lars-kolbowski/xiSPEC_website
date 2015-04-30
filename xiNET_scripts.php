@@ -1,16 +1,10 @@
 		<link rel="stylesheet" href="./css/xiNET.css">
-		<!--
-		<script type="text/javascript" src="./xiNET_1.0.2.js"></script>
-		-->
-        <!--libraries-->
+		<script type="text/javascript" src="./xiNET_2.0.0.js"></script>
+<!--
         <script type="text/javascript" src="../crosslink-viewer/vendor/d3.js"></script>
         <script type="text/javascript" src="../crosslink-viewer/vendor/colorbrewer.js"></script>
-<!--
-        <script type="text/javascript" src="../crosslink-viewer/vendor/Blob.js"></script>
--->
        	<script type="text/javascript" src="../crosslink-viewer/vendor/FileSaver.js"></script>
         <script type="text/javascript" src="../crosslink-viewer/vendor/rgbcolor.js"></script>   
-        <!--xiNET-->
         <script type="text/javascript" src="../crosslink-viewer/src/controller/Init.js"></script>
         <script type="text/javascript" src="../crosslink-viewer/src/controller/MouseEvents.js"></script>
         <script type="text/javascript" src="../crosslink-viewer/src/controller/Layout.js"></script>
@@ -27,3 +21,4 @@
         <script type="text/javascript" src="../crosslink-viewer/src/controller/xiNET_Storage.js"></script>
         <script type="text/javascript" src="../crosslink-viewer/src/controller/ReadCSV.js"></script>
         <script type="text/javascript" src="../crosslink-viewer/src/controller/Fasta.js"></script>
+-->
