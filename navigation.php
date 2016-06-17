@@ -2,8 +2,8 @@
 	<div class="header-bg">
 		<div class="top">
 			<div class="logogroup">
-				<a style="text-decoration:none;" href="index.php"><h1 class="logo">xiNET</h1></a>
-				<h4 class="logo-subtitle">Cross-Link Viewer</h4>
+				<a style="text-decoration:none;" href="index.php"><h1 class="logo">xiSPEC</h1></a>
+				<h4 class="logo-subtitle">Cross-Link Spectrum Viewer</h4>
 			</div>
 			<nav class="hover-effect">
 				<a href="index.php" data-hover="Home" data-no-instant>Home</a><br/>

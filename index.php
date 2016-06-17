@@ -17,12 +17,12 @@
 	
    	 	<!-- Intro -->			
    	 				<div class="container">
-   	 					<h1 class="page-header">A tool for exploring and communicating cross‑linking / mass spectrometry data.</h1>
+   	 					<h1 class="page-header">A tool for visualizing cross-link mass spectrometry spectra.</h1>
    	 					<div class="external-link">
 							
 							
 							
-							<p>xiNET displays:</p>
+<!-- 							<p>xiNET displays:</p>
 							<ul>
 								<li>residue
 							resolution positional information including linkage sites
@@ -31,12 +31,12 @@
 							product;</li>
 								<li>ambiguous results;</li>
 								<li>additional sequence information such as domains.</li>
-							</ul>
+							</ul> -->
 
 
 						</div><!-- external-link -->
 							
-						<?php include("citeBar.php");?>
+						<?php //include("citeBar.php");?>
 			 			</div> <!-- CONTAINER -->
 			<div id="networkFrontPage" class="skel-panels-fixed"></div>
 		</div> <!-- MAIN -->
