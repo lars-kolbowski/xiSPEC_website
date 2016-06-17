@@ -3,11 +3,8 @@ $( document ).ready(function() {
 	window.peptide = new Peptide();
 	window.peptideView = new PeptideView({model: window.peptide, el:"#peptideDiv"});
 
-   
-
    // Save current value of element
    $('#myPeptide').data('oldVal', $('#myPeptide').val());
-
    // Look for changes in the value
    $('#myPeptide').bind("propertychange change click keyup input paste", function(event){
       // If value has changed...
@@ -24,21 +21,10 @@ function updatePreview(){
 	var pep = $('#myPeptide').val();
 	console.log(pep);
 
-    $.ajax({
-		url: './forms/convertPeps.php?peps='+pep,
-		type: 'GET',
-		async: false,
-		cache: false,
-		contentType: false,
-		processData: false,
-		success: function (returndata) {
-			obj = JSON.parse(returndata);
-			peptide.set({peptides:obj}); 
-			//$('#instructions').html("2. Select the cross-link site by clicking on the amino acids (can be changed later).");
-			//$('#step-two').show();
-			//$('.hidden').show();
-	}
-  });
+	$.post( "./forms/convertPeps.php", { peps: pep}).done(function( data ) {
+		obj = JSON.parse(data);
+		peptide.set({JSONdata:obj}); 
+	});
  
   return false;
 }

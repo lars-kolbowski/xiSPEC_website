@@ -23,10 +23,10 @@
 					<h1 class="page-header">Upload</h1>
 					<form id="manUpPepForm" action="userinput_to_json.php" method="post" target="_self" onsubmit="doPreSubmission();"">
 					<!-- <form id="xisv_entryform"  action="http://spectrumviewer.org/xisv/index.php" method="post" target="_blank" onsubmit="doPreSubmission();"> -->
-				  		<input style="margin-bottom:30px;width:25%;" class="form-control" id="myPeptide" required type="text" placeholder="Peptide Sequence1[;Peptide Sequence2]" name="myPeptide" autofocus>
+				  		<input style="margin-bottom:30px;width:25%;" class="form-control" id="myPeptide" required type="text" placeholder="Peptide Sequence1[;Peptide Sequence2]" name="peps" autofocus>
 						<div style="text-align:center;">
 							<section>
-								<textarea class="form-control" style="padding-bottom:0px;width:50%;float:left;" onfocus="handleFB('myPeaklist','f','Peak list');" id="myPeaklist" required type="text" placeholder="Peak List" name="myPeaklist"></textarea>
+								<textarea class="form-control" style="padding-bottom:0px;width:50%;float:left;" onfocus="handleFB('myPeaklist','f','Peak list');" id="myPeaklist" required type="text" placeholder="Peak List" name="peaklist"></textarea>
 								<div id="peptideDiv"></div>
 							</section>
 							<section style="clear:left">
@@ -42,7 +42,7 @@
 								<option value="EThcD">EThcD</option>
 							</select>
 
-							<input class="form-control" style="margin-top:30px;margin-right:2%;width:15%;display:inline;"  required id="myTolerance" type="text" placeholder="Tolerance" name="msTol">
+							<input class="form-control" style="margin-top:30px;margin-right:2%;width:15%;display:inline;"  required id="myTolerance" type="text" placeholder="Tolerance" name="ms2Tol">
 
 							<select class="form-control" style="margin-top:30px;margin-right:2%;width:15%;display:inline;" id="myToleranceUnit" name="tolUnit">
 								<option value="ppm">ppm</option> 
