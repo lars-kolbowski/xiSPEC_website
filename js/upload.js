@@ -1,43 +1,49 @@
 $( document ).ready(function() {
-
+	_.extend(window, Backbone.Events);
+	window.onresize = function() { window.trigger('resize') };
 	window.peptide = new Peptide();
 	window.peptideView = new PeptideView({model: window.peptide, el:"#peptideDiv"});
+	window.pepInputView = new PepInputView({model: window.peptide, el:"#myPeptide"});
+	$("#addCLModal").easyModal();
 
-   // Save current value of element
-   $('#myPeptide').data('oldVal', $('#myPeptide').val());
-   // Look for changes in the value
-   $('#myPeptide').bind("propertychange change click keyup input paste", function(event){
-      // If value has changed...
-      if ($('#myPeptide').data('oldVal') != $('#myPeptide').val()) {
-       // Updated stored value
-       $('#myPeptide').data('oldVal', $('#myPeptide').val());
-       // Do action
-       updatePreview();
-     }
-   });
-});
-
-function updatePreview(){
-	var pep = $('#myPeptide').val();
-	console.log(pep);
-
-	$.post( "./forms/convertPeps.php", { peps: pep}).done(function( data ) {
-		obj = JSON.parse(data);
-		peptide.set({JSONdata:obj}); 
+	$('#myCL').change(function(){ 
+		var value = $(this).val();
+		if (value == "add")
+			$("#addCLModal").trigger('openModal');
 	});
- 
-  return false;
-}
+
+	updateCL();
+
+	$('#addCustomCLform').submit(function(e){
+		e.preventDefault();
+		var clname = $('#newCLname').val();
+		var clmass = $('#newCLmodmass').val();
+		cl = JSON.stringify({ "clName": clname, "clModMass": clmass });
+
+		var cookie = Cookies.get('customCL');
+		if (cookie === undefined){
+			Cookies.set('customCL', {"customCL":[]})
+		}
+		var JSONobj = JSON.parse(Cookies.get('customCL'));
+		JSONobj.customCL.push(cl);
+		cookie = JSON.stringify(JSONobj);
+		Cookies.set('customCL', cookie);
+		$("#addCLModal").trigger('closeModal');
+		updateCL(clmass);
+	});
+});
 
 function doExample(){
 	$.get("example/peaklist.txt",function(data){
 		$("#myPeaklist").val(data);
 	});
-	$("#myPeptide").val("TVTAMDVVYALK;YKAAFTECcmCcmQAADK");
+	$("#myPeptide").val("KQEQESLGSNSK#;M#oxNANK");
 	$("#myTolerance").val("20.0");
-	$("#myPrecursorZ").val("4");
-	$("#clModMass").val("138.06807961");
-	updatePreview();
+	$("#myPrecursorZ").val("3");
+	$("#myCL").val("138.06807961");
+	$("#myFragmentation").val("HCD");
+	$("#myToleranceUnit").val("ppm");	
+	pepInputView.contentChanged();
 }
 
 function doClearForm(){
@@ -46,5 +52,23 @@ function doClearForm(){
 	$("#myTolerance").val("");
 	$("#myPrecursorZ").val("");
 	$("#clModMass").val("");
-	updatePreview();
+	pepInputView.contentChanged();
+}
+
+function updateCL(selected){
+	var cookie = Cookies.get('customCL');
+	if (cookie !== undefined){
+		$("option[class=customCL]").remove();
+		var selectValues = JSON.parse(Cookies.get('customCL')).customCL;
+		$.each(selectValues, function(key, value) {   
+			var cl = JSON.parse(value);
+			$('#myCL')
+				.append($("<option></option>")
+				.attr("value", cl.clModMass)
+				.attr("class", "customCL")
+				.text(cl.clName+" ["+cl.clModMass+" Da]")); 
+		});
+		//select new cl
+		$('#myCL').val(selected);
+	}
 }

@@ -1535,6 +1535,16 @@ p#scoreLabel2.scoreLabel {
     display: none;
 }
 
+.modal {
+    background: #FFF;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+.modal .header {
+    background: #DDD;
+    border-bottom: 1px solid #CCCCCC;
+    padding: 18px 18px 14px;
+}
+
 textarea {
   outline: none;
 }
