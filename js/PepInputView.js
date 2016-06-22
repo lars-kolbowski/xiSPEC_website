@@ -13,14 +13,16 @@ var PepInputView = Backbone.View.extend({
   contentChanged: function(e) {
     var pep = this.el.value;
     var self = this;
+    //update model with input data
     $.post( "./forms/convertPeps.php", {peps: pep}).done(function( data ) {
       obj = JSON.parse(data);
       self.model.set({JSONdata:obj}); 
     });
+    modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(pep)).load();
+
   },
 
   changeContent: function() {
-
     var pepStrsArr = [];
     for(i=0; i < this.model.peptides.length; i++){
       pepStrsArr[i] = "";
@@ -38,6 +40,8 @@ var PepInputView = Backbone.View.extend({
 
     pepsStr = pepStrsArr.join(";");
     this.el.value = pepsStr;   
-    
-  }
+    modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(pepsStr)).load();
+  },
+
+
 });

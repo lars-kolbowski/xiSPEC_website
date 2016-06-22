@@ -18,31 +18,31 @@
 //
 //
 //		PeptideFragmentationKeyView.js
-var PeptideView = Backbone.View.extend({
+var FragmentationKeyView = Backbone.View.extend({
 
 	events : {
 		'click #clearHighlights' : 'clearHighlights',
 	},
 
 	initialize: function() {
-		this.svg = d3.select(this.el).append("svg").attr("class", "fragKey").style("width", "100%").style("height", "100%");//d3.select(this.el).append("svg").style("width", "100%").style("height", "100%");
+		this.svg = d3.select(this.el.getElementsByTagName("svg")[0]);//d3.select(this.el).append("svg").style("width", "100%").style("height", "100%");
 		this.fragKeyWrapper = this.svg.append("g");
 
 
 		//this.model = model;
 		this.margin = {
 			"top":    20,
-			"right":  0,
+			"right":  20,
 			"bottom": 40,
-			"left":   25
+			"left":   40
 		};
 		this.highlights = this.fragKeyWrapper.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
-		this.g =  this.fragKeyWrapper.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+		this.g =  this.fragKeyWrapper.append("g").attr("class", "fragKey").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
 		//create peptide frag key
 		//this.peptideFragKey = new PeptideFragmentationKey(this.fragKeyWrapper, this.model);
 
-		this.listenTo(this.model, 'changed:data', this.render);
+		this.listenTo(this.model, 'change', this.render);
 		this.listenTo(this.model, 'destroy', this.remove);
 		this.listenTo(this.model, 'changed:Highlights', this.updateHighlights);
 		this.listenTo(this.model, 'changed:ColorScheme', this.updateColors);
@@ -118,50 +118,32 @@ var PeptideView = Backbone.View.extend({
 		if(this.peptides[1])
 	    	this.drawPeptide( 1, 71, 83);
 
+
+		//CL line svg elements
+		if(this.linkPos.length > 0){
+			var CLpos = this.linkPos[0].linkSite+1;
+			if (this.linkPos[1].linkSite > this.linkPos[0].linkSite)
+				CLpos = this.linkPos[1].linkSite+1;
 			this.CL = this.g.append("g");
+			//highlight
 			this.CLlineHighlight = this.CL.append("line")
-				.attr("x1", -1)
+				.attr("x1", this.xStep * (CLpos - 1))
 				.attr("y1", 25)
-				.attr("x2", -1)
+				.attr("x2", this.xStep * (CLpos - 1))
 				.attr("y2", 55)
 				.attr("stroke", self.model.highlightColour)
 				.attr("stroke-width", 10)
 				.attr("opacity", 0)
-				.style("cursor", "pointer");	
-
-			this.changeCLline = this.CL.append("line")
-				.attr("x1", -1)
-				.attr("y1", 25)
-				.attr("x2", -1)
-				.attr("y2", 55)
-				.attr("stroke", "black")
-				.attr("stroke-width", 1.5)
-				.attr("opacity", 0)
 				.style("cursor", "pointer");
-
-			this.CLline = this.CL.append("line")
-				.attr("x1", -1)
-				.attr("y1", 25)
-				.attr("x2", -1)
-				.attr("y2", 55)
-				.attr("opacity", 0)
-				.attr("stroke", "black")
-				.attr("stroke-width", 1.5)
-				.style("cursor", "pointer");
-
-		//CL line svg elements
-		if(this.linkPos.length > 1){
-			var CLpos = this.linkPos[0].linkSite+1;
-			if (this.linkPos[1].linkSite > this.linkPos[0].linkSite)
-				CLpos = this.linkPos[1].linkSite+1;
-					//highlight
-			this.CLlineHighlight
-				.attr("x1", this.xStep * (CLpos - 1))
-				.attr("x2", this.xStep * (CLpos - 1));
 			// the the link line
-			this.CLline.attr("x1", this.xStep * (CLpos - 1))
-				.attr("opacity", 1)
-				.attr("x2", this.xStep * (CLpos - 1));
+			this.CLline = this.CL.append("line")
+				.attr("x1", this.xStep * (CLpos - 1))
+				.attr("y1", 25)
+				.attr("x2", this.xStep * (CLpos - 1))
+				.attr("y2", 55)
+				.attr("stroke", "black")
+				.attr("stroke-width", 1.5)
+				.style("cursor", "pointer");
 
 			this.CL[0][0].onclick = function() {
 				self.CLlineHighlight.attr("opacity", 1);
@@ -178,12 +160,17 @@ var PeptideView = Backbone.View.extend({
 				}
 			};
 			//line for changing
-			this.changeCLline
+			this.changeCLline = this.g.append("line")
 				.attr("x1", this.xStep * (CLpos - 1))
+				.attr("y1", 25)
 				.attr("x2", this.xStep * (CLpos - 1))
-				.attr("opacity", 1);
-		}//end (if this.linkpos > 1)
+				.attr("y2", 55)
+				.attr("stroke", "black")
+				.attr("stroke-width", 1.5)
+				.attr("opacity", 0)
+				.style("cursor", "pointer");
 
+		}
 
 		//change-mod svg element
 	    this.changeModLetter = this.g.append("text")
@@ -192,6 +179,7 @@ var PeptideView = Backbone.View.extend({
 			.style("cursor", "default");
 
 		this.fraglines = new Array();
+		var self = this;
 
 		if(fragments !== undefined){
 			for (var i = 0; i < fragments.length; i++) {
@@ -210,10 +198,67 @@ var PeptideView = Backbone.View.extend({
 				this.drawFragmentationEvents(1);	
 		}
 
+	    this.drawFragmentationEvents(0);
+		if(this.peptides[1])	
+			this.drawFragmentationEvents(1);	
+
+		//changeInfo
+		//ToDo: make cleaner
+		if(this.model.match !== undefined){
+			if (this.model.match.oldLinkPos !== undefined){
+			    var linkPos = [];
+			    for (var i = 0; i < this.peptides.length; i++) {
+			    	linkPos.push(this.model.match.oldLinkPos[i][0])
+			    	var j = 0;
+			    	while(this.peptides[i][j] == "#") {
+			    			linkPos[i] += 1
+			    			j++;
+			    	}
+			    }
+			    this.origCL = this.g.append("g");
+			    this.origCLHighlight = this.origCL.append("line")
+					.attr("x1", this.xStep * (linkPos[0] - 1))
+					.attr("y1", 25)
+					.attr("x2", this.xStep * (linkPos[1] - 1))
+					.attr("y2", 55)
+					.attr("stroke", this.model.highlightColour)
+					.attr("stroke-width", 5)
+					.attr("opacity", 0)
+					.style("cursor", "pointer");
+			    this.origCLline = this.origCL.append("line")
+					.attr("x1", this.xStep * (linkPos[0] - 1))
+					.attr("y1", 25)
+					.attr("x2", this.xStep * (linkPos[1] - 1))
+					.attr("y2", 55)
+					.attr("stroke", "lightgrey")
+					.attr("opacity", 1)
+					.style("cursor", "pointer");
+				this.origCL[0][0].onmouseover = function(){
+					self.origCLHighlight.attr("opacity", 1);
+				};
+				this.origCL[0][0].onmouseout = function(){
+					self.origCLHighlight.attr("opacity", 0);
+				};
+				this.origCL[0][0].onclick = function(){
+					self.model.changeLink(self.model.match.oldLinkPos[0][0], self.model.match.oldLinkPos[1][0]);
+				};
+				// //get position
+				// var x = 0
+				// for (var i = 0; i < this.pepLetters.length; i++) {
+				// 		if(parseInt(this.pepLetters[i][this.pepLetters[i].length-1][0][0].getAttribute("x")) > x)
+				// 			x = parseInt(this.pepLetters[i][this.pepLetters[i].length-1][0][0].getAttribute("x"));
+				// }
+				// this.changeInfo = this.g.append('g');
+				// var scoreInfo = this.changeInfo.append('text')
+				// 	.text("link was changed")
+				// 	.attr("x", x+20);
+			}
+		}
+
 	},
 
 	align_peptides_to_CL: function(){
-		if (this.linkPos.length > 1){
+		if (this.linkPos.length > 0){
 			function arrayOfHashes(n){
 				var arr = [];
 				for (var a = 0; a < n; a++) {arr.push("#")}
@@ -310,42 +355,15 @@ var PeptideView = Backbone.View.extend({
 						var newlinkpos = new Array(self.linkPos[0].linkSite, self.linkPos[1].linkSite);
 						self.model.changeLink(newlinkpos);
 					}
-					else if (self.linkPos.length < 1){
-						var pepLetterHighlight = this.childNodes[0];
-						var pepLetter = this.childNodes[1];
-						var pepIndex = pepLetter.getAttribute("pep");
-
-						//set CLline
-						if (pepIndex == 0){
-							$('#clPos1').val(parseInt(this.childNodes[0].getAttribute("pos"))+1);
-							self.CLline
-								.attr("x1", pepLetterHighlight.getAttribute("x"))
-								.attr("y1", 25);
-						}
-						if (pepIndex == 1){
-							$('#clPos2').val(parseInt(this.childNodes[0].getAttribute("pos"))+1);
-							self.CLline
-								.attr("x2", pepLetterHighlight.getAttribute("x"))
-								.attr("y2", 55);
-						}
-						if (self.CLline.attr("x1") != -1 && self.CLline.attr("x2") != -1){
-							self.CLline.attr("opacity", 1);
-						}
-						//set opacity of all letters of this highlight to zero
-						for (var i = 0; i < self.pepLetterHighlights[pepIndex].length; i++) {
-							if(typeof(self.pepLetterHighlights[pepIndex][i]) !== "undefined")
-								self.pepLetterHighlights[pepIndex][i].attr("opacity", 0);
-						}
-						pepLetterHighlight.setAttribute("opacity", 1);						
-					}
 					//if changeMod is active and the mod is from the same peptide and it's a valid modification for this aa
 					if(self.changeMod !== false && self.validModChange && this.childNodes[1].getAttribute("pep") == self.changeMod[1].getAttribute("pep")){	
 						var modification = self.changeMod[1].innerHTML;
+						var aminoAcid = this.childNodes[1].innerHTML;
 						var aaPosition = parseInt(this.childNodes[1].getAttribute("pos"));
 						var pepIndex = parseInt(this.childNodes[1].getAttribute("pep"));
 						var peptide = self.model.pepStrs[pepIndex];
 						var newPepSeq = peptide.slice(0, aaPosition+1) + modification + peptide.slice(aaPosition+1);
-						self.model.changeMod(modification, aaPosition, pepIndex);
+						self.model.changeMod(newPepSeq, pepIndex);
 					}
 				};
 				pepLetterG[0][0].onmouseover = function() {
@@ -595,15 +613,12 @@ var PeptideView = Backbone.View.extend({
 	},
 
 	resize: function(){
-		this.fragKeyWrapper.attr("transform", "scale(1)");
 	    var parentDivWidth = $(this.el).width();
 	    var fragKeyWidth = $(".fragKey")[0].getBBox().width;
-		var i = 1;
-		while (parentDivWidth < fragKeyWidth+15){
-			this.fragKeyWrapper.attr("transform", "scale("+parentDivWidth/((fragKeyWidth+25)+20*i)+")")
-			fragKeyWidth = $(".fragKey")[0].getBBox().width;
-			i += 1;
-		}
+		if (parentDivWidth < fragKeyWidth+40)
+			this.fragKeyWrapper.attr("transform", "scale("+parentDivWidth/(fragKeyWidth+40)+")")
+		else
+			this.fragKeyWrapper.attr("transform", "scale(1)")
 	},
 
 	clearHighlights: function(){

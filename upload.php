@@ -40,24 +40,28 @@
 			<section id="top" class="one">
 				<div class="container">
 					<h1 class="page-header">Upload</h1>
-					<form id="manUpPepForm" action="userinput_to_json.php" method="post" target="_self" onsubmit="doPreSubmission();"">
+					<form id="manUpPepForm" action="userinput_to_json.php" method="post" target="_blank">
 					<!-- <form id="xisv_entryform"  action="http://spectrumviewer.org/xisv/index.php" method="post" target="_blank" onsubmit="doPreSubmission();"> -->
-				  		<input style="margin-bottom:30px;width:25%;min-width:300px" class="form-control" id="myPeptide" required type="text" placeholder="Peptide Sequence1[;Peptide Sequence2]" name="peps" autofocus>
-						<div style="text-align:center;">
-							<section>
-								<textarea class="form-control" style="padding-bottom:0px;width:30%;min-width:300px;display: table-cell;float:left;" id="myPeaklist" required type="text" placeholder="Peak List" name="peaklist"></textarea>
-								<div id="peptideDiv" style="width:700px;display: table-cell;text-align:left;padding:2%">Peptide Preview:</div>
-							</section>
-							<section style="clear:left">
-							<select class="form-control" style="margin-right:2%;width:20%;display:inline;" id="myCL" name="clModMass">
+						<section style="margin-bottom:2%;">
+						<div style="margin-bottom:30px;width:30%;min-width:300px;display:inline;min-width:300px;margin-right:2%;float:left;">
+							<input style="width:100%;margin-bottom:10px" class="form-control" id="myPeptide" required type="text" placeholder="Peptide Sequence1[;Peptide Sequence2]" name="peps" autofocus>
+							<textarea class="form-control" style="padding-bottom:0px;" id="myPeaklist" required type="text" placeholder="Peak List" name="peaklist"></textarea>
+						</div>
+						<div style="width:68%;height:210px;display:inline">
+							<div style="padding-bottom:15px;"> Peptide Preview:</div>
+							<div style="height:210px;" id="peptideDiv" class="form-control" ></div>
+						</div>
+						</section>
+						<section style="clear:left;text-align:center;margin-bottom:2%;">
+							<select class="form-control" style="margin-right:2%;width:25%;display:inline;" required id="myCL" name="clModMass">
 								<option value="" disabled selected>Select cross-linker</option>
 								<option value="add">add your own...</option>
 								<option value="138.06807961">BS3 [138.06807961 Da]</option>
 							</select>
 
-					  		<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myPrecursorZ" type="text" placeholder="Charge" name="preCharge">
+					  		<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myPrecursorZ" type="number" min="1" placeholder="Charge" name="preCharge">
 
-							<select class="form-control" style="margin-right:2%;width:15%;display:inline;" id="myFragmentation" name="fragMethod">
+							<select class="form-control" style="margin-right:2%;width:10%;display:inline;" id="myFragmentation" name="fragMethod">
 								<option value="HCD">HCD</option>
 								<option value="CID">CID</option>
 								<option value="ETD">ETD</option>
@@ -65,14 +69,27 @@
 								<option value="EThcD">EThcD</option>
 							</select>
 
-							<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myTolerance" type="text" placeholder="Tolerance" name="ms2Tol">
+							<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myTolerance" type="number" min="0" step="0.1" placeholder="Tolerance" name="ms2Tol">
 
-							<select class="form-control" style="margin-right:2%;width:15%;display:inline;" id="myToleranceUnit" name="tolUnit">
+							<select class="form-control" style="margin-right:2%;width:15%;display:inline;" required id="myToleranceUnit" name="tolUnit">
 								<option value="ppm">ppm</option> 
 								<option value="Da">Da</option>
 							</select>
-							</section>	
-						</div>
+						</section>
+						<section style="margin-bottom:2%;">
+							<div class="form-control" style="height:auto" id="myMods">
+							<table id="modificationTable" class="display" width="100%" style="text-align:center;">
+								<thead>
+									<tr>
+									    <th>Mod-Input</th>
+									    <th>Modification</th>
+									    <th>Mass</th>
+									    <th>Specificity</th>
+									</tr>
+								</thead>
+							</table>
+							</div>
+						</section>	
 						<div class="page-header center" style="background-color: #555;margin-top:30px;">
 							<input class="btn btn-1 btn-1a network-control" type="submit" value="View Spectrum" id="mybutton3">
 						    <input class="btn btn-1 btn-1a network-control" type="button" value="Example" onclick="doExample(); return false;" id="mybutton2">

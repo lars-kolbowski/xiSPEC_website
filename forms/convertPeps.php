@@ -16,7 +16,7 @@ foreach ($peps as $pep) {
 	$i++;
 }
 
-
+	
 //final array
 $arr = array('Peptides' => $peptides, 'LinkSite' => $linkSites);
 

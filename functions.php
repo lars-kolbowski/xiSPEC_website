@@ -3,7 +3,7 @@
 function get_link_sites($pep, $pep_index){
 	$linkSitesArr = array();
 
-	$pep_nomods = preg_replace ( '/[a-z]+/' , '' , $pep);	
+	$pep_nomods = preg_replace ( '/[a-z0-9]+/' , '' , $pep);	
 	preg_match_all( "/#[0-9]?/" , $pep_nomods, $matches, PREG_OFFSET_CAPTURE);
 
 	foreach ($matches[0] as $matchgroup) {
@@ -19,14 +19,14 @@ function get_link_sites($pep, $pep_index){
 function pep_to_array($pep){
 	$mods = array();
 	$pep = preg_replace( '/#[0-9]?/' , '' , $pep);	
-	$pep_nomods = str_split(preg_replace ( '/[a-z]+/' , '' , $pep));
+	$pep_nomods = str_split(preg_replace ( '/[a-z0-9]+/' , '' , $pep));
 	$pep_array = array();
 
 	foreach ($pep_nomods as $letter) {
 		array_push($pep_array, array('aminoAcid' => $letter, 'Modification' => ''));
 	}
 
-	preg_match_all('/[a-z]+/', $pep, $matches, PREG_OFFSET_CAPTURE);
+	preg_match_all('/[a-z0-9]+/', $pep, $matches, PREG_OFFSET_CAPTURE);
 
 	$offset = 1;
 	foreach ($matches[0] as $matchgroup) {

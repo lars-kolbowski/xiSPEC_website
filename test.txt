@@ -1,0 +1,9 @@
+{
+	"data": [
+		{
+			"id":0,
+			"modification":"ox",
+			"aminoAcid":"M"
+		}
+	]
+}

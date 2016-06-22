@@ -1,4 +1,4 @@
-			<title>xiNET | <?php echo $pageName ?></title>
+			<title>xiSPEC | <?php echo $pageName ?></title>
 			<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 			<meta name="description" content="xiSPEC is a tool for visualizing cross-link mass spectrometry spectra.." />
 			<meta name="keywords" content="xiSPEC, biologists, mass-spectrometrists, cross-linking, protein, fragmentation, MS2, rappsilber, software" />	
