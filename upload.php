@@ -7,8 +7,9 @@
 		?>
 		<?php include("xiSPEC_scripts.php");?>
 		<script type="text/javascript" src="./js/PepInputView.js"></script>			
-		<script type="text/javascript" src="./js/PeptideView.js"></script>	
-		<script type="text/javascript" src="./js/PeptideModel.js"></script>	
+		<script type="text/javascript" src="./js/PeptideView.js"></script>
+		<script type="text/javascript" src="./js/PrecursorInfoView.js"></script>		
+		<script type="text/javascript" src="./js/PeptideModel.js"></script>			
 		<script type="text/javascript" src="./js/upload.js"></script>
 	</head>
 	<body>
@@ -47,9 +48,10 @@
 							<input style="width:100%;margin-bottom:10px" class="form-control" id="myPeptide" required type="text" placeholder="Peptide Sequence1[;Peptide Sequence2]" name="peps" autofocus>
 							<textarea class="form-control" style="padding-bottom:0px;" id="myPeaklist" required type="text" placeholder="Peak List" name="peaklist"></textarea>
 						</div>
-						<div style="width:68%;height:210px;display:inline">
+						<div style="width:68%;display:inline;">
 							<div style="padding-bottom:15px;"> Peptide Preview:</div>
-							<div style="height:210px;" id="peptideDiv" class="form-control" ></div>
+							<div style="height:210px;font-size:100%;overflow-y: hidden;" id="peptideDiv" class="form-control" ></div>
+							<div id="precursorInfo">test</div>
 						</div>
 						</section>
 						<section style="clear:left;text-align:center;margin-bottom:2%;">

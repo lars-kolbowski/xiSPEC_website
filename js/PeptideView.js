@@ -17,7 +17,7 @@
 //		authors: Sven Giese, Colin Combe, Lars Kolbowski
 //
 //
-//		PeptideFragmentationKeyView.js
+//		PeptideView.js
 var PeptideView = Backbone.View.extend({
 
 	events : {
@@ -39,8 +39,6 @@ var PeptideView = Backbone.View.extend({
 		this.highlights = this.fragKeyWrapper.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 		this.g =  this.fragKeyWrapper.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-		//create peptide frag key
-		//this.peptideFragKey = new PeptideFragmentationKey(this.fragKeyWrapper, this.model);
 
 		this.listenTo(this.model, 'changed:data', this.render);
 		this.listenTo(this.model, 'destroy', this.remove);
@@ -245,15 +243,15 @@ var PeptideView = Backbone.View.extend({
 		}
 	},
 
-	drawFragmentationEvents: function(pepIndex){
-		for (var i = 0; i < this.annotations[pepIndex].length; i++){
-			var frag = this.annotations[pepIndex][i];
-			if (frag.b.length != 0 || frag.y.length != 0) {
-				//var x = (this.xStep * i) + (this.xStep / 2);
-				this.fraglines.push(new KeyFragment(frag, i, this.pepoffset[pepIndex], pepIndex, this));
-			}
-		}
-	},
+	// drawFragmentationEvents: function(pepIndex){
+	// 	for (var i = 0; i < this.annotations[pepIndex].length; i++){
+	// 		var frag = this.annotations[pepIndex][i];
+	// 		if (frag.b.length != 0 || frag.y.length != 0) {
+	// 			//var x = (this.xStep * i) + (this.xStep / 2);
+	// 			this.fraglines.push(new KeyFragment(frag, i, this.pepoffset[pepIndex], pepIndex, this));
+	// 		}
+	// 	}
+	// },
 
 
 	drawPeptide: function(pepIndex, y1, y2){
@@ -308,7 +306,7 @@ var PeptideView = Backbone.View.extend({
 							}
 						}
 						var newlinkpos = new Array(self.linkPos[0].linkSite, self.linkPos[1].linkSite);
-						self.model.changeLink(newlinkpos);
+						self.model.changeLinkPos(newlinkpos);
 					}
 					else if (self.linkPos.length < 1){
 						var pepLetterHighlight = this.childNodes[0];

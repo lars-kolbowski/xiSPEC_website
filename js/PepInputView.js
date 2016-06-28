@@ -1,13 +1,12 @@
 var PepInputView = Backbone.View.extend({
   
   events: {
-    "change":  "contentChanged",
-    "keyup": "contentChanged",
+    "input":  "contentChanged",
+    //"keyup": "contentChanged",
   },
 
   initialize: function() {
-    this.listenTo(this.model, 'changed:CL', this.changeContent);
-    this.listenTo(this.model, 'changed:mod', this.changeContent);
+    this.listenTo(this.model, 'changed:data', this.render);
   },
 
   contentChanged: function(e) {
@@ -18,11 +17,11 @@ var PepInputView = Backbone.View.extend({
       obj = JSON.parse(data);
       self.model.set({JSONdata:obj}); 
     });
-    modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(pep)).load();
+    //modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(pep)).load();
 
   },
 
-  changeContent: function() {
+  render: function() {
     var pepStrsArr = [];
     for(i=0; i < this.model.peptides.length; i++){
       pepStrsArr[i] = "";

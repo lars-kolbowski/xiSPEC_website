@@ -9,12 +9,9 @@ $aminoAcids = array();
 $i = 0;
 foreach ($matches[0] as $matchgroup) {
 
-	//var_dump(in_array($matchgroup[0], $modifications, TRUE));
 	$index = array_search($matchgroup[0], $modifications);
 
-	///var_dump($modifications);
-	//var_dump($matchgroup[0]);
-	//var_dump(array_search($matchgroup[0], $modifications));
+
 	if ($index === FALSE){
 		array_push($modifications, $matchgroup[0]);
 		array_push($aminoAcids, $pepsStr_noCL[$matchgroup[1]-1]);
@@ -46,7 +43,7 @@ foreach ($modifications as $mod) {
 	    }
 	}
 
-	array_push($modificationsJSON, array('name' => $mod, 'mass' => $mass, 'aminoAcid' => $aminoAcids[$i]));
+	array_push($modificationsJSON, array('DT_RowId' => "mod_".$i, 'name' => $mod, 'mass' => $mass, 'aminoAcid' => $aminoAcids[$i]));
 	$i++;
 }
 

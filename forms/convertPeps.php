@@ -16,7 +16,12 @@ foreach ($peps as $pep) {
 	$i++;
 }
 
-	
+// $command = escapeshellcmd('../python/calc_pep_mass.py -s '.$pepsStr);
+// $output = shell_exec($command);
+// var_dump($output);
+
+
+
 //final array
 $arr = array('Peptides' => $peptides, 'LinkSite' => $linkSites);
 
