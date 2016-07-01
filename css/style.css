@@ -1539,10 +1539,32 @@ p#scoreLabel2.scoreLabel {
     background: #FFF;
     box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
+
 .modal .header {
     background: #DDD;
     border-bottom: 1px solid #CCCCCC;
     padding: 18px 18px 14px;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
 }
 
 textarea {

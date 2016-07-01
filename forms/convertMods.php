@@ -7,6 +7,8 @@ preg_match_all('/[a-z0-9]+/', $pepsStr_noCL, $matches, PREG_OFFSET_CAPTURE);
 $modifications = array();
 $aminoAcids = array();
 $i = 0;
+
+
 foreach ($matches[0] as $matchgroup) {
 
 	$index = array_search($matchgroup[0], $modifications);
@@ -35,15 +37,16 @@ $knownModifications = $obj->modifications;
 $modificationsJSON = array();
 $i = 0;
 foreach ($modifications as $mod) {
-	$mass = "";
+	$mass = 0;
 	foreach($knownModifications as $kmod) {
 	    if ($mod == $kmod->id) {
 	        $mass = $kmod->mass;
+	        $aminoAcids = $kmod->aminoAcids;
 	        break;
 	    }
 	}
 
-	array_push($modificationsJSON, array('DT_RowId' => "mod_".$i, 'name' => $mod, 'mass' => $mass, 'aminoAcid' => $aminoAcids[$i]));
+	array_push($modificationsJSON, array('DT_RowId' => "mod_".$i, 'id' => $mod, 'mass' => $mass, 'aminoAcid' => $aminoAcids[$i]));
 	$i++;
 }
 

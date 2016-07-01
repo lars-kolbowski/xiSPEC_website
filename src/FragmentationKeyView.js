@@ -39,9 +39,6 @@ var FragmentationKeyView = Backbone.View.extend({
 		this.highlights = this.fragKeyWrapper.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 		this.g =  this.fragKeyWrapper.append("g").attr("class", "fragKey").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-		//create peptide frag key
-		//this.peptideFragKey = new PeptideFragmentationKey(this.fragKeyWrapper, this.model);
-
 		this.listenTo(this.model, 'change', this.render);
 		this.listenTo(this.model, 'destroy', this.remove);
 		this.listenTo(this.model, 'changed:Highlights', this.updateHighlights);
@@ -357,13 +354,10 @@ var FragmentationKeyView = Backbone.View.extend({
 					}
 					//if changeMod is active and the mod is from the same peptide and it's a valid modification for this aa
 					if(self.changeMod !== false && self.validModChange && this.childNodes[1].getAttribute("pep") == self.changeMod[1].getAttribute("pep")){	
-						var modification = self.changeMod[1].innerHTML;
-						var aminoAcid = this.childNodes[1].innerHTML;
-						var aaPosition = parseInt(this.childNodes[1].getAttribute("pos"));
+						var oldPos = self.changeMod[0].getAttribute('pos');
+						var newPos = parseInt(this.childNodes[1].getAttribute("pos"));
 						var pepIndex = parseInt(this.childNodes[1].getAttribute("pep"));
-						var peptide = self.model.pepStrs[pepIndex];
-						var newPepSeq = peptide.slice(0, aaPosition+1) + modification + peptide.slice(aaPosition+1);
-						self.model.changeMod(newPepSeq, pepIndex);
+						self.model.changeMod(oldPos, newPos, pepIndex);
 					}
 				};
 				pepLetterG[0][0].onmouseover = function() {
@@ -449,6 +443,7 @@ var FragmentationKeyView = Backbone.View.extend({
 						.attr("text-anchor", "middle")
 						.attr("stroke", self.model.highlightColour)
 						.attr("pep", pepIndex)
+						.attr("pos", i-shift)
 						.style("font-size", "0.7em")
 						.style("cursor", "pointer")
 						.text(mods[i-shift])

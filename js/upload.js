@@ -1,10 +1,10 @@
 $( document ).ready(function() {
 	_.extend(window, Backbone.Events);
 	window.onresize = function() { window.trigger('resize') };
-	window.peptide = new Peptide();
+	window.peptide = new AnnotatedSpectrumModel();
 	window.peptideView = new PeptideView({model: window.peptide, el:"#peptideDiv"});
 	window.pepInputView = new PepInputView({model: window.peptide, el:"#myPeptide"});
-	window.precursorInfoView = new PrecursorInfoView({model: window.peptide, el:"#precursorInfo"});
+	//window.precursorInfoView = new PrecursorInfoView({model: window.peptide, el:"#precursorInfo"});
 	$("#addCLModal").easyModal({
 		onClose: function(myModal){
 			$('#myCL').val('');
@@ -38,9 +38,9 @@ $( document ).ready(function() {
 		updateCL(clmass);
 	});
 
-	// $('#modificationTable').on('input', 'input', function(){
-	// 	updateModifications();
-	// });
+	$('#myPrecursorZ').on('change', function () {
+		window.peptide.set("charge", this.value);
+	});
 
 
 	$('#modificationTable').on( 'draw.dt', function () {
@@ -62,27 +62,26 @@ $( document ).ready(function() {
 		var JSONobj = JSON.parse(Cookies.get('customMod'));
 
 		//check if the mod is already in the cookie
-		var found = false;
 		for (var i = 0; i < JSONobj.data.length; i++) {
 			var modJSON = JSONobj.data[i];
 			if(modJSON.name == modName){
 				JSONobj.data[i].name = modName;
 				JSONobj.data[i].mass = parseFloat(modMass);
 				JSONobj.data[i].aminoAcid = modSpec;
-				found = true;
 			}
 		}
 
-		if (!found){
-			JSONobj.data.push(mod);			
-		}
 		Cookies.set('customMod', JSON.stringify(JSONobj));
 
 		//calcpepmass
 		window.peptide.set("modifications", JSONobj);
 	 });
 
-
+	$('#resetModMasses').click(function(){
+		var JSONobj = modTable.ajax.json();
+		Cookies.set('customMod', JSON.stringify(JSONobj));
+		modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(window.peptide.pepStrsMods.join(";"))).load();	
+	});
 
     window.modTable = $('#modificationTable').DataTable( {
     	"paging":   false,
@@ -93,7 +92,7 @@ $( document ).ready(function() {
         "serverSide": true,
         "ajax": "forms/convertMods.php?peps=",
         "columns": [
-            { "data": "name" },
+            { "data": "id" },
         	{},
             { "data": "mass" },
             { "data": "aminoAcid" },
@@ -109,7 +108,7 @@ $( document ).ready(function() {
 			},
 			{
 				"render": function ( data, type, row, meta ) {
-					return row['name'];
+					return row['id'];
 				},
 				"targets": 1,
 			},
@@ -151,41 +150,6 @@ $( document ).ready(function() {
 
 });
 
-
-// //TODO:make it work.......
-// function updateModifications(){
-// 	rows = 0;
-// 	if (Cookies.get('customMod') === undefined){
-// 		Cookies.set('customMod', {"customMod":[]})
-// 	}
-// 	var JSONobj = JSON.parse(Cookies.get('customMod'));
-
-// 	for (var i = 0; i < rows; i++) {
-
-// 		var modName = $('#modName_'+i).val();
-// 		var modMass = $('#modMass_'+i).val();
-// 		var modSpec = $('#modSpec_'+i).val();
-
-// 		var mod = JSON.stringify({ "name": modName, "mass": modMass, "spec": modSpec });
-
-// 		//check if the mod is already in the cookie
-// 		var found = false;
-// 		for (var i = 0; i < JSONobj.customMod.length; i++) {
-// 			var modJSON = JSON.parse(JSONobj.customMod[i])
-// 			if(modJSON.name == modName){
-// 				JSONobj.customMod[i] = mod;
-// 				found = true;
-// 			}
-// 		}
-
-// 		if (!found){
-// 			JSONobj.customMod.push(mod);			
-// 		}
-// 	}
-// 	window.peptide.set("modifications", JSONobj);
-// 	Cookies.set('customMod', JSON.stringify(JSONobj));
-// }
-
 function doExample(){
 	$.get("example/peaklist.txt",function(data){
 		$("#myPeaklist").val(data);
@@ -194,6 +158,7 @@ function doExample(){
 	pepInputView.contentChanged();
 	$("#myTolerance").val("20.0");
 	$("#myPrecursorZ").val("3");
+	$("#myPrecursorZ").change();	
 	$("#myCL").val("138.06807961");
 	$("#myFragmentation").val("HCD");
 	$("#myToleranceUnit").val("ppm");	

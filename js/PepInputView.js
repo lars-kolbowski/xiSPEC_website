@@ -15,7 +15,8 @@ var PepInputView = Backbone.View.extend({
     //update model with input data
     $.post( "./forms/convertPeps.php", {peps: pep}).done(function( data ) {
       obj = JSON.parse(data);
-      self.model.set({JSONdata:obj}); 
+      self.model.set({JSONdata:obj});
+      self.model.calcPrecursorMass();
     });
     //modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(pep)).load();
 
@@ -37,9 +38,8 @@ var PepInputView = Backbone.View.extend({
       }
     }
 
-    pepsStr = pepStrsArr.join(";");
-    this.el.value = pepsStr;   
-    modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(pepsStr)).load();
+    var pepsStr = pepStrsArr.join(";");
+    this.el.value = pepsStr;  
   },
 
 

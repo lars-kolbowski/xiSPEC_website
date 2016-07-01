@@ -1,49 +1,62 @@
 var AnnotatedSpectrumModel = Backbone.Model.extend({
-	defaults: {
-		pepSeq1: "VGQQYSSAPLR",
-		linkPos1: 3,
-		pepSeq2: "EKELESIDVLLEQTTGGNNKDLK",
-		linkPos2: 5,
-		notUpperCase: /[^A-Z]/g,
-	},
 
 	initialize: function(){
-		this.sticky = Array();
-		this.highlights = Array();
+		//this.sticky = Array();
+		//this.highlights = Array();
 		this.measureMode = false;
 		this.on("change:JSONdata", function(){
 			var json = this.get("JSONdata");
 			if (typeof json !== 'undefined')
-				this.setData(json);
+				this.setData();
 			else
 				this.trigger("cleared");
 		});
+		this.on("change:clModMass", function(){
+			if(this.peptides !== undefined)
+				this.calcPrecursorMass();
+		});
+
+		//really necessary?
+		this.on("change:charge", function(){
+			this.charge = parseInt(this.get("charge"));
+			this.trigger("changed:charge");
+		});	
+
+		this.on("change:modifications", function(){
+			this.modifications = this.get("modifications");
+			if(this.peptides !== undefined && this.modifications.data !== undefined)
+				this.calcPrecursorMass();
+		});
+		this.knownModifications = this.getKnownModifications();
 	},
-	setData: function(json){
-		//var annotatedPeaksCSV = this.get("annotatedPeaksCSV");
-		//this.set("annotatedPeaks", d3.csv.parse(annotatedPeaksCSV.trim()));
+	setData: function(){
 		$("#measuringTool").prop("checked", false);
 		$("#moveLabels").prop("checked", false);			
 		this.sticky = Array();
 		this.highlights = Array();
-		this.JSONdata = json;
+		this.JSONdata = this.get("JSONdata");
 		this.match = this.get("match");
 		this.randId = this.get("randId");
-		console.log(this.JSONdata);
-		this.peptides = this.JSONdata.Peptides;
+		//console.log(this.JSONdata);
 		this.pepStrs = [];
+		this.pepStrsMods = [];
+		this.peptides = this.JSONdata.Peptides;
 		for(i=0; i < this.peptides.length; i++){
 			this.pepStrs[i] = "";
-			for(j = 0; j < this.peptides[i].sequence.length; j++)
+			this.pepStrsMods[i] = "";
+			for(j = 0; j < this.peptides[i].sequence.length; j++){
 				this.pepStrs[i] += this.peptides[i].sequence[j].aminoAcid;
+				this.pepStrsMods[i] += this.peptides[i].sequence[j].aminoAcid + this.peptides[i].sequence[j].Modification;
+			}
 		}
-		//maybe put id back in JSON? to make this obsolete
-		this.fragments = [];
-		for (var i = 0; i < this.JSONdata.fragments.length; i++) {
-			this.fragments[i] = this.JSONdata.fragments[i];
-			this.fragments[i].id = i;
+		if (this.JSONdata.fragments !== undefined){
+			this.fragments = [];
+			for (var i = 0; i < this.JSONdata.fragments.length; i++) {
+				this.fragments[i] = this.JSONdata.fragments[i];
+				this.fragments[i].id = i;
+			};
 		};
-		this.notUpperCase = this.get("notUpperCase"); //change to global var
+		this.notUpperCase = "/[^A-Z]/g"; //change to global var
 		this.cmap = colorbrewer.RdBu[8];
 		this.p1color = this.cmap[0];
 		this.p1color_cluster = this.cmap[2];
@@ -54,7 +67,14 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.lossFragBarColour = "#cccccc";
 		this.highlightColour = "yellow";
 		this.highlightWidth = 10;
-		this.setGraphData();
+
+		this.calcPrecursorMass();
+		if (window.modTable !== undefined)
+			modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(this.pepStrsMods.join(";"))).load();
+		this.trigger("changed:data");
+		
+		if (this.JSONdata.peaks !== undefined)
+			this.setGraphData();
 
 	},
 
@@ -173,27 +193,48 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.trigger("changed:ColorScheme");
 	},
 
-	changeLink: function(linkPos1, linkPos2){
-		var newmatch = $.extend(true, {}, this.match);	//clone object so linkpos change is not cached
-		newmatch.linkPos1[0] = linkPos1;
-		newmatch.linkPos2[0] = linkPos2;
-		//set the original linkPos if its not set yet
-		if (this.match.oldLinkPos === undefined)
-			newmatch.oldLinkPos = [this.match.linkPos1, this.match.linkPos2];
-		//if the newlinkpos are the original ones delete oldLinkPos
-		else if (this.match.oldLinkPos[0] == linkPos1 && this.match.oldLinkPos[1] == linkPos2)	
-			newmatch.oldLinkPos = undefined;
-		CLMSUI.loadSpectra(newmatch, this.randId, this);
+	changeLinkPos: function(newLinkSites){
+		// var newmatch = $.extend(true, {}, this.match);	//clone object so linkpos change is not cached
+		// newmatch.linkPos1[0] = linkPos1;
+		// newmatch.linkPos2[0] = linkPos2;
+		// //set the original linkPos if its not set yet
+		// if (this.match.oldLinkPos === undefined)
+		// 	newmatch.oldLinkPos = [this.match.linkPos1, this.match.linkPos2];
+		// //if the newlinkpos are the original ones delete oldLinkPos
+		// else if (this.match.oldLinkPos[0] == linkPos1 && this.match.oldLinkPos[1] == linkPos2)	
+		// 	newmatch.oldLinkPos = undefined;
+		// CLMSUI.loadSpectra(newmatch, this.randId, this);
+
+		for (var i = 0; i < newLinkSites.length; i++) {
+			if (this.JSONdata.LinkSite[i] === undefined){
+				this.JSONdata.LinkSite[i] = {id: 0, linkSite: newLinkSites[i], peptideId: i}		
+			}
+			else
+				this.JSONdata.LinkSite[i].linkSite = newLinkSites[i];
+		}
+		this.setData();		
 
 	},
 
-	changeMod: function(pepSeq, pepIndex){
-		var newmatch = $.extend(true, {}, this.match);	//clone object
-		if (pepIndex == 0)
-			newmatch.pepSeq1raw = pepSeq;
-		if (pepIndex == 1)
-			newmatch.pepSeq2raw = pepSeq;
-		CLMSUI.loadSpectra(newmatch, this.randId, this);
+
+	changeMod: function(oldPos, newPos, pepIndex){
+
+		this.JSONdata.Peptides[pepIndex].sequence[newPos].Modification = this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification;
+		this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification = "";
+
+		this.setData();			
+		// var pepSeq = ""
+		// for (var i = 0; i < this.JSONdata.Peptides[pepIndex].sequence.length; i++) {
+		// 	pepSeq += this.JSONdata.Peptides[pepIndex].sequence[i].aminoAcid;
+		// 	pepSeq += this.JSONdata.Peptides[pepIndex].sequence[i].Modification;
+		// }
+
+		// var newmatch = $.extend(true, {}, this.match);	//clone object
+		// if (pepIndex == 0)
+		// 	newmatch.pepSeq1raw = pepSeq;
+		// if (pepIndex == 1)
+		// 	newmatch.pepSeq2raw = pepSeq;
+		// CLMSUI.loadSpectra(newmatch, this.randId, this);
 	},
 
 	checkForValidModification: function(mod, aminoAcid){
@@ -207,5 +248,73 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		if ((mod == "bs3nh2" || mod == "bs3oh" || mod == "bs3loop") && bs3AAs.indexOf(aminoAcid) != -1)
 			return true;
 		return false;
+	},
+
+	calcPrecursorMass: function(){
+		console.log(this.modifications);
+		var aastr = "ARNDCEQGHILKMFPSTWYV";
+		var mA = new Array();
+		mA[aastr.indexOf("A")] = 71.0788;
+		mA[aastr.indexOf("R")] = 156.1876;
+		mA[aastr.indexOf("N")] = 114.1039;
+		mA[aastr.indexOf("D")] = 115.0886;
+		mA[aastr.indexOf("C")] = 103.1448;
+		mA[aastr.indexOf("E")] = 129.1155;
+		mA[aastr.indexOf("Q")] = 128.1308;
+		mA[aastr.indexOf("G")] = 57.0520;
+		mA[aastr.indexOf("H")] = 137.1412;
+		mA[aastr.indexOf("I")] = 113.1595;
+		mA[aastr.indexOf("L")] = 113.1595;
+		mA[aastr.indexOf("K")] = 128.1742;
+		mA[aastr.indexOf("M")] = 131.1986;
+		mA[aastr.indexOf("F")] = 147.1766;
+		mA[aastr.indexOf("P")] = 97.1167;
+		mA[aastr.indexOf("S")] = 87.0782;
+		mA[aastr.indexOf("T")] = 101.1051;
+		mA[aastr.indexOf("W")] = 186.2133;
+		mA[aastr.indexOf("Y")] = 163.1760;
+		mA[aastr.indexOf("V")] = 99.1326;
+
+		var massArr = new Array();		
+		var h2o = 18.01528;
+
+		for (var i = 0; i < this.peptides.length; i++) {
+			if (this.modifications === undefined){
+				this.modifications = new Object();
+				this.modifications.data = this.JSONdata.annotation.modifications;
+			}
+			massArr[i] = h2o;
+			for (var j = 0; j < this.peptides[i].sequence.length; j++) {
+				var AA = this.peptides[i].sequence[j].aminoAcid;
+				massArr[i] += mA[aastr.indexOf(AA.charAt(i))];	
+				//mod
+				var mod = this.peptides[i].sequence[j].Modification;
+				for (var k = 0; k < this.modifications.data.length; k++) {
+					if (this.modifications.data[k].id == mod)
+						massArr[i] += this.modifications.data[k].mass;
+				}		
+			}
+		}
+
+		var totalMass = 0;
+		if(this.get("clModMass") !== undefined){
+			for (var i = 0; i < massArr.length; i++) {
+				totalMass += massArr[i];
+			}
+			totalMass += parseInt(this.get("clModMass"));
+			this.mass = [totalMass];
+		}
+		else{
+			this.mass = massArr;
+		}
+		console.log(this.mass);
+		this.trigger("changed:mass");
+	},
+
+	getKnownModifications: function(){
+		$.getJSON( "forms/getKnownMods.php", function( data ) {
+			JSONobj = data;
+		});
+		
 	}
 });

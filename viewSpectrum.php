@@ -127,6 +127,7 @@ if($response === FALSE){
 	<script type="text/javascript" src="src/model.js"></script>
 	<script type="text/javascript" src="src/SpectrumView2.js"></script>
 	<script type="text/javascript" src="src/FragmentationKeyView.js"></script>
+	<script type="text/javascript" src="js/PrecursorInfoView.js"></script>	
 	<script type="text/javascript" src="src/FragKey/KeyFragment.js"></script>
 	<script type="text/javascript" src="src/graph/Graph.js"></script>
 	<script type="text/javascript" src="src/graph/Peak.js"></script>
@@ -172,7 +173,7 @@ if($response === FALSE){
 	<script>
 
 
-	var SpectrumModel = new AnnotatedSpectrumModel();
+	SpectrumModel = new AnnotatedSpectrumModel();
 
 
 	$(function() {
@@ -208,18 +209,8 @@ if($response === FALSE){
 
 
 		window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumDiv"});
-		var FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumDiv"});
-
-
-/*		$.getJSON("json/example_XL.json", function(json) {
-			console.log("json:" + json);
-			SpectrumModel.set({JSONdata: json});
-		});*/
-
-		// d3.json("http://129.215.14.63/xiAnnotator/annotate/4350/96759-03430-71467-19865/255849819/?peptide=VISMEKGGNMKEVFR&peptide=GGVHVKLAHLSK&link=6&link=6", function(json) {
-		// 	console.log("json:" + json);
-		// 	SpectrumModel.set({JSONdata: json});
-		// });
+		window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumDiv"});
+		window.precursorInfoView = new PrecursorInfoView({model: SpectrumModel, el:"#precursorInfo"});
 		var json = <?php echo $response; ?>;
 		console.log("json:" + json);
 		SpectrumModel.set({JSONdata: json});
@@ -244,6 +235,7 @@ if($response === FALSE){
 				<input id="moveLabels" type="checkbox">
 			</label>
 			</br>
+			<span id="precursorInfo" style="font-size:small">Precursor</span>
 			<label for="colorSelector">Change color scheme:</label>
 			<select id="colorSelector">
 				<option value="RdBu">Red&Blue</option>
