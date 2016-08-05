@@ -354,8 +354,24 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		//send request to xi annotator - needs to be on the same server because of cross-scripting protection
 		console.log(json_request);
 		// Send the request
-		$.post('/xiAnnotator/annotate/FULL', json_request, function(response) {
-			console.log(response);
-		}, 'json');
+
+		var response = $.ajax({
+			type: "POST",
+			datatype: "json",
+			headers: { 
+			    'Accept': 'application/json',
+			    'Content-Type': 'application/json' 
+			},
+			data: JSON.stringify(json_request),
+			async: false,
+			url: "/xiAnnotator/annotate/FULL",
+			success: function(data) {
+				console.log(data);
+			}
+		});			
+
+		// $.post('/xiAnnotator/annotate/FULL', JSON.stringify(json_request), function(response) {
+		// 	console.log(response);
+		// }, 'application/json');
 	}
 });
