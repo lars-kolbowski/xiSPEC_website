@@ -27,30 +27,37 @@ foreach ($matches[0] as $matchgroup) {
 }
 
 
-//known modifications
+// //known modifications
 
-$json = file_get_contents('http://129.215.14.63/xiAnnotator/annotate/knownModifications');
-$obj = json_decode($json);
-$knownModifications = $obj->modifications;
+// $json = file_get_contents('http://129.215.14.63/xiAnnotator/annotate/knownModifications');
+// $obj = json_decode($json);
+// $knownModifications = $obj->modifications;
 
+
+// $modificationsJSON = array();
+// $i = 0;
+// foreach ($modifications as $mod) {
+// 	$mass = 0;
+// 	foreach($knownModifications as $kmod) {
+// 	    if ($mod == $kmod->id) {
+// 	        $mass = $kmod->mass;
+// 	        $aminoAcids = $kmod->aminoAcids;
+// 	        break;
+// 	    }
+// 	}
+
+// 	array_push($modificationsJSON, array('DT_RowId' => "mod_".$i, 'id' => $mod, 'mass' => $mass, 'aminoAcid' => $aminoAcids[$i]));
+// 	$i++;
+// }
 
 $modificationsJSON = array();
 $i = 0;
-foreach ($modifications as $mod) {
-	$mass = 0;
-	foreach($knownModifications as $kmod) {
-	    if ($mod == $kmod->id) {
-	        $mass = $kmod->mass;
-	        $aminoAcids = $kmod->aminoAcids;
-	        break;
-	    }
-	}
-
-	array_push($modificationsJSON, array('DT_RowId' => "mod_".$i, 'id' => $mod, 'mass' => $mass, 'aminoAcid' => $aminoAcids[$i]));
+foreach ($aminoAcids as $aminoAcid) {
+	array_push($modificationsJSON, array('DT_RowId' => "mod_".$i, 'id' => $modifications[$i], 'aminoAcid' => $aminoAcid));
 	$i++;
 }
 
-//array_push($modificationsJSON, array('id' => $i,'name' => $matchgroup[0], 'mass' => "", 'aminoAcid' => $pepsStr_noCL[$matchgroup[1]-1]));
+
 //final array
 $arr = array('data' => $modificationsJSON);
 

@@ -183,13 +183,13 @@ Graph.prototype.setData = function(){
 	this.pep1 = this.model.pep1;
 	this.pep2 = this.model.pep2;
     if (this.model.JSONdata) {
-    	var test = "";
+    	//var test = "";
         for (var i = 0; i < this.model.JSONdata.peaks.length; i++){
         		var peak = this.model.JSONdata.peaks[i];
-				test += peak.mz + "\t" + peak.intensity + "\r\n";
+				//test += peak.mz + "\t" + peak.intensity + "\r\n";
             this.points.push(new Peak(i, this));
         }
-        console.log(test);
+        //console.log(test);
         this.model.points = this.points;
         //Isotope cluster
     /*	this.cluster = new Array();

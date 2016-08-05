@@ -350,7 +350,7 @@ var FragmentationKeyView = Backbone.View.extend({
 							}
 						}
 						var newlinkpos = new Array(self.linkPos[0].linkSite, self.linkPos[1].linkSite);
-						self.model.changeLink(newlinkpos);
+						self.model.changeLinkPos(newlinkpos);
 					}
 					//if changeMod is active and the mod is from the same peptide and it's a valid modification for this aa
 					if(self.changeMod !== false && self.validModChange && this.childNodes[1].getAttribute("pep") == self.changeMod[1].getAttribute("pep")){	

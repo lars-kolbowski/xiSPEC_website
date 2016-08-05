@@ -39,8 +39,12 @@ foreach ($peps as $pep) {
 //peak block
 $peaks = array();
 foreach ($peaklist as $peak) {
-	$parts = preg_split('/\s+/', $peak);
-	array_push($peaks, array('mz' => floatval($parts[0]), 'intensity' => floatval($parts[1])));
+	$peak = trim($peak);
+	if ($peak != ""){
+		$parts = preg_split('/\s+/', $peak);
+		if(count($parts) > 1)
+			array_push($peaks, array('mz' => floatval($parts[0]), 'intensity' => floatval($parts[1])));
+	}
 }
 
 //annotation block
@@ -48,7 +52,7 @@ $tol = array("tolerance" => $ms2Tol, "unit" => $tolUnit);
 $modifications = array();
 $i = 0;
 foreach ($mods as $mod) {
-	array_push($modifications, array('aminoacid' => $modSpecificities[$i], 'id' => $mod, 'mass' => $modMasses[$i]));
+	array_push($modifications, array('aminoAcids' => explode(",", $modSpecificities[$i]), 'id' => $mod, 'mass' => $modMasses[$i]));
 	$i++;
 }
 
@@ -74,17 +78,13 @@ $cl = array('modMass' => $clModMass);
 $annotation = array('fragmentTolerance' => $tol, 'modifications' => $modifications, 'ions' => $ions, 'cross-linker' => $cl, 'precursorCharge' => $preCharge);
 
 //final array
-$arr = array('Peptides' => $peptides, 'LinkSite' => $linkSites, 'peaks' => $peaks, 'annotation' => $annotation);
+$postData = array('Peptides' => $peptides, 'LinkSite' => $linkSites, 'peaks' => $peaks, 'annotation' => $annotation);
 
-//var_dump($arr);
-//var_dump(json_encode($arr));
+$postJSON = json_encode($postData);
+//var_dump(json_encode($postData));
 //die();
 
-
-
 // The data to send to the API
-$postData = $arr;
-
 $url = 'http://129.215.14.63/xiAnnotator/annotate/FULL';
 // Setup cURL
 $ch = curl_init($url);
@@ -95,7 +95,7 @@ curl_setopt_array($ch, array(
         //'Authorization: '.$authToken,
         'Content-Type: application/json'
     ),
-    CURLOPT_POSTFIELDS => json_encode($postData)
+    CURLOPT_POSTFIELDS => $postJSON
 ));
 
 // Send the request
@@ -105,7 +105,8 @@ $response = curl_exec($ch);
 if($response === FALSE){
     die(curl_error($ch));
 }
-
+//var_dump($response);
+//die();
 ?>
 
 <!doctype html>
@@ -211,9 +212,11 @@ if($response === FALSE){
 		window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumDiv"});
 		window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumDiv"});
 		window.precursorInfoView = new PrecursorInfoView({model: SpectrumModel, el:"#precursorInfo"});
-		var json = <?php echo $response; ?>;
-		console.log("json:" + json);
-		SpectrumModel.set({JSONdata: json});
+		var json_data = <?php echo $response; ?>;
+		var json_req = <?php echo $postJSON ?>;
+		//console.log("json:" + json_data);
+		SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
+		//SpectrumModel.set({JSONdata: json_data});
 
 });
 	</script>
@@ -221,6 +224,9 @@ if($response === FALSE){
 
 <body>
 	<div id="spectrumPanelWrapper">
+		<div>
+		<a href="#">edit data</a>
+		</div>
 		<div id='spectrumDiv'>
 			<label>lossy labels
 				<input id="lossyChkBx" type="checkbox">

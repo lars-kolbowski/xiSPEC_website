@@ -1,6 +1,7 @@
 var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	initialize: function(){
+		this.getKnownModifications();
 		//this.sticky = Array();
 		//this.highlights = Array();
 		this.measureMode = false;
@@ -12,7 +13,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 				this.trigger("cleared");
 		});
 		this.on("change:clModMass", function(){
-			if(this.peptides !== undefined)
+			if(this.peptides !== undefined && this.knownModifications !== undefined)
 				this.calcPrecursorMass();
 		});
 
@@ -23,11 +24,11 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		});	
 
 		this.on("change:modifications", function(){
-			this.modifications = this.get("modifications");
-			if(this.peptides !== undefined && this.modifications.data !== undefined)
+			this.updateKnownModifications();
+			if(this.peptides !== undefined)
 				this.calcPrecursorMass();
 		});
-		this.knownModifications = this.getKnownModifications();
+
 	},
 	setData: function(){
 		$("#measuringTool").prop("checked", false);
@@ -67,6 +68,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.lossFragBarColour = "#cccccc";
 		this.highlightColour = "yellow";
 		this.highlightWidth = 10;
+
 
 		this.calcPrecursorMass();
 		if (window.modTable !== undefined)
@@ -193,17 +195,22 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.trigger("changed:ColorScheme");
 	},
 
+//TODO: combine changeLink and changeLinkPos from standalone and integrated version
+	changeLink: function(linkPos1, linkPos2){
+		var newmatch = $.extend(true, {}, this.match);	//clone object so linkpos change is not cached
+		newmatch.linkPos1[0] = linkPos1;
+		newmatch.linkPos2[0] = linkPos2;
+		//set the original linkPos if its not set yet
+		if (this.match.oldLinkPos === undefined)
+			newmatch.oldLinkPos = [this.match.linkPos1, this.match.linkPos2];
+		//if the newlinkpos are the original ones delete oldLinkPos
+		else if (this.match.oldLinkPos[0] == linkPos1 && this.match.oldLinkPos[1] == linkPos2)	
+			newmatch.oldLinkPos = undefined;
+		CLMSUI.loadSpectra(newmatch, this.randId, this);
+	},
+
 	changeLinkPos: function(newLinkSites){
-		// var newmatch = $.extend(true, {}, this.match);	//clone object so linkpos change is not cached
-		// newmatch.linkPos1[0] = linkPos1;
-		// newmatch.linkPos2[0] = linkPos2;
-		// //set the original linkPos if its not set yet
-		// if (this.match.oldLinkPos === undefined)
-		// 	newmatch.oldLinkPos = [this.match.linkPos1, this.match.linkPos2];
-		// //if the newlinkpos are the original ones delete oldLinkPos
-		// else if (this.match.oldLinkPos[0] == linkPos1 && this.match.oldLinkPos[1] == linkPos2)	
-		// 	newmatch.oldLinkPos = undefined;
-		// CLMSUI.loadSpectra(newmatch, this.randId, this);
+
 
 		for (var i = 0; i < newLinkSites.length; i++) {
 			if (this.JSONdata.LinkSite[i] === undefined){
@@ -219,10 +226,13 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	changeMod: function(oldPos, newPos, pepIndex){
 
-		this.JSONdata.Peptides[pepIndex].sequence[newPos].Modification = this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification;
-		this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification = "";
-
-		this.setData();			
+		json_req = this.get("JSONrequest");
+		//this.JSONdata.Peptides[pepIndex].sequence[newPos].Modification = this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification;
+		//this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification = "";
+		json_req.Peptides[pepIndex].sequence[newPos].Modification = this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification;
+		json_req.Peptides[pepIndex].sequence[oldPos].Modification = "";
+		this.request_annotation(json_req);
+		//this.setData();			
 		// var pepSeq = ""
 		// for (var i = 0; i < this.JSONdata.Peptides[pepIndex].sequence.length; i++) {
 		// 	pepSeq += this.JSONdata.Peptides[pepIndex].sequence[i].aminoAcid;
@@ -238,20 +248,19 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	checkForValidModification: function(mod, aminoAcid){
-		var oxAAs = "MNQCWFYHP";
-		var phosphoAAs = "ST";
-		var bs3AAs = "KS";
-		if (mod == "ox" && oxAAs.indexOf(aminoAcid) != -1)
-			return true;
-		if (mod == "p" && phosphoAAs.indexOf(aminoAcid) != -1)
-			return true;
-		if ((mod == "bs3nh2" || mod == "bs3oh" || mod == "bs3loop") && bs3AAs.indexOf(aminoAcid) != -1)
-			return true;
-		return false;
+		for (var i = 0; i < this.knownModifications['modifications'].length; i++) {
+			if(this.knownModifications['modifications'][i].id == mod){
+				if ($.inArray(aminoAcid, this.knownModifications['modifications'][i].aminoAcids) != -1)
+					return true;
+				else
+					return false;
+			}
+		}
 	},
 
 	calcPrecursorMass: function(){
-		console.log(this.modifications);
+		//if(this.knownModifications === undefined)
+		//	this.getKnownModifications();
 		var aastr = "ARNDCEQGHILKMFPSTWYV";
 		var mA = new Array();
 		mA[aastr.indexOf("A")] = 71.0788;
@@ -279,19 +288,19 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		var h2o = 18.01528;
 
 		for (var i = 0; i < this.peptides.length; i++) {
-			if (this.modifications === undefined){
-				this.modifications = new Object();
-				this.modifications.data = this.JSONdata.annotation.modifications;
-			}
+			// if (this.modifications === undefined){
+			// 	this.modifications = new Object();
+			// 	this.modifications.data = this.JSONdata.annotation.modifications;
+			// }
 			massArr[i] = h2o;
 			for (var j = 0; j < this.peptides[i].sequence.length; j++) {
 				var AA = this.peptides[i].sequence[j].aminoAcid;
 				massArr[i] += mA[aastr.indexOf(AA.charAt(i))];	
 				//mod
 				var mod = this.peptides[i].sequence[j].Modification;
-				for (var k = 0; k < this.modifications.data.length; k++) {
-					if (this.modifications.data[k].id == mod)
-						massArr[i] += this.modifications.data[k].mass;
+				for (var k = 0; k < this.knownModifications['modifications'].length; k++) {
+					if (this.knownModifications['modifications'][k].id == mod)
+						massArr[i] += this.knownModifications['modifications'][k].mass;
 				}		
 			}
 		}
@@ -312,9 +321,32 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	getKnownModifications: function(){
-		$.getJSON( "forms/getKnownMods.php", function( data ) {
-			JSONobj = data;
-		});
-		
+		var self = this;
+		var response = $.ajax({
+			type: "GET",
+			datatype: "json",
+			async: false,
+			url: "forms/getKnownMods.php",
+			success: function(data) {
+				self.knownModifications = JSON.parse(JSON.parse(data));
+			}
+		});	
+	},
+
+	updateKnownModifications: function(){
+		customMods = this.get("modifications").data;
+		for (var i = 0; i < customMods.length; i++) {
+			for (var j = 0; j < this.knownModifications['modifications'].length; j++) {
+				if(this.knownModifications['modifications'][j].id == customMods[i].id){
+					this.knownModifications['modifications'][j].mass = customMods[i].mass;
+					this.knownModifications['modifications'][j].aminoAcids = customMods[i].aminoAcids;
+				}
+			}				
+		}	
+	},
+
+	request_annotation: function(json_request){
+		//send request to xi annotator - needs to be on the same server because of cross-scripting protection
+		console.log(json_request);
 	}
 });

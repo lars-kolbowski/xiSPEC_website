@@ -45,7 +45,7 @@ $( document ).ready(function() {
 
 	$('#modificationTable').on( 'draw.dt', function () {
 		var json = modTable.ajax.json();
-		window.peptide.set("modifications", json);
+		//window.peptide.set("modifications", json);
 	});
 
 	$('#modificationTable').on('input', 'input', function() {
@@ -64,10 +64,10 @@ $( document ).ready(function() {
 		//check if the mod is already in the cookie
 		for (var i = 0; i < JSONobj.data.length; i++) {
 			var modJSON = JSONobj.data[i];
-			if(modJSON.name == modName){
-				JSONobj.data[i].name = modName;
+			if(modJSON.id == modName){
+				JSONobj.data[i].id = modName;
 				JSONobj.data[i].mass = parseFloat(modMass);
-				JSONobj.data[i].aminoAcid = modSpec;
+				JSONobj.data[i].aminoAcids = modSpec.split(",");
 			}
 		}
 
@@ -78,8 +78,7 @@ $( document ).ready(function() {
 	 });
 
 	$('#resetModMasses').click(function(){
-		var JSONobj = modTable.ajax.json();
-		Cookies.set('customMod', JSON.stringify(JSONobj));
+		Cookies.remove('customMod');
 		modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(window.peptide.pepStrsMods.join(";"))).load();	
 	});
 
@@ -94,7 +93,7 @@ $( document ).ready(function() {
         "columns": [
             { "data": "id" },
         	{},
-            { "data": "mass" },
+            {},
             { "data": "aminoAcid" },
             ],
 
@@ -114,15 +113,10 @@ $( document ).ready(function() {
 			},
 			{
 				"render": function ( data, type, row, meta ) {
-					if (Cookies.get('customMod') !== undefined){
-						var JSONobj = JSON.parse(Cookies.get('customMod'));
-						for (var i = 0; i < JSONobj.data.length; i++) {
-							var modJSON = JSONobj.data[i];
-							if(modJSON.name == row['name']){
-								data = modJSON.mass;
-							}
-						}
-
+					data = 0;
+					for (var i = 0; i < window.peptide.knownModifications['modifications'].length; i++) {
+						if(window.peptide.knownModifications['modifications'][i].id == row.id)
+							data = window.peptide.knownModifications['modifications'][i].mass;
 					}
 					return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" name="modMasses[]" type="text" required value='+data+'>';
 				},
@@ -130,17 +124,15 @@ $( document ).ready(function() {
 			},
 			{
 				"render": function ( data, type, row, meta ) {
-					if (Cookies.get('customMod') !== undefined){
-						var JSONobj = JSON.parse(Cookies.get('customMod'));
-						for (var i = 0; i < JSONobj.data.length; i++) {
-							var modJSON = JSONobj.data[i];
-							if(modJSON.name == row['name']){
-								data = modJSON.aminoAcid;
-							}
+					for (var i = 0; i < window.peptide.knownModifications['modifications'].length; i++) {
+						if(window.peptide.knownModifications['modifications'][i].id == row.id){						
+							data = data.split(",");
+							data = _.union(data, window.peptide.knownModifications['modifications'][i].aminoAcids);
+							data = data.join(",");
+							
 						}
-
 					}
-					return '<input class="form-control" id="modSpec_'+meta.row+'" row="'+meta.row+'" name="modSpecificities[]" type="text" required value='+data+'>';
+					return '<input class="form-control" id="modSpec_'+meta.row+'" row="'+meta.row+'" name="modSpecificities[]" type="text" required value='+data+'>'
 				},
 				"targets": 3,
 			}

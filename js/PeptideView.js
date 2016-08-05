@@ -28,7 +28,7 @@ var PeptideView = Backbone.View.extend({
 		this.massInfo = d3.select(this.el).append("div").style("font-size","small");
 		this.svg = d3.select(this.el).append("svg").attr("class", "fragKey").style("width", "100%").style("height", "60%");//d3.select(this.el).append("svg").style("width", "100%").style("height", "100%");
 		this.fragKeyWrapper = this.svg.append("g");
-		this.instructions = d3.select(this.el).append("div").style("font-size","small").html("Begin typing the sequence to see the Preview.");
+		this.instructions = d3.select(this.el).append("div").style("font-size","small").style("bottom","5px").style("position", "absolute").html("Begin typing the sequence to see the Preview.");
 
 		//this.model = model;
 		this.margin = {
@@ -57,8 +57,12 @@ var PeptideView = Backbone.View.extend({
 			this.setData();
 		//instructions
 		var html = "";
-		if (this.peptides.length > 1 && this.linkPos.length == 0)
-			html += "Set the cross-link position by clicking on the amino acids.<br/>";
+		if (this.peptides.length > 1){
+			if (this.linkPos.length == 0)
+				html += "Set the cross-link position by clicking on the amino acids.<br/>";
+			if (this.linkPos.length > 1)
+				html += "Click on the cross-link line to change the position.<br/>";
+		}
 		var modifications = false;
 		for (var i = 0; i < this.pepModLetters.length; i++) {
 			if (this.pepModLetters[i].length > 0)

@@ -50,7 +50,7 @@
 						</div>
 						<div style="width:68%;display:inline;">
 							<div style="padding-bottom:15px;"> Peptide Preview:</div>
-							<div style="height:210px;font-size:100%;overflow-y: hidden;" id="peptideDiv" class="form-control" ></div>
+							<div style="height:210px;font-size:100%;overflow-y: hidden;position: relative;" id="peptideDiv" class="form-control" ></div>
 						</div>
 						</section>
 						<section style="clear:left;text-align:center;margin-bottom:2%;">
