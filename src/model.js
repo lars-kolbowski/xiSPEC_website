@@ -227,12 +227,17 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	changeMod: function(oldPos, newPos, pepIndex){
 
 		json_req = this.get("JSONrequest");
-		//this.JSONdata.Peptides[pepIndex].sequence[newPos].Modification = this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification;
-		//this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification = "";
-		json_req.Peptides[pepIndex].sequence[newPos].Modification = this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification;
-		json_req.Peptides[pepIndex].sequence[oldPos].Modification = "";
-		this.request_annotation(json_req);
-		//this.setData();			
+		if (json_req === undefined){
+			this.JSONdata.Peptides[pepIndex].sequence[newPos].Modification = this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification;
+			this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification = "";
+			this.setData();	
+		}
+		else{
+			json_req.Peptides[pepIndex].sequence[newPos].Modification = this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification;
+			json_req.Peptides[pepIndex].sequence[oldPos].Modification = "";
+			this.request_annotation(json_req);
+		}
+		//integrated Xi version		
 		// var pepSeq = ""
 		// for (var i = 0; i < this.JSONdata.Peptides[pepIndex].sequence.length; i++) {
 		// 	pepSeq += this.JSONdata.Peptides[pepIndex].sequence[i].aminoAcid;
@@ -348,5 +353,9 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	request_annotation: function(json_request){
 		//send request to xi annotator - needs to be on the same server because of cross-scripting protection
 		console.log(json_request);
+		// Send the request
+		$.post('http://129.215.14.63/xiAnnotator/annotate/FULL', json_request, function(response) {
+			console.log(response);
+		}, 'json');
 	}
 });
