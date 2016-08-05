@@ -366,7 +366,8 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			async: false,
 			url: "/xiAnnotator/annotate/FULL",
 			success: function(data) {
-				console.log(data);
+				this.set("JSONdata", data)
+				this.setData();
 			}
 		});			
 
