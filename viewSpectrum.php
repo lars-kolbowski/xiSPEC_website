@@ -6,10 +6,12 @@ error_reporting(E_ALL);
 
 require("functions.php");
 
-$mods = $_POST['mods'];
-$modMasses = $_POST['modMasses'];
-$modSpecificities = $_POST['modSpecificities'];
-
+$mods = [];
+if(isset($_POST['mods'])){
+	$mods = $_POST['mods'];
+	$modMasses = $_POST['modMasses'];
+	$modSpecificities = $_POST['modSpecificities'];
+}
 
 $pepsStr = $_POST["peps"];
 $clModMass = floatval($_POST['clModMass']);
@@ -92,7 +94,6 @@ curl_setopt_array($ch, array(
     CURLOPT_POST => TRUE,
     CURLOPT_RETURNTRANSFER => TRUE,
     CURLOPT_HTTPHEADER => array(
-        //'Authorization: '.$authToken,
         'Content-Type: application/json'
     ),
     CURLOPT_POSTFIELDS => $postJSON
