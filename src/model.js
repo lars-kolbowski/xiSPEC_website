@@ -5,6 +5,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		//this.sticky = Array();
 		//this.highlights = Array();
 		this.measureMode = false;
+		this.moveLabels = false;
 		this.on("change:JSONdata", function(){
 			var json = this.get("JSONdata");
 			if (typeof json !== 'undefined')
