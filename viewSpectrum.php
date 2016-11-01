@@ -226,7 +226,7 @@ if($response === FALSE){
 <body>
 	<div id="spectrumPanelWrapper">
 		<div>
-		<a href="#">edit data</a>
+		<a href="#" style="visibility:hidden">edit data</a>
 		</div>
 		<div id='spectrumDiv'>
 			<label>lossy labels
