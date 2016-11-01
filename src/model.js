@@ -229,13 +229,17 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 		json_req = this.get("JSONrequest");
 		if (json_req === undefined){
-			this.JSONdata.Peptides[pepIndex].sequence[newPos].Modification = this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification;
-			this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification = "";
+			if (oldPos != newPos){
+				this.JSONdata.Peptides[pepIndex].sequence[newPos].Modification = this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification;
+				this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification = "";
+			}
 			this.setData();	
 		}
 		else{
-			json_req.Peptides[pepIndex].sequence[newPos].Modification = this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification;
-			json_req.Peptides[pepIndex].sequence[oldPos].Modification = "";
+			if (oldPos != newPos){
+				json_req.Peptides[pepIndex].sequence[newPos].Modification = this.JSONdata.Peptides[pepIndex].sequence[oldPos].Modification;
+				json_req.Peptides[pepIndex].sequence[oldPos].Modification = "";
+			}
 			this.request_annotation(json_req);
 		}
 		//integrated Xi version		

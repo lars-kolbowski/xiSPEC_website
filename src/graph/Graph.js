@@ -24,7 +24,7 @@
 Graph = function(targetSvg, model, options) {
 	this.x = d3.scale.linear();
 	this.y = d3.scale.linear();
-	this.y1 = d3.scale.linear();
+	this.y_right = d3.scale.linear();
 	this.model = model;
 
 	this.margin = {
@@ -33,7 +33,9 @@ Graph = function(targetSvg, model, options) {
 		"bottom": options.xlabel ? 50 : 20,
 		"left":   options.ylabelLeft ? 65 : 30
 	};
-	this.g =  targetSvg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+	this.g =  targetSvg.append("g")
+				.attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
+				.attr("class", "spectrum");
 	
 	this.xaxisSVG = this.g.append("g")
 		.attr("class", "x axis");
@@ -67,37 +69,38 @@ Graph = function(targetSvg, model, options) {
 		.attr("pointer-events", "all");
 
 	this.measureBackground = this.g.append("rect")
+		.attr("width", "0")
 		.style("fill", "white")
 		.style("cursor", "crosshair")
 		.attr("pointer-events", "all");
 
 	this.innerSVG = this.g.append("g")
-		.attr("top", 0)
-		.attr("left", 0)
-		.attr("class", "line");
-	this.dragZoomHighlight = this.innerSVG.append("rect").attr("y", 0).attr("fill","#addd8e");	
+		.attr("class", "innerSpectrum");
+	this.dragZoomHighlight = this.innerSVG.append("rect").attr("y", 0).attr("width", 0).attr("fill","#addd8e");	
 	
 	this.plot.on("click", function(){
 		this.model.clearStickyHighlights();
 	}.bind(this));
 
 	//Tooltip
-	target = this.g.node().parentNode.parentNode; //this would get you #spectrumPanel
-	this.tip = d3.select(target).append("div")
-		.attr("class", "specViewer_tooltip")
-		.style("background-color", "#f0f0f0")
-	    .style("border", "1px solid black")
-	    .style("color", "black")
-	    .style("border-radius", "6px")
-	    .style("position", "absolute")
-	    .style("padding", "3px")               
-	    .style("opacity", 0)
-	    .style("font-size", "0.7em")
-	    .style("pointer-events", "none")
-	    .style("line-height", "100%");
+	this.tooltip = CLMSUI.compositeModelInst.get("tooltipModel");
+
+	//target = this.g.node().parentNode.parentNode; //this would get you #spectrumPanel
+	// this.tip = d3.select(target).append("div")
+	// 	.attr("class", "specViewer_tooltip")
+	// 	.style("background-color", "#f0f0f0")
+	//     .style("border", "1px solid black")
+	//     .style("color", "black")
+	//     .style("border-radius", "6px")
+	//     .style("position", "absolute")
+	//     .style("padding", "3px")               
+	//     .style("opacity", 0)
+	//     .style("font-size", "0.7em")
+	//     .style("pointer-events", "none")
+	//     .style("line-height", "100%");
 
 	//MeasuringTool
-	this.measuringTool = this.innerSVG.append("g")
+	this.measuringTool = this.innerSVG.append("g").attr("class", "measuringTool");
 	this.measuringToolVLineStart = this.measuringTool.append("line")
 		.attr("stroke-width", 1)
 		.attr("stroke", "Black");
@@ -109,7 +112,7 @@ Graph = function(targetSvg, model, options) {
 		.attr("y2", 50)
 		.attr("stroke-width", 1)
 		.attr("stroke", "Red");
-	this.measureDistance = this.innerSVG.append("text")
+	this.measureDistance = this.measuringTool.append("text")
 		.attr("text-anchor", "middle")
 		.attr("pointer-events", "none")
 	this.measureInfo =  d3.select("div#measureTooltip")
@@ -118,10 +121,10 @@ Graph = function(targetSvg, model, options) {
 	//------------------------------------
 
 
-	this.highlights = this.innerSVG.append("g");
-	this.peaks = this.innerSVG.append("g");
-	this.lossyAnnotations = this.innerSVG.append("g");
-	this.annotations = this.innerSVG.append("g");
+	this.highlights = this.innerSVG.append("g").attr("class", "peakHighlights");
+	this.peaks = this.innerSVG.append("g").attr("class", "peaks");
+	this.lossyAnnotations = this.innerSVG.append("g").attr("class", "lossyAnnotations");
+	this.annotations = this.innerSVG.append("g").attr("class", "annotations");
 	
 	
 	// add Chart Title
@@ -158,8 +161,9 @@ Graph = function(targetSvg, model, options) {
 	var self = this;
 
 	function brushstart() {
-		self.dragZoomHighlight.attr("width",0);
-		self.dragZoomHighlight.attr("display","inline");
+		self.dragZoomHighlight
+			.attr("width",0)
+			.attr("display","inline");
 	}
 
 	function brushmove() {
@@ -217,7 +221,7 @@ Graph.prototype.resize = function(xmin, xmax, ymin, ymax) {
 	var fragKeyHeight = 100;//can tidy this up somehow 
 	var cy = self.g.node().parentNode.parentNode.clientHeight;// - fragKeyHeight;
 	
-	self.g.attr("width", cx).attr("height", cy);
+	//self.g.attr("width", cx).attr("height", cy);
 	var width = cx - self.margin.left - self.margin.right;
 	var height = cy - self.margin.top  - self.margin.bottom;
 	self.x.domain([xmin, xmax])
@@ -225,10 +229,10 @@ Graph.prototype.resize = function(xmin, xmax, ymin, ymax) {
 	// y-scale (inverted domain)
 	self.y.domain([0, ymax*0.95]).nice()
 		.range([height, 0]).nice();
-	self.y1.domain([0, ymax]).nice()
+	self.y_right.domain([0, ymax]).nice()
 		.range([height, 0]).nice();
 	//y0 = d3.scale.linear().range([height, 0]);
-	//self.y1 = d3.scale.linear().range([height, 0]);
+	//self.y_right = d3.scale.linear().range([height, 0]);
 
 	var yTicks = height / 40;
 	var xTicks = width / 100;
@@ -236,12 +240,14 @@ Graph.prototype.resize = function(xmin, xmax, ymin, ymax) {
 	this.yTicks = yTicks;
 	
 	self.yAxisLeft = d3.svg.axis().scale(self.y).ticks(yTicks).orient("left").tickFormat(d3.format("s"));
-	self.yAxisRight = d3.svg.axis().scale(self.y1).ticks(yTicks).orient("right").tickFormat(d3.format("s")); 
+	self.yAxisRight = d3.svg.axis().scale(self.y_right).ticks(yTicks).orient("right").tickFormat(d3.format("s")); 
 
 	self.yAxisLeftSVG.call(self.yAxisLeft);
-	self.yAxisRightSVG.attr("transform", "translate(" + width + " ,0)");
-	self.yAxisRightSVG.call(self.yAxisRight);
-	
+	self.yAxisRightSVG
+		.attr("transform", "translate(" + width + " ,0)")
+		.call(self.yAxisRight)
+	;
+	self.xaxisRect.attr("width", width);
 
 	self.xAxis = d3.svg.axis().scale(self.x).ticks(xTicks).orient("bottom");
 		
@@ -257,9 +263,9 @@ Graph.prototype.resize = function(xmin, xmax, ymin, ymax) {
 	self.plot.attr("width", width)
 		.attr("height", height);
 
-	self.innerSVG.attr("width", width)
-			.attr("height", height)
-			.attr("viewBox", "0 0 "+width+" "+height);
+	// self.innerSVG.attr("width", width)
+	// 		.attr("height", height)
+	// 		.attr("viewBox", "0 0 "+width+" "+height);
 	
 	self.xaxisRect.attr("width",width).attr("y", height).attr("height", self.margin.bottom);
 	self.dragZoomHighlight.attr("height", height);
@@ -273,8 +279,7 @@ Graph.prototype.resize = function(xmin, xmax, ymin, ymax) {
 	}
 	this.xlabel.attr("x", width/2).attr("y", height);
 	this.ylabelLeft.attr("transform","translate(" + -50 + " " + height/2+") rotate(-90)");
-	var test = width+45;
-	this.ylabelRight.attr("transform","translate(" + test + " " + height/2+") rotate(-90)");
+	this.ylabelRight.attr("transform","translate(" + (width+45) + " " + height/2+") rotate(-90)");
 
 	
 	self.redraw()();
@@ -497,8 +502,10 @@ Graph.prototype.measure = function(on){
 			.on("brushend", brushend);
 		var self = this;
 		function brushstart() {
-			self.dragZoomHighlight.attr("width",0);
-			self.dragZoomHighlight.attr("display","inline");
+			self.dragZoomHighlight
+				.attr("width",0)
+				.attr("display","inline")
+			;
 		}
 
 		function brushmove() {
@@ -544,7 +551,7 @@ Graph.prototype.redraw = function(){
 			//console.log(ymax);
 			//self.y.domain([0, ymax/0.9]).nice();
 			self.y.domain([0, ymax/0.95]).nice();
-			self.y1.domain([0, (ymax/(self.model.ymaxPrimary*0.95))*100]).nice();
+			self.y_right.domain([0, (ymax/(self.model.ymaxPrimary*0.95))*100]).nice();
 			self.yAxisLeftSVG.call(self.yAxisLeft);
 			self.yAxisRightSVG.call(self.yAxisRight);
 			for (var i = 0; i < self.points.length; i++){
