@@ -213,14 +213,32 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	changeLinkPos: function(newLinkSites){
 
 
-		for (var i = 0; i < newLinkSites.length; i++) {
-			if (this.JSONdata.LinkSite[i] === undefined){
-				this.JSONdata.LinkSite[i] = {id: 0, linkSite: newLinkSites[i], peptideId: i}		
+		// for (var i = 0; i < newLinkSites.length; i++) {
+		// 	if (this.JSONdata.LinkSite[i] === undefined){
+		// 		this.JSONdata.LinkSite[i] = {id: 0, linkSite: newLinkSites[i], peptideId: i}		
+		// 	}
+		// 	else
+		// 		this.JSONdata.LinkSite[i].linkSite = newLinkSites[i];
+		// }
+		// this.setData();		
+
+		json_req = this.get("JSONrequest");
+		if (json_req === undefined){
+			for (var i = 0; i < newLinkSites.length; i++) {
+				if (this.JSONdata.LinkSite[i] === undefined){
+					this.JSONdata.LinkSite[i] = {id: 0, linkSite: newLinkSites[i], peptideId: i}		
+				}
+				else
+					this.JSONdata.LinkSite[i].linkSite = newLinkSites[i];
 			}
-			else
-				this.JSONdata.LinkSite[i].linkSite = newLinkSites[i];
+			this.setData();	
 		}
-		this.setData();		
+		else{
+			for (var i = 0; i < newLinkSites.length; i++) {
+				json_req.LinkSite[i].linkSite = newLinkSites[i]-1;
+			}
+			this.request_annotation(json_req);
+		}
 
 	},
 
