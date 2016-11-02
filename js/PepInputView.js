@@ -39,7 +39,8 @@ var PepInputView = Backbone.View.extend({
     }
 
     var pepsStr = pepStrsArr.join(";");
-    this.el.value = pepsStr;  
+    if (this.el.value != pepsStr)
+      this.el.value = pepsStr;  
   },
 
 
