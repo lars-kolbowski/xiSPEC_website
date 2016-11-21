@@ -49,43 +49,55 @@ $( document ).ready(function() {
 	});
 
 	$('#modificationTable').on('input', 'input', function() {
-		//cookie
+
 		var row = this.getAttribute("row")
 		var modName = $('#modName_'+row).val();
-		var modMass = $('#modMass_'+row).val();
+		var modMass = parseFloat($('#modMass_'+row).val());
 		var modSpec = $('#modSpec_'+row).val();
 
 		var mod = {'id': modName, 'mass': modMass, 'aminoAcids': modSpec};
 
-		if (Cookies.get('customMod') === undefined){
-			Cookies.set('customMod', JSON.stringify(modTable.ajax.json()));
-		}
-		var JSONobj = JSON.parse(Cookies.get('customMod'));
+		window.peptide.updateKnownModifications(mod);
+		//JSONobj = window.peptide.knownModifications;
+		//if (Cookies.get('customMod') === undefined){
+		//	Cookies.set('customMod', JSON.stringify(modTable.ajax.json()));
+		//}
+		//var JSONobj = JSON.parse(Cookies.get('customMod'));
 
-		//check if the mod is already in the cookie
-		for (var i = 0; i < JSONobj.data.length; i++) {
-			var found = false;
-			var modJSON = JSONobj.data[i];
-			if(modJSON.id == modName){
-				JSONobj.data[i].id = modName;
-				JSONobj.data[i].mass = parseFloat(modMass);
-				JSONobj.data[i].aminoAcids = modSpec.split(",");
-				found = true;
-			}
-		}
-		if(!found)
-			JSONobj.data.push(mod);		
-
-		Cookies.set('customMod', JSON.stringify(JSONobj));
+		
+		//check if the mod is already in then update it otherwise add it
+		// var found = false;
+		// for (var i = 0; i < JSONobj.modifications.length; i++) {
+		// 	var modJSON = JSONobj.modifications[i];
+		// 	if(modJSON.id == modName){
+		// 		JSONobj.modifications[i].id = modName;
+		// 		JSONobj.modifications[i].mass = parseFloat(modMass);
+		// 		JSONobj.modifications[i].aminoAcids = modSpec.split(",");
+		// 		found = true;
+		// 	}
+		// }
+		// if(!found)
+		// 	JSONobj.data.push(mod);	
+		
+		//add mass
+		//for (var j = 0; j < JSONobj.data.length; j++){	
+		//	for (var i = 0; i < window.peptide.knownModifications['modifications'].length; i++) {
+		//		if(window.peptide.knownModifications['modifications'][i].id == JSONobj.data[j].id)
+		//			JSONobj.data[j].mass = window.peptide.knownModifications['modifications'][i].mass;
+		//			data = window.peptide.knownModifications['modifications'][i].mass;
+		//	}
+		//}
+		//Cookies.set('customMod', JSON.stringify(JSONobj));
 
 		//calcpepmass
-		window.peptide.set("modifications", JSONobj);
+		//window.peptide.set("modifications", JSONobj);
 	 });
 
 	$('#resetModMasses').click(function(){
-		Cookies.remove('customMod');
+		Cookies.remove('customMods');
 		window.peptide.getKnownModifications();
-		modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(window.peptide.pepStrsMods.join(";"))).load();	
+		if(window.peptide.pepStrsMods !== undefined)
+			modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(window.peptide.pepStrsMods.join(";"))).load();	
 	});
 
     window.modTable = $('#modificationTable').DataTable( {
@@ -124,7 +136,7 @@ $( document ).ready(function() {
 						if(window.peptide.knownModifications['modifications'][i].id == row.id)
 							data = window.peptide.knownModifications['modifications'][i].mass;
 					}
-					return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" name="modMasses[]" type="text" required value='+data+'>';
+					return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" name="modMasses[]" type="text" required value='+data+' autocomplete=off>';
 				},
 				"targets": 2,
 			},
@@ -138,7 +150,7 @@ $( document ).ready(function() {
 							
 						}
 					}
-					return '<input class="form-control" id="modSpec_'+meta.row+'" row="'+meta.row+'" name="modSpecificities[]" type="text" required value='+data+'>'
+					return '<input class="form-control" id="modSpec_'+meta.row+'" row="'+meta.row+'" name="modSpecificities[]" type="text" required value='+data+' autocomplete=off>'
 				},
 				"targets": 3,
 			}

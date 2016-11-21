@@ -77,7 +77,7 @@ var PeptideView = Backbone.View.extend({
 	renderInfo: function() {
 		if (this.model.mass == 0)
 			this.massInfo.html("");
-		else if(this.model.mass !== undefined){
+		else if($.isNumeric(this.model.mass)){
 			var html = "";
 			var M = this.model.mass.toFixed(2);
 			html += "(M): "+M+"\t";

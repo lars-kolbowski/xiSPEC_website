@@ -1,6 +1,8 @@
 var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	initialize: function(){
+		this.pepStrs = [""];
+		this.customMods = [];
 		this.getKnownModifications();
 		//this.sticky = Array();
 		//this.highlights = Array();
@@ -24,12 +26,12 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			this.trigger("changed:charge");
 		});	
 
-		this.on("change:modifications", function(){
-			if(this.get("modifications") !== undefined)
-				this.updateKnownModifications();
-			if(this.peptides !== undefined)
-				this.calcPrecursorMass();
-		});
+		// this.on("change:modifications", function(){
+		// 	if(this.get("modifications") !== undefined)
+		// 		this.updateKnownModifications();
+		// 	if(this.peptides !== undefined)
+		// 		this.calcPrecursorMass();
+		// });
 
 	},
 	setData: function(){
@@ -352,6 +354,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	getKnownModifications: function(){
+
 		var self = this;
 		var response = $.ajax({
 			type: "GET",
@@ -361,23 +364,42 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			success: function(data) {
 				self.knownModifications = JSON.parse(JSON.parse(data));
 			}
-		});	
+		});
+		if (Cookies.get('customMods') !== undefined){
+			var customMods = JSON.parse(Cookies.get('customMods'));
+			for (i=0; i < customMods.length; i++)
+				this.updateKnownModifications(customMods[i]);
+		}
+			
 	},
 
-	updateKnownModifications: function(){
-		customMods = this.get("modifications").data;
-		for (var i = 0; i < customMods.length; i++) {
-			var found = false
-			for (var j = 0; j < this.knownModifications['modifications'].length; j++) {
-				if(this.knownModifications['modifications'][j].id == customMods[i].id){
-					this.knownModifications['modifications'][j].mass = customMods[i].mass;
-					this.knownModifications['modifications'][j].aminoAcids = customMods[i].aminoAcids;
-					found = true;
-				}
+	updateKnownModifications: function(mod){
+
+		var found = false
+		for (var j = 0; j < this.knownModifications['modifications'].length; j++) {
+			if(this.knownModifications['modifications'][j].id == mod.id){
+				this.knownModifications['modifications'][j].mass = mod.mass;
+				this.knownModifications['modifications'][j].aminoAcids = mod.aminoAcids;
+				found = true;
 			}
-			if(!found)
-				this.knownModifications['modifications'].push(customMods[i]);
-		}	
+		}
+		if(!found)
+			this.knownModifications['modifications'].push(mod);
+
+		var found = false
+		for (var j = 0; j < this.customMods.length; j++) {
+			if(this.customMods[j].id == mod.id){
+				this.customMods[j].mass = mod.mass;
+				this.customMods[j].aminoAcids = mod.aminoAcids;
+				found = true;
+			}
+		}
+		if(!found)
+			this.customMods.push(mod);
+
+		Cookies.set('customMods', this.customMods);
+
+		this.calcPrecursorMass();
 	},
 
 	request_annotation: function(json_request){
