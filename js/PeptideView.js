@@ -64,8 +64,8 @@ var PeptideView = Backbone.View.extend({
 				html += "Click on the cross-link line to change the position.<br/>";
 		}
 		var modifications = false;
-		for (var i = 0; i < this.pepModLetters.length; i++) {
-			if (this.pepModLetters[i].length > 0)
+		for (var i = 0; i < this.modLetters.length; i++) {
+			if (this.modLetters[i].length > 0)
 				modifications = true;
 		}
 		if (modifications)
@@ -79,11 +79,11 @@ var PeptideView = Backbone.View.extend({
 			this.massInfo.html("");
 		else if(this.model.mass !== undefined){
 			var html = "";
-			var M = this.model.mass[0].toFixed(5);
+			var M = this.model.mass.toFixed(2);
 			html += "(M): "+M+"\t";
-			if(this.model.charge !== undefined){
+			if($.isNumeric(this.model.charge)){
 				var charge = this.model.charge;
-				var ion = ((parseFloat(M)+charge)/charge).toFixed(5);
+				var ion = ((parseFloat(M)+charge)/charge).toFixed(2);
 				html += "(M+"+charge+"H)"+charge+"+: "+ion;
 			}
 			this.massInfo.html(html);
@@ -108,8 +108,8 @@ var PeptideView = Backbone.View.extend({
 		};
 	    this.pepLetters = [];
 	    this.pepLetterHighlights = [];
-		this.pepModLetters = [];
-		this.pepModLetterHighlights = [];
+		this.modLetters = [];
+		this.modLetterHighlights = [];
 		this.pepoffset = [0,0];
 		for(p=0; p < pepCount; p++){
 			this.annotations[p] = [];
@@ -121,9 +121,9 @@ var PeptideView = Backbone.View.extend({
 				this.annotations[p].push(ions);
 			};
 			this.pepLetters[p] = [];
-			this.pepModLetters[p] = [];
+			this.modLetters[p] = [];
 			this.pepLetterHighlights[p] = [];
-			this.pepModLetterHighlights[p] = [];
+			this.modLetterHighlights[p] = [];
 			this.pepModsArray[p] = [];
 			for(i = 0; i < self.model.peptides[p].sequence.length; i++){
 				if (self.model.peptides[p].sequence[i].Modification != "")
@@ -145,10 +145,12 @@ var PeptideView = Backbone.View.extend({
 
 	    this.xStep = 22;
 
+
 	    // the letters
-		this.drawPeptide( 0, 20, 5);
-		if(this.peptides[1])
-	    	this.drawPeptide( 1, 71, 83);
+	    this.drawPeptides();
+		// this.drawPeptide( 0, 20, 5);
+		// if(this.peptides[1])
+		// 	this.drawPeptide( 1, 71, 83);
 
 			this.CL = this.g.append("g");
 			this.CLlineHighlight = this.CL.append("line")
@@ -181,41 +183,91 @@ var PeptideView = Backbone.View.extend({
 				.attr("stroke-width", 1.5)
 				.style("cursor", "pointer");
 
+		// //CL line svg elements
+		// if(this.linkPos.length > 1){
+		// 	var CLpos = this.linkPos[0].linkSite+1;
+		// 	if (this.linkPos[1].linkSite > this.linkPos[0].linkSite)
+		// 		CLpos = this.linkPos[1].linkSite+1;
+		// 			//highlight
+		// 	this.CLlineHighlight
+		// 		.attr("x1", this.xStep * (CLpos - 1))
+		// 		.attr("x2", this.xStep * (CLpos - 1));
+		// 	// the the link line
+		// 	this.CLline.attr("x1", this.xStep * (CLpos - 1))
+		// 		.attr("opacity", 1)
+		// 		.attr("x2", this.xStep * (CLpos - 1));
+
+		// 	this.CL[0][0].onclick = function() {
+		// 		self.CLlineHighlight.attr("opacity", 1);
+		// 		self.changeCL = true;
+		// 		for (var i = 0; i < self.fraglines.length; i++) {
+		// 			self.fraglines[i].disableCursor();
+		// 		}
+		// 		for (i=0; i < self.pepLetters.length; i++){
+		// 			var letterCount = self.pepLetters[i].length;
+		// 			for (j = 0; j < letterCount; j++){
+		// 				if (self.pepLetters[i][j])
+		// 					self.pepLetters[i][j].style("cursor", "pointer");			
+		// 			}
+		// 		}
+		// 	};
+		// 	//line for changing
+		// 	this.changeCLline
+		// 		.attr("x1", this.xStep * (CLpos - 1))
+		// 		.attr("x2", this.xStep * (CLpos - 1))
+		// 		.attr("opacity", 1);
+		// }//end (if this.linkpos > 1)
+
 		//CL line svg elements
 		if(this.linkPos.length > 1){
 			var CLpos = this.linkPos[0].linkSite+1;
 			if (this.linkPos[1].linkSite > this.linkPos[0].linkSite)
 				CLpos = this.linkPos[1].linkSite+1;
-					//highlight
-			this.CLlineHighlight
+			this.CL = this.g.append("g");
+			//highlight
+			this.CLlineHighlight = this.CL.append("line")
 				.attr("x1", this.xStep * (CLpos - 1))
-				.attr("x2", this.xStep * (CLpos - 1));
+				.attr("y1", 25)
+				.attr("x2", this.xStep * (CLpos - 1))
+				.attr("y2", 55)
+				.attr("stroke", self.model.highlightColour)
+				.attr("stroke-width", 10)
+				.attr("opacity", 0)
+				.style("cursor", "pointer");
 			// the the link line
-			this.CLline.attr("x1", this.xStep * (CLpos - 1))
-				.attr("opacity", 1)
-				.attr("x2", this.xStep * (CLpos - 1));
+			this.CLline = this.CL.append("line")
+				.attr("x1", this.xStep * (CLpos - 1))
+				.attr("y1", 25)
+				.attr("x2", this.xStep * (CLpos - 1))
+				.attr("y2", 55)
+				.attr("stroke", "black")
+				.attr("stroke-width", 1.5)
+				.style("cursor", "pointer");
 
-			this.CL[0][0].onclick = function() {
-				self.CLlineHighlight.attr("opacity", 1);
-				self.changeCL = true;
-				for (var i = 0; i < self.fraglines.length; i++) {
-					self.fraglines[i].disableCursor();
-				}
-				for (i=0; i < self.pepLetters.length; i++){
-					var letterCount = self.pepLetters[i].length;
-					for (j = 0; j < letterCount; j++){
-						if (self.pepLetters[i][j])
-							self.pepLetters[i][j].style("cursor", "pointer");			
+			this.CL.on("click", function() {
+				if (!self.changeMod){
+					self.CLlineHighlight.attr("opacity", 1);
+					self.changeCL = self.linkPos;
+					for (var i = 0; i < self.fraglines.length; i++) {
+						self.fraglines[i].disableCursor();
+					}
+					for (var i = 0; i < self.pepLetters.length; i++) {
+						self.pepLetters[i].style("cursor", "pointer");
 					}
 				}
-			};
+			});
 			//line for changing
-			this.changeCLline
+			this.changeCLline = this.g.append("line")
 				.attr("x1", this.xStep * (CLpos - 1))
+				.attr("y1", 25)
 				.attr("x2", this.xStep * (CLpos - 1))
-				.attr("opacity", 1);
-		}//end (if this.linkpos > 1)
+				.attr("y2", 55)
+				.attr("stroke", "black")
+				.attr("stroke-width", 1.5)
+				.attr("opacity", 0)
+				.style("cursor", "pointer");
 
+		}
 
 		//change-mod svg element
 	    this.changeModLetter = this.g.append("text")
@@ -287,121 +339,56 @@ var PeptideView = Backbone.View.extend({
 	// 	}
 	// },
 
+	drawPeptides: function(){
 
-	drawPeptide: function(pepIndex, y1, y2){
 		var self = this;
-		var pep = this.peptides[pepIndex];
-		var mods = this.pepModsArray[pepIndex];
-		if (pepIndex == 0)
-			var colour = this.model.p1color;
-		if (pepIndex == 1)
-			var colour = this.model.p2color;		
-		var pepLetters = this.pepLetters[pepIndex];
-		var pepLetterHighlights = this.pepLetterHighlights[pepIndex];
-		var modLetters = this.pepModLetters[pepIndex];
-		var modLetterHighlights = this.pepModLetterHighlights[pepIndex];
-		var pepLettersG = this.g.append('g');
-		var l = pep.length;
-		var shift = 0;
-		for (var i = 0; i < l; i++){
-			if (pep[i] != "#") {
-				var pepLetterG = pepLettersG.append('g');
-				pepLetterHighlights[i] = pepLetterG.append("text")
-					.attr("x", this.xStep * i)
-					.attr("y", y1)
-					.attr("text-anchor", "middle")
-					.attr("fill", colour)
-					.attr("pos", i-shift)
-					.attr("stroke-width", "2px")
-					.attr("stroke", self.model.highlightColour)
-					.attr("opacity", 0)
-					.style("cursor", "default")
-					.text(pep[i]);					
-				pepLetters[i] = pepLetterG.append("text")
-					.attr("x", this.xStep * i)
-					.attr("y", y1)
-					.attr("text-anchor", "middle")
-					.attr("fill", colour)
-					.attr("pos", i-shift)
-					.attr("pep", pepIndex)
-					.style("cursor", "default")
-					.text(pep[i]);
 
-				//at least two peptides without a crosslink
-				if (self.linkPos.length < 1 && self.peptides.length > 1){
-					pepLetterHighlights[i].style("cursor", "pointer");
-					pepLetters[i].style("cursor", "pointer");
-				}
-				pepLetterG[0][0].onclick = function() {
-					if(self.changeCL){
-						for (var pepIndex = 0; pepIndex < self.pepLetterHighlights.length; pepIndex++) {
-							var offset = 0;
-							for (var j = 0; j < self.pepLetterHighlights[pepIndex].length; j++) {
-								if(self.pepLetterHighlights[pepIndex][j] === undefined)
-									offset += 1;
-								else{
-									if(self.pepLetterHighlights[pepIndex][j][0][0].getAttribute("opacity") == "1")
-										self.linkPos[pepIndex].linkSite = j-offset;
-								}
-							}
-						}
-						var newlinkpos = new Array(self.linkPos[0].linkSite, self.linkPos[1].linkSite);
-						self.model.changeLinkPos(newlinkpos);
-					}
-					//at least two peptides without a crosslink
-					else if (self.linkPos.length < 1 && self.peptides.length > 1){
-						var pepLetterHighlight = this.childNodes[0];
-						var pepLetter = this.childNodes[1];
-						var pepIndex = pepLetter.getAttribute("pep");
+		var peptides = [
+			{sequence: this.peptides[0], color: this.model.p1color, y: [20, 5], group: self.g.append('g').attr('class', 'peptide')},
+		];
+		if(this.peptides.length > 1)
+			peptides.push({sequence: this.peptides[1], color: this.model.p2color, y: [71, 83], group: self.g.append('g').attr('class', 'peptide')})
 
-						//set CLline
-						if (pepIndex == 0){
-							//$('#clPos1').val(parseInt(this.childNodes[0].getAttribute("pos"))+1);
-							self.CLline
-								.attr("pos1", this.childNodes[0].getAttribute("pos"))
-								.attr("x1", pepLetterHighlight.getAttribute("x"))
-								.attr("y1", 25);
-						}
-						if (pepIndex == 1){
-							//$('#clPos2').val(parseInt(this.childNodes[0].getAttribute("pos"))+1);
-							self.CLline
-								.attr("pos2", this.childNodes[0].getAttribute("pos"))
-								.attr("x2", pepLetterHighlight.getAttribute("x"))
-								.attr("y2", 55);
-						}
-						if (self.CLline.attr("x1") != -1 && self.CLline.attr("x2") != -1){
-							//self.CLline.attr("opacity", 1);
-							newlinkpos = new Array(parseInt(self.CLline.attr("pos1")), parseInt(self.CLline.attr("pos2")));
-							self.model.changeLinkPos(newlinkpos);	
-						}
-						//set opacity of all letters of this highlight to zero
-						for (var i = 0; i < self.pepLetterHighlights[pepIndex].length; i++) {
-							if(typeof(self.pepLetterHighlights[pepIndex][i]) !== "undefined")
-								self.pepLetterHighlights[pepIndex][i].attr("opacity", 0);
-						}
-						pepLetterHighlight.setAttribute("opacity", 1);
-					
+		var pepIndex = 0;
+		peptides.forEach(function(pep){
+			
+			var pep_data = []
+			var pos = 0;
+			for (var i = 0; i < pep.sequence.length; i++) {
+				pep_data.push({aminoAcid: pep.sequence[i], pepIndex: pepIndex, pos: pos})
+				if (pep.sequence[i] != "#")
+					pos++;
+			}
+
+			var pepLettersG = pep.group.selectAll("g.pepLetterG").data (pep_data);
+
+			var pepLetterG = pepLettersG.enter()
+				.append('g')
+				.attr('class', "pepLetterG")
+				.on("click", function(d) {
+					if(self.changeCL != false){
+						changeCrossLink();
 					}
 					//if changeMod is active and the mod is from the same peptide and it's a valid modification for this aa
-					if(self.changeMod !== false && self.validModChange && this.childNodes[1].getAttribute("pep") == self.changeMod[1].getAttribute("pep")){	
-						var oldPos = self.changeMod[0].getAttribute('pos');
-						var newPos = parseInt(this.childNodes[1].getAttribute("pos"));
-						var pepIndex = parseInt(this.childNodes[1].getAttribute("pep"));
-						self.model.changeMod(oldPos, newPos, pepIndex);
+					if(self.changeMod !== false && self.validModChange && d.pepIndex == self.changeMod.pepIndex){	
+						changeMod(d);
 					}
-				};
-				pepLetterG[0][0].onmouseover = function() {
-					if(self.changeMod !== false && this.childNodes[1].getAttribute("pep") == self.changeMod[1].getAttribute("pep")){	//if changeMod is active and the mod is from the same peptide
+				})
+				.on("mouseover", function(d, i) {
+					if(self.changeMod !== false && d.pepIndex == self.changeMod.pepIndex){	//if changeMod is active and the mod is from the same peptide
 						var pepLetterHighlight = this.childNodes[0];
 						pepLetterHighlight.setAttribute("opacity", 1);
-						var highlight = self.changeMod[0];
-						var oldModLetters = self.changeMod[1];
+						
+						var offset = self.pepoffset[d.pepIndex];
+						var highlight = self.modLetterHighlights[d.pepIndex][0][self.changeMod.pos-offset];
+						var oldModLetters = self.modLetters[d.pepIndex][0][self.changeMod.pos-offset]
 						var x = parseInt(this.childNodes[0].getAttribute("x"));
 						var y = parseInt(oldModLetters.getAttribute("y"));
-						var modtext = oldModLetters.innerHTML;
-						var aminoAcid = this.childNodes[1].innerHTML;
+						//var modtext = oldModLetters.innerHTML;
+
+
 						//check if it is a valid modification change
-						if (self.model.checkForValidModification(modtext, aminoAcid)){
+						if (self.model.checkForValidModification(self.changeMod.mod, d.aminoAcid)){
 							self.validModChange = true;
 						}
 						else{
@@ -410,109 +397,414 @@ var PeptideView = Backbone.View.extend({
 							this.childNodes[1].setAttribute("style", "cursor:not-allowed");
 						}
 						//
-						if (oldModLetters.getAttribute("pep") == 0)
-							var colour = self.model.p1color;
-						else if (oldModLetters.getAttribute("pep") == 1)
-							var colour = self.model.p2color;
+						if (self.changeMod.pepIndex == 0)
+							var color = self.model.p1color;
+						else if (self.changeMod.pepIndex == 1)
+							var color = self.model.p2color;
 						oldModLetters.setAttribute("fill", "grey");
 						highlight.setAttribute("x", x);
 						highlight.setAttribute("y", y+1);
 						highlight.setAttribute("opacity", 1)
 						self.changeModLetter.attr("x", x)
-							.text(modtext)
+							.text(self.changeMod.mod)
 							.attr("y", y)
-							.attr("fill", colour)
+							.attr("fill", color)
 							.attr("opacity", 1);	
 					}
 
-					if(self.changeCL){
+					if(self.changeCL != false){
 						var pepLetterHighlight = this.childNodes[0];
 						var pepLetter = this.childNodes[1];
-						if (pepLetter.getAttribute("pep") == 0){		//pep1
 							//set opacity of all letters of this highlight to zero
-							for (var i = 0; i < self.pepLetterHighlights[0].length; i++) {
-								if(typeof(self.pepLetterHighlights[0][i]) !== "undefined")
-									self.pepLetterHighlights[0][i].attr("opacity", 0);
+							for (var i = 0; i < self.pepLetterHighlights[d.pepIndex][0].length; i++) {
+								if(typeof(self.pepLetterHighlights[d.pepIndex][0][i]) !== "undefined")
+									self.pepLetterHighlights[d.pepIndex][0][i].setAttribute("opacity", 0);
 							}
-							self.changeCLline.attr("x1", pepLetterHighlight.getAttribute("x"))
-								.attr("opacity", 1);
+							
 							self.CLline.attr("stroke", "grey");
-							self.CLlineHighlight.attr("x1", pepLetterHighlight.getAttribute("x"));
-						}
-						else{											//pep2
-							//set opacity of all letters of this highlight to zero
-							for (var i = 0; i < self.pepLetterHighlights[1].length; i++) {
-								if(typeof(self.pepLetterHighlights[1][i]) !== "undefined")
-									self.pepLetterHighlights[1][i].attr("opacity", 0);
-							}								
-							self.changeCLline.attr("x2", pepLetterHighlight.getAttribute("x"))
-								.attr("opacity", 1);
-							self.CLline.attr("stroke", "grey");
-							self.CLlineHighlight.attr("x2", pepLetterHighlight.getAttribute("x"));
-						}
+							// update changeCL to the currently highlighted ones
+							for (var i = 0; i < self.changeCL.length; i++) {
+								if(self.changeCL[i].peptideId == d.pepIndex)
+									self.changeCL[i].linkSite = d.pos;
+							}						
+							if (d.pepIndex == 0){		//pep1
+								self.changeCLline
+									.attr("x1", pepLetterHighlight.getAttribute("x"))
+									.attr("opacity", 1);
+								self.CLlineHighlight.attr("x1", pepLetterHighlight.getAttribute("x"));
+							}
+							else if (d.pepIndex == 1){
+						 		self.changeCLline
+						 			.attr("x2", pepLetterHighlight.getAttribute("x"))
+						 			.attr("opacity", 1);
+								self.CLlineHighlight.attr("x2", pepLetterHighlight.getAttribute("x"));
+							}
 						pepLetterHighlight.setAttribute("opacity", 1);
 					}		
-				};
-				pepLetterG[0][0].onmouseout = function() {
-					if(self.changeMod !== false && this.childNodes[1].getAttribute("pep") == self.changeMod[1].getAttribute("pep")){	//if changeMod is active and the mod is from the same peptide
-						var pepLetterHighlight = this.childNodes[0];
-						var highlight = self.changeMod[0];
+				})
+				.on("mouseout", function(d) {
+					var offset = self.pepoffset[d.pepIndex];
+					if(self.changeMod !== false && d.pepIndex == self.changeMod.pepIndex){	//if changeMod is active and the mod is from the same peptide
+						var pepLetterHighlight = self.pepLetterHighlights[d.pepIndex][0][d.pos+offset];
+						var highlight =  self.modLetterHighlights[d.pepIndex][0][self.changeMod.pos-offset];
 						pepLetterHighlight.setAttribute("opacity", 0);
 						self.changeModLetter.attr("opacity", 0);
 						highlight.setAttribute("opacity", 0);
 					}
-				};
+				})
+			;
+			pepLetterG.append("text")
+				.attr("x", function(d, i){ 
+					return self.xStep * i;
+				})
+				.attr("y", pep.y[0])
+				.attr("text-anchor", "middle")
+				.attr("fill", pep.color)
+				.attr("class", 'pepLetterHighlight')
+				.attr("stroke-width", "2px")
+				.attr("stroke", self.model.highlightColour)
+				.attr("opacity", 0)
+				.style("cursor", "default")
+				.text(function(d) {
+					if (d.aminoAcid != "#")
+						return d.aminoAcid;
+				})
+			;				
+			pepLetterG.append("text")
+				.attr("x", function(d, i){ 
+					return self.xStep * i;
+				})
+				.attr("y", pep.y[0])
+				.attr("text-anchor", "middle")
+				.attr("fill", pep.color)
+				.attr("class", 'pepLetter')
+				.style("cursor", "default")
+				.text(function(d) {
+					if (d.aminoAcid != "#")
+						return d.aminoAcid;
+				})
+			;
 
+			function changeCrossLink(){
+				//self.linkPos[d.pepIndex].linkSite = d.pos; not necessary pos is already updated through mouseover
+				var newlinkpos = new Array(self.linkPos[0].linkSite, self.linkPos[1].linkSite);
+				self.model.changeLinkPos(newlinkpos);
+			}
 
+			function changeMod(d){
+				var offset = self.pepoffset[d.pepIndex]
+				var oldPos = self.changeMod.pos-offset;
+				var newPos = d.pos;
+				self.model.changeMod(oldPos, newPos, d.pepIndex);
+			}
 
-				if(mods[i-shift]){
-					var modLetterG = pepLettersG.append('g');
-					modLetterHighlights[i] = modLetterG.append("text")
-						.attr("x", this.xStep * i)
-						.attr("y", y2)
-						.attr("text-anchor", "middle")
-						.attr("stroke", self.model.highlightColour)
-						.attr("pep", pepIndex)
-						.attr("pos", i-shift)
-						.style("font-size", "0.7em")
-						.style("cursor", "pointer")
-						.text(mods[i-shift])
-						.attr("stroke-width", "2px")
-						.attr("opacity", 0);				
-					modLetters[i] = modLetterG.append("text")
-						.attr("x", this.xStep * i)
-						.attr("y", y2)
-						.attr("text-anchor", "middle")
-						.attr("fill", colour)
-						.attr("pep", pepIndex)
-						.style("font-size", "0.7em")
-						.style("cursor", "pointer")
-						.text(mods[i-shift]);
-					modLetterG[0][0].onclick = function() {
+			//mods
+			var mod_data = []
+
+			for (var i = 0; i < self.pepModsArray[pepIndex].length; i++) {
+				for (var shift = 0; shift < pep.sequence.length; shift++) {
+					if (pep.sequence[shift] != "#")
+						break;
+				}
+				mod_data.push({mod: self.pepModsArray[pepIndex][i], pepIndex: pepIndex, pos: shift+i})
+			}
+
+			var modLettersG = pep.group.selectAll("g.modLetterG").data (mod_data);
+			
+			var modLetterG = modLettersG.enter()
+				.append('g')
+				.attr('class', "modLetterG")
+				.on("click", function(d) {
+					if (self.changeCL == false){
+						self.CLline.style("cursor", "not-allowed");
+						self.CLlineHighlight.style("cursor", "not-allowed");
+						
 						var letters = this.childNodes[1];
 						var highlight = this.childNodes[0];
 						highlight.setAttribute("style","font-size:0.7em; cursor:default;");
 						//set changeMod var to the clicked modification
-						self.changeMod = this.childNodes;
+						self.changeMod = d;
 						highlight.setAttribute("opacity", 1);
 						//disable fragBar cursor
 						for (var i = 0; i < self.fraglines.length; i++) {
 							self.fraglines[i].disableCursor();
 						}
 						//enable pepLetter cursor pointer
-						i = parseInt(letters.getAttribute("pep"));
-						var letterCount = self.pepLetters[i].length;
-						for (j = 0; j < letterCount; j++){
-							if (self.pepLetters[i][j])
-								self.pepLetters[i][j].style("cursor", "pointer");			
-						}
-					};
-				};
-			}
-			else
-				shift++;
-		}
+						self.pepLetters[d.pepIndex].style("cursor", "pointer");
+					}
+				})
+			;
+			modLetterG.append("text")
+				.attr("x", function(d){ 
+					return self.xStep * d.pos;
+				})
+				.attr("class", "modLetterHighlight")
+				.attr("y", pep.y[1])
+				.attr("text-anchor", "middle")
+				.attr("stroke", self.model.highlightColour)
+				.style("font-size", "0.7em")
+				.style("cursor", "pointer")
+				.text(function(d){ return d.mod; })
+				.attr("stroke-width", "2px")
+				.attr("opacity", 0)
+			;				
+			modLetterG.append("text")
+				.attr("x", function(d){ 
+					return self.xStep * d.pos;
+				})
+				.attr("class", "modLetter")
+				.attr("y", pep.y[1])
+				.attr("text-anchor", "middle")
+				.attr("fill", pep.color)
+				.style("font-size", "0.7em")
+				.style("cursor", "pointer")
+				.text(function(d){ return d.mod; })
+			;
+
+			// var mods = this.pepModsArray[i];
+			// //check for what they are needed
+			// var pepLetters = this.pepLetters[i];
+			// var pepLetterHighlights = this.pepLetterHighlights[i];
+			// var modLetters = this.modLetters[i];
+			// var modLetterHighlights = this.modLetterHighlights[i];
+			// //
+			// var shift = 0;
+			self.pepLetterHighlights[pepIndex] = pep.group.selectAll("text.pepLetterHighlight");
+			self.pepLetters[pepIndex] = pep.group.selectAll("text.pepLetter");
+			self.modLetterHighlights[pepIndex] = pep.group.selectAll("text.modLetterHighlight");
+			self.modLetters[pepIndex] = pep.group.selectAll("text.modLetter");
+			pepIndex++;
+
+		})
+
+
 	},
+
+	// drawPeptide: function(pepIndex, y1, y2){
+	// 	var self = this;
+	// 	var pep = this.peptides[pepIndex];
+	// 	var mods = this.pepModsArray[pepIndex];
+	// 	if (pepIndex == 0)
+	// 		var colour = this.model.p1color;
+	// 	if (pepIndex == 1)
+	// 		var colour = this.model.p2color;		
+	// 	var pepLetters = this.pepLetters[pepIndex];
+	// 	var pepLetterHighlights = this.pepLetterHighlights[pepIndex];
+	// 	var modLetters = this.modLetters[pepIndex];
+	// 	var modLetterHighlights = this.modLetterHighlights[pepIndex];
+	// 	var pepLettersG = this.g.append('g');
+	// 	var l = pep.length;
+	// 	var shift = 0;
+	// 	for (var i = 0; i < l; i++){
+	// 		if (pep[i] != "#") {
+	// 			var pepLetterG = pepLettersG.append('g');
+	// 			pepLetterHighlights[i] = pepLetterG.append("text")
+	// 				.attr("x", this.xStep * i)
+	// 				.attr("y", y1)
+	// 				.attr("text-anchor", "middle")
+	// 				.attr("fill", colour)
+	// 				.attr("pos", i-shift)
+	// 				.attr("stroke-width", "2px")
+	// 				.attr("stroke", self.model.highlightColour)
+	// 				.attr("opacity", 0)
+	// 				.style("cursor", "default")
+	// 				.text(pep[i]);					
+	// 			pepLetters[i] = pepLetterG.append("text")
+	// 				.attr("x", this.xStep * i)
+	// 				.attr("y", y1)
+	// 				.attr("text-anchor", "middle")
+	// 				.attr("fill", colour)
+	// 				.attr("pos", i-shift)
+	// 				.attr("pep", pepIndex)
+	// 				.style("cursor", "default")
+	// 				.text(pep[i]);
+
+	// 			//at least two peptides without a crosslink
+	// 			if (self.linkPos.length < 1 && self.peptides.length > 1){
+	// 				pepLetterHighlights[i].style("cursor", "pointer");
+	// 				pepLetters[i].style("cursor", "pointer");
+	// 			}
+	// 			pepLetterG[0][0].onclick = function() {
+	// 				if(self.changeCL){
+	// 					for (var pepIndex = 0; pepIndex < self.pepLetterHighlights.length; pepIndex++) {
+	// 						var offset = 0;
+	// 						for (var j = 0; j < self.pepLetterHighlights[pepIndex].length; j++) {
+	// 							if(self.pepLetterHighlights[pepIndex][j] === undefined)
+	// 								offset += 1;
+	// 							else{
+	// 								if(self.pepLetterHighlights[pepIndex][j][0][0].getAttribute("opacity") == "1")
+	// 									self.linkPos[pepIndex].linkSite = j-offset;
+	// 							}
+	// 						}
+	// 					}
+	// 					var newlinkpos = new Array(self.linkPos[0].linkSite, self.linkPos[1].linkSite);
+	// 					self.model.changeLinkPos(newlinkpos);
+	// 				}
+	// 				//at least two peptides without a crosslink
+	// 				else if (self.linkPos.length < 1 && self.peptides.length > 1){
+	// 					var pepLetterHighlight = this.childNodes[0];
+	// 					var pepLetter = this.childNodes[1];
+	// 					var pepIndex = pepLetter.getAttribute("pep");
+
+	// 					//set CLline
+	// 					if (pepIndex == 0){
+	// 						//$('#clPos1').val(parseInt(this.childNodes[0].getAttribute("pos"))+1);
+	// 						self.CLline
+	// 							.attr("pos1", this.childNodes[0].getAttribute("pos"))
+	// 							.attr("x1", pepLetterHighlight.getAttribute("x"))
+	// 							.attr("y1", 25);
+	// 					}
+	// 					if (pepIndex == 1){
+	// 						//$('#clPos2').val(parseInt(this.childNodes[0].getAttribute("pos"))+1);
+	// 						self.CLline
+	// 							.attr("pos2", this.childNodes[0].getAttribute("pos"))
+	// 							.attr("x2", pepLetterHighlight.getAttribute("x"))
+	// 							.attr("y2", 55);
+	// 					}
+	// 					if (self.CLline.attr("x1") != -1 && self.CLline.attr("x2") != -1){
+	// 						//self.CLline.attr("opacity", 1);
+	// 						newlinkpos = new Array(parseInt(self.CLline.attr("pos1")), parseInt(self.CLline.attr("pos2")));
+	// 						self.model.changeLinkPos(newlinkpos);	
+	// 					}
+	// 					//set opacity of all letters of this highlight to zero
+	// 					for (var i = 0; i < self.pepLetterHighlights[pepIndex].length; i++) {
+	// 						if(typeof(self.pepLetterHighlights[pepIndex][i]) !== "undefined")
+	// 							self.pepLetterHighlights[pepIndex][i].attr("opacity", 0);
+	// 					}
+	// 					pepLetterHighlight.setAttribute("opacity", 1);
+					
+	// 				}
+	// 				//if changeMod is active and the mod is from the same peptide and it's a valid modification for this aa
+	// 				if(self.changeMod !== false && self.validModChange && this.childNodes[1].getAttribute("pep") == self.changeMod[1].getAttribute("pep")){	
+	// 					var oldPos = self.changeMod[0].getAttribute('pos');
+	// 					var newPos = parseInt(this.childNodes[1].getAttribute("pos"));
+	// 					var pepIndex = parseInt(this.childNodes[1].getAttribute("pep"));
+	// 					self.model.changeMod(oldPos, newPos, pepIndex);
+	// 				}
+	// 			};
+	// 			pepLetterG[0][0].onmouseover = function() {
+	// 				if(self.changeMod !== false && this.childNodes[1].getAttribute("pep") == self.changeMod[1].getAttribute("pep")){	//if changeMod is active and the mod is from the same peptide
+	// 					var pepLetterHighlight = this.childNodes[0];
+	// 					pepLetterHighlight.setAttribute("opacity", 1);
+	// 					var highlight = self.changeMod[0];
+	// 					var oldModLetters = self.changeMod[1];
+	// 					var x = parseInt(this.childNodes[0].getAttribute("x"));
+	// 					var y = parseInt(oldModLetters.getAttribute("y"));
+	// 					var modtext = oldModLetters.innerHTML;
+	// 					var aminoAcid = this.childNodes[1].innerHTML;
+	// 					//check if it is a valid modification change
+	// 					if (self.model.checkForValidModification(modtext, aminoAcid)){
+	// 						self.validModChange = true;
+	// 					}
+	// 					else{
+	// 						self.validModChange = false;
+	// 						this.childNodes[0].setAttribute("style", "cursor:not-allowed");
+	// 						this.childNodes[1].setAttribute("style", "cursor:not-allowed");
+	// 					}
+	// 					//
+	// 					if (oldModLetters.getAttribute("pep") == 0)
+	// 						var colour = self.model.p1color;
+	// 					else if (oldModLetters.getAttribute("pep") == 1)
+	// 						var colour = self.model.p2color;
+	// 					oldModLetters.setAttribute("fill", "grey");
+	// 					highlight.setAttribute("x", x);
+	// 					highlight.setAttribute("y", y+1);
+	// 					highlight.setAttribute("opacity", 1)
+	// 					self.changeModLetter.attr("x", x)
+	// 						.text(modtext)
+	// 						.attr("y", y)
+	// 						.attr("fill", colour)
+	// 						.attr("opacity", 1);	
+	// 				}
+
+	// 				if(self.changeCL){
+	// 					var pepLetterHighlight = this.childNodes[0];
+	// 					var pepLetter = this.childNodes[1];
+	// 					if (pepLetter.getAttribute("pep") == 0){		//pep1
+	// 						//set opacity of all letters of this highlight to zero
+	// 						for (var i = 0; i < self.pepLetterHighlights[0].length; i++) {
+	// 							if(typeof(self.pepLetterHighlights[0][i]) !== "undefined")
+	// 								self.pepLetterHighlights[0][i].attr("opacity", 0);
+	// 						}
+	// 						self.changeCLline.attr("x1", pepLetterHighlight.getAttribute("x"))
+	// 							.attr("opacity", 1);
+	// 						self.CLline.attr("stroke", "grey");
+	// 						self.CLlineHighlight.attr("x1", pepLetterHighlight.getAttribute("x"));
+	// 					}
+	// 					else{											//pep2
+	// 						//set opacity of all letters of this highlight to zero
+	// 						for (var i = 0; i < self.pepLetterHighlights[1].length; i++) {
+	// 							if(typeof(self.pepLetterHighlights[1][i]) !== "undefined")
+	// 								self.pepLetterHighlights[1][i].attr("opacity", 0);
+	// 						}								
+	// 						self.changeCLline.attr("x2", pepLetterHighlight.getAttribute("x"))
+	// 							.attr("opacity", 1);
+	// 						self.CLline.attr("stroke", "grey");
+	// 						self.CLlineHighlight.attr("x2", pepLetterHighlight.getAttribute("x"));
+	// 					}
+	// 					pepLetterHighlight.setAttribute("opacity", 1);
+	// 				}		
+	// 			};
+	// 			pepLetterG[0][0].onmouseout = function() {
+	// 				if(self.changeMod !== false && this.childNodes[1].getAttribute("pep") == self.changeMod[1].getAttribute("pep")){	//if changeMod is active and the mod is from the same peptide
+	// 					var pepLetterHighlight = this.childNodes[0];
+	// 					var highlight = self.changeMod[0];
+	// 					pepLetterHighlight.setAttribute("opacity", 0);
+	// 					self.changeModLetter.attr("opacity", 0);
+	// 					highlight.setAttribute("opacity", 0);
+	// 				}
+	// 			};
+
+
+
+	// 			if(mods[i-shift]){
+	// 				var modLetterG = pepLettersG.append('g');
+	// 				modLetterHighlights[i] = modLetterG.append("text")
+	// 					.attr("x", this.xStep * i)
+	// 					.attr("y", y2)
+	// 					.attr("text-anchor", "middle")
+	// 					.attr("stroke", self.model.highlightColour)
+	// 					.attr("pep", pepIndex)
+	// 					.attr("pos", i-shift)
+	// 					.style("font-size", "0.7em")
+	// 					.style("cursor", "pointer")
+	// 					.text(mods[i-shift])
+	// 					.attr("stroke-width", "2px")
+	// 					.attr("opacity", 0);				
+	// 				modLetters[i] = modLetterG.append("text")
+	// 					.attr("x", this.xStep * i)
+	// 					.attr("y", y2)
+	// 					.attr("text-anchor", "middle")
+	// 					.attr("fill", colour)
+	// 					.attr("pep", pepIndex)
+	// 					.style("font-size", "0.7em")
+	// 					.style("cursor", "pointer")
+	// 					.text(mods[i-shift]);
+	// 				modLetterG[0][0].onclick = function() {
+	// 					var letters = this.childNodes[1];
+	// 					var highlight = this.childNodes[0];
+	// 					highlight.setAttribute("style","font-size:0.7em; cursor:default;");
+	// 					//set changeMod var to the clicked modification
+	// 					self.changeMod = this.childNodes;
+	// 					highlight.setAttribute("opacity", 1);
+	// 					//disable fragBar cursor
+	// 					for (var i = 0; i < self.fraglines.length; i++) {
+	// 						self.fraglines[i].disableCursor();
+	// 					}
+	// 					//enable pepLetter cursor pointer
+	// 					i = parseInt(letters.getAttribute("pep"));
+	// 					var letterCount = self.pepLetters[i].length;
+	// 					for (j = 0; j < letterCount; j++){
+	// 						if (self.pepLetters[i][j])
+	// 							self.pepLetters[i][j].style("cursor", "pointer");			
+	// 					}
+	// 				};
+	// 			};
+	// 		}
+	// 		else
+	// 			shift++;
+	// 	}
+	// },
 
 
 	clearHighlights: function(){
@@ -586,8 +878,8 @@ var PeptideView = Backbone.View.extend({
 			for (j = 0; j < letterCount; j++){
 				if (this.pepLetters[i][j])
 					this.pepLetters[i][j].attr("fill", this.model.lossFragBarColour);
-				if (this.pepModLetters[i][j])
-					this.pepModLetters[i][j].attr("fill", this.model.lossFragBarColour);				
+				if (this.modLetters[i][j])
+					this.modLetters[i][j].attr("fill", this.model.lossFragBarColour);				
 			}
 		}
 	},
@@ -616,8 +908,8 @@ var PeptideView = Backbone.View.extend({
 			for (var i = start; i < end; i++){
 				if (self.pepLetters[pep][i])
 					self.pepLetters[pep][i].attr("fill", pepColor);
-				if (self.pepModLetters[pep][i])
-					self.pepModLetters[pep][i].attr("fill", pepColor);
+				if (self.modLetters[pep][i])
+					self.modLetters[pep][i].attr("fill", pepColor);
 			}	
 		}
 	},
