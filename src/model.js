@@ -370,6 +370,8 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			for (i=0; i < customMods.length; i++)
 				this.updateKnownModifications(customMods[i]);
 		}
+		else
+			this.calcPrecursorMass();
 			
 	},
 
