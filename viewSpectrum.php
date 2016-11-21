@@ -129,7 +129,7 @@ if($response === FALSE){
 	<script type="text/javascript" src="src/model.js"></script>
 	<script type="text/javascript" src="src/SpectrumView2.js"></script>
 	<script type="text/javascript" src="src/FragmentationKeyView.js"></script>
-	<script type="text/javascript" src="js/PrecursorInfoView.js"></script>	
+	<!-- <script type="text/javascript" src="js/PrecursorInfoView.js"></script>	-->
 	<script type="text/javascript" src="src/FragKey/KeyFragment.js"></script>
 	<script type="text/javascript" src="src/graph/Graph.js"></script>
 	<script type="text/javascript" src="src/graph/Peak.js"></script>
@@ -212,7 +212,7 @@ if($response === FALSE){
 
 		window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumDiv"});
 		window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumDiv"});
-		window.precursorInfoView = new PrecursorInfoView({model: SpectrumModel, el:"#precursorInfo"});
+		//window.precursorInfoView = new PrecursorInfoView({model: SpectrumModel, el:"#precursorInfo"});
 		var json_data = <?php echo $response; ?>;
 		var json_req = <?php echo $postJSON ?>;
 		//console.log("json:" + json_data);
