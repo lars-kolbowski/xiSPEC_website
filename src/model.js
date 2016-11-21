@@ -25,7 +25,8 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		});	
 
 		this.on("change:modifications", function(){
-			this.updateKnownModifications();
+			if(this.get("modifications") !== undefined)
+				this.updateKnownModifications();
 			if(this.peptides !== undefined)
 				this.calcPrecursorMass();
 		});
@@ -328,16 +329,24 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		}
 
 		var totalMass = 0;
-		if(this.get("clModMass") !== undefined){
-			for (var i = 0; i < massArr.length; i++) {
-				totalMass += massArr[i];
-			}
-			totalMass += parseInt(this.get("clModMass"));
-			this.mass = [totalMass];
+		for (var i = 0; i < massArr.length; i++) {
+			totalMass += massArr[i];
 		}
-		else{
-			this.mass = massArr;
-		}
+		if(this.get("clModMass") !== undefined)
+			totalMass += parseInt(this.get("clModMass"));	
+
+		this.mass = totalMass;
+		// var totalMass = 0;
+		// if(this.get("clModMass") !== undefined){
+		// 	for (var i = 0; i < massArr.length; i++) {
+		// 		totalMass += massArr[i];
+		// 	}
+		// 	totalMass += parseInt(this.get("clModMass"));
+		// 	this.mass = [totalMass];
+		// }
+		// else{
+		// 	this.mass = massArr;
+		// }
 		console.log(this.mass);
 		this.trigger("changed:mass");
 	},
@@ -358,12 +367,16 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	updateKnownModifications: function(){
 		customMods = this.get("modifications").data;
 		for (var i = 0; i < customMods.length; i++) {
+			var found = false
 			for (var j = 0; j < this.knownModifications['modifications'].length; j++) {
 				if(this.knownModifications['modifications'][j].id == customMods[i].id){
 					this.knownModifications['modifications'][j].mass = customMods[i].mass;
 					this.knownModifications['modifications'][j].aminoAcids = customMods[i].aminoAcids;
+					found = true;
 				}
-			}				
+			}
+			if(!found)
+				this.knownModifications['modifications'].push(customMods[i]);
 		}	
 	},
 
