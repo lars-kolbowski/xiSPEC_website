@@ -230,7 +230,7 @@ function Peak (id, graph){
 			{frags: lossy, group: this.graph.lossyAnnotations, type: "lossy", colourClass: "color_loss"},
 		];
         
-        CLMSUI.idList = CLMSUI.idList || [];
+        //CLMSUI.idList = CLMSUI.idList || [];
         
         var makeIdentityID = function (d) {
             return d.id;
