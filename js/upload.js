@@ -43,10 +43,10 @@ $( document ).ready(function() {
 	});
 
 
-	$('#modificationTable').on( 'draw.dt', function () {
-		var json = modTable.ajax.json();
-		//window.peptide.set("modifications", json);
-	});
+	// $('#modificationTable').on( 'draw.dt', function () {
+	// 	var json = modTable.ajax.json();
+	// 	//window.peptide.set("modifications", json);
+	// });
 
 	$('#modificationTable').on('input', 'input', function() {
 
@@ -58,39 +58,7 @@ $( document ).ready(function() {
 		var mod = {'id': modName, 'mass': modMass, 'aminoAcids': modSpec};
 
 		window.peptide.updateKnownModifications(mod);
-		//JSONobj = window.peptide.knownModifications;
-		//if (Cookies.get('customMod') === undefined){
-		//	Cookies.set('customMod', JSON.stringify(modTable.ajax.json()));
-		//}
-		//var JSONobj = JSON.parse(Cookies.get('customMod'));
 
-		
-		//check if the mod is already in then update it otherwise add it
-		// var found = false;
-		// for (var i = 0; i < JSONobj.modifications.length; i++) {
-		// 	var modJSON = JSONobj.modifications[i];
-		// 	if(modJSON.id == modName){
-		// 		JSONobj.modifications[i].id = modName;
-		// 		JSONobj.modifications[i].mass = parseFloat(modMass);
-		// 		JSONobj.modifications[i].aminoAcids = modSpec.split(",");
-		// 		found = true;
-		// 	}
-		// }
-		// if(!found)
-		// 	JSONobj.data.push(mod);	
-		
-		//add mass
-		//for (var j = 0; j < JSONobj.data.length; j++){	
-		//	for (var i = 0; i < window.peptide.knownModifications['modifications'].length; i++) {
-		//		if(window.peptide.knownModifications['modifications'][i].id == JSONobj.data[j].id)
-		//			JSONobj.data[j].mass = window.peptide.knownModifications['modifications'][i].mass;
-		//			data = window.peptide.knownModifications['modifications'][i].mass;
-		//	}
-		//}
-		//Cookies.set('customMod', JSON.stringify(JSONobj));
-
-		//calcpepmass
-		//window.peptide.set("modifications", JSONobj);
 	 });
 
 	$('#resetModMasses').click(function(){
@@ -136,7 +104,7 @@ $( document ).ready(function() {
 						if(window.peptide.knownModifications['modifications'][i].id == row.id)
 							data = window.peptide.knownModifications['modifications'][i].mass;
 					}
-					return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" name="modMasses[]" type="text" required value='+data+' autocomplete=off>';
+					return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" name="modMasses[]" type="number" min=0 step=0.0001 required value='+data+' autocomplete=off>';
 				},
 				"targets": 2,
 			},
@@ -146,7 +114,8 @@ $( document ).ready(function() {
 						if(window.peptide.knownModifications['modifications'][i].id == row.id){						
 							data = data.split(",");
 							data = _.union(data, window.peptide.knownModifications['modifications'][i].aminoAcids);
-							data = data.join(",");
+							data.sort();
+							data = data.join("");
 							
 						}
 					}
@@ -173,7 +142,7 @@ function doExample(){
 	$("#myFragmentation").val("HCD");
 	$("#myToleranceUnit").val("ppm");	
 	$("#myCL").change();
-}
+};
 
 function doClearForm(){
 	$("#myPeptide").val("");
@@ -183,7 +152,7 @@ function doClearForm(){
 	$("#myCL").val("");
 	window.peptide.clear();
 	pepInputView.contentChanged();
-}
+};
 
 function updateCL(selected){
 	var cookie = Cookies.get('customCL');
@@ -201,4 +170,4 @@ function updateCL(selected){
 		//select new cl
 		$('#myCL').val(selected);
 	}
-}
+};

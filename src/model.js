@@ -381,7 +381,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		for (var j = 0; j < this.knownModifications['modifications'].length; j++) {
 			if(this.knownModifications['modifications'][j].id == mod.id){
 				this.knownModifications['modifications'][j].mass = mod.mass;
-				this.knownModifications['modifications'][j].aminoAcids = mod.aminoAcids;
+				this.knownModifications['modifications'][j].aminoAcids = mod.aminoAcids.split('');
 				found = true;
 			}
 		}
