@@ -53,8 +53,11 @@ foreach ($peaklist as $peak) {
 $tol = array("tolerance" => $ms2Tol, "unit" => $tolUnit);
 $modifications = array();
 $i = 0;
+//var_dump(str_split($modSpecificities[$i]))
+//var_dump(implode(",", str_split($modSpecificities[$i]));
+//die();
 foreach ($mods as $mod) {
-	array_push($modifications, array('aminoAcids' => explode(",", $modSpecificities[$i]), 'id' => $mod, 'mass' => $modMasses[$i]));
+	array_push($modifications, array('aminoAcids' => str_split($modSpecificities[$i]), 'id' => $mod, 'mass' => $modMasses[$i]));
 	$i++;
 }
 
@@ -87,7 +90,7 @@ $postJSON = json_encode($postData);
 //die();
 
 // The data to send to the API
-$url = 'http://129.215.14.63/xiAnnotator/annotate/FULL';
+$url = 'http://xi3.bio.ed.ac.uk/xiAnnotator/annotate/FULL';
 // Setup cURL
 $ch = curl_init($url);
 curl_setopt_array($ch, array(
@@ -99,13 +102,20 @@ curl_setopt_array($ch, array(
     CURLOPT_POSTFIELDS => $postJSON
 ));
 
+
 // Send the request
 $response = curl_exec($ch);
+//var_dump($response);
 
 // Check for errors
 if($response === FALSE){
     die(curl_error($ch));
 }
+if ($response === ""){
+	var_dump($postJSON);
+	die("xiAnnotator experienced a problem. Please try again later!");
+}
+//var_dump($postJSON);
 //var_dump($response);
 //die();
 ?>
@@ -129,42 +139,8 @@ if($response === FALSE){
 	<script type="text/javascript" src="src/graph/Peak.js"></script>
 	<script type="text/javascript" src="src/graph/Fragment.js"></script>
 	<!--  <script type="text/javascript" src="src/graph/IsotopeCluster.js"></script> -->
-
-    <style type="text/css">
-		html, body{
-
-			background-color: white;
-			height:100%;
-			width:100%;
-			-webkit-user-select: none;
-			-khtml-user-select: none;
-			-moz-user-select: -moz-none;
-			-o-user-select: none;
-			user-select: none;
-		}
-		*{
-			margin:0px;
-			padding:0px;
-		}
-
-		#spectrumDiv {
-			height:100%;
-			width:100%;
-		}
-
-		#spectrumPanelWrapper {
-			height: 90%;
-		}
-
-		#measureTooltip {
-		    position: absolute;
-		    /*max-width: 8em;*/
-		    text-align:center;
-		    pointer-events:none; /*let mouse events pass through*/
-		    /*transition: opacity 0.3s;*/
-}
-
-	</style>
+	<link rel="stylesheet" href="css/spectrumViewWrapper.css" />
+	<link rel="stylesheet" href="css/spectrum.css" />
 
 	<script>
 
@@ -223,35 +199,37 @@ if($response === FALSE){
 		<a href="#" style="visibility:hidden">edit data</a>
 		</div>
 		<div id='spectrumDiv'>
-			<label>lossy labels
-				<input id="lossyChkBx" type="checkbox">
-			</label>
-			<button class="btn btn-1 btn-1a downloadButton" id="reset">reset zoom</button>
-			<button class="btn btn-1 btn-1a downloadButton" id="clearHighlights">clear highlights</button>
-			<button class="btn btn-1 btn-1a downloadButton" id="downloadSVG">Download SVG</button>
-			<label>measure
-				<input id="measuringTool" type="checkbox">
-			</label>
-			<label>move labels
-				<input id="moveLabels" type="checkbox">
-			</label>
-			</br>
-			<span id="precursorInfo" style="font-size:small">Precursor</span>
-			<label for="colorSelector">Change color scheme:</label>
-			<select id="colorSelector">
-				<option value="RdBu">Red&Blue</option>
-				<option value="BrBG">Brown&Teal</option>
-				<option value="PiYG">Pink&Green</option>
-				<option value="PRGn">Purple&Green</option>
-				<option value="PuOr">Orange&Purple</option>
-			</select>
-			<form id="setrange">
-				m/z Range:
-				<input type="text" class="mzrange" id="xleft" size="5">
-				<input type="text" class="mzrange" id="xright" size="5">
-				<input type="submit" value="set range">
-				<span id="range-error"></span>
-			</form>
+			<div id='spectrumControls'>
+				<label>lossy labels
+					<input id="lossyChkBx" type="checkbox">
+				</label>
+				<button class="btn btn-1 btn-1a" id="reset">reset zoom</button>
+				<button class="btn btn-1 btn-1a" id="clearHighlights">clear highlights</button>
+				<button class="btn btn-1 btn-1a" id="downloadSVG">Download SVG</button>
+				<label class="btn">measure
+					<input id="measuringTool" type="checkbox">
+				</label>
+				<label class="btn">move labels
+					<input id="moveLabels" type="checkbox">
+				</label>
+				</br>
+				<span id="precursorInfo" style="font-size:small">Precursor</span>
+				<label for="colorSelector">Change color scheme:</label>
+				<select id="colorSelector">
+					<option value="RdBu">Red&Blue</option>
+					<option value="BrBG">Brown&Teal</option>
+					<option value="PiYG">Pink&Green</option>
+					<option value="PRGn">Purple&Green</option>
+					<option value="PuOr">Orange&Purple</option>
+				</select>
+				<form id="setrange">
+					m/z Range:
+					<input type="text" class="mzrange" id="xleft" size="5">
+					<input type="text" class="mzrange" id="xright" size="5">
+					<input type="submit" value="set range">
+					<span id="range-error"></span>
+				</form>
+			</div>
 			<svg id="spectrumSVG" style="width:100%; height:100%"></svg>
 			<div id="measureTooltip"></div>
 			

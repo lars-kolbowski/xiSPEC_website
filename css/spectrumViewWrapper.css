@@ -1,0 +1,69 @@
+#spectrumControls {
+    display: table-row;
+}
+
+#spectrumControls div {
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid grey;
+}
+
+#spectrumControls label {
+    display: inline-block;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+#spectrumControls input {
+    vertical-align: text-top;
+    line-height: normal;
+}
+     
+#spectrumControls form {
+    display: inline-block;
+}
+
+#spectrumControls form > * {
+    margin-right: 0.3em;
+}
+
+/* Important, let's the div with this class take up the remaining height inside a div declared with display:table */
+.heightFill {
+    display: table-row;
+    height: 100%;
+    background: #fff;
+}
+
+.validationControls {
+	padding:5px;
+	background: white;
+/*
+    display: table-row;
+*/
+}
+
+#spectrumSVG {
+    width: 100%;
+    height: 100%;
+}
+
+#measureTooltip {
+    position: absolute;
+    /*max-width: 8em;*/
+    text-align:center;
+    pointer-events:none; /*let mouse events pass through*/
+    /*transition: opacity 0.3s;*/
+    color: black;
+    background: rgba(230,230,230,0.4);
+    padding: 0.2em;
+    border: 1px solid rgba(128,128,128,0.5);
+    line-height: normal;
+}
+
+#alternatives {
+    padding: 10px;
+    height:150px;
+}
+
+.scrollHolder {
+    color: #888;
+}
