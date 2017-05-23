@@ -363,7 +363,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			type: "GET",
 			datatype: "json",
 			async: false,
-			url: "../spectrum/php/getKnownMods.php",
+			url: "./php/getKnownMods.php",
 			success: function(data) {
 				self.knownModifications = JSON.parse(JSON.parse(data));
 			}
