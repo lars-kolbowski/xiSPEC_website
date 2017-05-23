@@ -56,10 +56,10 @@ function Peak (id, graph){
 
 				}
 			if(fragments[f].isMonoisotopic)
-				this.fragments.push(fragments[f])
+				this.fragments.push(fragments[f]);
 			else{
-				this.isotopes.push(fragments[f])
-				this.isotopenumbers.push(isotope)
+				this.isotopes.push(fragments[f]);
+				this.isotopenumbers.push(isotope);
 			}
 		}				
 	};
@@ -116,7 +116,6 @@ function Peak (id, graph){
 			})
 			;
 
-
 		function showTooltip(x, y, fragId){
 			var contents = [["m/z", self.x], ["Int", self.y]];
 			var header = [];
@@ -146,15 +145,40 @@ function Peak (id, graph){
 					contents.push([fragments[f].name + " (" + fragments[f].sequence + ")", "charge: " + charge + ", error: " + error]);
 			};
 
-					
+			
+		//Tooltip
+		if (CLMSUI.compositeModelInst !== undefined){
 			self.graph.tooltip.set("contents", contents )
 				.set("header", header.join(" "))
 				.set("location", {pageX: x, pageY: y});
-				//.set("location", {pageX: d3.event.pageX, pageY: d3.event.pageY})				
+				//.set("location", {pageX: d3.event.pageX, pageY: d3.event.pageY})		
 		}
+		else{
+			var html = header.join(" ");
+			for (var i = contents.length - 1; i >= 0; i--) {
+				html += "</br>";
+				html += contents[i].join(": ");
+			}
+			self.graph.tooltip.html(html);
+			self.graph.tooltip.transition()		
+				.duration(200)		
+				.style("opacity", .9);		
+			self.graph.tooltip.style("left", (x + 15) + "px")		
+				.style("top", y + "px");	
+		}
+
+		
+		};
+
 		function hideTooltip(){
-			self.graph.tooltip.set("contents", null);
-		}
+			if (CLMSUI.compositeModelInst !== undefined)
+				self.graph.tooltip.set("contents", null);
+			else{
+				self.graph.tooltip.style("opacity", 0);
+				self.graph.tooltip.html("");
+			}
+		};
+
 		function startHighlight(fragId){
 			var fragments = [];
 			if(fragId){
@@ -165,11 +189,13 @@ function Peak (id, graph){
 				fragments = self.fragments;
 			}
 			self.graph.model.addHighlight(fragments);	
-		}
+		};
+
 		function endHighlight(){
 			//hideTooltip();
 			self.graph.model.clearHighlight(self.fragments);	
-		}
+		};
+
 		function stickyHighlight(ctrl, fragId){
 			var fragments = [];
 			if(fragId){
@@ -179,7 +205,7 @@ function Peak (id, graph){
 			else	
 				fragments = self.fragments;
 			self.graph.model.updateStickyHighlight(fragments, ctrl);
-		}
+		};
 
 
 	  	//create frag labels
@@ -230,7 +256,7 @@ function Peak (id, graph){
 			{frags: lossy, group: this.graph.lossyAnnotations, type: "lossy", colourClass: "color_loss"},
 		];
         
-        //CLMSUI.idList = CLMSUI.idList || [];
+        CLMSUI.idList = CLMSUI.idList || [];	//obsolete?
         
         var makeIdentityID = function (d) {
             return d.id;

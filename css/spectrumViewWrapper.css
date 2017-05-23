@@ -9,8 +9,8 @@
 
 #spectrumControls label {
     display: inline-block;
-    padding-left: 1em;
-    padding-right: 1em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
 }
 
 #spectrumControls input {
@@ -20,15 +20,18 @@
      
 #spectrumControls form {
     display: inline-block;
+    border-left: 1px solid white;
+    border-right: 1px solid white;
 }
 
 #spectrumControls form > * {
     margin-right: 0.3em;
+    vertical-align: middle;
 }
 
 /* Important, let's the div with this class take up the remaining height inside a div declared with display:table */
 .heightFill {
-    display: table-row;
+    display: block;
     height: 100%;
     background: #fff;
 }
@@ -60,8 +63,9 @@
 }
 
 #alternatives {
+	margin-left: 10px;
     padding: 10px;
-    height:150px;
+    height:200px;
 }
 
 .scrollHolder {

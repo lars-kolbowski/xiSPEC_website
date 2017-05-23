@@ -22,7 +22,7 @@
 //		and https://gist.github.com/mbostock/3019563
 
 Graph = function(targetSvg, model, options) {
-	this.x = d3.scale.linear();
+	this.x = d3.scale.linear().clamp(true);
 	this.y = d3.scale.linear();
 	this.y_right = d3.scale.linear();
 	this.model = model;
@@ -35,7 +35,9 @@ Graph = function(targetSvg, model, options) {
 	};
 	this.g =  targetSvg.append("g")
 				.attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
-				.attr("class", "spectrum");
+				.attr("class", "spectrum")
+				.attr("id", "spectrumGraph");
+
 	
 	this.xaxisSVG = this.g.append("g")
 		.attr("class", "x axis");
@@ -48,14 +50,14 @@ Graph = function(targetSvg, model, options) {
 			user-select: none;*/
 	//brush
 	this.brush = d3.svg.brush()
-		.x(this.x)
-		.on("brushstart", brushstart)
-		.on("brush", brushmove)
-		.on("brushend", brushend);
+		.x(this.x);
+		// .on("brushstart", brushstart)
+		// .on("brush", brushmove)
+		// .on("brushend", brushend);
 	this.xaxisRect = this.g.append("rect")
 					.attr("height", "25")
 					.attr("opacity", 0)
-					.attr("pointer-events", "all")
+					.attr("pointer-events", "visible")
 					.style("cursor", "crosshair");
 	this.xaxisRect.call(this.brush);	
 	//~ this	
@@ -66,13 +68,13 @@ Graph = function(targetSvg, model, options) {
 		.attr("class", "y axis");
 	this.plot = this.g.append("rect")
 		.style("fill", "white")
-		.attr("pointer-events", "all");
+		.attr("pointer-events", "visible");
 
 	this.measureBackground = this.g.append("rect")
 		.attr("width", "0")
 		.style("fill", "white")
 		.style("cursor", "crosshair")
-		.attr("pointer-events", "all");
+		.attr("pointer-events", "visible");
 
 	this.innerSVG = this.g.append("g")
 		.attr("class", "innerSpectrum");
@@ -83,21 +85,22 @@ Graph = function(targetSvg, model, options) {
 	}.bind(this));
 
 	//Tooltip
-	//this.tooltip = CLMSUI.compositeModelInst.get("tooltipModel");
+	if (CLMSUI.compositeModelInst !== undefined)
+		this.tooltip = CLMSUI.compositeModelInst.get("tooltipModel");		
+	else{
+		target = this.g.node().parentNode.parentNode; //this would get you #spectrumPanel
+		this.tooltip = d3.select(target).append("span")
+			.style("font-size", "small")
+			.style("padding", "0 5px")
+			.style("border-radius", "6px")		
+			.attr("class", "tooltip")
+			.style("background-color", "black")
+			.style("pointer-events", "none")
+			.style("position", "absolute")				
+			.style("opacity", 0);
+	}
 
-	target = this.g.node().parentNode.parentNode; //this would get you #spectrumPanel
-	this.tip = d3.select(target).append("div")
-		.attr("class", "specViewer_tooltip")
-		.style("background-color", "#f0f0f0")
-	    .style("border", "1px solid black")
-	    .style("color", "black")
-	    .style("border-radius", "6px")
-	    .style("position", "absolute")
-	    .style("padding", "3px")               
-	    .style("opacity", 0)
-	    .style("font-size", "0.7em")
-	    .style("pointer-events", "none")
-	    .style("line-height", "100%");
+
 
 	//MeasuringTool
 	this.measuringTool = this.innerSVG.append("g").attr("class", "measuringTool");
@@ -137,48 +140,29 @@ Graph = function(targetSvg, model, options) {
 	}
 	// add the x-axis label
 	if (options.xlabel) {
-	this.xlabel = this.g.append("text")
-		.attr("class", "aWWWAAAAAxis")
-		.text(options.xlabel)
-		.attr("dy","2.4em")
-		.style("text-anchor","middle").style("pointer-events","none");
+		this.xlabel = this.g.append("text")
+			.attr("class", "aWWWAAAAAxis")
+			.text(options.xlabel)
+			.attr("dy","2.4em")
+			.style("text-anchor","middle").style("pointer-events","none");
 	}
 	// add y-axis label
 	if (options.ylabelLeft) {
-	this.ylabelLeft = this.g.append("g").append("text")
-		.attr("class", "axis")
-		.text(options.ylabelLeft)
-		.style("text-anchor","middle").style("pointer-events","none");
+		this.ylabelLeft = this.g.append("g").append("text")
+			.attr("class", "axis")
+			.text(options.ylabelLeft)
+			.style("text-anchor","middle").style("pointer-events","none");
 	}
 	// add 2nd y-axis label
 	if (options.ylabelRight) {
-	this.ylabelRight = this.g.append("g").append("text")
-		.attr("class", "axis")
-		.text(options.ylabelRight)
-		.style("text-anchor","middle").style("pointer-events","none");
+		this.ylabelRight = this.g.append("g").append("text")
+			.attr("class", "axis")
+			.text(options.ylabelRight)
+			.style("text-anchor","middle").style("pointer-events","none");
 	}
+
+	this.zoom = d3.behavior.zoom().x(this.x).on("zoom", this.redraw());
 	
-	var self = this;
-
-	function brushstart() {
-		self.dragZoomHighlight
-			.attr("width",0)
-			.attr("display","inline");
-	}
-
-	function brushmove() {
-	  var s = self.brush.extent();
-	  var width = self.x(s[1] - s[0]) - self.x(0);
-	  self.dragZoomHighlight.attr("x",self.x(s[0])).attr("width", width);
-	}
-
-	function brushend() {
-	  self.dragZoomHighlight.attr("display","none");
-	  var s = self.brush.extent();
-	  self.x.domain(s);
-	  self.brush.x(self.x);
-	  self.resize(s[0], s[1], self.model.ymin, self.model.ymax);
-	}
 };
 
 Graph.prototype.setData = function(){
@@ -187,29 +171,22 @@ Graph.prototype.setData = function(){
 	this.pep1 = this.model.pep1;
 	this.pep2 = this.model.pep2;
     if (this.model.JSONdata) {
-    	//var test = "";
         for (var i = 0; i < this.model.JSONdata.peaks.length; i++){
         		var peak = this.model.JSONdata.peaks[i];
-				//test += peak.mz + "\t" + peak.intensity + "\r\n";
             this.points.push(new Peak(i, this));
         }
-        //console.log(test);
-        this.model.points = this.points;
-        //Isotope cluster
-    /*	this.cluster = new Array();
 
-        var peakCount = this.points.length;
-        for (var p = 0; p < peakCount; p++) {
-            var peak = this.points[p];
-            if (peak.fragments.length > 0){
-                this.cluster.push(new IsotopeCluster(p, this));
-            }
-        }*/
-        //console.log(this.cluster);
+        this.model.points = this.points;
         this.updatePeakColors();
     }
-
-	this.resize(this.model.xminPrimary, this.model.xmaxPrimary, this.model.ymin, this.model.ymaxPrimary);
+    if(this.model.lockZoom){
+    	this.resize(this.model.xmin, this.model.xmax, this.model.ymin, this.model.ymax);
+		this.disableZoom();
+	}
+    else{
+		this.resize(this.model.xminPrimary, this.model.xmaxPrimary, this.model.ymin, this.model.ymaxPrimary);
+		this.enableZoom();
+	}
 }
 
 Graph.prototype.resize = function(xmin, xmax, ymin, ymax) {
@@ -227,7 +204,7 @@ Graph.prototype.resize = function(xmin, xmax, ymin, ymax) {
 	self.x.domain([xmin, xmax])
 		.range([0, width]);
 	// y-scale (inverted domain)
-	self.y.domain([0, ymax*0.95]).nice()
+	self.y.domain([0, ymax]).nice()
 		.range([height, 0]).nice();
 	self.y_right.domain([0, ymax]).nice()
 		.range([height, 0]).nice();
@@ -262,15 +239,12 @@ Graph.prototype.resize = function(xmin, xmax, ymin, ymax) {
 		
 	self.plot.attr("width", width)
 		.attr("height", height);
-
-	// self.innerSVG.attr("width", width)
-	// 		.attr("height", height)
-	// 		.attr("viewBox", "0 0 "+width+" "+height);
 	
 	self.xaxisRect.attr("width",width).attr("y", height).attr("height", self.margin.bottom);
 	self.dragZoomHighlight.attr("height", height);
-				
-	self.zoom = d3.behavior.zoom().x(self.x).on("zoom", self.redraw());
+	
+	self.zoom = d3.behavior.zoom().x(self.x).on("zoom", self.redraw());			
+	self.zoom.scaleExtent([0, self.model.xmaxPrimary]);
 	self.plot.call(self.zoom);
 	//self.innerSVG.call(self.zoom);
 
@@ -286,6 +260,8 @@ Graph.prototype.resize = function(xmin, xmax, ymin, ymax) {
 }
 
 Graph.prototype.disableZoom = function(){
+
+	this.plot.attr("pointer-events", "none");
 	this.xaxisRect.style("cursor", "default");
 	this.brush.on("brushstart", null)
 		.on("brush", null)
@@ -294,12 +270,46 @@ Graph.prototype.disableZoom = function(){
 		.on("zoom", null);
 }
 
+Graph.prototype.enableZoom = function(){
+	this.plot.attr("pointer-events", "visible");
+	this.plot.call(this.zoom);
+	this.xaxisRect.style("cursor", "crosshair");
+	this.brush.on("brushstart", brushstart)
+		.on("brush", brushmove)
+		.on("brushend", brushend);
+	var self = this;
+	function brushstart() {
+		self.dragZoomHighlight
+			.attr("width",0)
+			.attr("display","inline")
+		;
+	}
+
+	function brushmove() {
+	  var s = self.brush.extent();
+	  var width = self.x(s[1] - s[0]) - self.x(0);
+	  self.dragZoomHighlight.attr("x",self.x(s[0])).attr("width", width);
+	}
+
+	function brushend() {
+	  self.dragZoomHighlight.attr("display","none");
+	  var s = self.brush.extent();
+	  self.x.domain(s);
+	  self.brush.x(self.x);
+	  self.model.xmin = s[0];
+	  self.model.xmax = s[1]; //--
+	  self.resize(self.model.xmin, self.model.xmax, self.model.ymin, self.model.ymax);
+	}		
+}
+
 Graph.prototype.measure = function(on){
 	if (on === true){
 		var self = this;
-		self.measureBackground
-		.attr("width", self.plot[0][0].getAttribute("width"))
-		.attr("height", self.plot[0][0].getAttribute("height"))
+    	self.measureBackground 
+      		.attr("width", self.plot[0][0].getAttribute("width")) 
+      		.attr("height", self.plot[0][0].getAttribute("height"));
+
+		self.peaks.style("pointer-events", "none");		//disable peak highlighting
 
 		self.disableZoom();
 
@@ -495,40 +505,17 @@ Graph.prototype.measure = function(on){
 	}
 	else{
 		this.measureClear();
-		this.plot.call(this.zoom);
-		this.xaxisRect.style("cursor", "crosshair");
-		this.brush.on("brushstart", brushstart)
-			.on("brush", brushmove)
-			.on("brushend", brushend);
-		var self = this;
-		function brushstart() {
-			self.dragZoomHighlight
-				.attr("width",0)
-				.attr("display","inline")
-			;
-		}
-
-		function brushmove() {
-		  var s = self.brush.extent();
-		  var width = self.x(s[1] - s[0]) - self.x(0);
-		  self.dragZoomHighlight.attr("x",self.x(s[0])).attr("width", width);
-		}
-
-		function brushend() {
-		  self.dragZoomHighlight.attr("display","none");
-		  var s = self.brush.extent();
-		  self.x.domain(s);
-		  self.brush.x(self.x);
-		  self.resize(s[0], s[1], self.model.ymin, self.model.ymax);
-		}
 	}
 }
 
 Graph.prototype.measureClear = function(){
+	this.peaks.style("pointer-events", "visible");	
 	this.measureBackground.attr("height", 0);
 	this.measuringTool.attr("display","none");
 	this.measureDistance.attr("display","none");
-	this.measureInfo.style("display","none");	
+	this.measureInfo.style("display","none");
+
+	this.enableZoom();
 }
 
 Graph.prototype.redraw = function(){
@@ -539,8 +526,7 @@ Graph.prototype.redraw = function(){
 		//get highest intensity from peaks in x range
 		//adjust y scale to new highest intensity
 
-
-		self.measureClear();
+		//self.measureClear();
 		if (self.points) {
 			var ymax = 0
 			var xDomain = self.x.domain();
@@ -549,9 +535,8 @@ Graph.prototype.redraw = function(){
 			  	ymax = self.points[i].y;
 			}
 			//console.log(ymax);
-			//self.y.domain([0, ymax/0.9]).nice();
-			self.y.domain([0, ymax/0.95]).nice();
-			self.y_right.domain([0, (ymax/(self.model.ymaxPrimary*0.95))*100]).nice();
+			self.y.domain([0, ymax/0.95]);
+			self.y_right.domain([0, (ymax/(self.model.ymaxPrimary*0.95))*100]);
 			self.yAxisLeftSVG.call(self.yAxisLeft);
 			self.yAxisRightSVG.call(self.yAxisRight);
 			for (var i = 0; i < self.points.length; i++){
@@ -569,6 +554,8 @@ Graph.prototype.redraw = function(){
 }
 
 Graph.prototype.clear = function(){
+	this.model.measureMode = false;
+	this.measure(false);
 	this.points= [];
 	this.highlights.selectAll("*").remove();
 	this.peaks.selectAll("*").remove();
@@ -632,6 +619,18 @@ Graph.prototype.updateColors = function(){
 		for (var p = 0; p < peakCount; p++) {
 			this.points[p].updateColor();
 		}
+}
+
+Graph.prototype.show = function(){
+	this.g.attr("visibility", "visible");
+	this.enableZoom();
+}
+
+Graph.prototype.hide = function(){
+	this.g.attr("visibility", "hidden");
+	this.disableZoom();
+	//this.xaxisRect.attr("pointer-events", "none");
+	//this.g.style("pointer-events", "none");
 }
 /*
 

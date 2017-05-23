@@ -336,87 +336,18 @@ var PeptideView = Backbone.View.extend({
 						changeCrossLink();
 					}
 					//if changeMod is active and the mod is from the same peptide and it's a valid modification for this aa
-					if(self.changeMod !== false && self.validModChange && d.pepIndex == self.changeMod.pepIndex){	
+					if(self.changeMod !== false && self.validModChange){	
 						changeMod(d);
 					}
 				})
-				.on("mouseover", function(d, i) {
-					if(self.changeMod !== false && d.pepIndex == self.changeMod.pepIndex){	//if changeMod is active and the mod is from the same peptide
-						var pepLetterHighlight = this.childNodes[0];
-						pepLetterHighlight.setAttribute("opacity", 1);
-						
-						var offset = self.pepoffset[d.pepIndex];
-						var highlight = self.modLetterHighlights[d.pepIndex][0][self.changeMod.pos-offset];
-						var oldModLetters = self.modLetters[d.pepIndex][0][self.changeMod.pos-offset]
-						var x = parseInt(this.childNodes[0].getAttribute("x"));
-						var y = parseInt(oldModLetters.getAttribute("y"));
-						//var modtext = oldModLetters.innerHTML;
-
-
-						//check if it is a valid modification change
-						if (self.model.checkForValidModification(self.changeMod.mod, d.aminoAcid)){
-							self.validModChange = true;
-						}
-						else{
-							self.validModChange = false;
-							this.childNodes[0].setAttribute("style", "cursor:not-allowed");
-							this.childNodes[1].setAttribute("style", "cursor:not-allowed");
-						}
-						//
-						if (self.changeMod.pepIndex == 0)
-							var color = self.model.p1color;
-						else if (self.changeMod.pepIndex == 1)
-							var color = self.model.p2color;
-						oldModLetters.setAttribute("fill", "grey");
-						highlight.setAttribute("x", x);
-						highlight.setAttribute("y", y+1);
-						highlight.setAttribute("opacity", 1)
-						self.changeModLetter.attr("x", x)
-							.text(self.changeMod.mod)
-							.attr("y", y)
-							.attr("fill", color)
-							.attr("opacity", 1);	
-					}
+				.on("mouseover", function(d) {
+					if(self.changeMod !== false){	//if changeMod is active
+						changeModStartHighlight(this, d);
+					};
 
 					if(self.changeCL != false){
-						var pepLetterHighlight = this.childNodes[0];
-						var pepLetter = this.childNodes[1];
-							//set opacity of all letters of this highlight to zero
-							for (var i = 0; i < self.pepLetterHighlights[d.pepIndex][0].length; i++) {
-								if(typeof(self.pepLetterHighlights[d.pepIndex][0][i]) !== "undefined")
-									self.pepLetterHighlights[d.pepIndex][0][i].setAttribute("opacity", 0);
-							}
-							
-							self.CLline.attr("stroke", "grey");
-							// update changeCL to the currently highlighted ones
-							for (var i = 0; i < self.changeCL.length; i++) {
-								if(self.changeCL[i].peptideId == d.pepIndex)
-									self.changeCL[i].linkSite = d.pos;
-							}						
-							if (d.pepIndex == 0){		//pep1
-								self.changeCLline
-									.attr("x1", pepLetterHighlight.getAttribute("x"))
-									.attr("opacity", 1);
-								self.CLlineHighlight.attr("x1", pepLetterHighlight.getAttribute("x"));
-							}
-							else if (d.pepIndex == 1){
-						 		self.changeCLline
-						 			.attr("x2", pepLetterHighlight.getAttribute("x"))
-						 			.attr("opacity", 1);
-								self.CLlineHighlight.attr("x2", pepLetterHighlight.getAttribute("x"));
-							}
-						pepLetterHighlight.setAttribute("opacity", 1);
-					}		
-				})
-				.on("mouseout", function(d) {
-					var offset = self.pepoffset[d.pepIndex];
-					if(self.changeMod !== false && d.pepIndex == self.changeMod.pepIndex){	//if changeMod is active and the mod is from the same peptide
-						var pepLetterHighlight = self.pepLetterHighlights[d.pepIndex][0][d.pos+offset];
-						var highlight =  self.modLetterHighlights[d.pepIndex][0][self.changeMod.pos-offset];
-						pepLetterHighlight.setAttribute("opacity", 0);
-						self.changeModLetter.attr("opacity", 0);
-						highlight.setAttribute("opacity", 0);
-					}
+						changeCLHighlight(this, d);
+					};	
 				})
 			;
 			pepLetterG.append("text")
@@ -455,14 +386,90 @@ var PeptideView = Backbone.View.extend({
 				//self.linkPos[d.pepIndex].linkSite = d.pos; not necessary pos is already updated through mouseover
 				var newlinkpos = new Array(self.linkPos[0].linkSite, self.linkPos[1].linkSite);
 				self.model.changeLinkPos(newlinkpos);
-			}
+			};
 
 			function changeMod(d){
-				var offset = self.pepoffset[d.pepIndex]
-				var oldPos = self.changeMod.pos-offset;
+				var offset = self.pepoffset[self.changeMod.pepIndex];
+				var oldPos = self.changeMod.pos - offset;
 				var newPos = d.pos;
-				self.model.changeMod(oldPos, newPos, d.pepIndex);
-			}
+				self.model.changeMod(oldPos, newPos, self.changeMod.pepIndex, d.pepIndex);
+			};
+
+			function changeModStartHighlight(pepLetterG, pepLetterData){
+
+				clearHighlights();
+
+				var pepLetterHighlight = pepLetterG.childNodes[0];
+				var pepLetter = pepLetterG.childNodes[1];
+				pepLetterHighlight.setAttribute("opacity", 1);
+				
+				var offset = self.pepoffset[self.changeMod.pepIndex];
+				var highlight = self.modLetterHighlights[self.changeMod.pepIndex][0][self.changeMod.pos-offset];
+				var oldModLetters = self.modLetters[self.changeMod.pepIndex][0][self.changeMod.pos-offset]
+				var x = parseInt(pepLetterHighlight.getAttribute("x"));
+				if (pepLetterData.pepIndex == 0)
+					var y = 5;
+				else if (pepLetterData.pepIndex == 1)
+					var y = 83;
+
+				//check if it is a valid modification change
+				if (self.model.checkForValidModification(self.changeMod.mod, pepLetterData.aminoAcid)){
+					self.validModChange = true;
+					pepLetterHighlight.setAttribute("style", "cursor:pointer");
+					pepLetter.setAttribute("style", "cursor:pointer");
+				}
+				else{
+					self.validModChange = false;
+					pepLetterHighlight.setAttribute("style", "cursor:not-allowed");
+					pepLetter.setAttribute("style", "cursor:not-allowed");
+				}
+				//
+				if (pepLetterData.pepIndex == 0)
+					var color = self.model.p1color;
+				else if (pepLetterData.pepIndex == 1)
+					var color = self.model.p2color;
+				oldModLetters.setAttribute("fill", "grey");
+				highlight.setAttribute("x", x);
+				highlight.setAttribute("y", y+1);
+				highlight.setAttribute("opacity", 1)
+				self.changeModLetter.attr("x", x)
+					.text(self.changeMod.mod)
+					.attr("y", y)
+					.attr("fill", color)
+					.attr("opacity", 1);
+			};
+
+			function clearHighlights(){
+				self.pepLetterHighlights.forEach(function(peptide){
+					peptide.attr("opacity", 0);
+				});
+			};
+
+			function changeCLHighlight(pepLetterG, pepLetterData){
+				var pepLetterHighlight = pepLetterG.childNodes[0];
+				var pepLetter = pepLetterG.childNodes[1];
+				clearHighlights();
+					
+				self.CLline.attr("stroke", "grey");
+				// update changeCL to the currently highlighted ones
+				for (var i = 0; i < self.changeCL.length; i++) {
+					if(self.changeCL[i].peptideId == pepLetterData.pepIndex)
+						self.changeCL[i].linkSite = pepLetterData.pos;
+				}						
+				if (pepLetterData.pepIndex == 0){		//pep1
+					self.changeCLline
+						.attr("x1", pepLetterHighlight.getAttribute("x"))
+						.attr("opacity", 1);
+					self.CLlineHighlight.attr("x1", pepLetterHighlight.getAttribute("x"));
+				}
+				else if (pepLetterData.pepIndex == 1){
+			 		self.changeCLline
+			 			.attr("x2", pepLetterHighlight.getAttribute("x"))
+			 			.attr("opacity", 1);
+					self.CLlineHighlight.attr("x2", pepLetterHighlight.getAttribute("x"));
+				}
+				pepLetterHighlight.setAttribute("opacity", 1);
+			};
 
 			//mods
 			var mod_data = []

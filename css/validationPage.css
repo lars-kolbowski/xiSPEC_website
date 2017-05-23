@@ -1,0 +1,59 @@
+/*
+#main .mainContent {
+	top:5px;
+}
+*/
+
+#clearHighlights {
+	display: none;
+}
+
+#filterModeDiv {
+	display: none !important;
+}
+
+.movePeakLabels {
+	display: none !important;
+}
+
+#spectrumControls {
+	width: 100%;
+    background-color: #750000;
+	display: block;
+	color: #FFF;
+	/*float:right;*/
+}
+
+.pageHeader, div#spectrumControlsTop, div#spectrumControlsBottom {
+    height: 35px;
+    vertical-align: middle;
+    border-bottom: none;
+}
+
+.dynDiv_moveParentDiv{
+	display: none;
+}
+.dynDiv_resizeDiv_tl, .dynDiv_resizeDiv_tr, .dynDiv_resizeDiv_bl, .dynDiv_resizeDiv_br{
+	display:none;
+}
+#spectrum {
+	width: 100%;
+}
+#spectrumPanel {
+	width: 100%;
+	height:100%;
+/*
+	padding: 0px 10px;
+*/
+}
+
+#colorSelector{
+	display: none;
+}
+#spectrumControls label#colorSelectorLabel{
+	display: none;
+}
+#alternatives {
+    background: rgba(9, 29, 66, 0.9);
+    height:150px;
+}

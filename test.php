@@ -134,14 +134,15 @@ if ($response === ""){
         <link rel="stylesheet" href="./css/validationPage.css">
         <script type="text/javascript" src="./vendor/d3.js"></script>
         <script type="text/javascript" src="./vendor/colorbrewer.js"></script>
-        <script type="text/javascript" src="./vendor/underscore.js"></script>
-        <script type="text/javascript" src="./vendor/zepto.js"></script>
-        <script type="text/javascript" src="./vendor/backbone.js"></script>
-        <script type="text/javascript" src="./vendor/c3.js"></script>
-        <script type="text/javascript" src="./vendor/split.js"></script>
-        <script type="text/javascript" src="./vendor/svgexp.js"></script>
-        <script type="text/javascript" src="./vendor/spin.js"></script>
-        <script type="text/javascript" src="./vendor/js.cookie.js"></script>
+
+        <script type="text/javascript" src="../CLMS-UI/vendor/c3.js"></script>
+        <script type="text/javascript" src="../CLMS-UI/vendor/split.js"></script>
+        <script type="text/javascript" src="../CLMS-UI/vendor/svgexp.js"></script>
+        <script type="text/javascript" src="../CLMS-UI/vendor/underscore.js"></script>
+        <script type="text/javascript" src="../CLMS-UI/vendor/zepto.js"></script>
+        <script type="text/javascript" src="../CLMS-UI/vendor/backbone.js"></script>
+        <script type="text/javascript" src="../CLMS-UI/vendor/spin.js"></script>
+
 
         <!-- Spectrum view .js files -->
         <script type="text/javascript" src="./src/model.js"></script>
@@ -153,7 +154,7 @@ if ($response === ""){
         <script type="text/javascript" src="./src/graph/Graph.js"></script>
         <script type="text/javascript" src="./src/graph/Peak.js"></script>
         <script type="text/javascript" src="./src/graph/Fragment.js"></script>
-
+        <script type="text/javascript" src="./vendor/js.cookie.js"></script>
         <script>
 
 

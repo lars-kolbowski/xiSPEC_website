@@ -60,7 +60,7 @@
 								<option value="138.06807961">BS3 [138.06807961 Da]</option>
 							</select>
 
-					  		<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myPrecursorZ" type="number" min="1" placeholder="Charge" name="preCharge">
+					  		<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myPrecursorZ" type="number" min="1" placeholder="Charge" name="preCharge" autocomplete="off">
 
 							<select class="form-control" style="margin-right:2%;width:10%;display:inline;" id="myFragmentation" name="fragMethod">
 								<option value="HCD">HCD</option>
@@ -70,7 +70,7 @@
 								<option value="EThcD">EThcD</option>
 							</select>
 
-							<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myTolerance" type="number" min="0" step="0.1" placeholder="Tolerance" name="ms2Tol">
+							<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myTolerance" type="number" min="0" step="0.1" placeholder="Tolerance" name="ms2Tol" autocomplete="off">
 
 							<select class="form-control" style="margin-right:2%;width:15%;display:inline;" required id="myToleranceUnit" name="tolUnit">
 								<option value="ppm">ppm</option> 

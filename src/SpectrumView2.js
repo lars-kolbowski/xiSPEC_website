@@ -1,15 +1,17 @@
 var SpectrumView = Backbone.View.extend({
 
-    events : {
-        'click #reset' : 'resetZoom',
-        'click #lossyChkBx': 'showLossy',
-        'submit #setrange' : 'setrange',
-        'click #clearHighlights' : 'clearHighlights',
-        'change #colorSelector': 'changeColorScheme',
-        'click #measuringTool': 'measuringTool',
-        'click #moveLabels': 'moveLabels',
+	events : {
+		'click #reset' : 'resetZoom',
+		'click #lossyChkBx': 'showLossy',
+		'submit #setrange' : 'setrange',
+		'click #lockZoom' : 'lockZoom',
+		'click #clearHighlights' : 'clearHighlights',
+		'change #colorSelector': 'changeColorScheme',
+		'click #measuringTool': 'measuringTool',
+		'click #moveLabels': 'moveLabels',
 		'click #downloadSVG': 'downloadSVG',
-      },
+		'click #toggleView' : 'toggleView',
+	  },
 
 	initialize: function() {
 
@@ -30,6 +32,7 @@ var SpectrumView = Backbone.View.extend({
 
 	render: function() {
 		this.graph.clear();
+		this.lockZoom();
 		if (this.model.JSONdata)
 			this.graph.setData();
 
@@ -72,10 +75,58 @@ var SpectrumView = Backbone.View.extend({
 		$("#xright").val(this.model.xmax);
 	},
 
+	lockZoom: function(){
+		if (!this.model.showSpectrum)
+			return
+		if ($('#lockZoom').is(':checked')) {
+			$('#lock')[0].innerHTML = "&#128274";
+			$('#rangeSubmit').prop('disabled', true);
+			$('#xleft').prop('disabled', true);
+			$('#xright').prop('disabled', true);
+			this.model.lockZoom = true;
+			this.graph.disableZoom();
+		} else { 
+			$('#lock')[0].innerHTML = "&#128275";
+			$('#rangeSubmit').prop('disabled', false);
+			$('#xleft').prop('disabled', false);
+			$('#xright').prop('disabled', false);
+			this.model.lockZoom = false;
+			this.graph.enableZoom();
+		}
+
+	},
+
+	toggleView: function(){
+		if (this.model.showSpectrum){
+			$('#toggleView')[0].innerHTML = "Spectrum";
+			$('#lock').css("cursor", "not-allowed");
+			$('#moveLabels').prop('disabled', true);
+			$('#measuringTool').prop('disabled', true);
+			$('#reset').prop('disabled', true);
+			$('#rangeSubmit').prop('disabled', true);
+			$('#xleft').prop('disabled', true);
+			$('#xright').prop('disabled', true);
+
+			this.model.lockZoom = true;
+			this.model.showSpectrum = false;
+			this.graph.hide();
+		}
+		else{
+			$('#toggleView')[0].innerHTML = "QC";
+			$('#lock').css("cursor", "pointer");
+			$('#moveLabels').prop('disabled', false);
+			$('#measuringTool').prop('disabled', false);
+			$('#reset').prop('disabled', false);
+			$('#rangeSubmit').prop('disabled', false);
+			$('#xleft').prop('disabled', false);
+			$('#xright').prop('disabled', false);
+			this.model.showSpectrum = true;
+			this.graph.show();
+		}
+	},
+
 	clearHighlights: function(){
-		this.model.sticky.length = 0;
-		this.model.highlights.length = 0;
-		this.updateHighlights();
+		this.model.clearStickyHighlights();
 	},
 
 	changeColorScheme: function(e){
@@ -91,12 +142,13 @@ var SpectrumView = Backbone.View.extend({
 		var peaks = this.graph.points;
 
 		for(p = 0; p < peaks.length; p++){
+			if(peaks[p].fragments.length > 0)
+				peaks[p].highlight(false);
+			
 			var highlightFragments = _.intersection(peaks[p].fragments, this.model.highlights);
 			if(highlightFragments.length != 0){
 				peaks[p].highlight(true, highlightFragments);
 			}
-			else if(peaks[p].fragments.length > 0)
-				peaks[p].highlight(false);
 		}
 		this.graph.updatePeakColors();
 		this.graph.updatePeakLabels();
@@ -118,25 +170,32 @@ var SpectrumView = Backbone.View.extend({
 		var peaks = this.graph.points;
 
 		if (selected){
+			// for(p = 0; p < peaks.length; p++){
+			// 	if(peaks[p].labels){
+			// 		for(l = 0; l < peaks[p].labels.length; l++){
+			// 			peaks[p].labels[l].call(peaks[p].labelDrag);
+			// 			peaks[p].labels[l].style("cursor", "pointer");
+			// 		}
+			// 	}
+			// }	
 			for(p = 0; p < peaks.length; p++){
-				if(peaks[p].labels){
-					for(l = 0; l < peaks[p].labels.length; l++){
-						peaks[p].labels[l].call(peaks[p].labelDrag);
-						peaks[p].labels[l].style("cursor", "pointer");
-					}			
+				if(peaks[p].labels.length){
+						peaks[p].labels
+							.call(peaks[p].labelDrag)
+							//.style("cursor", "pointer");
 				}
 			}
 		}
 		else{
 			for(p = 0; p < peaks.length; p++){
-				if(peaks[p].labels){
-					for(l = 0; l < peaks[p].labels.length; l++){
-						peaks[p].labels[l].on(".drag", null);
-						peaks[p].labels[l].style("cursor", "default");
-					}
+				if(peaks[p].labels.length){
+						peaks[p].labels
+							.on(".drag", null)
+							//.style("cursor", "default");
 				}
 			}			
 		}
+
 	},
 	downloadSVG:function(){
             var svgSel = d3.select(this.el).selectAll("svg");
