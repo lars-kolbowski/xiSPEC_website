@@ -40,7 +40,7 @@
    	 	<!-- Intro -->
 			<section id="top" class="one">
 				<div class="container">
-					<h1 class="page-header">Upload</h1>
+					<h1 class="page-header">Data Input</h1>
 					<form id="manUpPepForm" action="viewSpectrum.php" method="post" target="_blank">
 					<!-- <form id="xisv_entryform"  action="http://spectrumviewer.org/xisv/index.php" method="post" target="_blank" onsubmit="doPreSubmission();"> -->
 						<section style="margin-bottom:2%;">
@@ -100,6 +100,17 @@
 						</div>
 					</form>								
 				</div>
+			</section>
+			<section id="bottom" class="one">
+				<div class="container">
+					<h1 class="page-header">Upload</h1>
+					<form action="php/file_upload.php" method="post" enctype="multipart/form-data">
+						Select image to upload:
+						<input type="file" name="fileToUpload" id="fileToUpload">
+						<input type="submit" value="Upload Image" name="submit">
+					</form>
+				</div>
+			</section>
 			</section>
 		</div> <!-- MAIN -->
 	</body>
