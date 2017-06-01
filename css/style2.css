@@ -312,20 +312,43 @@ body, input, select, textarea {
     margin:0px!important;
 }
 
+#spectrumControls{
+    font-size: 1.5em;
+}
+
+#settings-appearance{
+    border-left: 1px solid white;
+}
+
+#lock{
+    margin-left: -11px;
+    margin-right: -3px;
+}
+
+.settings_menu{
+    font-size: 1.5em;
+}
+
 #settings_main{
     padding-top: 10px;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    line-height: 3.48;
+}
+
+.label{
+    font-size: 1.1em;
 }
 
 .dynDiv{
-    padding:20px 10px;
+    padding-top: 30px;
     background: #333;
     overflow: hidden;
     color:#fff;
     position:fixed;
     pointer-events:all;
-/*
+    /* font-size: 1.1em; */
+    /*
     height:400px;
 */
 }

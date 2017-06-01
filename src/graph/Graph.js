@@ -621,6 +621,16 @@ Graph.prototype.updateColors = function(){
 		}
 }
 
+Graph.prototype.updateHighlightColors = function(){
+	var peakCount = this.points.length;
+		for (var p = 0; p < peakCount; p++) {
+			if(this.points[p].highlightLine !== undefined){
+				this.points[p].highlightLine.attr("stroke", this.model.highlightColour);
+				this.points[p].labelHighlights.attr("stroke", this.model.highlightColour);
+			}
+		}
+}
+
 Graph.prototype.show = function(){
 	this.g.attr("visibility", "visible");
 	this.enableZoom();

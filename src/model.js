@@ -71,7 +71,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.p2color_cluster = this.cmap[5];
 		this.p2color_loss = this.cmap[6];
 		this.lossFragBarColour = "#cccccc";
-		this.highlightColour = "yellow";
+		this.highlightColour = "#FFFF00";
 		this.highlightWidth = 10;
 
 		this.calcPrecursorMass();
@@ -211,6 +211,10 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.trigger("changed:ColorScheme");
 	},
 
+	changeHighlightColor: function(color){
+		this.highlightColour = color;
+		this.trigger("changed:HighlightColor");
+	},
 
 	changeLinkPos: function(newLinkSites){
 

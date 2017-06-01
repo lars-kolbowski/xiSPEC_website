@@ -31,13 +31,14 @@ var FragmentationKeyView = Backbone.View.extend({
 			"bottom": 40,
 			"left":   40
 		};
-		this.highlights = this.fragKeyWrapper.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+		//this.highlights = this.fragKeyWrapper.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 		this.g =  this.fragKeyWrapper.append("g").attr("class", "fragKey").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
 		this.listenTo(this.model, 'change', this.render);
 		this.listenTo(this.model, 'destroy', this.remove);
 		this.listenTo(this.model, 'changed:Highlights', this.updateHighlights);
 		this.listenTo(this.model, 'changed:ColorScheme', this.updateColors);
+		this.listenTo(this.model, 'changed:HighlightColor', this.updateHighlightColors);
 		this.listenTo(window, 'resize', _.debounce(this.resize));
 
 
@@ -725,6 +726,18 @@ var FragmentationKeyView = Backbone.View.extend({
 		this.colorLetters("all");
 	},
 
+	updateHighlightColors: function(){
+
+		for (var i = 0; i < this.fraglines.length; i++) {
+			
+			if (this.fraglines[i].bHighlight !== undefined)
+				this.fraglines[i].bHighlight.attr("stroke", this.model.highlightColour);
+			if (this.fraglines[i].yHighlight !== undefined)
+				this.fraglines[i].yHighlight.attr("stroke", this.model.highlightColour);
+		}
+
+	},
+
 	resize: function(){
 	    var parentDivWidth = $(this.el).width();
 	    var fragKeyWidth = $(".fragKey")[0].getBBox().width;
@@ -746,7 +759,7 @@ var FragmentationKeyView = Backbone.View.extend({
 		this.pepoffset = [];
 		this.linkPos = [];
 		this.g.selectAll("*").remove();
-		this.highlights.selectAll("*").remove();
+		//this.highlights.selectAll("*").remove();
 	}	
 
 });
