@@ -243,7 +243,7 @@ var PeptideView = Backbone.View.extend({
 
 		this.fraglines = new Array();
 
-		if(fragments !== undefined){
+/*		if(fragments !== undefined){
 			for (var i = 0; i < fragments.length; i++) {
 				for (var r = 0; r < fragments[i].range.length; r++) {
 					var pepId = fragments[i].range[r].peptideId;
@@ -258,7 +258,7 @@ var PeptideView = Backbone.View.extend({
 		    this.drawFragmentationEvents(0);
 			if(this.peptides[1])	
 				this.drawFragmentationEvents(1);	
-		}
+		}*/
 
 	},
 

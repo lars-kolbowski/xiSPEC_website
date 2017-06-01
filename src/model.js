@@ -7,6 +7,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.moveLabels = false;
 		this.measureMode = false;
 		this.showSpectrum = true;
+		this.userModifications = [];
 		this.on("change:JSONdata", function(){
 			var json = this.get("JSONdata");
 			if (typeof json !== 'undefined')
@@ -25,11 +26,11 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			this.trigger("changed:charge");
 		});	
 
-		this.on("change:modifications", function(){
+/*		this.on("change:modifications", function(){
 			this.updateKnownModifications();
 			if(this.peptides !== undefined)
 				this.calcPrecursorMass();
-		});
+		});*/
 
 	},
 
@@ -73,7 +74,6 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.highlightColour = "yellow";
 		this.highlightWidth = 10;
 
-
 		this.calcPrecursorMass();
 		if (window.modTable !== undefined)
 			modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(this.pepStrsMods.join(";"))).load();
@@ -82,6 +82,15 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		if (this.JSONdata.peaks !== undefined)
 			this.setGraphData();
 
+	},
+
+	peaksToMGF: function(){
+		var output = "";
+		for (var i = 0; i < this.JSONdata.peaks.length; i++) {
+			output += this.JSONdata.peaks[i].mz + "	";
+			output += this.JSONdata.peaks[i].intensity + "\n";
+		}
+		return output;
 	},
 
 	clear: function(){
@@ -285,6 +294,16 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	checkForValidModification: function(mod, aminoAcid){
+
+		for (var i = 0; i < this.userModifications.length; i++) {
+			if(this.userModifications[i].id == mod){
+				if ($.inArray(aminoAcid, this.userModifications[i].aminoAcids) != -1)
+					return true;
+				else
+					return false;
+			}
+		}
+
 		for (var i = 0; i < this.knownModifications['modifications'].length; i++) {
 			if(this.knownModifications['modifications'][i].id == mod){
 				if ($.inArray(aminoAcid, this.knownModifications['modifications'][i].aminoAcids) != -1)
@@ -370,16 +389,16 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		});	
 	},
 
-	updateKnownModifications: function(){
-		customMods = this.get("modifications").data;
-		for (var i = 0; i < customMods.length; i++) {
-			for (var j = 0; j < this.knownModifications['modifications'].length; j++) {
-				if(this.knownModifications['modifications'][j].id == customMods[i].id){
-					this.knownModifications['modifications'][j].mass = customMods[i].mass;
-					this.knownModifications['modifications'][j].aminoAcids = customMods[i].aminoAcids;
-				}
-			}				
-		}	
+	updateUserModifications: function(mod){
+
+		for (var j = 0; j < this.userModifications.length; j++) {
+			if(this.userModifications[j].id == mod.id){
+				this.userModifications[j].mass = mod.mass;
+				this.userModifications[j].aminoAcids = mod.aminoAcids;
+				return;
+			}
+		}
+		this.userModifications.push(mod);			
 	},
 
 	request_annotation: function(json_request){

@@ -57,7 +57,7 @@ $( document ).ready(function() {
 
 		var mod = {'id': modName, 'mass': modMass, 'aminoAcids': modSpec};
 
-		window.peptide.updateKnownModifications(mod);
+		window.peptide.updateUserModifications(mod);
 
 	 });
 
@@ -100,9 +100,17 @@ $( document ).ready(function() {
 			{
 				"render": function ( data, type, row, meta ) {
 					data = 0;
-					for (var i = 0; i < window.peptide.knownModifications['modifications'].length; i++) {
-						if(window.peptide.knownModifications['modifications'][i].id == row.id)
-							data = window.peptide.knownModifications['modifications'][i].mass;
+					for (var i = 0; i < window.peptide.userModifications.length; i++) {
+						if(window.peptide.userModifications[i].id == row.id){
+							data = window.peptide.userModifications[i].mass;
+							var found = true;
+						}
+					}
+					if (!found){
+						for (var i = 0; i < window.peptide.knownModifications['modifications'].length; i++) {
+							if(window.peptide.knownModifications['modifications'][i].id == row.id)
+								data = window.peptide.knownModifications['modifications'][i].mass;
+						}
 					}
 					return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" name="modMasses[]" type="number" min=0 step=0.0001 required value='+data+' autocomplete=off>';
 				},
@@ -110,13 +118,21 @@ $( document ).ready(function() {
 			},
 			{
 				"render": function ( data, type, row, meta ) {
-					for (var i = 0; i < window.peptide.knownModifications['modifications'].length; i++) {
-						if(window.peptide.knownModifications['modifications'][i].id == row.id){						
-							data = data.split(",");
-							data = _.union(data, window.peptide.knownModifications['modifications'][i].aminoAcids);
-							data.sort();
-							data = data.join("");
-							
+					for (var i = 0; i < window.peptide.userModifications.length; i++) {
+						if(window.peptide.userModifications[i].id == row.id){
+							data = window.peptide.userModifications[i].aminoAcids;
+							var found = true;
+						}
+					}
+					if (!found){				
+						for (var i = 0; i < window.peptide.knownModifications['modifications'].length; i++) {
+							if(window.peptide.knownModifications['modifications'][i].id == row.id){						
+								data = data.split(",");
+								data = _.union(data, window.peptide.knownModifications['modifications'][i].aminoAcids);
+								data.sort();
+								data = data.join("");
+								
+							}
 						}
 					}
 					return '<input class="form-control" id="modSpec_'+meta.row+'" row="'+meta.row+'" name="modSpecificities[]" type="text" required value='+data+' autocomplete=off>'

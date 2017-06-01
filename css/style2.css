@@ -201,7 +201,7 @@ body, input, select, textarea {
     width:20px;
 }
 /* network page */
-#main {
+#mainView {
     height:100vh;
     width:100vw;
     /*display: table;*/
@@ -215,7 +215,7 @@ body, input, select, textarea {
     /*z-index:-1;*/
 }
 
-#main .mainContent {
+#mainView .mainContent {
     top: 0px;
     bottom: 65px;
     position: absolute;
@@ -312,9 +312,15 @@ body, input, select, textarea {
     margin:0px!important;
 }
 
+#settings_main{
+    padding-top: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
 .dynDiv{
     padding:20px 10px;
-    background: rgba(9, 29, 66, 0.9);
+    background: #333;
     overflow: hidden;
     color:#fff;
     position:fixed;
@@ -373,7 +379,7 @@ body, input, select, textarea {
     color: #777;
 }
 
-#main .controls{
+#mainView .controls{
     overflow: hidden;
     /*display: table-row;*/
     
