@@ -246,6 +246,7 @@ if ($response === ""){
 		});
         window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumPanel"});
         window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
+        window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
         window.ErrorIntensityPlot = new ErrorIntensityPlotView({model: SpectrumModel, el:"#spectrumPanel"});
 
 		//window.SettingsPeptideView = new PeptideView({model: SettingsSpectrumModel, el:"#peptideDiv"});
@@ -450,7 +451,7 @@ function updateJScolor(jscolor) {
 								</select>
 								</label>
 								<label class="btn label">Highlight Color:
-									<input class="jscolor" id="highlightColor" value="#FFFF00" onchange="updateJScolor(this.jscolor);">
+									<input class="jscolor form-control" id="highlightColor" value="#FFFF00" onchange="updateJScolor(this.jscolor);">
 								</label>								
 							</div>
 						</div>

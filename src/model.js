@@ -319,6 +319,13 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	calcPrecursorMass: function(){
+
+		// don't calculate the mass if it's already defined by xiAnnotator
+		if (this.annotationData !== undefined)
+			if (this.annotationData.precursorMZ !== undefined && this.annotationData.precursorMZ !== -1)
+				return
+		
+
 		//if(this.knownModifications === undefined)
 		//	this.getKnownModifications();
 		var aastr = "ARNDCEQGHILKMFPSTWYV";
@@ -366,11 +373,19 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		}
 
 		var totalMass = 0;
-		if(this.get("clModMass") !== undefined){
+
+
+		if(this.get("clModMass") !== undefined)
+			var clModMass = parseInt(this.get("clModMass"));
+		else if (this.annotationData !== undefined)
+			var clModMass = this.annotationData['cross-linker'].modMass;
+
+
+		if(clModMass !== undefined){
 			for (var i = 0; i < massArr.length; i++) {
 				totalMass += massArr[i];
 			}
-			totalMass += parseInt(this.get("clModMass"));
+			totalMass += clModMass;
 			this.mass = [totalMass];
 		}
 		else{

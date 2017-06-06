@@ -7,8 +7,7 @@
 		?>
 		<?php include("xiSPEC_scripts.php");?>
 		<script type="text/javascript" src="./js/PepInputView.js"></script>			
-		<script type="text/javascript" src="./js/PeptideView.js"></script>
-		<script type="text/javascript" src="./js/PrecursorInfoView.js"></script>		
+		<script type="text/javascript" src="./js/PeptideView.js"></script>	
 		<script type="text/javascript" src="./src/model.js"></script>		
 		<script type="text/javascript" src="./js/upload.js"></script>
 	</head>
@@ -60,9 +59,9 @@
 								<option value="138.06807961">BS3 [138.06807961 Da]</option>
 							</select>
 
-					  		<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myPrecursorZ" type="number" min="1" placeholder="Charge" name="preCharge" autocomplete="off">
+					  		<input class="form-control" style="margin-right:2%;width:10%;display:inline;"  required id="myPrecursorZ" type="number" min="1" placeholder="Charge" name="preCharge" autocomplete="off">
 
-							<select class="form-control" style="margin-right:2%;width:10%;display:inline;" id="myFragmentation" name="fragMethod">
+							<select class="form-control" style="margin-right:2%;width:15%;display:inline;" id="myFragmentation" name="fragMethod">
 								<option value="HCD">HCD</option>
 								<option value="CID">CID</option>
 								<option value="ETD">ETD</option>
