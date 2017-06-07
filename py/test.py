@@ -136,6 +136,10 @@ for mzid_item in mzid_reader:
         json_dict['peaks'].append(peak)
         i += 1
 
+
+    # ms2 tolerance
+    json_dict['annotation']['fragmentTolerance'] = {"tolerance": 20, "unit": "ppm"}
+
     # fragmentation method
     json_dict['annotation']['ions'] = [{"type": "PeptideIon"}]
 
