@@ -1,23 +1,26 @@
 <?php
+session_start();
 $target_dir = "../../uploads/";
 $mzid_file = $target_dir . basename($_FILES["mzidToUpload"]["name"]);
 $mzml_file = $target_dir . basename($_FILES["mzmlToUpload"]["name"]);
 
 $files = array("mzidToUpload" => $mzid_file, "mzmlToUpload" => $mzml_file);
-
+$uploadStatus = "";
 
 foreach ($files as $key => $value) {
     if (move_uploaded_file($_FILES[$key]["tmp_name"], $value)) {
         $uploadStatus .= "The file ". basename( $_FILES[$key]["name"]). " has been uploaded.<br/>";
     } else {
-        $uploadStatus = "Sorry, there was an error uploading the file ".basename( $_FILES[$key]["name"]).".<br/>";
+        $uploadStatus .= "Sorry, there was an error uploading the file ".basename( $_FILES[$key]["name"]).".<br/>";
     }
 }
 
-$command = escapeshellcmd('../py/test.py '.$mzid_file.' '.$mzml_file. ' '.session_id(););
+$command = escapeshellcmd('../py/test.py '.$mzid_file.' '.$mzml_file. ' '.session_id());
 echo $command;
+echo "<br/>";
 $output = shell_exec($command);
 echo $output;
+
 
 
 // $uploadOk = 1;

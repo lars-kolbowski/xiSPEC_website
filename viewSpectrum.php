@@ -7,100 +7,101 @@ error_reporting(E_ALL);
 require("functions.php");
 
 if (empty($_POST)){
+	session_start();
         $dir = 'sqlite:/var/www/html/xiSPEC/dbs/'.session_id().'.db';
         $dbh  = new PDO($dir) or die("cannot open the database");
         $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $query =  "SELECT * FROM jsonReqs";
+        $query =  "SELECT * FROM jsonReqs LIMIT 1";
         foreach ($dbh->query($query) as $row)
         {
-            var_dump($row);
+            $postJSON = $row['json'];
         }
-        die();
 }
+else{
+
+	$mods = [];
+	if(isset($_POST['mods'])){
+	    $mods = $_POST['mods'];
+	    $modMasses = $_POST['modMasses'];
+	    $modSpecificities = $_POST['modSpecificities'];
+	}
+
+	$pepsStr = $_POST["peps"];
+	$clModMass = floatval($_POST['clModMass']);
+	//$ms2Tol = floatval($_POST['ms2Tol'])." ".$_POST['tolUnit'];
+	$ms2Tol = floatval($_POST['ms2Tol']);
+	$tolUnit = $_POST['tolUnit'];
+	$peaklist = $_POST['peaklist'];
+	$method = $_POST['fragMethod'];
+	$preCharge = intval($_POST['preCharge']);
+
+	//$peaklist = explode('<br />',nl2br($peaklist));
+	$peaklist = explode("\r\n", $peaklist);
+
+	//peptides linksites block
+	$peps = explode(";", $pepsStr);
+	$linkSites = array();
+	$peptides = array();
+
+	$i = 0;
+	foreach ($peps as $pep) {
+	    array_push($peptides, pep_to_array($pep));
+	    $linkSites = array_merge($linkSites, get_link_sites($pep, $i));
+	    $i++;
+	}
 
 
-$mods = [];
-if(isset($_POST['mods'])){
-    $mods = $_POST['mods'];
-    $modMasses = $_POST['modMasses'];
-    $modSpecificities = $_POST['modSpecificities'];
+	//peak block
+	$peaks = array();
+	foreach ($peaklist as $peak) {
+	    $peak = trim($peak);
+	    if ($peak != ""){
+	        $parts = preg_split('/\s+/', $peak);
+	        if(count($parts) > 1)
+	            array_push($peaks, array('mz' => floatval($parts[0]), 'intensity' => floatval($parts[1])));
+	    }
+	}
+
+	//annotation block
+	$tol = array("tolerance" => $ms2Tol, "unit" => $tolUnit);
+	$modifications = array();
+	$i = 0;
+	//var_dump(str_split($modSpecificities[$i]))
+	//var_dump(implode(",", str_split($modSpecificities[$i]));
+	//die();
+	foreach ($mods as $mod) {
+	    array_push($modifications, array('aminoAcids' => str_split($modSpecificities[$i]), 'id' => $mod, 'mass' => $modMasses[$i]));
+	    $i++;
+	}
+
+	$ions = array();
+	array_push($ions, array('type' => 'PeptideIon'));
+	if ($method == "HCD" or $method == "CID") {
+	    array_push($ions, array('type' => 'BIon'));
+	    array_push($ions, array('type' => 'YIon')); 
+	};
+	if ($method == "EThcD" or $method == "ETciD") {
+	    array_push($ions, array('type' => 'BIon'));
+	    array_push($ions, array('type' => 'CIon'));
+	    array_push($ions, array('type' => 'YIon'));
+	    array_push($ions, array('type' => 'ZIon'));     
+	};
+	if ($method == "ETD") {
+	    array_push($ions, array('type' => 'CIon'));
+	    array_push($ions, array('type' => 'ZIon')); 
+	};
+
+	$cl = array('modMass' => $clModMass);
+
+	$annotation = array('fragmentTolerance' => $tol, 'modifications' => $modifications, 'ions' => $ions, 'cross-linker' => $cl, 'precursorCharge' => $preCharge);
+
+	//final array
+	$postData = array('Peptides' => $peptides, 'LinkSite' => $linkSites, 'peaks' => $peaks, 'annotation' => $annotation);
+
+	$postJSON = json_encode($postData);
+	//var_dump(json_encode($postData));
+	//die();
 }
-
-$pepsStr = $_POST["peps"];
-$clModMass = floatval($_POST['clModMass']);
-//$ms2Tol = floatval($_POST['ms2Tol'])." ".$_POST['tolUnit'];
-$ms2Tol = floatval($_POST['ms2Tol']);
-$tolUnit = $_POST['tolUnit'];
-$peaklist = $_POST['peaklist'];
-$method = $_POST['fragMethod'];
-$preCharge = intval($_POST['preCharge']);
-
-//$peaklist = explode('<br />',nl2br($peaklist));
-$peaklist = explode("\r\n", $peaklist);
-
-//peptides linksites block
-$peps = explode(";", $pepsStr);
-$linkSites = array();
-$peptides = array();
-
-$i = 0;
-foreach ($peps as $pep) {
-    array_push($peptides, pep_to_array($pep));
-    $linkSites = array_merge($linkSites, get_link_sites($pep, $i));
-    $i++;
-}
-
-
-//peak block
-$peaks = array();
-foreach ($peaklist as $peak) {
-    $peak = trim($peak);
-    if ($peak != ""){
-        $parts = preg_split('/\s+/', $peak);
-        if(count($parts) > 1)
-            array_push($peaks, array('mz' => floatval($parts[0]), 'intensity' => floatval($parts[1])));
-    }
-}
-
-//annotation block
-$tol = array("tolerance" => $ms2Tol, "unit" => $tolUnit);
-$modifications = array();
-$i = 0;
-//var_dump(str_split($modSpecificities[$i]))
-//var_dump(implode(",", str_split($modSpecificities[$i]));
-//die();
-foreach ($mods as $mod) {
-    array_push($modifications, array('aminoAcids' => str_split($modSpecificities[$i]), 'id' => $mod, 'mass' => $modMasses[$i]));
-    $i++;
-}
-
-$ions = array();
-array_push($ions, array('type' => 'PeptideIon'));
-if ($method == "HCD" or $method == "CID") {
-    array_push($ions, array('type' => 'BIon'));
-    array_push($ions, array('type' => 'YIon')); 
-};
-if ($method == "EThcD" or $method == "ETciD") {
-    array_push($ions, array('type' => 'BIon'));
-    array_push($ions, array('type' => 'CIon'));
-    array_push($ions, array('type' => 'YIon'));
-    array_push($ions, array('type' => 'ZIon'));     
-};
-if ($method == "ETD") {
-    array_push($ions, array('type' => 'CIon'));
-    array_push($ions, array('type' => 'ZIon')); 
-};
-
-$cl = array('modMass' => $clModMass);
-
-$annotation = array('fragmentTolerance' => $tol, 'modifications' => $modifications, 'ions' => $ions, 'cross-linker' => $cl, 'precursorCharge' => $preCharge);
-
-//final array
-$postData = array('Peptides' => $peptides, 'LinkSite' => $linkSites, 'peaks' => $peaks, 'annotation' => $annotation);
-
-$postJSON = json_encode($postData);
-//var_dump(json_encode($postData));
-//die();
 
 // The data to send to the API
 $url = 'http://xi3.bio.ed.ac.uk/xiAnnotator/annotate/FULL';
