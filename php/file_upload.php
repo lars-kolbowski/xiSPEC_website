@@ -14,7 +14,8 @@ foreach ($files as $key => $value) {
     }
 }
 
-$command = escapeshellcmd('../py/test.py $mzid_file $mzml_file');
+$command = escapeshellcmd('../py/test.py '.$mzid_file.' '.$mzml_file);
+echo $command;
 $output = shell_exec($command);
 echo $output;
 
