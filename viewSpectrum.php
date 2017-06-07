@@ -6,6 +6,19 @@ error_reporting(E_ALL);
 
 require("functions.php");
 
+if (empty($_POST)){
+        $dir = 'sqlite:/var/www/html/xiSPEC/dbs/'.session_id().'.db';
+        $dbh  = new PDO($dir) or die("cannot open the database");
+        $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $query =  "SELECT * FROM jsonReqs";
+        foreach ($dbh->query($query) as $row)
+        {
+            var_dump($row);
+        }
+        die();
+}
+
+
 $mods = [];
 if(isset($_POST['mods'])){
     $mods = $_POST['mods'];

@@ -8,13 +8,13 @@ $files = array("mzidToUpload" => $mzid_file, "mzmlToUpload" => $mzml_file);
 
 foreach ($files as $key => $value) {
     if (move_uploaded_file($_FILES[$key]["tmp_name"], $value)) {
-        echo "The file ". basename( $_FILES[$key]["name"]). " has been uploaded.";
+        $uploadStatus .= "The file ". basename( $_FILES[$key]["name"]). " has been uploaded.<br/>";
     } else {
-        echo "Sorry, there was an error uploading your file.";
+        $uploadStatus = "Sorry, there was an error uploading the file ".basename( $_FILES[$key]["name"]).".<br/>";
     }
 }
 
-$command = escapeshellcmd('../py/test.py '.$mzid_file.' '.$mzml_file);
+$command = escapeshellcmd('../py/test.py '.$mzid_file.' '.$mzml_file. ' '.session_id(););
 echo $command;
 $output = shell_exec($command);
 echo $output;
@@ -52,3 +52,25 @@ echo $output;
 //     }
 // }
 ?>
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>xiSPEC</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="description" content="common platform for downstream analysis of CLMS data" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+
+
+    </head>
+    <body>
+        <div id="main">
+           <?php echo $uploadStatus; ?> 
+
+         </div>
+    </body>
+</html>
