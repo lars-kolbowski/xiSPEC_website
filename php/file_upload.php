@@ -7,8 +7,8 @@ $files = array("mzidToUpload" => $mzid_file, "mzmlToUpload" => $mzml_file);
 
 
 foreach ($files as $key => $value) {
-    if (move_uploaded_file($_FILES[$key]["tmp_name"], $target_file)) {
-        echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+    if (move_uploaded_file($_FILES[$key]["tmp_name"], $value)) {
+        echo "The file ". basename( $_FILES[$key]["name"]). " has been uploaded.";
     } else {
         echo "Sorry, there was an error uploading your file.";
     }
