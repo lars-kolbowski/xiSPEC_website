@@ -8,6 +8,7 @@
 		<?php include("xiSPEC_scripts.php");?>
 		<script type="text/javascript" src="./js/PepInputView.js"></script>			
 		<script type="text/javascript" src="./js/PeptideView.js"></script>	
+		<script type="text/javascript" src="./src/PrecursorInfoView.js"></script>	
 		<script type="text/javascript" src="./src/model.js"></script>		
 		<script type="text/javascript" src="./js/upload.js"></script>
 	</head>
@@ -102,11 +103,12 @@
 			</section>
 			<section id="bottom" class="one">
 				<div class="container">
-					<h1 class="page-header">Upload</h1>
+					<h1 class="page-header">Data Upload</h1>
 					<form action="php/file_upload.php" method="post" enctype="multipart/form-data">
-						Select image to upload:
-						<input type="file" name="fileToUpload" id="fileToUpload">
-						<input type="submit" value="Upload Image" name="submit">
+						Select files to upload:
+						<input type="file" name="mzidToUpload" id="mzidToUpload">
+						<input type="file" name="mzmlToUpload" id="mzmlToUpload">
+						<input type="submit" value="Upload Files" name="submit">
 					</form>
 				</div>
 			</section>
