@@ -125,15 +125,17 @@ curl_setopt_array($ch, array(
 
 // Send the request
 $response = curl_exec($ch);
-//var_dump($response);
 
 // Check for errors
 if($response === FALSE){
     die(curl_error($ch));
 }
-if ($response === ""){
+$errorQuery = "java.lang.NullPointerException";
+if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQuery){
+    
+    echo ("xiAnnotator experienced a problem. Please try again later!");
     var_dump($postJSON);
-    die("xiAnnotator experienced a problem. Please try again later!");
+    die();
 }
 ?>
 
