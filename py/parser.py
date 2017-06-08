@@ -101,7 +101,7 @@ try:
     con = sqlite3.connect('/var/www/html/xiSPEC/dbs/'+sys.argv[3]+'.db')
     cur = con.cursor()
     cur.execute("DROP TABLE IF EXISTS jsonReqs")
-    cur.execute("CREATE TABLE jsonReqs(Id INT, json TEXT)")
+    cur.execute("CREATE TABLE jsonReqs(id INT, json TEXT)")
 
 except sqlite3.Error, e:
 
@@ -148,7 +148,7 @@ for mzid_item in mzid_reader:
         json_dict['annotation']['ions'].append({"type": "YIon"})
 
     with con:
-        cur.execute("INSERT INTO jsonReqs VALUES(%s, '%s')" % (i, json.dumps(json_dict)))
+        cur.execute("INSERT INTO jsonReqs VALUES(%s, '%s')" % (index, json.dumps(json_dict)))
     print index
     index += 1
     print json_dict
