@@ -368,7 +368,8 @@ var FragmentationKeyView = Backbone.View.extend({
 						changeCrossLink(d);
 					}
 					//change the mod if changeMod is active and it's a valid modification for this aa
-					if(self.changeMod !== false && self.validModChange){	
+					//if(self.changeMod !== false && self.validModChange){	
+					if(self.changeMod !== false){
 						changeMod(d);
 					}
 				})
@@ -440,7 +441,8 @@ var FragmentationKeyView = Backbone.View.extend({
 				var pepLetterHighlight = pepLetterG.childNodes[0];
 				var pepLetter = pepLetterG.childNodes[1];
 				pepLetterHighlight.setAttribute("opacity", 1);
-				
+				pepLetter.setAttribute("style", "cursor:pointer");
+
 				var offset = self.pepoffset[self.changeMod.pepIndex];
 				var highlight = self.modLetterHighlights[self.changeMod.pepIndex][0][self.changeMod.pos-offset];
 				var oldModLetters = self.modLetters[self.changeMod.pepIndex][0][self.changeMod.pos-offset]
@@ -451,7 +453,7 @@ var FragmentationKeyView = Backbone.View.extend({
 					var y = 83;
 
 				//check if it is a valid modification change
-				if (self.model.checkForValidModification(self.changeMod.mod, pepLetterData.aminoAcid)){
+/*				if (self.model.checkForValidModification(self.changeMod.mod, pepLetterData.aminoAcid)){
 					self.validModChange = true;
 					pepLetterHighlight.setAttribute("style", "cursor:pointer");
 					pepLetter.setAttribute("style", "cursor:pointer");
@@ -460,7 +462,7 @@ var FragmentationKeyView = Backbone.View.extend({
 					self.validModChange = false;
 					pepLetterHighlight.setAttribute("style", "cursor:not-allowed");
 					pepLetter.setAttribute("style", "cursor:not-allowed");
-				}
+				}*/
 				//
 				if (pepLetterData.pepIndex == 0)
 					var color = self.model.p1color;

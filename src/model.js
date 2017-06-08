@@ -35,6 +35,12 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	setData: function(){
+
+		if (this.get("JSONdata") == null){
+			this.trigger("changed:data");
+			return
+		}
+
 		$("#measuringTool").prop("checked", false);
 		$("#moveLabels").prop("checked", false);			
 		this.sticky = Array();
@@ -95,6 +101,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	clear: function(){
 		this.JSONdata = null;
+		this.set("JSONdata", null);
 		this.sticky = Array();
 		Backbone.Model.prototype.clear.call(this);
 	},
@@ -259,8 +266,17 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		if(this.get("JSONrequest") !== undefined){ 
 			json_req = this.get("JSONrequest");
 			//standalone
-			json_req.Peptides[newPepIndex].sequence[newPos].Modification = this.JSONdata.Peptides[oldPepIndex].sequence[oldPos].Modification;
+			var myNew = json_req.Peptides[newPepIndex].sequence[newPos];
+			var myOld = this.JSONdata.Peptides[oldPepIndex].sequence[oldPos];
+
+			myNew.Modification = myOld.Modification;
 			json_req.Peptides[oldPepIndex].sequence[oldPos].Modification = "";
+
+			if (myNew.aminoAcid != myOld.aminoAcid){
+				var annotationMod = $.grep(json_req.annotation.modifications, function(e){ return e.id == myNew.Modification; });
+				if (annotationMod[0].aminoAcids.indexOf(myNew.aminoAcid) === -1)
+					annotationMod[0].aminoAcids.push(myNew.aminoAcid);
+			}
 			this.request_annotation(json_req);
 		}
 		else if (this.match !== undefined){
@@ -301,7 +317,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 		for (var i = 0; i < this.userModifications.length; i++) {
 			if(this.userModifications[i].id == mod){
-				if ($.inArray(aminoAcid, this.userModifications[i].aminoAcids) != -1)
+				if ($.inArray(aminoAcid, this.userModifications[i].aminoAcids) != -1 || this.userModifications[i].aminoAcids == [])
 					return true;
 				else
 					return false;
@@ -320,6 +336,11 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	calcPrecursorMass: function(){
 
+		// // don't calculate the mass if JSONdata is empty
+		// if (this.JSONdata === null){
+		// 	this.mass = null
+		// 	return
+		// }
 		// don't calculate the mass if it's already defined by xiAnnotator
 		if (this.annotationData !== undefined)
 			if (this.annotationData.precursorMZ !== undefined && this.annotationData.precursorMZ !== -1)

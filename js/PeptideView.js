@@ -53,25 +53,27 @@ var PeptideView = Backbone.View.extend({
 
 	render: function() {
 		this.clear();
-		if (this.model.JSONdata)
+		if (this.model.JSONdata){
 			this.setData();
-		//instructions
-		var html = "";
-		if (this.peptides.length > 1){
-			if (this.linkPos.length == 0)
-				html += "Set the cross-link position by clicking on the amino acids.<br/>";
-			if (this.linkPos.length > 1)
-				html += "Click on the cross-link line to change the position.<br/>";
+
+			//instructions
+			var html = "";
+			if (this.peptides.length > 1){
+				if (this.linkPos.length == 0)
+					html += "Set the cross-link position by clicking on the amino acids.<br/>";
+				if (this.linkPos.length > 1)
+					html += "Click on the cross-link line to change the position.<br/>";
+			}
+			var modifications = false;
+			for (var i = 0; i < this.modLetters.length; i++) {
+				if (this.modLetters[i].length > 0)
+					modifications = true;
+			}
+			if (modifications)
+				html += "Click on a modification to change its position.<br/>";
+			this.instructions.html(html);
+			this.resize();
 		}
-		var modifications = false;
-		for (var i = 0; i < this.modLetters.length; i++) {
-			if (this.modLetters[i].length > 0)
-				modifications = true;
-		}
-		if (modifications)
-			html += "Click on a modification to change its position.<br/>";
-		this.instructions.html(html);
-		this.resize();
 	},
 
 	renderInfo: function() {
@@ -336,7 +338,8 @@ var PeptideView = Backbone.View.extend({
 						changeCrossLink();
 					}
 					//if changeMod is active and the mod is from the same peptide and it's a valid modification for this aa
-					if(self.changeMod !== false && self.validModChange){	
+					//if(self.changeMod !== false && self.validModChange){	
+					if(self.changeMod !== false){	
 						changeMod(d);
 					}
 				})
@@ -413,7 +416,7 @@ var PeptideView = Backbone.View.extend({
 					var y = 83;
 
 				//check if it is a valid modification change
-				if (self.model.checkForValidModification(self.changeMod.mod, pepLetterData.aminoAcid)){
+/*				if (self.model.checkForValidModification(self.changeMod.mod, pepLetterData.aminoAcid)){
 					self.validModChange = true;
 					pepLetterHighlight.setAttribute("style", "cursor:pointer");
 					pepLetter.setAttribute("style", "cursor:pointer");
@@ -422,7 +425,7 @@ var PeptideView = Backbone.View.extend({
 					self.validModChange = false;
 					pepLetterHighlight.setAttribute("style", "cursor:not-allowed");
 					pepLetter.setAttribute("style", "cursor:not-allowed");
-				}
+				}*/
 				//
 				if (pepLetterData.pepIndex == 0)
 					var color = self.model.p1color;
