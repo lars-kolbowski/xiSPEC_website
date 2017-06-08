@@ -108,7 +108,7 @@ blockquote {
     font-style: italic;
 }
 dl, ol, p, table, ul {
-    margin-bottom: 2em;
+    /* margin-bottom: 2em; */
 }
 br.clear {
     clear: both;

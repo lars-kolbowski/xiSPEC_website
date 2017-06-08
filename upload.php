@@ -11,6 +11,8 @@
 		<script type="text/javascript" src="./src/PrecursorInfoView.js"></script>	
 		<script type="text/javascript" src="./src/model.js"></script>		
 		<script type="text/javascript" src="./js/upload.js"></script>
+        <link rel="stylesheet" href="./css/dropdown.css" />
+
 	</head>
 	<body>
 		<!-- Sidebar -->
@@ -55,20 +57,44 @@
 						</section>
 						<section style="clear:left;text-align:center;margin-bottom:2%;">
 							<select class="form-control" style="margin-right:2%;width:25%;display:inline;" required id="myCL" name="clModMass">
-								<option value="" disabled selected>Select cross-linker</option>
+								<option value="" disabled selected>Select cross-linker...</option>
 								<option value="add">add your own...</option>
 								<option value="138.06807961">BS3 [138.06807961 Da]</option>
 							</select>
 
 					  		<input class="form-control" style="margin-right:2%;width:10%;display:inline;"  required id="myPrecursorZ" type="number" min="1" placeholder="Charge" name="preCharge" autocomplete="off">
 
-							<select class="form-control" style="margin-right:2%;width:15%;display:inline;" id="myFragmentation" name="fragMethod">
+
+								<div class="dropdown">
+									<input type="text" class="form-control btn-drop" id="ionSelection" value="Select ions..." readonly>
+									<div class="dropdown-content mutliSelect">
+										<ul>
+							                <li>
+							                    <label><input type="checkbox" class="ionSelectChkbox" value="peptide" id="PeptideIon" name="ions[]" />Peptide ion</label></li>
+							                <li>
+							                    <label><input type="checkbox" class="ionSelectChkbox" value="a" id="AIon" name="ions[]" />A ion</label></li>
+							                <li>
+							                    <label><input type="checkbox" class="ionSelectChkbox" value="b" id="BIon" name="ions[]" />B ion</label></li>
+							                <li>
+							                    <label><input type="checkbox" class="ionSelectChkbox" value="c" id="CIon" name="ions[]" />C ion</label></li>
+							                <li>
+							                    <label><input type="checkbox" class="ionSelectChkbox" value="x" id="XIon" name="ions[]" />X ion</label></li>
+							                <li>
+							                    <label><input type="checkbox" class="ionSelectChkbox" value="y" id="YIon" name="ions[]" />Y ion</label></li>
+							                <li>
+							                    <label><input type="checkbox" class="ionSelectChkbox" value="z" id="ZIon" name="ions[]" />Z ion</label></li>
+										</ul>
+									</div>
+								</div>
+
+
+<!-- 							<select class="form-control" style="margin-right:2%;width:15%;display:inline;" id="myFragmentation" name="fragMethod">
 								<option value="HCD">HCD</option>
 								<option value="CID">CID</option>
 								<option value="ETD">ETD</option>
 								<option value="ETciD">ETciD</option>
 								<option value="EThcD">EThcD</option>
-							</select>
+							</select> -->
 
 							<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myTolerance" type="number" min="0" step="0.1" placeholder="Tolerance" name="ms2Tol" autocomplete="off">
 

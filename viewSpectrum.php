@@ -32,7 +32,8 @@ else{
 	$ms2Tol = floatval($_POST['ms2Tol']);
 	$tolUnit = $_POST['tolUnit'];
 	$peaklist = $_POST['peaklist'];
-	$method = $_POST['fragMethod'];
+
+	//$method = $_POST['fragMethod'];
 	$preCharge = intval($_POST['preCharge']);
 
 	//$peaklist = explode('<br />',nl2br($peaklist));
@@ -75,21 +76,26 @@ else{
 	}
 
 	$ions = array();
-	array_push($ions, array('type' => 'PeptideIon'));
-	if ($method == "HCD" or $method == "CID") {
-	    array_push($ions, array('type' => 'BIon'));
-	    array_push($ions, array('type' => 'YIon')); 
-	};
-	if ($method == "EThcD" or $method == "ETciD") {
-	    array_push($ions, array('type' => 'BIon'));
-	    array_push($ions, array('type' => 'CIon'));
-	    array_push($ions, array('type' => 'YIon'));
-	    array_push($ions, array('type' => 'ZIon'));     
-	};
-	if ($method == "ETD") {
-	    array_push($ions, array('type' => 'CIon'));
-	    array_push($ions, array('type' => 'ZIon')); 
-	};
+	foreach ($_POST['ions'] as $iontype) {
+		$iontype = ucfirst($iontype)."Ion";
+		array_push($ions, array('type' => $iontype));
+	}
+
+	// array_push($ions, array('type' => 'PeptideIon'));
+	// if ($method == "HCD" or $method == "CID") {
+	//     array_push($ions, array('type' => 'BIon'));
+	//     array_push($ions, array('type' => 'YIon')); 
+	// };
+	// if ($method == "EThcD" or $method == "ETciD") {
+	//     array_push($ions, array('type' => 'BIon'));
+	//     array_push($ions, array('type' => 'CIon'));
+	//     array_push($ions, array('type' => 'YIon'));
+	//     array_push($ions, array('type' => 'ZIon'));     
+	// };
+	// if ($method == "ETD") {
+	//     array_push($ions, array('type' => 'CIon'));
+	//     array_push($ions, array('type' => 'ZIon')); 
+	// };
 
 	$cl = array('modMass' => $clModMass);
 
@@ -146,7 +152,7 @@ if ($response === ""){
         <link rel="stylesheet" href="./css/tooltip.css">
         <link rel="stylesheet" href="./css/spectrumViewWrapper.css">
         <link rel="stylesheet" href="./css/validationPage.css">
-
+        <link rel="stylesheet" href="./css/dropdown.css">
 		<?php include("xiSPEC_scripts.php");?>
 
         <script type="text/javascript" src="./vendor/jscolor.min.js"></script>
@@ -268,7 +274,7 @@ if ($response === ""){
         var json_req = <?php echo $postJSON ?>;
         console.log(json_req);
         SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
-        SpectrumModel.userModifications = <?php echo json_encode($modifications); ?>;
+         // SpectrumModel.userModifications = <?php //echo json_encode($modifications); ?>;
 
 		var json_data_copy = jQuery.extend({}, json_data);
 
@@ -279,7 +285,18 @@ if ($response === ""){
 		//settings panel - put into model? or extra view?
 		function render_settings(){
 			window.SettingsPepInputView.render();
-			$("#settingsFragmentation").val("<?php echo $method; ?>");
+
+			//ions
+			SpectrumModel.JSONdata.annotation.ions.forEach(function(ion){
+				$('#'+ion.type).attr('checked', true);
+			});
+			var ionSelectionArr = new Array();
+			$('.ionSelectChkbox:checkbox:checked').each(function(){
+			    ionSelectionArr.push($(this).val());
+			});
+			$('#ionSelection').val(ionSelectionArr.join(", "));
+
+			//$("#settingsFragmentation").val("<?php //echo $method; ?>");
 			$("#settingsPeaklist").val(SpectrumModel.peaksToMGF()); 
 			$("#settingsPrecursorZ").val(SpectrumModel.JSONdata.annotation.precursorCharge);
 			$("#settingsTolerance").val(parseInt(SpectrumModel.JSONdata.annotation.fragementTolerance));
@@ -339,7 +356,16 @@ if ($response === ""){
 			$('#settingsData').show();
 		});
 
+		$('.mutliSelect input[type="checkbox"]').on('click', function() {
 
+		    var ionSelectionArr = new Array();
+			$('.ionSelectChkbox:checkbox:checked').each(function(){
+			    ionSelectionArr.push($(this).val());
+			});
+
+			$('#ionSelection').val(ionSelectionArr.join(", "));
+
+		});
 
 
 });
@@ -359,15 +385,15 @@ function updateJScolor(jscolor) {
             <div class="mainContent">
                 <div id="spectrumPanel">
                 	<div id="spectrumControls">
-                		<div class="dropdown">
+						<div class="dropdown">
 							<button class="btn btn-1 btn-1a btn-drop">Labels</button>
 							<div class="dropdown-content">
-                				<ul>
-                				<li><label class="btn"><input id="moveLabels" type="checkbox">Movable Labels</label></li>
-                				<li><label class="btn"><input id="lossyChkBx" type="checkbox">Lossy Labels</label></li>
-                				</ul>
-                			</div>
-                		</div>
+								<ul>
+								<li><label class="btn"><input id="moveLabels" type="checkbox">Movable Labels</label></li>
+								<li><label class="btn"><input id="lossyChkBx" type="checkbox">Lossy Labels</label></li>
+								</ul>
+							</div>
+						</div>
                 		<button class="downloadButton btn btn-1 btn-1a">Download SVG</button>
                 		<button id="clearHighlights" class="btn btn-1 btn-1a">Clear Highlights</button>
                 		<label class="btn">Measure<input id="measuringTool" type="checkbox"></label>
@@ -418,6 +444,30 @@ function updateJScolor(jscolor) {
 							  				<input class="form-control" style="margin-right:2%;width:10%" required="" id="settingsPrecursorZ" type="number" min="1" placeholder="Charge" name="preCharge" autocomplete="off">
 										</label>
 
+										<label for="settingsIons"><span class="label btn">Ions: </span>
+											<div class="dropdown">
+												<input type="text" class="form-control btn-drop" id="ionSelection" readonly>
+												<div class="dropdown-content mutliSelect">
+													<ul>
+										                <li>
+										                    <label><input type="checkbox" class="ionSelectChkbox" value="peptide" id="PeptideIon" name="ions[]"/>Peptide ion</label></li>
+										                <li>
+										                    <label><input type="checkbox" class="ionSelectChkbox" value="a" id="AIon" name="ions[]"/>A ion</label></li>
+										                <li>
+										                    <label><input type="checkbox" class="ionSelectChkbox" value="b" id="BIon" name="ions[]"/>B ion</label></li>
+										                <li>
+										                    <label><input type="checkbox" class="ionSelectChkbox" value="c" id="CIon" name="ions[]"/>C ion</label></li>
+										                <li>
+										                    <label><input type="checkbox" class="ionSelectChkbox" value="x" id="XIon" name="ions[]"/>X ion</label></li>
+										                <li>
+										                    <label><input type="checkbox" class="ionSelectChkbox" value="y" id="YIon" name="ions[]"/>Y ion</label></li>
+										                <li>
+										                    <label><input type="checkbox" class="ionSelectChkbox" value="z" id="ZIon" name="ions[]"/>Z ion</label></li>
+													</ul>
+												</div>
+											</div>
+										</label>
+<!-- 
 										<label for="settingsFragmentation"><span class="label btn">Fragmentation method: </span>
 											<select class="form-control" style="margin-right:2%;width:15%;display:inline;" id="settingsFragmentation" name="fragMethod">
 												<option value="HCD">HCD</option>
@@ -426,7 +476,7 @@ function updateJScolor(jscolor) {
 												<option value="ETciD">ETciD</option>
 												<option value="EThcD">EThcD</option>
 											</select>
-										</label>
+										</label> -->
 
 										<label for="settingsTolerance"><span class="label btn">MS2 tolerance: </span>
 											<input class="form-control" style="margin-right:2%;width:15%;display:inline;" required="" id="settingsTolerance" type="number" min="0" step="0.1" placeholder="Tolerance" name="ms2Tol" autocomplete="off">
