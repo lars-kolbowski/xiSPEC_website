@@ -377,7 +377,9 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 				contentType: false,
 				processData: false,
 				success: function (returndata) {
-					console.log(returndata);
+					var json = JSON.parse(returndata);
+					window.SpectrumModel.set({JSONdata: json});
+					window.SpectrumModel.trigger("change:JSONdata");
 				}
 			});	 	
 		})
