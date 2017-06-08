@@ -108,8 +108,8 @@ except sqlite3.Error, e:
     print "Error %s:" % e.args[0]
     sys.exit(1)
 
-mzid_file = "/var/www/html/uploads/test_file_B170317_06_Lumos_ML_IN_205_PMBS3_Tryp_SECFr16.mzid"#sys.argv[1]#
-mzml_file = "/var/www/html/uploads/B170317_06_Lumos_ML_IN_205_PMBS3_Tryp_SECFr16.mzML"#sys.argv[2]#
+mzid_file = sys.argv[1]#"/var/www/html/uploads/test_file_B170317_06_Lumos_ML_IN_205_PMBS3_Tryp_SECFr16.mzid"#
+mzml_file = sys.argv[2]#"/var/www/html/uploads/B170317_06_Lumos_ML_IN_205_PMBS3_Tryp_SECFr16.mzML"#
 
 mzid_reader = mzid.MzIdentML(mzid_file)
 premzml = mzml.PreIndexedMzML(mzml_file)
