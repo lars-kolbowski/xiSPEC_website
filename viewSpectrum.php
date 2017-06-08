@@ -28,7 +28,6 @@ else{
 
 	$pepsStr = $_POST["peps"];
 	$clModMass = floatval($_POST['clModMass']);
-	//$ms2Tol = floatval($_POST['ms2Tol'])." ".$_POST['tolUnit'];
 	$ms2Tol = floatval($_POST['ms2Tol']);
 	$tolUnit = $_POST['tolUnit'];
 	$peaklist = $_POST['peaklist'];
@@ -36,7 +35,6 @@ else{
 	//$method = $_POST['fragMethod'];
 	$preCharge = intval($_POST['preCharge']);
 
-	//$peaklist = explode('<br />',nl2br($peaklist));
 	$peaklist = explode("\r\n", $peaklist);
 
 	//peptides linksites block
@@ -370,6 +368,21 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 		});
 
 
+		$('#nextSpectrum').click(function(){
+			$.ajax({
+				url: 'php/getSpectrum.php?i=2',
+				type: 'GET',
+				async: false,
+				cache: false,
+				contentType: false,
+				processData: false,
+				success: function (returndata) {
+					console.log(returndata);
+				}
+			});	 	
+		})
+
+
 });
 
 function updateJScolor(jscolor) {
@@ -410,7 +423,9 @@ function updateJScolor(jscolor) {
                 			<button id="reset" title="reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
                 		<input id="lockZoom" type="checkbox" style="visibility: hidden;"></form>
                 		<button id="toggleView" title="Click to toggle view" class="btn btn-1 btn-1a">QC</button>
-        				<button id="toggleSettings" title="Show/Hide Settings" id="toggleSettings" class="btn">&#9881;</button>               		
+        				<button id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a">&#9881;</button>
+        				<button id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a">&#x2039;</button>
+        				<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a">&#x203A;</button>               		
                 	</div>
                     <div class="heightFill">
                         <svg id="spectrumSVG"></svg>
