@@ -155,9 +155,20 @@ function doExample(){
 	$("#myPrecursorZ").val("3");
 	$("#myPrecursorZ").change();	
 	$("#myCL").val("138.06807961");
-	$("#myFragmentation").val("HCD");
+	//$("#myFragmentation").val("HCD");
 	$("#myToleranceUnit").val("ppm");	
 	$("#myCL").change();
+
+	//ions
+	$('#PeptideIon').attr('checked', true);
+	$('#BIon').attr('checked', true);
+	$('#YIon').attr('checked', true);
+	var ionSelectionArr = new Array();
+	$('.ionSelectChkbox:checkbox:checked').each(function(){
+	    ionSelectionArr.push($(this).val());
+	});
+	$('#ionSelection').val(ionSelectionArr.join(", "));
+
 };
 
 function doClearForm(){
