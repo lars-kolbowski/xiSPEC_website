@@ -50,7 +50,7 @@ def mzid_to_json(item):
     #         break
 
     pepIndex = 0
-    for spectrumId_item in item['SpectrumIdentificationItem']:
+    for spectrumId_item in item:
         # crosslinkId = spectrumId_item["cross-link spectrum identification item"]    # id of both peptides has to match
         JSON_dict["annotation"]["precursorCharge"] = spectrumId_item['chargeState']
         pepId = spectrumId_item['peptide_ref']
@@ -68,10 +68,9 @@ def mzid_to_json(item):
                 link_index = 0  # TODO: multilink support
                 mod_location = mod['location'] - 1
                 if 'name' in mod.keys():
-                    peptide_dict['sequence'][mod_location]['Modification'] = mod['name']  # TODO: abbreviations?
                     if 'cross-link donor' not in mod.keys():
-                        all_mods = add_to_modlist(mod, all_mods)
-                        # all_mods.append(mod)                                            # save to all mods list
+                        peptide_dict['sequence'][mod_location]['Modification'] = mod['name']  # TODO: abbreviations?
+                        all_mods = add_to_modlist(mod, all_mods) # save to all mods list
 
                         # add CL locations
                 if 'cross-link donor' in mod.keys() or 'cross-link acceptor' in mod.keys():
@@ -95,13 +94,16 @@ def mzid_to_json(item):
 
 print sys.argv[1]
 print sys.argv[2]
-print sys.argv[3]
+#print sys.argv[3]
 
 try:
     con = sqlite3.connect('/var/www/html/xiSPEC/dbs/'+sys.argv[3]+'.db')
+    #con = sqlite3.connect('test.db')
     cur = con.cursor()
     cur.execute("DROP TABLE IF EXISTS jsonReqs")
-    cur.execute("CREATE TABLE jsonReqs(id INT, json TEXT)")
+    cur.execute("CREATE TABLE jsonReqs(id INT PRIMARY KEY, json TEXT, mzid TEXT, passThreshold INT, rank INT)")
+    cur.execute("DROP TABLE IF EXISTS mzids")
+    cur.execute("CREATE TABLE mzids (id INT PRIMARY KEY, mzid TEXT)")
 
 except sqlite3.Error, e:
 
@@ -115,9 +117,29 @@ mzid_reader = mzid.MzIdentML(mzid_file)
 premzml = mzml.PreIndexedMzML(mzml_file)
 
 
-index = 0
-for mzid_item in mzid_reader:
-    json_dict = mzid_to_json(mzid_item)
+mz_index = 0
+specIdItem_index = 0
+for mzid_item in mzid_reader:a
+    # find pairs of cross-linked items
+    # TODO: linear Peptides and error handling what if there's no cross-link spectrum identification item?
+    CLSpecIdItemSet = set([SpecIdItem['cross-link spectrum identification item'] for SpecIdItem in mzid_item['SpectrumIdentificationItem']])
+
+    if len(CLSpecIdItemSet) == 0:
+        print "linear"
+        print mzid_item
+
+
+    alternatives = []
+    for id in CLSpecIdItemSet:
+        CLSpecIdItemPair = [SpecIdItem for SpecIdItem in mzid_item['SpectrumIdentificationItem'] if
+                            SpecIdItem['cross-link spectrum identification item'] == id]
+
+        alternatives.append({
+            "json_dict": mzid_to_json(CLSpecIdItemPair),
+            "passThreshold": CLSpecIdItemPair[0]['passThreshold'],
+            "rank": CLSpecIdItemPair[0]['rank']
+        })
+
     matches = re.findall("([0-9]+)", mzid_item["spectrumID"])
     scanID = int(matches[0])
 
@@ -127,35 +149,63 @@ for mzid_item in mzid_reader:
         scan = premzml.get_by_id('controllerType=0 controllerNumber=1 scan=' + str(scanID))
 
     # peaklist
+    peaklist = []
     i = 0
     while i < len(scan["m/z array"]):
         peak = {
             "mz": scan["m/z array"][i],
             "intensity": scan["intensity array"][i]
         }
-        json_dict['peaks'].append(peak)
+        peaklist.append(peak)
         i += 1
 
+    for alt in alternatives:
+        json_dict = alt['json_dict']
+        json_dict['peaks'] = peaklist
 
-    # ms2 tolerance
-    json_dict['annotation']['fragmentTolerance'] = {"tolerance": 20, "unit": "ppm"}
+        # ms2 tolerance
+        json_dict['annotation']['fragmentTolerance'] = {"tolerance": 20, "unit": "ppm"}
 
-    # fragmentation method
-    json_dict['annotation']['ions'] = [{"type": "PeptideIon"}]
+        # fragmentation method
+        json_dict['annotation']['ions'] = [{"type": "PeptideIon"}]
 
-    if 'beam-type collision-induced dissociation' in scan['precursorList']['precursor'][0]['activation'].keys():
-        json_dict['annotation']['ions'].append({"type": "BIon"})
-        json_dict['annotation']['ions'].append({"type": "YIon"})
+        if 'beam-type collision-induced dissociation' in scan['precursorList']['precursor'][0]['activation'].keys():
+            json_dict['annotation']['ions'].append({"type": "BIon"})
+            json_dict['annotation']['ions'].append({"type": "YIon"})
+
+        # passThreshold
+        if alt['passThreshold']:
+            passThreshold = 1
+        else:
+            passThreshold = 0
+
+        #rank
+        rank = alt['rank']
+
+        mzid = mzid_item['id']
+
+        with con:
+            cur.execute("INSERT INTO jsonReqs VALUES(%s, '%s', '%s', %s, %s)" % (
+            specIdItem_index, json.dumps(json_dict), mzid, passThreshold, rank))
+
+        specIdItem_index += 1
 
     with con:
-        cur.execute("INSERT INTO jsonReqs VALUES(%s, '%s')" % (index, json.dumps(json_dict)))
-    print index
-    index += 1
-    print json_dict
-    if index > 5:
-        break
+        cur.execute("INSERT INTO mzids VALUES (%s, '%s')" % (mz_index, mzid))
+    print mz_index
+    mz_index += 1
+        #print "INSERT INTO jsonReqs VALUES(%s, '%s', %s, %s)" % (i, json.dumps(json_dict), altId, passThreshold)
+    #if mz_index > 5:
+        #break
+
+
+cur.execute("SELECT * FROM mzids")
+a = cur.fetchall()
+id = str(a[1][1])
+cur.execute("SELECT * FROM jsonReqs WHERE mzid = '%s'" % id)
+b = cur.fetchall()
 
 if con:
-    con.close()
+    #con.close()
     print "end"
 

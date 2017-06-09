@@ -8,17 +8,26 @@ require("functions.php");
 
 if (empty($_POST)){
 	session_start();
-        $dir = 'sqlite:dbs/'.session_id().'.db';
-        $dbh  = new PDO($dir) or die("cannot open the database");
-        $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $query =  "SELECT * FROM jsonReqs LIMIT 1";
-        foreach ($dbh->query($query) as $row)
-        {
-            $postJSON = $row['json'];
-        }
+	$dir = 'sqlite:dbs/'.session_id().'.db';
+	$dir = 'sqlite:../dbs/'.session_id().'.db';
+	$dbh = new PDO($dir) or die("cannot open the database");
+	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$query =  "SELECT * FROM mzids WHERE id=".$_GET['i']." LIMIT 1";
+	foreach ($dbh->query($query) as $row)
+	{
+	    $mzid = $row['mzid'];
+	}
+
+	$query =  "SELECT * FROM jsonReqs WHERE mzid=".$mzid." ORDER BY rank ASC LIMIT 1";
+
+	foreach ($dbh->query($query) as $row)
+	{
+	    $postJSON = $row['json'];
+	}
+
 }
 else{
-
+	$requestId = -1;
 	$mods = [];
 	if(isset($_POST['mods'])){
 	    $mods = $_POST['mods'];
@@ -274,6 +283,7 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
         var json_req = <?php echo $postJSON ?>;
         console.log(json_req);
         SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
+      	<?php print("SpectrumModel.requestId = ".$requestId).";"; ?>
          // SpectrumModel.userModifications = <?php //echo json_encode($modifications); ?>;
 
 		var json_data_copy = jQuery.extend({}, json_data);
@@ -370,7 +380,7 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 
 		$('#nextSpectrum').click(function(){
 			$.ajax({
-				url: 'php/getSpectrum.php?i=2',
+				url: 'php/getSpectrum.php?i='+window.SpectrumModel.requestId+1,
 				type: 'GET',
 				async: false,
 				cache: false,
@@ -378,6 +388,7 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 				processData: false,
 				success: function (returndata) {
 					var json = JSON.parse(returndata);
+					window.SpectrumModel.requestId += 1;
 					window.SpectrumModel.request_annotation(json);
 				}
 			});	 	
