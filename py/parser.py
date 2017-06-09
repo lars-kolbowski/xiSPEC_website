@@ -126,7 +126,7 @@ premzml = mzml.PreIndexedMzML(mzml_file)
 
 mz_index = 0
 specIdItem_index = 0
-for mzid_item in mzid_reader:a
+for mzid_item in mzid_reader:
     # find pairs of cross-linked items
     # TODO: linear Peptides and error handling what if there's no cross-link spectrum identification item?
     CLSpecIdItemSet = set([SpecIdItem['cross-link spectrum identification item'] for SpecIdItem in mzid_item['SpectrumIdentificationItem']])
