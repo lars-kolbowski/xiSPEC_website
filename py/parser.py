@@ -96,9 +96,16 @@ print sys.argv[1]
 print sys.argv[2]
 #print sys.argv[3]
 
-try:
-    #con = sqlite3.connect('/var/www/html/xiSPEC/dbs/'+sys.argv[3]+'.db')
-    con = sqlite3.connect('test.db')
+dbfolder = "/var/www/html/dbs/" 
+try: 
+    os.stat(dbfolder) 
+except: 
+    os.mkdir(dbfolder)  
+ 
+try: 
+ 
+    con = sqlite3.connect(dbfolder+sys.argv[3]+'.db') 
+    #con = sqlite3.connect('test.db') 
     cur = con.cursor()
     cur.execute("DROP TABLE IF EXISTS jsonReqs")
     cur.execute("CREATE TABLE jsonReqs(id INT PRIMARY KEY, json TEXT, mzid TEXT, passThreshold INT, rank INT)")
