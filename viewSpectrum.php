@@ -15,9 +15,10 @@ if (empty($_POST)){
 	foreach ($dbh->query($query) as $row)
 	{
 	    $mzid = $row['mzid'];
+	    $requestId = $row['id'];
 	}
 
-	$query =  "SELECT * FROM jsonReqs WHERE mzid=".$mzid." ORDER BY rank ASC LIMIT 1";
+	$query =  "SELECT * FROM jsonReqs WHERE mzid='".$mzid."' ORDER BY rank ASC LIMIT 1";
 
 	foreach ($dbh->query($query) as $row)
 	{
