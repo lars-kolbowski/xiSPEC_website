@@ -487,16 +487,17 @@ function updateJScolor(jscolor) {
 						<div class="dynDiv_resizeDiv_tr" style="cursor: ne-resize;"></div>
 						<div class="dynDiv_resizeDiv_bl" style="cursor: sw-resize;"></div>
 						<div class="dynDiv_resizeDiv_br" style="cursor: se-resize;"></div>
-					</div>
-					<div class="form_control" id="specList_main">
-					<table id="specListTable" class="display" width="100%" style="text-align:center;">
-						<thead>
-							<tr>
-							    <th>id</th>
-							    <th>mzid</th>
-							</tr>
-						</thead>
-					</table>
+
+						<div class="form_control" id="specList_main">
+						<table id="specListTable" class="display" width="100%" style="text-align:center;">
+							<thead>
+								<tr>
+								    <th>id</th>
+								    <th>mzid</th>
+								</tr>
+							</thead>
+						</table>
+						</div>
 					</div>
 
 					<div class="dynDiv" id="settingsWrapper" style="display: none; z-index: 2; right: 5%; top: 10%; width: 800px; height: 600px;">
