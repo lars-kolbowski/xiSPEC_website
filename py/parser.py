@@ -6,7 +6,7 @@ import re
 import json
 import sys
 import sqlite3
-
+import os
 
 def add_to_modlist(mod, modlist):
     if mod['name'] in [m['name'] for m in modlist]:
