@@ -6,7 +6,7 @@ import re
 import json
 import sys
 import sqlite3
-import os
+
 
 def add_to_modlist(mod, modlist):
     if mod['name'] in [m['name'] for m in modlist]:
@@ -96,16 +96,9 @@ print sys.argv[1]
 print sys.argv[2]
 #print sys.argv[3]
 
-dbfolder = "/var/www/html/dbs/"
 try:
-    os.stat(dbfolder)
-except:
-    os.mkdir(dbfolder) 
-
-try:
-
-    con = sqlite3.connect(dbfolder+sys.argv[3]+'.db')
-    #con = sqlite3.connect('test.db')
+    #con = sqlite3.connect('/var/www/html/xiSPEC/dbs/'+sys.argv[3]+'.db')
+    con = sqlite3.connect('test.db')
     cur = con.cursor()
     cur.execute("DROP TABLE IF EXISTS jsonReqs")
     cur.execute("CREATE TABLE jsonReqs(id INT PRIMARY KEY, json TEXT, mzid TEXT, passThreshold INT, rank INT)")
@@ -126,6 +119,8 @@ premzml = mzml.PreIndexedMzML(mzml_file)
 
 mz_index = 0
 specIdItem_index = 0
+multipleInjList_jsonReqs = []
+multipleInjList_mzids = []
 for mzid_item in mzid_reader:
     # find pairs of cross-linked items
     # TODO: linear Peptides and error handling what if there's no cross-link spectrum identification item?
@@ -191,28 +186,38 @@ for mzid_item in mzid_reader:
 
         mzid = mzid_item['id']
 
-        with con:
-            cur.execute("INSERT INTO jsonReqs VALUES(%s, '%s', '%s', %s, %s)" % (
-            specIdItem_index, json.dumps(json_dict), mzid, passThreshold, rank))
 
+
+        # with con:
+        #     cur.execute("INSERT INTO jsonReqs VALUES(%s, '%s', '%s', %s, %s)" % (
+        #     specIdItem_index, json.dumps(json_dict), mzid, passThreshold, rank))
+
+        multipleInjList_jsonReqs.append([specIdItem_index, json.dumps(json_dict), mzid, passThreshold, rank])
         specIdItem_index += 1
+        print specIdItem_index
 
-    with con:
-        cur.execute("INSERT INTO mzids VALUES (%s, '%s')" % (mz_index, mzid))
-    print mz_index
+    # with con:
+    #     cur.execute("INSERT INTO mzids VALUES (%s, '%s')" % (mz_index, mzid))
+    multipleInjList_mzids.append([mz_index, mzid])
     mz_index += 1
+
+    if specIdItem_index % 100 == 0:
+        cur.executemany("""
+            INSERT INTO mzids ('id', 'mzid')
+            VALUES (?, ?)""", multipleInjList_mzids)
+        multipleInjList_mzids = []
+
+        cur.executemany("""
+            INSERT INTO jsonReqs ('id', 'json', 'mzid', 'passThreshold', 'rank')
+            VALUES (?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
+        multipleInjList_jsonReqs = []
+
         #print "INSERT INTO jsonReqs VALUES(%s, '%s', %s, %s)" % (i, json.dumps(json_dict), altId, passThreshold)
     #if mz_index > 5:
         #break
 
 
-cur.execute("SELECT * FROM mzids")
-a = cur.fetchall()
-id = str(a[1][1])
-cur.execute("SELECT * FROM jsonReqs WHERE mzid = '%s'" % id)
-b = cur.fetchall()
-
 if con:
-    #con.close()
+    con.close()
     print "end"
 
