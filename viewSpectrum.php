@@ -292,6 +292,35 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 		window.SettingsPepInputView = new PepInputView({model: SettingsSpectrumModel, el:"#settingsPeptide"});
 
 
+
+
+		//SpecListTable
+		window.specListTable = $('#specListTable').DataTable( {
+			"paging":   false,
+		    "ordering": false,
+		    "info":     false,
+		    "searching":false,
+		    "processing": true,
+		    "serverSide": true,
+		    "ajax": "php/getSpecList.php",
+		    "columns": [
+		        { "data": "id" },
+		        { "data": "mzid" },
+		        ],
+
+		    "columnDefs": [
+		    	{
+					"class": "invisible",
+					"targets": 0,
+				},
+            ]
+		});
+
+
+
+
+		$('#specList_main').html()
+
 		//settings panel - put into model? or extra view?
 		function render_settings(){
 			window.SettingsPepInputView.render();
@@ -327,6 +356,10 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 
 		$('#toggleSettings').click(function(){
 			$('#settingsWrapper').toggle();
+		});
+
+		$('#toggleSpecList').click(function(){
+			$('#specListWrapper').toggle();
 		});
 
 		$("#settingsApply").click(function(){
@@ -437,6 +470,7 @@ function updateJScolor(jscolor) {
                 		<button id="toggleView" title="Click to toggle view" class="btn btn-1 btn-1a">QC</button>
         				<button id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a">&#9881;</button>
         				<button id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a">&#x2039;</button>
+        				<button id="toggleSpecList" title="Spectra list" class="btn btn-1a">&#9776;</button>
         				<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a">&#x203A;</button>               		
                 	</div>
                     <div class="heightFill">
@@ -444,13 +478,34 @@ function updateJScolor(jscolor) {
                         <div id="measureTooltip"></div>
                     </div>
 
+					<div class="dynDiv" id="specListWrapper" style="display: none; z-index: 2; right: 6%; top: 11%; width: 800px; height: 600px;">
+						<div class="dynDiv_moveParentDiv" style="cursor: move;">
+							<span class="dynTitle">Spectra List</span>
+							<i class="fa fa-times-circle closeButton settingsCancel" id="closeListWrapper"></i>
+						</div>
+						<div class="dynDiv_resizeDiv_tl" style="cursor: nw-resize;"></div>
+						<div class="dynDiv_resizeDiv_tr" style="cursor: ne-resize;"></div>
+						<div class="dynDiv_resizeDiv_bl" style="cursor: sw-resize;"></div>
+						<div class="dynDiv_resizeDiv_br" style="cursor: se-resize;"></div>
+					</div>
+					<div class="form_control" id="specList_main">
+					<table id="specListTable" class="display" width="100%" style="text-align:center;">
+						<thead>
+							<tr>
+							    <th>id</th>
+							    <th>mzid</th>
+							</tr>
+						</thead>
+					</table>
+					</div>
+
 					<div class="dynDiv" id="settingsWrapper" style="display: none; z-index: 2; right: 5%; top: 10%; width: 800px; height: 600px;">
 						<div class="dynDiv_moveParentDiv" style="cursor: move;">
 							<span class="dynTitle">Settings</span>
 							<i class="fa fa-times-circle closeButton settingsCancel" id="closeSettings"></i>
 						</div>
 						<div class="settings_menu">
-						<button class="btn btn-1a" id="settings-data">Data</button><button class="btn btn-1a" id="settings-appearance">Appearance</button>
+							<button class="btn btn-1a" id="settings-data">Data</button><button class="btn btn-1a" id="settings-appearance">Appearance</button>
 						</div>
 						<div class="dynDiv_resizeDiv_tl" style="cursor: nw-resize;"></div>
 						<div class="dynDiv_resizeDiv_tr" style="cursor: ne-resize;"></div>
