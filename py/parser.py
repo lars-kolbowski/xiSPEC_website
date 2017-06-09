@@ -218,7 +218,7 @@ for mzid_item in mzid_reader:
             INSERT INTO jsonReqs ('id', 'json', 'mzid', 'passThreshold', 'rank')
             VALUES (?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
         multipleInjList_jsonReqs = []
-
+        con.commit()
         #print "INSERT INTO jsonReqs VALUES(%s, '%s', %s, %s)" % (i, json.dumps(json_dict), altId, passThreshold)
     #if mz_index > 5:
         #break
