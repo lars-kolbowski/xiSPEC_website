@@ -68,8 +68,11 @@ def mzid_to_json(item):
                 link_index = 0  # TODO: multilink support
                 mod_location = mod['location'] - 1
                 if 'name' in mod.keys():
+                    #fix mod names
+                    mod['name'] = mod['name'].lower()
+                    mod['name'] = mod['name'].replace(" ", "_")
                     if 'cross-link donor' not in mod.keys():
-                        peptide_dict['sequence'][mod_location]['Modification'] = mod['name'].lower()  # TODO: abbreviations?
+                        peptide_dict['sequence'][mod_location]['Modification'] = mod['name'] # TODO: abbreviations?
                         all_mods = add_to_modlist(mod, all_mods) # save to all mods list
 
                         # add CL locations
