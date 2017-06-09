@@ -96,8 +96,15 @@ print sys.argv[1]
 print sys.argv[2]
 #print sys.argv[3]
 
+dbfolder = "/var/www/html/xiSPEC/dbs/"
 try:
-    con = sqlite3.connect('/var/www/html/xiSPEC/dbs/'+sys.argv[3]+'.db')
+    os.stat(dbfolder)
+except:
+    os.mkdir(dbfolder) 
+
+try:
+
+    con = sqlite3.connect(dbfolder+sys.argv[3]+'.db')
     #con = sqlite3.connect('test.db')
     cur = con.cursor()
     cur.execute("DROP TABLE IF EXISTS jsonReqs")
