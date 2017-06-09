@@ -380,7 +380,7 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 
 		$('#nextSpectrum').click(function(){
 			$.ajax({
-				url: 'php/getSpectrum.php?i='+window.SpectrumModel.requestId+1,
+				url: 'php/getSpectrum.php?i='+(window.SpectrumModel.requestId+1),
 				type: 'GET',
 				async: false,
 				cache: false,

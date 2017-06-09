@@ -11,7 +11,7 @@ foreach ($dbh->query($query) as $row)
     $mzid = $row['mzid'];
 }
 
-$query =  "SELECT * FROM jsonReqs WHERE mzid='".$mzid."' ORDER BY rank ASC LIMIT 1";
+$query =  "SELECT * FROM jsonReqs WHERE mzid='".$mzid."' AND passThreshold=1 ORDER BY rank ASC LIMIT 1";
 
 foreach ($dbh->query($query) as $row)
 {
