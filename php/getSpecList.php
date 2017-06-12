@@ -5,13 +5,13 @@ session_start();
 $dir = 'sqlite:../../dbs/'.session_id().'.db';
 $dbh = new PDO($dir) or die("cannot open the database");
 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$query =  "SELECT * FROM mzids";
+$query =  "SELECT id, mzid, pep1, pep2, linkpos1, linkpos2, passThreshold FROM jsonReqs WHERE rank = 1 GROUP BY mzid ORDER BY id;";
 
 $JSON = array();
 
 foreach ($dbh->query($query) as $row)
 {
-	array_push($JSON, array('id' => $row['id'], 'mzid' => $row['mzid']));
+	array_push($JSON, $row);
 }
 
 $arr = array('data' => $JSON);
@@ -19,3 +19,5 @@ $arr = array('data' => $JSON);
 echo json_encode($arr);
 
 ?>
+
+
