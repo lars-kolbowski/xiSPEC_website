@@ -457,13 +457,17 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			async: false,
 			url: "/xiAnnotator/annotate/FULL",
 			success: function(data) {
-				self.set("JSONdata", data)
+
+				self.set("JSONdata", data);
 				self.setData();
+
+				if (self.settingsModel !== undefined){
+					var json_data_copy = jQuery.extend({}, data);
+					self.settingsModel.set({JSONdata: json_data_copy, JSONrequest: json_request});
+					self.settingsModel.trigger("change:JSONdata");		
+				}
 			}
 		});			
 
-		// $.post('/xiAnnotator/annotate/FULL', JSON.stringify(json_request), function(response) {
-		// 	console.log(response);
-		// }, 'application/json');
 	}	
 });
