@@ -42,6 +42,13 @@ def mzid_to_json(item):
 
 
     all_mods = []  # Modifications list
+    mod_aliases = {
+        "amidated_bs3": "bs3nh2",
+        "carbamidomethyl": "cm",
+        "hydrolyzed_bs3": "bs3oh",
+        "oxidation": "ox"
+    }
+
     # # check if cl ids match
     # if len(item['SpectrumIdentificationItem']) > 1:                         # CL Peptide check
     #     cl_identifiers = [x["cross-link spectrum identification item"] for x in item['SpectrumIdentificationItem']]
@@ -71,6 +78,8 @@ def mzid_to_json(item):
                     #fix mod names
                     mod['name'] = mod['name'].lower()
                     mod['name'] = mod['name'].replace(" ", "_")
+                    if mod['name'] in mod_aliases.keys():
+                        mod['name'] = mod_aliases[mod['name']]
                     if 'cross-link donor' not in mod.keys():
                         peptide_dict['sequence'][mod_location]['Modification'] = mod['name'] # TODO: abbreviations?
                         all_mods = add_to_modlist(mod, all_mods) # save to all mods list
@@ -95,11 +104,12 @@ def mzid_to_json(item):
 
     return JSON_dict
 
+
 print sys.argv[1]
 print sys.argv[2]
 #print sys.argv[3]
 
-dbfolder = "/var/www/html/dbs/" 
+dbfolder = "../../dbs/" 
 try: 
     os.stat(dbfolder) 
 except: 
@@ -111,7 +121,8 @@ try:
     #con = sqlite3.connect('test.db') 
     cur = con.cursor()
     cur.execute("DROP TABLE IF EXISTS jsonReqs")
-    cur.execute("CREATE TABLE jsonReqs(id INT PRIMARY KEY, json TEXT, mzid TEXT, passThreshold INT, rank INT)")
+    cur.execute(
+        "CREATE TABLE jsonReqs(id INT PRIMARY KEY, json TEXT, mzid TEXT, pep1 TEXT, pep2 TEXT, linkpos1 INT, linkpos2 INT, passThreshold INT, rank INT)")
     cur.execute("DROP TABLE IF EXISTS mzids")
     cur.execute("CREATE TABLE mzids (id INT PRIMARY KEY, mzid TEXT)")
 
@@ -173,6 +184,7 @@ for mzid_item in mzid_reader:
 
     for alt in alternatives:
         json_dict = alt['json_dict']
+        json_dict['annotation']['mzid'] = mzid_item['id']
         json_dict['peaks'] = peaklist
 
         # ms2 tolerance
@@ -196,13 +208,19 @@ for mzid_item in mzid_reader:
 
         mzid = mzid_item['id']
 
-
+        # extract other useful info to display
+        pep1 = "".join([x['aminoAcid']+x['Modification'] for x in json_dict['Peptides'][0]['sequence']])
+        pep2 = "".join([x['aminoAcid']+x['Modification'] for x in json_dict['Peptides'][1]['sequence']])
+        linkpos1 = [x['linkSite'] for x in json_dict['LinkSite'] if x['peptideId'] == 0][0]
+        linkpos2 = [x['linkSite'] for x in json_dict['LinkSite'] if x['peptideId'] == 1][0]
 
         # with con:
         #     cur.execute("INSERT INTO jsonReqs VALUES(%s, '%s', '%s', %s, %s)" % (
         #     specIdItem_index, json.dumps(json_dict), mzid, passThreshold, rank))
 
-        multipleInjList_jsonReqs.append([specIdItem_index, json.dumps(json_dict), mzid, passThreshold, rank])
+        multipleInjList_jsonReqs.append(
+            [specIdItem_index, json.dumps(json_dict), mzid, pep1, pep2, linkpos1, linkpos2, passThreshold, rank]
+        )
         specIdItem_index += 1
         print specIdItem_index
 
@@ -211,20 +229,19 @@ for mzid_item in mzid_reader:
     multipleInjList_mzids.append([mz_index, mzid])
     mz_index += 1
 
-    if specIdItem_index % 100 == 0:
+    if specIdItem_index % 500 == 0:
         cur.executemany("""
             INSERT INTO mzids ('id', 'mzid')
             VALUES (?, ?)""", multipleInjList_mzids)
         multipleInjList_mzids = []
 
         cur.executemany("""
-            INSERT INTO jsonReqs ('id', 'json', 'mzid', 'passThreshold', 'rank')
-            VALUES (?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
+            INSERT INTO jsonReqs ('id', 'json', 'mzid', 'pep1', 'pep2', 'linkpos1', 'linkpos2', 'passThreshold', 'rank')
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
         multipleInjList_jsonReqs = []
         con.commit()
         #print "INSERT INTO jsonReqs VALUES(%s, '%s', %s, %s)" % (i, json.dumps(json_dict), altId, passThreshold)
     #if mz_index > 5:
-        #break
 
 
 if con:
