@@ -36,7 +36,7 @@ def mzid_to_json(item):
     JSON_dict = {
                  "Peptides": [],
                  "LinkSite": [],
-                 "annotation": {},
+                 "annotation": {"cross-linker": {"modMass": 0}},    #necessary for xiAnn atm-> told Lutz about it
                  "peaks": []
                  }
 
@@ -144,13 +144,15 @@ multipleInjList_jsonReqs = []
 multipleInjList_mzids = []
 for mzid_item in mzid_reader:
     # find pairs of cross-linked items
-    # TODO: linear Peptides and error handling what if there's no cross-link spectrum identification item?
-    CLSpecIdItemSet = set([SpecIdItem['cross-link spectrum identification item'] for SpecIdItem in mzid_item['SpectrumIdentificationItem']])
-
-    if len(CLSpecIdItemSet) == 0:
-        print "linear"
-        print mzid_item
-
+    CLSpecIdItemSet = set()
+    linear_index = -1
+    for specIdItem in mzid_item['SpectrumIdentificationItem']:
+        if 'cross-link spectrum identification item' in specIdItem.keys():
+            CLSpecIdItemSet.add(specIdItem['cross-link spectrum identification item'])
+        else: #assuming linear
+            specIdItem['cross-link spectrum identification item'] = linear_index
+            CLSpecIdItemSet.add(specIdItem['cross-link spectrum identification item'])
+            linear_index -= 1
 
     alternatives = []
     for id in CLSpecIdItemSet:
@@ -222,9 +224,14 @@ for mzid_item in mzid_reader:
 
         # extract other useful info to display
         pep1 = "".join([x['aminoAcid']+x['Modification'] for x in json_dict['Peptides'][0]['sequence']])
-        pep2 = "".join([x['aminoAcid']+x['Modification'] for x in json_dict['Peptides'][1]['sequence']])
-        linkpos1 = [x['linkSite'] for x in json_dict['LinkSite'] if x['peptideId'] == 0][0]
-        linkpos2 = [x['linkSite'] for x in json_dict['LinkSite'] if x['peptideId'] == 1][0]
+        if len(json_dict['Peptides']) > 1:
+            pep2 = "".join([x['aminoAcid']+x['Modification'] for x in json_dict['Peptides'][1]['sequence']])
+            linkpos1 = [x['linkSite'] for x in json_dict['LinkSite'] if x['peptideId'] == 0][0]
+            linkpos2 = [x['linkSite'] for x in json_dict['LinkSite'] if x['peptideId'] == 1][0]
+        else:
+            pep2 = ""
+            linkpos1 = 0
+            linkpos2 = 0
 
         # with con:
         #     cur.execute("INSERT INTO jsonReqs VALUES(%s, '%s', '%s', %s, %s)" % (

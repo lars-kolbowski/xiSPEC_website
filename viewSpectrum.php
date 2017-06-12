@@ -288,6 +288,7 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 
 		var json_data_copy = jQuery.extend({}, json_data);
 
+		SpectrumModel.settingsModel = SettingsSpectrumModel;
         SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
 		window.SettingsPepInputView = new PepInputView({model: SettingsSpectrumModel, el:"#settingsPeptide"});
 
@@ -328,7 +329,16 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 					"class": "invisible",
 					"targets": [0, 6],
 				},	
-				{ "searchable": false, "targets": [4, 5] }		
+				{ 
+					"render": function ( data, type, row, meta ) {
+						if (data == 0)
+							return '';
+						else
+							return data;
+					},
+					"searchable": false, 
+					"targets": [4, 5]
+				}		
             ]
 		});
 
