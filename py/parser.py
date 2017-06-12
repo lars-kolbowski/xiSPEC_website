@@ -190,12 +190,24 @@ for mzid_item in mzid_reader:
         # ms2 tolerance
         json_dict['annotation']['fragmentTolerance'] = {"tolerance": 20, "unit": "ppm"}
 
-        # fragmentation method
+        # fragmentation ions
         json_dict['annotation']['ions'] = [{"type": "PeptideIon"}]
 
-        if 'beam-type collision-induced dissociation' in scan['precursorList']['precursor'][0]['activation'].keys():
-            json_dict['annotation']['ions'].append({"type": "BIon"})
-            json_dict['annotation']['ions'].append({"type": "YIon"})
+        frag_methods = {
+            'beam-type collision-induced dissociation': ["BIon", "YIon"],
+            'collision-induced dissociation': ["BIon", "YIon"],
+            'electron transfer dissociation': ["CIon", "ZIon"],
+
+        }
+        ion_types = []
+        for key in scan['precursorList']['precursor'][0]['activation'].keys():
+            if key in frag_methods.keys():
+                ion_types += frag_methods[key]
+
+        ion_types = list(set(ion_types))
+        for ion_type in ion_types:
+            json_dict['annotation']['ions'].append({"type": ion_type})
+
 
         # passThreshold
         if alt['passThreshold']:
