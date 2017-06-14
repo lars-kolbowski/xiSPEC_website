@@ -183,7 +183,7 @@ nav a:focus, nav a:hover {
     color: #fff;
 }
 ::selection {
-    background-color: #333333;
+    background-color: #e5e5e5;
     color: #fff;
 }
 article, section {
@@ -1101,6 +1101,14 @@ div.file_upload {
     .form-control.flat:focus {
       border-color: #750000;
   }
+.form-control::-moz-selection { 
+    background-color: #091d42;
+    color: #fff;
+}
+.form-control::selection {
+    background-color: #091d42;
+    color: #fff;
+}
 div.file_upload:before {
     content: 'UPLOAD';
     position: absolute;

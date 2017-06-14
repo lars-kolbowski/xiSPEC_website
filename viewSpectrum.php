@@ -7,18 +7,19 @@ error_reporting(E_ALL);
 require("functions.php");
 
 if (empty($_POST)){
-	session_start();
-	$dir = 'sqlite:../dbs/'.session_id().'.db';
+	$dbView = TRUE;
+	if (isset($_GET['s']))
+		$dbfile = $_GET['s'];
+	else{
+		session_start();
+		$dbfile = session_id();
+	}
+	$dir = 'sqlite:../dbs/'.$dbfile.'.db';
 	$dbh = new PDO($dir) or die("cannot open the database");
 	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$query =  "SELECT * FROM mzids WHERE id=0 LIMIT 1";
-	foreach ($dbh->query($query) as $row)
-	{
-	    $mzid = $row['mzid'];
-	    $requestId = $row['id'];
-	}
 
-	$query =  "SELECT * FROM jsonReqs WHERE mzid='".$mzid."' ORDER BY rank ASC LIMIT 1";
+	$query =  "SELECT json FROM jsonReqs LIMIT 1;";
+	#$query =  "SELECT json FROM jsonReqs WHERE rank = 1 AND passThreshold = 1 GROUP BY mzid ORDER BY id LIMIT 1;";
 
 	foreach ($dbh->query($query) as $row)
 	{
@@ -27,7 +28,7 @@ if (empty($_POST)){
 
 }
 else{
-	$requestId = -1;
+	$dbView = FALSE;
 	$mods = [];
 	if(isset($_POST['mods'])){
 	    $mods = $_POST['mods'];
@@ -283,7 +284,6 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
         var json_req = <?php echo $postJSON ?>;
         console.log(json_req);
         SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
-      	<?php print("SpectrumModel.requestId = ".$requestId).";"; ?>
          // SpectrumModel.userModifications = <?php //echo json_encode($modifications); ?>;
 
 		var json_data_copy = jQuery.extend({}, json_data);
@@ -292,80 +292,20 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
         SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
 		window.SettingsPepInputView = new PepInputView({model: SettingsSpectrumModel, el:"#settingsPeptide"});
 
-		//SpecListTable
-		window.specListTable = $('#specListTable').DataTable( {
-			// "paging":   false,
-		 //    "ordering": false,
-		 //    "info":     false,
-		 	"dom": '<"specListToolbar">frtip',
-		    "searching": true,
-		    // "processing": true,
-		    // "serverSide": true,
-		    "ajax": "php/getSpecList.php",
-		    "columns": [
-		        { "data": "id" },
-		        { "data": "mzid" },
-				{ "data": "pep1" },
-				{ "data": "pep2" },
-				{ "data": "linkpos1" },	
-				{ "data": "linkpos2" },	
-				{ "data": "passThreshold" },			
-		        ],
-			"aoSearchCols": [
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				{ "sSearch": "1" },
-			],
-			"createdRow": function( row, data, dataIndex ) {
-				if ( data[6] == "0" )         
-					$(row).addClass('red');
-			 },
-		    "columnDefs": [
-		    	{
-					"class": "invisible",
-					"targets": [0, 6],
-				},	
-				{ 
-					"render": function ( data, type, row, meta ) {
-						if (data == 0)
-							return '';
-						else
-							return data;
-					},
-					"searchable": false, 
-					"targets": [4, 5]
-				}		
-            ]
-		});
 
-		$("div.specListToolbar").html('Filter: <label class="btn"><input id="passThreshold" type="checkbox" checked>passing threshold</label>');
-
-		$('#passThreshold').on( 'click', function () {
-			if (this.checked){
-			    window.specListTable
-			        .columns( 6 )
-			        .search( "1" )
-			        .draw();				
-			}
-			else{
-			    window.specListTable
-			        .columns( 6 )
-			        .search( "" )
-			        .draw();
-			}
-
-		} );
-
-		window.specListTable.on('click', 'tbody tr', function() {
-			console.log('id : ', window.specListTable.row(this).data()[0]);
-			loadSpectrum(window.specListTable.row(this).data()[0]);
-		});
 
 		//settings panel - put into model? or extra view?
+		<?php if($dbView)
+			echo 'var dbView = true;';
+			else echo 'var dbView = false;';
+		?>
+
+		if(dbView){
+			window.SpectrumModel.requestId = 0;
+			$('#specListWrapper').show();
+		}
+		else
+			$('#dbControls').hide();
 		function render_settings(){
 			window.SettingsPepInputView.render();
 
@@ -458,30 +398,19 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 
 		});
 
-		function loadSpectrum(id){
-			$.ajax({
-				url: 'php/getSpectrum.php?i='+id,
-				type: 'GET',
-				async: false,
-				cache: false,
-				contentType: false,
-				processData: false,
-				success: function (returndata) {
-					var json = JSON.parse(returndata);
-					window.SpectrumModel.requestId = id;
-					console.log(window.SpectrumModel.requestId);
-					window.SpectrumModel.request_annotation(json);
-				}
-			});	 			
-		}
+		$("#saveModal").easyModal();
 
-		$('#prevSpectrum').click(function(){
-			loadSpectrum(window.SpectrumModel.requestId - 1)
+		$('#saveDB').click(function(){
+			$("#saveModal").trigger('openModal');
+		});
+		$('#requestShareLink').click(function(){
+			$('#shareLink').html("<input id='shareURL' type='text' class='form-control' style='width:600px' onClick=this.select();'' readonly value='"+window.location.href+"?s="+document.cookie.match(/PHPSESSID=([^;]+)/)[1]+"'>");
+			$('#shareURL').select();
 		});
 
-		$('#nextSpectrum').click(function(){
-			loadSpectrum(window.SpectrumModel.requestId  + 1)
-		});
+
+		
+		
 
 
 });
@@ -492,6 +421,7 @@ function updateJScolor(jscolor) {
     window.SpectrumModel.changeHighlightColor('#' + jscolor);
 }
     </script>
+    <script type="text/javascript" src="./js/specListTable.js"></script>
     </head>
 
     <body>
@@ -526,9 +456,12 @@ function updateJScolor(jscolor) {
 	                		<input id="lockZoom" type="checkbox" style="visibility: hidden;"></form>
 	                		<button id="toggleView" title="Click to toggle view" class="btn btn-1 btn-1a">QC</button>
 	        				<button id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a">&#9881;</button>
-	        				<button id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a">&#x2039;</button>
-	        				<button id="toggleSpecList" title="Spectra list" class="btn btn-1a">&#9776;</button>
-	        				<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a">&#x203A;</button>               		
+	        				<span id="dbControls">
+								<button id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a">&#x2039;</button>
+								<button id="toggleSpecList" title="Spectra list" class="btn btn-1a">&#9776;</button>
+								<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a">&#x203A;</button>
+								<button id="saveDB" title="Save" class="btn btn-1a">&#x1f4be;</button>
+							</span>         		
 	                	</div>
 	                    <div class="heightFill">
 	                        <svg id="spectrumSVG"></svg>
@@ -545,7 +478,7 @@ function updateJScolor(jscolor) {
 							<div class="dynDiv_resizeDiv_bl" style="cursor: sw-resize;"></div>
 							<div class="dynDiv_resizeDiv_br" style="cursor: se-resize;"></div>
 
-							<div id="specList_main" style="color: #000">
+							<div id="specList_main" style="color: #000; margin: 10px;">
 							<table id="specListTable" class="display" width="100%" style="text-align:center;">
 								<thead>
 									<tr>
@@ -696,5 +629,14 @@ function updateJScolor(jscolor) {
 			</div> -->
         </div><!-- MAIN -->
 
+		<!-- Modal -->
+		<div id="saveModal" role="dialog" class="modal" style="background: #333; width:650px; text-align: center">
+			<div class="header" style="background: #750000; color:#fff"">
+				Save/Share
+			</div>
+			<div id="shareLink" class="btn clearfix" style="font-size: 1.1em;margin:10px 5px;">
+				<button id="requestShareLink" type="submit" class="btn btn-1a" >Click here to generate a link for later access or sharing</button>
+			</div>
+		</div>
     </body>
 </html>

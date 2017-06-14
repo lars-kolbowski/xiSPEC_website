@@ -356,6 +356,22 @@ body, input, select, textarea {
     height:400px;
 */
 }
+#specListTable tr {
+    cursor: pointer;
+}
+.specListToolbar{
+    color: #fff;
+}
+.ellipsis{
+    color: #fff;
+}
+.paginate_button {
+    background-color: #fff;
+}
+.paginate_button.current{
+    color: #999;
+}
+
 .dynDiv_moveParentDiv{
     height:20px;
     background:#091D42;
