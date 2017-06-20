@@ -443,7 +443,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	request_annotation: function(json_request){
 
-		console.log("JSON_request: "+json_request);
+		console.log(json_request);
 		var self = this;
 		var response = $.ajax({
 			type: "POST",
@@ -457,12 +457,12 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			url: "/xiAnnotator/annotate/FULL",
 			success: function(data) {
 
-				self.set("JSONdata", data);
+				self.set({"JSONdata": data, "JSONrequest": json_request});
 				self.setData();
 
 				if (self.settingsModel !== undefined){
 					var json_data_copy = jQuery.extend({}, data);
-					self.settingsModel.set({JSONdata: json_data_copy, JSONrequest: json_request});
+					self.settingsModel.set({"JSONdata": json_data_copy, "JSONrequest": json_request});
 					self.settingsModel.trigger("change:JSONdata");		
 				}
 			}
