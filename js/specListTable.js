@@ -31,6 +31,8 @@ $(function() {
 		"createdRow": function( row, data, dataIndex ) {
 			if ( data[6] == "0" )         
 				$(row).addClass('red');
+			if ( data[0] == "1")
+				$(row).addClass("selected");
 		 },
 	    "columnDefs": [
 	    	{
@@ -52,7 +54,6 @@ $(function() {
 	});
 
 	$("div.specListToolbar").html('Filter: <label class="btn"><input id="passThreshold" type="checkbox">passing threshold</label><label class="btn"><input id="hideLinear" type="checkbox">hide linear</label>');
-
 	$('#passThreshold').on( 'click', function () {
 		if (this.checked){
 		    window.specListTable
@@ -91,7 +92,7 @@ $(function() {
             window.specListTable.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
         }
-		
+
 		console.log('id : ', window.specListTable.row(this).data()[0]);
 		loadSpectrum(window.specListTable.row(this).data()[0]);
 	});
@@ -120,4 +121,5 @@ $(function() {
 	$('#nextSpectrum').click(function(){
 		loadSpectrum(window.SpectrumModel.requestId  + 1)
 	});
+
 });
