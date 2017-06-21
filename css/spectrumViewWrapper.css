@@ -31,9 +31,11 @@
 
 /* Important, let's the div with this class take up the remaining height inside a div declared with display:table */
 .heightFill {
-    display: block;
-    height: 100%;
+    display: flex;
+    flex-flow: column;
     background: #fff;
+    /* float: left; */
+    flex-grow: 1;
 }
 
 .validationControls {
@@ -46,7 +48,8 @@
 
 #spectrumSVG {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
+    flex-grow: 1;
 }
 
 #measureTooltip {

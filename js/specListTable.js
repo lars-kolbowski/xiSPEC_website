@@ -50,7 +50,10 @@ $(function() {
 				"searchable": false, 
 				"targets": [4, 5]
 			}		
-        ]
+        ],
+		"initComplete": function(settings, json) {
+			window.Spectrum.resize();
+		}
 	});
 
 	$("div.specListToolbar").html('Filter: <label class="btn"><input id="passThreshold" type="checkbox">passing threshold</label><label class="btn"><input id="hideLinear" type="checkbox">hide linear</label>');
@@ -112,14 +115,26 @@ $(function() {
 				window.SpectrumModel.request_annotation(json);
 			}
 		});	 			
-	}
+	};
 
 	$('#prevSpectrum').click(function(){
-		loadSpectrum(window.SpectrumModel.requestId - 1)
+		if (specListTable.rows( '.selected' ).nodes().to$().prev('tr').length != 0){
+			var cur = specListTable.rows( '.selected' ).nodes().to$();
+			var id = cur.prev('tr')[0].childNodes[0].innerHTML;
+			loadSpectrum(id);
+			cur.removeClass('selected');
+			cur.prev('tr').addClass("selected");
+		}
 	});
 
 	$('#nextSpectrum').click(function(){
-		loadSpectrum(window.SpectrumModel.requestId  + 1)
+		if (specListTable.rows( '.selected' ).nodes().to$().next('tr').length != 0){
+			var cur = specListTable.rows( '.selected' ).nodes().to$();
+			var id = cur.next('tr')[0].childNodes[0].innerHTML;
+			loadSpectrum(id);
+			specListTable.rows( '.selected' ).nodes().to$().removeClass('selected');
+			cur.next('tr').addClass("selected");
+		}
 	});
 
 });

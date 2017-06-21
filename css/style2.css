@@ -202,9 +202,10 @@ body, input, select, textarea {
 }
 /* network page */
 #mainView {
-    height:100vh;
-    width:100vw;
-    /*display: table;*/
+    /*    height:100vh;
+    width:100vw;*/
+    padding-bottom: 0;
+    flex-flow: column;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -212,14 +213,16 @@ body, input, select, textarea {
     right: 0;
 /
     overflow:hidden;
-    /*z-index:-1;*/
-}
+    /* z-index:-1; */
+    overflow: hidden;
+    }
 
 #mainView .mainContent {
     top: 0px;
     bottom: 65px;
     position: absolute;
-    
+    display: flex;
+    flex-flow: column;
     /*
     display: table-row;
     height: 100%;
@@ -237,6 +240,9 @@ body, input, select, textarea {
 
 #topDiv {
     overflow:hidden;
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column;
 }
 
 #networkDiv {
