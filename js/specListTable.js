@@ -51,7 +51,10 @@ $(function() {
 				"targets": [4, 5]
 			}		
         ],
-		"initComplete": function(settings, json) {
+		// "initComplete": function(settings, json) {
+		// 	window.Spectrum.resize();
+		// },
+		"drawCallback": function( settings ) {
 			window.Spectrum.resize();
 		}
 	});
@@ -88,13 +91,13 @@ $(function() {
 	} );
 	window.specListTable.on('click', 'tbody tr', function() {
 
-        if ( $(this).hasClass('selected') ) {
-            $(this).removeClass('selected');
-        }
-        else {
-            window.specListTable.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-        }
+        // if ( $(this).hasClass('selected') ) {
+        //     $(this).removeClass('selected');
+        // }
+        // else {
+			window.specListTable.$('tr.selected').removeClass('selected');
+			$(this).addClass('selected');
+        //}
 
 		console.log('id : ', window.specListTable.row(this).data()[0]);
 		loadSpectrum(window.specListTable.row(this).data()[0]);
@@ -118,23 +121,34 @@ $(function() {
 	};
 
 	$('#prevSpectrum').click(function(){
-		if (specListTable.rows( '.selected' ).nodes().to$().prev('tr').length != 0){
-			var cur = specListTable.rows( '.selected' ).nodes().to$();
-			var id = cur.prev('tr')[0].childNodes[0].innerHTML;
-			loadSpectrum(id);
-			cur.removeClass('selected');
-			cur.prev('tr').addClass("selected");
+
+		curIndex = window.specListTable
+			.column( 0 )
+			.data()
+			.indexOf( window.SpectrumModel.requestId );
+
+		if (curIndex > 0){
+			loadSpectrum(window.specListTable.column( 0 ).data()[curIndex-1]);
+			specListTable.rows( '.selected' ).nodes().to$().removeClass('selected');
+			window.specListTable.row(curIndex-1).nodes().to$().addClass("selected");
 		}
+
+
 	});
 
 	$('#nextSpectrum').click(function(){
-		if (specListTable.rows( '.selected' ).nodes().to$().next('tr').length != 0){
-			var cur = specListTable.rows( '.selected' ).nodes().to$();
-			var id = cur.next('tr')[0].childNodes[0].innerHTML;
-			loadSpectrum(id);
+
+		curIndex = window.specListTable
+			.column( 0 )
+			.data()
+			.indexOf( window.SpectrumModel.requestId );
+
+		if (curIndex + 1 < window.specListTable.column( 0 ).data().length){
+			loadSpectrum(window.specListTable.column( 0 ).data()[curIndex+1]);
 			specListTable.rows( '.selected' ).nodes().to$().removeClass('selected');
-			cur.next('tr').addClass("selected");
+			window.specListTable.row(curIndex+1).nodes().to$().addClass("selected");
 		}
+
 	});
 
 });
