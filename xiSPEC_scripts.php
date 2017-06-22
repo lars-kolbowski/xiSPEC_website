@@ -8,7 +8,7 @@
 <script type="text/javascript" src="./vendor/jquery.easyModal.js"></script>
 <script type="text/javascript" src="./vendor/js.cookie.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/u/dt/dt-1.10.12/datatables.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/u/dt/dt-1.10.12/datatables.min.css"/>
+<link rel="stylesheet" type="text/css" href="./vendor/dt-1.10.12_datatables.min.css"/>
  
 
 
