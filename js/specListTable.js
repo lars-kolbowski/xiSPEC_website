@@ -64,6 +64,7 @@ $(function() {
 
 		$('div.dataTables_filter input').addClass('form-control').css('margin-bottom', '5px');
 
+		//filters TODO: adjust pagination to show current selected one if it is in list
 		$('#passThreshold').on( 'click', function () {
 			if (this.checked){
 			    window.specListTable
@@ -137,25 +138,20 @@ $(function() {
 
 			else if (curIndex - 1 >= 0){
 				loadSpectrum(window.specListTable.rows( { filter : 'applied'} ).data()[curIndex-1][0]);
+
+				//change pagination to show cur selected spectrum
+				if (!(window.specListTable.page.info().start < (curIndex-1) &&  (curIndex-1) < window.specListTable.page.info().end)){
+					window.specListTable.page( Math.floor((curIndex-1)/10) ).draw( 'page' );
+				}
 			}
 
-			var newIndex = window.specListTable
-				.column( 0 )
-				.data()
-				.indexOf( window.SpectrumModel.requestId );
+			var newIndex = window.specListTable.column( 0 ).data().indexOf( window.SpectrumModel.requestId );
 
 			window.specListTable.row(newIndex).nodes().to$().addClass("selected");
-
 
 		});
 
 		$('#nextSpectrum').click(function(){
-
-			// curIndex = window.specListTable
-			// 	.rows( { filter : 'applied'} )
-			// 	.column( 0 )
-			// 	.data()
-			// 	.indexOf( window.SpectrumModel.requestId );
 
 			specListTable.rows( '.selected' ).nodes().to$().removeClass('selected');
 			var curDataArr = window.specListTable.rows( { filter : 'applied'} ).data().toArray();
@@ -168,14 +164,18 @@ $(function() {
 
 			else if (curIndex + 1 < window.specListTable.rows( { filter : 'applied'} ).data().length){
 				loadSpectrum(window.specListTable.rows( { filter : 'applied'} ).data()[curIndex+1][0]);
+
+				//change pagination to show cur selected spectrum
+				if (!(window.specListTable.page.info().start < (curIndex+1) &&  (curIndex+1) < window.specListTable.page.info().end)){
+					window.specListTable.page( Math.floor((curIndex+1)/10) ).draw( 'page' );
+				}
 			}
 
-			var newIndex = window.specListTable
-				.column( 0 )
-				.data()
-				.indexOf( window.SpectrumModel.requestId );
-
+			var newIndex = window.specListTable.column( 0 ).data().indexOf( window.SpectrumModel.requestId );
 			window.specListTable.row(newIndex).nodes().to$().addClass("selected");
+
+
+
 
 		});
 	}
