@@ -346,12 +346,12 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 		});
 
 		$('#specListClose').click(function(){
-			$('#specListWrapper').hide();
+			$('#bottomDiv').hide();
 			window.Spectrum.resize();
 		})
 
 		$('#toggleSpecList').click(function(){
-			$('#specListWrapper').toggle();
+			$('#bottomDiv').toggle();
 			window.Spectrum.resize();
 		});
 
