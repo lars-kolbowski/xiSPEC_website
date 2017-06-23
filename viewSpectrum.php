@@ -171,6 +171,7 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
         <script type="text/javascript" src="./vendor/svgexp.js"></script>
         <script type="text/javascript" src="./vendor/spin.js"></script>
         <script type="text/javascript" src="./vendor/byrei-dyndiv_1.0rc1.js"></script>
+        <script type="text/javascript" src="./vendor/download.js"></script>
 
         <!-- Spectrum view .js files -->
         <script type="text/javascript" src="./src/model.js"></script>
@@ -439,7 +440,7 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 		$('#requestShareLink').click(function(){
 			$('#shareLink').html("<input id='shareURL' type='text' class='form-control' style='width:600px' onClick=this.select();'' readonly value='"+window.location.href+"?s="+document.cookie.match(/PHPSESSID=([^;]+)/)[1]+"'>");
 			$('#shareURL').select();
-		});
+		});			
 
 });
 
@@ -576,7 +577,7 @@ function updateJScolor(jscolor) {
 									</ul>
 								</div>
 							</div>
-		            		<button class="downloadButton btn btn-1 btn-1a">Download SVG</button>
+		            		<button class="downloadButton btn btn-1 btn-1a" id="downloadSVG">Download SVG</button>
 		            		<button id="clearHighlights" class="btn btn-1 btn-1a">Clear Highlights</button>
 		            		<label class="btn">Measure<input id="measuringTool" type="checkbox"></label>
 		            		<form id="setrange">
@@ -603,33 +604,6 @@ function updateJScolor(jscolor) {
 	                        <svg id="spectrumSVG"></svg>
 	                        <div id="measureTooltip"></div>
 	                    </div>
-
-<!-- 						<div class="dynDiv" id="specListWrapper" style="display: none; z-index: 2; left: 6%; top: 11%;">
-							<div class="dynDiv_moveParentDiv" style="cursor: move;">
-								<span class="dynTitle">Spectra List</span>
-								<i class="fa fa-times-circle closeButton" id="specListClose"></i>
-							</div>
-							<div class="dynDiv_resizeDiv_tl" style="cursor: nw-resize;"></div>
-							<div class="dynDiv_resizeDiv_tr" style="cursor: ne-resize;"></div>
-							<div class="dynDiv_resizeDiv_bl" style="cursor: sw-resize;"></div>
-							<div class="dynDiv_resizeDiv_br" style="cursor: se-resize;"></div>
-
-							<div id="specList_main" style="color: #000; margin: 10px;">
-							<table id="specListTable" class="display" width="100%" style="text-align:center;">
-								<thead>
-									<tr>
-									    <th>internal_id</th>
-									    <th>id</th>
-									    <th>peptide 1</th>
-									    <th>peptide 2</th>
-									    <th>CL position 1</th>
-									    <th>CL position 2</th>
-									    <th>passThreshold</th>
-									</tr>
-								</thead>
-							</table>
-							</div>
-						</div> -->
 					</div>
 				</div><!-- end top div -->
 <!-- 				<div class="gutter gutter-vertical" style="height: 10px;"></div> -->
