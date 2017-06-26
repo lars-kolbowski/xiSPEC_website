@@ -149,10 +149,10 @@ function doExample(){
 	$.get("example/peaklist.txt",function(data){
 		$("#myPeaklist").val(data);
 	});
-	$("#myPeptide").val("KQEQESLGSNSK#;M#oxNANK");
+	$("#myPeptide").val("QNCcmELFEQLGEYK#FQNALLVR;K#QTALVELVK");
 	pepInputView.contentChanged();
 	$("#myTolerance").val("20.0");
-	$("#myPrecursorZ").val("3");
+	$("#myPrecursorZ").val("4");
 	$("#myPrecursorZ").change();	
 	$("#myCL").val("138.06807961");
 	//$("#myFragmentation").val("HCD");
