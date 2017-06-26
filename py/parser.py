@@ -86,7 +86,7 @@ def mzid_to_json(item):
 
                         # add CL locations
                 if 'cross-link donor' in mod.keys() or 'cross-link acceptor' in mod.keys():
-                    JSON_dict['LinkSite'].append({"id": link_index, "peptideId": pepIndex, "linkSite": mod_location})
+                    JSON_dict['LinkSite'].append({"id": link_index, "peptideId": pepIndex, "linkSite": mod_location-1})
                     JSON_dict["annotation"]["cross-linker"] = {"modMass": mod['monoisotopicMassDelta']}
 
             pepIndex += 1

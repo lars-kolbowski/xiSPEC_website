@@ -311,10 +311,13 @@ body, input, select, textarea {
 }
 
 #bottomDiv {
-    background: #750000;
-    padding:0px 10px;
     position: relative; /* will overlay previous absolute divs i.e. distance slider */
 }
+
+.tableDiv{
+    background: #750000;
+}
+
 .noMarg{
     margin:0px!important;
 }
@@ -366,6 +369,9 @@ body, input, select, textarea {
     border-radius: 5px;
 }
 #specListTable tr {
+    cursor: pointer;
+}
+#altListTable tr {
     cursor: pointer;
 }
 .specListToolbar{

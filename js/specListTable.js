@@ -18,27 +18,19 @@ $(function() {
 				{ "data": "pep2" },
 				{ "data": "linkpos1" },	
 				{ "data": "linkpos2" },	
-				{ "data": "passThreshold" },			
+				{ "data": "passThreshold" },
+				{ "data": "alt_count" },			
 		        ],
-			// "aoSearchCols": [
-			// 	null,
-			// 	null,
-			// 	null,
-			// 	null,
-			// 	null,
-			// 	null,
-			// 	{ "sSearch": "1" },
-			// ],
 			"createdRow": function( row, data, dataIndex ) {
-				if ( data[6] == "0" )         
+				if ( data['passThreshold'] == "0" )         
 					$(row).addClass('red');
-				if ( data[0] == "1")
+				if ( data['id'] == window.SpectrumModel.requestId)
 					$(row).addClass("selected");
 			 },
 		    "columnDefs": [
 		    	{
 					"class": "invisible",
-					"targets": [ 6],
+					"targets": [ 6, 7 ],
 				},	
 				{ 
 					"className": "dt-center",
@@ -49,7 +41,7 @@ $(function() {
 							return data;
 					},
 					"searchable": false, 
-					"targets": [4, 5]
+					"targets": [ 4, 5 ]
 				}		
 	        ],
 			// "initComplete": function(settings, json) {
@@ -105,25 +97,8 @@ $(function() {
 	        //}
 
 			console.log('id : ', window.specListTable.row(this).data()[0]);
-			loadSpectrum(window.specListTable.row(this).data()[0]);
+			loadSpectrum(window.specListTable.row(this).data());
 		});
-
-		function loadSpectrum(id){
-			$.ajax({
-				url: 'php/getSpectrum.php?i='+id,
-				type: 'GET',
-				async: false,
-				cache: false,
-				contentType: false,
-				processData: false,
-				success: function (returndata) {
-					var json = JSON.parse(returndata);
-					window.SpectrumModel.requestId = id;
-					console.log(window.SpectrumModel.requestId);
-					window.SpectrumModel.request_annotation(json);
-				}
-			});	 			
-		};
 
 		$('#prevSpectrum').click(function(){
 
@@ -134,10 +109,10 @@ $(function() {
 			});
 
 			if (curIndex == -1)
-				loadSpectrum(window.specListTable.rows( { filter : 'applied'} ).data()[0][0]);
+				loadSpectrum(window.specListTable.rows( { filter : 'applied'} ).data()[0]);
 
 			else if (curIndex - 1 >= 0){
-				loadSpectrum(window.specListTable.rows( { filter : 'applied'} ).data()[curIndex-1][0]);
+				loadSpectrum(window.specListTable.rows( { filter : 'applied'} ).data()[curIndex-1]);
 
 				//change pagination to show cur selected spectrum
 				if (!(window.specListTable.page.info().start < (curIndex-1) &&  (curIndex-1) < window.specListTable.page.info().end)){
@@ -160,10 +135,10 @@ $(function() {
 			});
 
 			if (curIndex == -1)
-				loadSpectrum(window.specListTable.rows( { filter : 'applied'} ).data()[0][0]);
+				loadSpectrum(window.specListTable.rows( { filter : 'applied'} ).data()[0]);
 
 			else if (curIndex + 1 < window.specListTable.rows( { filter : 'applied'} ).data().length){
-				loadSpectrum(window.specListTable.rows( { filter : 'applied'} ).data()[curIndex+1][0]);
+				loadSpectrum(window.specListTable.rows( { filter : 'applied'} ).data()[curIndex+1]);
 
 				//change pagination to show cur selected spectrum
 				if (!(window.specListTable.page.info().start < (curIndex+1) &&  (curIndex+1) < window.specListTable.page.info().end)){

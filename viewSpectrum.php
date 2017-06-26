@@ -302,7 +302,8 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 		?>
 
 		if(dbView){
-			window.SpectrumModel.requestId = "1";
+			window.SpectrumModel.requestId = "0";
+			//window.SpectrumModel.mzId = -1;
 			$('#bottomDiv').show();
 		}
 		else{
@@ -345,13 +346,18 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 			$('#settingsWrapper').toggle();
 		});
 
-		$('#specListClose').click(function(){
-			$('#bottomDiv').hide();
+		$('.closeTable').click(function(){
+			$(this).parent().hide();
 			window.Spectrum.resize();
 		})
 
 		$('#toggleSpecList').click(function(){
 			$('#bottomDiv').toggle();
+			window.Spectrum.resize();
+		});
+
+		$('#toggleAltList').click(function(){
+			$('#altDiv').toggle();
 			window.Spectrum.resize();
 		});
 
@@ -444,6 +450,38 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 
 });
 
+function loadSpectrum(rowdata){
+
+	var id = rowdata['id'];
+	var mzid = rowdata['mzid'];
+
+	if(rowdata['alt_count'] > 1){
+		$('#altDiv').show();
+		$('#toggleAltList').prop('disabled', false);
+		window.altListTable.ajax.url( "php/getAltList.php?id="+mzid ).load();
+	}
+	else{
+		$('#toggleAltList').prop('disabled', true);
+		$('#altDiv').hide();
+	}
+
+	$.ajax({
+		url: 'php/getSpectrum.php?i='+id,
+		type: 'GET',
+		async: false,
+		cache: false,
+		contentType: false,
+		processData: false,
+		success: function (returndata) {
+			var json = JSON.parse(returndata);
+			window.SpectrumModel.requestId = id;
+			window.SpectrumModel.mzid = mzid;
+			console.log(window.SpectrumModel.requestId);
+			window.SpectrumModel.request_annotation(json);
+		}
+	});	 			
+};
+
 function updateJScolor(jscolor) {
     console.log('#' + jscolor);
     // 'jscolor' instance can be used as a string
@@ -451,6 +489,7 @@ function updateJScolor(jscolor) {
 }
     </script>
     <script type="text/javascript" src="./js/specListTable.js"></script>
+    <script type="text/javascript" src="./js/altListTable.js"></script>
     </head>
 
     <body>
@@ -598,6 +637,7 @@ function updateJScolor(jscolor) {
 								<button id="toggleSpecList" title="Spectra list" class="btn btn-1a">&#9776;</button>
 								<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a">&#x203A;</button>
 								<button id="saveDB" title="Save" class="btn btn-1a">&#x1f4be;</button>
+								<button id="toggleAltList" title="Click to view alternatives" class="btn btn-1 btn-1a">Alternatives</button>
 							</span>         		
 		            	</div> 
 	                    <div class="heightFill">
@@ -607,8 +647,30 @@ function updateJScolor(jscolor) {
 					</div>
 				</div><!-- end top div -->
 <!-- 				<div class="gutter gutter-vertical" style="height: 10px;"></div> -->
-				<div id="bottomDiv">
-					<i class="fa fa-times-circle closeButton" id="specListClose" style="font-size: 1.5em; margin-right: 2px;"></i>
+				<div id="altDiv" class="tableDiv">
+					<i class="fa fa-times-circle closeButton closeTable" id="altListClose" style="font-size: 1.5em; margin-right: 2px;"></i>
+					<div id="altListWrapper">
+						<div id="altList_main" style="color: #000; padding: 10px">
+							<table id="altListTable" class="display" width="100%" style="text-align:center;">
+								<thead>
+									<tr>
+									    <th>internal_id</th>
+									    <th>id</th>
+									    <th>peptide 1</th>
+									    <th>peptide 2</th>
+									    <th style="min-width: 50px">CL pos 1</th>
+									    <th style="min-width: 50px">CL pos 2</th>
+									    <th>passThreshold</th>
+									    <th>rank</th>
+									    <th>alt_count</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div id="bottomDiv" class="tableDiv">
+					<i class="fa fa-times-circle closeButton closeTable" id="specListClose" style="font-size: 1.5em; margin-right: 2px;"></i>
 					<div id="specListWrapper">
 						<div id="specList_main" style="color: #000; padding: 10px">
 							<table id="specListTable" class="display" width="100%" style="text-align:center;">
@@ -621,6 +683,7 @@ function updateJScolor(jscolor) {
 									    <th style="min-width: 50px">CL pos 1</th>
 									    <th style="min-width: 50px">CL pos 2</th>
 									    <th>passThreshold</th>
+									    <th>alt_count</th>
 									</tr>
 								</thead>
 							</table>
