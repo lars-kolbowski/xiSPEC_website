@@ -649,8 +649,9 @@ function updateJScolor(jscolor) {
 <!-- 				<div class="gutter gutter-vertical" style="height: 10px;"></div> -->
 				<div id="altDiv" class="tableDiv">
 					<i class="fa fa-times-circle closeButton closeTable" id="altListClose" style="font-size: 1.5em; margin-right: 2px;"></i>
-					<div id="altListWrapper">
-						<div id="altList_main" style="color: #000; padding: 10px">
+					<div id="altListWrapper" class="listWrapper">
+						<div id="altList_main">
+							<span style="color: #fff;">Alternative Explanations:</span>
 							<table id="altListTable" class="display" width="100%" style="text-align:center;">
 								<thead>
 									<tr>
@@ -671,8 +672,8 @@ function updateJScolor(jscolor) {
 				</div>
 				<div id="bottomDiv" class="tableDiv">
 					<i class="fa fa-times-circle closeButton closeTable" id="specListClose" style="font-size: 1.5em; margin-right: 2px;"></i>
-					<div id="specListWrapper">
-						<div id="specList_main" style="color: #000; padding: 10px">
+					<div id="specListWrapper" class="listWrapper">
+						<div id="specList_main">
 							<table id="specListTable" class="display" width="100%" style="text-align:center;">
 								<thead>
 									<tr>
