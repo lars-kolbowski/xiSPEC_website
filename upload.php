@@ -219,20 +219,6 @@
 						<button id="startParsing" onclick="console.log('start parsing');" disabled="true">Submit Data</button>
 				</div>
 
-<!-- 				<div class="container">
-					<h1 class="page-header">Data Upload</h1>
-					<div id="fileUploadMain">
-						<form action="php/file_upload.php" method="post" id="fileUploadForm" enctype="multipart/form-data">
-							Select files to upload:<br/>
-							mzid:
-							<input type="file" name="mzidToUpload" id="mzidToUpload">
-							<br/>
-							mzml:
-							<input type="file" name="mzmlToUpload" id="mzmlToUpload">
-							<input type="submit" value="Upload Files" name="submit">
-						</form>
-					</div>
-				</div> -->
 			</section>
 			</section>
 		</div> <!-- MAIN -->
