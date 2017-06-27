@@ -11,6 +11,85 @@
 		<script type="text/javascript" src="./src/PrecursorInfoView.js"></script>	
 		<script type="text/javascript" src="./src/model.js"></script>		
 		<script type="text/javascript" src="./js/upload.js"></script>
+        <script type="text/javascript" src="./vendor/spin.js"></script>
+		
+		<script src="vendor/jQueryFileUploadMin/jquery.ui.widget.js"></script>
+		<script src="vendor/jQueryFileUploadMin/jquery.iframe-transport.js"></script>
+		<script src="vendor/jQueryFileUploadMin/jquery.fileupload.js"></script>
+		<script>
+		$(function () {
+		    $('#fileupload').fileupload({
+		        dataType: 'json',
+		        fileTypes: "mzid|mzml",
+		        maxChunkSize: 10000000,	//10MB
+				progressall: function (e, data) {
+				    var progress = parseInt(data.loaded / data.total * 100, 10);
+				    $('#uploadProgress .file_upload_bar').css(
+				        'width',
+				        progress + '%'
+				    );
+				},
+				add: function (e, data) {
+
+					if(new RegExp("(.mzid)$", 'i').test(data.files[0].name)){
+						$('#mzid_checkbox').prop( "checked", false ).change();
+						$('#mzid_fileBox .fileName').html(data.files[0].name);
+						data.context = $('#mzid_fileBox .statusBox').html("Uploading...");
+						data.submit();
+					}
+
+					if(new RegExp("(.mzml)$", 'i').test(data.files[0].name)){
+						$('#mzml_checkbox').prop( "checked", false ).change();
+						$('#mzml_fileBox .fileName').html(data.files[0].name);
+						data.context = $('#mzml_fileBox .statusBox').html("Uploading...");
+						data.submit();						
+					}
+
+
+				},
+				done: function (e, data) {
+					if(data.context[0].dataset['filetype'] == 'mzml')
+						$('#mzml_checkbox').prop( "checked", true ).change();
+					if(data.context[0].dataset['filetype'] == 'mzid')
+						$('#mzid_checkbox').prop( "checked", true ).change();
+				    data.context.text('Upload finished.');
+				}
+		    });
+
+			$(".uploadCheckbox").change(function(){
+			    if ($('.uploadCheckbox:checked').length == $('.uploadCheckbox').length) {
+			       $('#startParsing').prop('disabled', false);
+			    }
+			    else{
+			    	$('#startParsing').prop('disabled', true);
+			    }
+			});
+
+			$("#startParsing").click(function(){
+				var spinner = new Spinner({scale: 5}).spin (d3.select("#jquery-fileupload").node());
+				var formData = new FormData();
+				formData.append("mzml_fn", $('#mzml_fileBox .fileName').html());
+				formData.append("mzid_fn", $('#mzid_fileBox .fileName').html());
+				$.ajax({
+			        url: "php/parseData.php",
+					type: 'POST',
+					data: formData,
+					async: false,
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function (data) {
+						spinner.stop();
+						console.log(data);
+					}
+				  });	 
+				  return false;					
+			});
+
+
+		});
+		</script>
+
         <link rel="stylesheet" href="./css/dropdown.css" />
 
 	</head>
@@ -128,7 +207,19 @@
 				</div>
 			</section>
 			<section id="bottom" class="one">
-				<div class="container">
+
+				<div class="container" id="jquery-fileupload">
+					<h1 class="page-header">Data Upload</h1>
+						<input id="fileupload" type="file" name="files[]" accept=".mzid,.mzml" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
+						<div id="uploadProgress">
+							<div class="file_upload_bar" style="width: 1%;"></div>
+						</div>
+						<div class="fileName_box" id="mzid_fileBox">mzid file: <span class="fileName"></span> <span class="statusBox" data-filetype="mzid"></span><input class="uploadCheckbox" type="checkbox" id="mzid_checkbox" style="visibility: hidden;"></div>
+						<div class="fileName_box" id="mzml_fileBox">mzid file: <span class="fileName"></span> <span class="statusBox" data-filetype="mzml"></span><input class="uploadCheckbox" type="checkbox" id="mzml_checkbox" style="visibility: hidden;"></div>
+						<button id="startParsing" onclick="console.log('start parsing');" disabled="true">Submit Data</button>
+				</div>
+
+<!-- 				<div class="container">
 					<h1 class="page-header">Data Upload</h1>
 					<div id="fileUploadMain">
 						<form action="php/file_upload.php" method="post" id="fileUploadForm" enctype="multipart/form-data">
@@ -141,7 +232,7 @@
 							<input type="submit" value="Upload Files" name="submit">
 						</form>
 					</div>
-				</div>
+				</div> -->
 			</section>
 			</section>
 		</div> <!-- MAIN -->

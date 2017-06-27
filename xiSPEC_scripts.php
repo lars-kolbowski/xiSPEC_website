@@ -7,7 +7,7 @@
 <script type="text/javascript" src="./vendor/colorbrewer.js"></script>
 <script type="text/javascript" src="./vendor/jquery.easyModal.js"></script>
 <script type="text/javascript" src="./vendor/js.cookie.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/u/dt/dt-1.10.12/datatables.min.js"></script>
+<script type="text/javascript" src="vendor/DataTables-1.10.12/datatables.min.js"></script>
 <link rel="stylesheet" type="text/css" href="./vendor/dt-1.10.12_datatables.min.css"/>
  
 
