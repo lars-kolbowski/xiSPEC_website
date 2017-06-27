@@ -10,12 +10,12 @@ $(function() {
 		    "columns": [
 		        { "data": "id" },
 		        { "data": "mzid" },
+				{ "data": "rank" },	
 				{ "data": "pep1" },
 				{ "data": "pep2" },
 				{ "data": "linkpos1" },	
 				{ "data": "linkpos2" },	
 				{ "data": "passThreshold" },
-				{ "data": "rank" },			
 				{ "data": "alt_count" },	
 		        ],
 			"createdRow": function( row, data, dataIndex ) {
@@ -27,18 +27,18 @@ $(function() {
 		    "columnDefs": [
 		    	{
 					"class": "invisible",
-					"targets": [ 6, 8 ],
+					"targets": [ 0, 7, 8 ],
 				},	
 				{ 
 					"className": "dt-center",
 					"render": function ( data, type, row, meta ) {
-						if (data == 0)
+						if (data == -1)
 							return '';
 						else
 							return data;
 					},
 					"searchable": false, 
-					"targets": [ 4, 5 ]
+					"targets": [ 2, 5, 6 ]
 				}		
 	        ],
 			"drawCallback": function( settings ) {

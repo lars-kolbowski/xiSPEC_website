@@ -657,12 +657,12 @@ function updateJScolor(jscolor) {
 									<tr>
 									    <th>internal_id</th>
 									    <th>id</th>
+									    <th>rank</th>
 									    <th>peptide 1</th>
 									    <th>peptide 2</th>
 									    <th style="min-width: 50px">CL pos 1</th>
 									    <th style="min-width: 50px">CL pos 2</th>
 									    <th>passThreshold</th>
-									    <th>rank</th>
 									    <th>alt_count</th>
 									</tr>
 								</thead>
@@ -677,14 +677,16 @@ function updateJScolor(jscolor) {
 							<table id="specListTable" class="display" width="100%" style="text-align:center;">
 								<thead>
 									<tr>
-									    <th>internal_id</th>
-									    <th>id</th>
-									    <th>peptide 1</th>
-									    <th>peptide 2</th>
-									    <th style="min-width: 50px">CL pos 1</th>
-									    <th style="min-width: 50px">CL pos 2</th>
-									    <th>passThreshold</th>
-									    <th>alt_count</th>
+										<th>internal_id</th>
+										<th>id</th>
+										<th>peptide 1</th>
+										<th>peptide 2</th>
+										<th style="min-width: 50px">CL pos 1</th>
+										<th style="min-width: 50px">CL pos 2</th>
+										<th>passThreshold</th>
+										<th>alt_count</th>
+										<th>dataRef</th>
+										<th>scanID</th>									    
 									</tr>
 								</thead>
 							</table>

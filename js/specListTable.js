@@ -19,7 +19,9 @@ $(function() {
 				{ "data": "linkpos1" },	
 				{ "data": "linkpos2" },	
 				{ "data": "passThreshold" },
-				{ "data": "alt_count" },			
+				{ "data": "alt_count" },
+				{ "data": "file" },
+				{ "data": "scanID" },		
 		        ],
 			"createdRow": function( row, data, dataIndex ) {
 				if ( data['passThreshold'] == "0" )         
@@ -30,12 +32,12 @@ $(function() {
 		    "columnDefs": [
 		    	{
 					"class": "invisible",
-					"targets": [ 6, 7 ],
+					"targets": [ 0, 6, 7 ],
 				},	
 				{ 
 					"className": "dt-center",
 					"render": function ( data, type, row, meta ) {
-						if (data == 0)
+						if (data == -1)
 							return '';
 						else
 							return data;
@@ -86,19 +88,22 @@ $(function() {
 			        .draw();
 			}
 		} );
+
 		window.specListTable.on('click', 'tbody tr', function() {
-
-	        // if ( $(this).hasClass('selected') ) {
-	        //     $(this).removeClass('selected');
-	        // }
-	        // else {
-				window.specListTable.$('tr.selected').removeClass('selected');
-				$(this).addClass('selected');
-	        //}
-
-			console.log('id : ', window.specListTable.row(this).data()[0]);
+			window.specListTable.$('tr.selected').removeClass('selected');
+			$(this).addClass('selected');
 			loadSpectrum(window.specListTable.row(this).data());
 		});
+
+		$('a.toggle-vis').on( 'click', function (e) {
+			e.preventDefault();
+
+			// Get the column API object
+			var column = window.specListTable.column( $(this).attr('data-column') );
+
+			// Toggle the visibility
+			column.visible( ! column.visible() );
+		} );
 
 		$('#prevSpectrum').click(function(){
 
