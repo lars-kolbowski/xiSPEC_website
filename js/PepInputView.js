@@ -16,7 +16,7 @@ var PepInputView = Backbone.View.extend({
     $.post( "./forms/convertPeps.php", {peps: pep}).done(function( data ) {
       var newJSON = JSON.parse(data);
 
-      if (self.model.JSONdata !== undefined){
+      if (self.model.JSONdata !== undefined && self.model.JSONdata !== null){
         self.model.JSONdata.Peptides = newJSON.Peptides;
         self.model.JSONdata.LinkSite = newJSON.LinkSite;
         self.model.trigger("change:JSONdata");       
@@ -31,6 +31,10 @@ var PepInputView = Backbone.View.extend({
   },
 
   render: function() {
+
+    if(this.model.peptides === undefined || this.model.JSONdata === null)
+      return;
+
     var pepStrsArr = [];
     for(i=0; i < this.model.peptides.length; i++){
       pepStrsArr[i] = "";

@@ -160,9 +160,10 @@ function doExample(){
 	$("#myCL").change();
 
 	//ions
-	$('#PeptideIon').attr('checked', true);
-	$('#BIon').attr('checked', true);
-	$('#YIon').attr('checked', true);
+	$('.ionSelectChkbox').prop('checked', false);
+	$('#PeptideIon').prop('checked', true);
+	$('#BIon').prop('checked', true);
+	$('#YIon').prop('checked', true);
 	var ionSelectionArr = new Array();
 	$('.ionSelectChkbox:checkbox:checked').each(function(){
 	    ionSelectionArr.push($(this).val());
@@ -177,6 +178,7 @@ function doClearForm(){
 	$("#myTolerance").val("");
 	$("#myPrecursorZ").val("");
 	$("#myCL").val("");
+	$('.ionSelectChkbox').prop('checked', false);
 	window.peptide.clear();
 	pepInputView.contentChanged();
 };
