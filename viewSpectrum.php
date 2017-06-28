@@ -6,26 +6,13 @@ error_reporting(E_ALL);
 
 require("functions.php");
 
+if(isset($_GET['s'])){
+	session_start();
+	$_SESSION['db'] = $_GET['s'];
+}
+
 if (empty($_POST)){
 	$dbView = TRUE;
-	// if (isset($_GET['s']))
-	// 	$dbfile = $_GET['s'];
-	// else{
-	// 	session_start();
-	// 	$dbfile = session_id();
-	// }
-	// $dir = 'sqlite:../dbs/'.$dbfile.'.db';
-	// $dbh = new PDO($dir) or die("cannot open the database");
-	// $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-	// $query =  "SELECT json FROM jsonReqs LIMIT 1;";
-	// #$query =  "SELECT json FROM jsonReqs WHERE rank = 1 AND passThreshold = 1 GROUP BY mzid ORDER BY id LIMIT 1;";
-
-	// foreach ($dbh->query($query) as $row)
-	// {
-	//     $postJSON = $row['json'];
-	// }
-
 }
 else{
 	$dbView = FALSE;
