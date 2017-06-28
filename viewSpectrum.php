@@ -317,27 +317,6 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 
 		//settings panel - put into model? or extra view?
 
-		function render_settings(){
-			window.SettingsPepInputView.render();
-
-			//ions
-			SpectrumModel.JSONdata.annotation.ions.forEach(function(ion){
-				$('#'+ion.type).attr('checked', true);
-			});
-			var ionSelectionArr = new Array();
-			$('.ionSelectChkbox:checkbox:checked').each(function(){
-			    ionSelectionArr.push($(this).val());
-			});
-			$('#ionSelection').val(ionSelectionArr.join(", "));
-
-			//$("#settingsFragmentation").val("<?php //echo $method; ?>");
-			$("#settingsPeaklist").val(window.SettingsSpectrumModel.peaksToMGF()); 
-			$("#settingsPrecursorZ").val(window.SettingsSpectrumModel.JSONdata.annotation.precursorCharge);
-			$("#settingsTolerance").val(parseInt(window.SettingsSpectrumModel.JSONdata.annotation.fragementTolerance));
-			$("#settingsToleranceUnit").val(window.SettingsSpectrumModel.JSONdata.annotation.fragementTolerance.split(" ")[1]);
-			$("#settingsCL").val(window.SettingsSpectrumModel.JSONdata.annotation['cross-linker'].modMass);
-		}
-
 		//render_settings();
 
 		$('.settingsCancel').click(function(){
@@ -456,6 +435,26 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		});			
 
 });
+function render_settings(){
+	window.SettingsPepInputView.render();
+
+	//ions
+	SpectrumModel.JSONdata.annotation.ions.forEach(function(ion){
+		$('#'+ion.type).attr('checked', true);
+	});
+	var ionSelectionArr = new Array();
+	$('.ionSelectChkbox:checkbox:checked').each(function(){
+	    ionSelectionArr.push($(this).val());
+	});
+	$('#ionSelection').val(ionSelectionArr.join(", "));
+
+	//$("#settingsFragmentation").val("<?php //echo $method; ?>");
+	$("#settingsPeaklist").val(window.SettingsSpectrumModel.peaksToMGF()); 
+	$("#settingsPrecursorZ").val(window.SettingsSpectrumModel.JSONdata.annotation.precursorCharge);
+	$("#settingsTolerance").val(parseInt(window.SettingsSpectrumModel.JSONdata.annotation.fragementTolerance));
+	$("#settingsToleranceUnit").val(window.SettingsSpectrumModel.JSONdata.annotation.fragementTolerance.split(" ")[1]);
+	$("#settingsCL").val(window.SettingsSpectrumModel.JSONdata.annotation['cross-linker'].modMass);
+}
 
 function loadSpectrum(rowdata){
 
@@ -485,6 +484,7 @@ function loadSpectrum(rowdata){
 			window.SpectrumModel.mzid = mzid;
 			console.log(window.SpectrumModel.requestId);
 			window.SpectrumModel.request_annotation(json);
+			render_settings();
 		}
 	});	 			
 };
