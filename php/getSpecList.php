@@ -2,9 +2,8 @@
 
 session_start();
 
-if (isset($_SESSION['db'])){
+if (isset($_SESSION['db']))
 	$dbname = $_SESSION['db'];
-}
 else
 	$dbname = session_id();
 
