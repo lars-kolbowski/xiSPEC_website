@@ -68,6 +68,14 @@ $( document ).ready(function() {
 			modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(window.peptide.pepStrsMods.join(";"))).load();	
 	});
 
+	$('.ionSelectChkbox').change(function(){
+		var ionSelectionArr = new Array();
+		$('.ionSelectChkbox:checkbox:checked').each(function(){
+			ionSelectionArr.push($(this).val());
+		});
+		$('#ionSelection').val(ionSelectionArr.join(", "));
+	});
+
     window.modTable = $('#modificationTable').DataTable( {
     	"paging":   false,
         "ordering": false,
@@ -163,12 +171,7 @@ function doExample(){
 	$('.ionSelectChkbox').prop('checked', false);
 	$('#PeptideIon').prop('checked', true);
 	$('#BIon').prop('checked', true);
-	$('#YIon').prop('checked', true);
-	var ionSelectionArr = new Array();
-	$('.ionSelectChkbox:checkbox:checked').each(function(){
-	    ionSelectionArr.push($(this).val());
-	});
-	$('#ionSelection').val(ionSelectionArr.join(", "));
+	$('#YIon').prop('checked', true).change();
 
 };
 
