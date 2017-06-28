@@ -47,11 +47,6 @@ $(function() {
         ],
 		"initComplete": function(settings, json) {
 		 	loadSpectrum(window.specListTable.row(0).data());
-			var json_data_copy = jQuery.extend({}, window.SpectrumModel.JSONdata);
-			var json_req = window.SpectrumModel.get('JSONrequest');
-			window.SpectrumModel.settingsModel = SettingsSpectrumModel;
-			window.SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
-			render_settings();
 		},
 		"drawCallback": function( settings ) {
 			if (window.Spectrum !== undefined)

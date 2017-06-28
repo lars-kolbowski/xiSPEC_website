@@ -179,8 +179,6 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 ?>  
         <script>
 
-
-
     SpectrumModel = new AnnotatedSpectrumModel();
     SettingsSpectrumModel = new AnnotatedSpectrumModel();
 
@@ -299,8 +297,6 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
 		}
 		
-
-
 
 		//settings panel - put into model? or extra view?
 
@@ -435,7 +431,6 @@ function render_settings(){
 	});
 	$('#ionSelection').val(ionSelectionArr.join(", "));
 
-	//$("#settingsFragmentation").val("<?php //echo $method; ?>");
 	$("#settingsPeaklist").val(window.SettingsSpectrumModel.peaksToMGF()); 
 	$("#settingsPrecursorZ").val(window.SettingsSpectrumModel.JSONdata.annotation.precursorCharge);
 	$("#settingsTolerance").val(parseInt(window.SettingsSpectrumModel.JSONdata.annotation.fragementTolerance));
@@ -469,17 +464,19 @@ function loadSpectrum(rowdata){
 			var json = JSON.parse(returndata);
 			window.SpectrumModel.requestId = id;
 			window.SpectrumModel.mzid = mzid;
-			console.log(window.SpectrumModel.requestId);
+			//console.log(window.SpectrumModel.requestId);
 			window.SpectrumModel.request_annotation(json);
+			var json_data_copy = jQuery.extend({}, window.SpectrumModel.JSONdata);
+			var json_req = window.SpectrumModel.get('JSONrequest');
+			window.SpectrumModel.settingsModel = SettingsSpectrumModel;
+			window.SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
 			render_settings();
 		}
 	});	 			
 };
 
 function updateJScolor(jscolor) {
-    console.log('#' + jscolor);
-    // 'jscolor' instance can be used as a string
-    window.SpectrumModel.changeHighlightColor('#' + jscolor);
+	window.SpectrumModel.changeHighlightColor('#' + jscolor);
 }
     </script>
     </head>
