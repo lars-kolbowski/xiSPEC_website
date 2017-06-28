@@ -8,23 +8,23 @@ require("functions.php");
 
 if (empty($_POST)){
 	$dbView = TRUE;
-	if (isset($_GET['s']))
-		$dbfile = $_GET['s'];
-	else{
-		session_start();
-		$dbfile = session_id();
-	}
-	$dir = 'sqlite:../dbs/'.$dbfile.'.db';
-	$dbh = new PDO($dir) or die("cannot open the database");
-	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	// if (isset($_GET['s']))
+	// 	$dbfile = $_GET['s'];
+	// else{
+	// 	session_start();
+	// 	$dbfile = session_id();
+	// }
+	// $dir = 'sqlite:../dbs/'.$dbfile.'.db';
+	// $dbh = new PDO($dir) or die("cannot open the database");
+	// $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-	$query =  "SELECT json FROM jsonReqs LIMIT 1;";
-	#$query =  "SELECT json FROM jsonReqs WHERE rank = 1 AND passThreshold = 1 GROUP BY mzid ORDER BY id LIMIT 1;";
+	// $query =  "SELECT json FROM jsonReqs LIMIT 1;";
+	// #$query =  "SELECT json FROM jsonReqs WHERE rank = 1 AND passThreshold = 1 GROUP BY mzid ORDER BY id LIMIT 1;";
 
-	foreach ($dbh->query($query) as $row)
-	{
-	    $postJSON = $row['json'];
-	}
+	// foreach ($dbh->query($query) as $row)
+	// {
+	//     $postJSON = $row['json'];
+	// }
 
 }
 else{
@@ -115,35 +115,36 @@ else{
 	$postJSON = json_encode($postData);
 	//var_dump(json_encode($postData));
 	//die();
-}
-
-// The data to send to the API
-$url = 'http://xi3.bio.ed.ac.uk/xiAnnotator/annotate/FULL';
-// Setup cURL
-$ch = curl_init($url);
-curl_setopt_array($ch, array(
-    CURLOPT_POST => TRUE,
-    CURLOPT_RETURNTRANSFER => TRUE,
-    CURLOPT_HTTPHEADER => array(
-        'Content-Type: application/json'
-    ),
-    CURLOPT_POSTFIELDS => $postJSON
-));
 
 
-// Send the request
-$response = curl_exec($ch);
+	// The data to send to the API
+	$url = 'http://xi3.bio.ed.ac.uk/xiAnnotator/annotate/FULL';
+	// Setup cURL
+	$ch = curl_init($url);
+	curl_setopt_array($ch, array(
+	    CURLOPT_POST => TRUE,
+	    CURLOPT_RETURNTRANSFER => TRUE,
+	    CURLOPT_HTTPHEADER => array(
+	        'Content-Type: application/json'
+	    ),
+	    CURLOPT_POSTFIELDS => $postJSON
+	));
 
-// Check for errors
-if($response === FALSE){
-    die(curl_error($ch));
-}
-$errorQuery = "java.lang.NullPointerException";
-if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQuery){
-    
-    echo ("xiAnnotator experienced a problem. Please try again later!");
-    var_dump($postJSON);
-    die();
+
+	// Send the request
+	$response = curl_exec($ch);
+
+	// Check for errors
+	if($response === FALSE){
+	    die(curl_error($ch));
+	}
+	$errorQuery = "java.lang.NullPointerException";
+	if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQuery){
+	    
+	    echo ("xiAnnotator experienced a problem. Please try again later!");
+	    var_dump($postJSON);
+	    die();
+	}
 }
 ?>
 
@@ -185,6 +186,10 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
         <script type="text/javascript" src="./src/graph/Graph.js"></script>
         <script type="text/javascript" src="./src/graph/Peak.js"></script>
         <script type="text/javascript" src="./src/graph/Fragment.js"></script>
+<?php if($dbView)
+echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
+		<script type="text/javascript" src="./js/altListTable.js"></script>';
+?>  
         <script>
 
 
@@ -194,10 +199,29 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 
     $(function() {
 
+		<?php 
+			if($dbView){
+				echo 'window.dbView = true;';
+			}
+			else{
+				echo 'window.dbView = false;';
+	        	echo 'var json_data = '.$response.';';
+        		echo 'var json_req = '.$postJSON.';';
+			} 
+		?>
 
-        // var spinner = new Spinner({scale: 5}).spin (d3.select("#mainContent").node());
-            
-        // spinner.stop();
+		if(dbView){
+			window.SpectrumModel.requestId = "0";
+			$('#bottomDiv').show();
+		}
+		else{
+
+        	console.log(json_req);
+			$('#dbControls').hide();
+			$('#bottomDiv').hide();
+			$('#altDiv').hide();		
+		}
+
 
         _.extend(window, Backbone.Events);
         window.onresize = function() { window.trigger('resize') };
@@ -279,37 +303,20 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
         window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
         window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
         window.ErrorIntensityPlot = new ErrorIntensityPlotView({model: SpectrumModel, el:"#spectrumPanel"});
-
-		//window.SettingsPeptideView = new PeptideView({model: SettingsSpectrumModel, el:"#peptideDiv"});
-        var json_data = <?php echo $response; ?>;
-        var json_req = <?php echo $postJSON ?>;
-        console.log(json_req);
-        SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
-         // SpectrumModel.userModifications = <?php //echo json_encode($modifications); ?>;
-
-		var json_data_copy = jQuery.extend({}, json_data);
-
-		SpectrumModel.settingsModel = SettingsSpectrumModel;
-        SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
 		window.SettingsPepInputView = new PepInputView({model: SettingsSpectrumModel, el:"#settingsPeptide"});
+
+		if(!dbView){
+			SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
+			var json_data_copy = jQuery.extend({}, json_data);
+			SpectrumModel.settingsModel = SettingsSpectrumModel;
+			SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
+		}
+		
 
 
 
 		//settings panel - put into model? or extra view?
-		<?php if($dbView)
-			echo 'window.dbView = true;';
-			else echo 'window.dbView = false;';
-		?>
 
-		if(dbView){
-			window.SpectrumModel.requestId = "0";
-			//window.SpectrumModel.mzId = -1;
-			$('#bottomDiv').show();
-		}
-		else{
-			$('#dbControls').hide();
-			$('#bottomDiv').hide();
-		}
 		function render_settings(){
 			window.SettingsPepInputView.render();
 
@@ -331,7 +338,7 @@ if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQu
 			$("#settingsCL").val(window.SettingsSpectrumModel.JSONdata.annotation['cross-linker'].modMass);
 		}
 
-		render_settings();
+		//render_settings();
 
 		$('.settingsCancel').click(function(){
 			$('#settingsWrapper').hide();
@@ -488,8 +495,6 @@ function updateJScolor(jscolor) {
     window.SpectrumModel.changeHighlightColor('#' + jscolor);
 }
     </script>
-    <script type="text/javascript" src="./js/specListTable.js"></script>
-    <script type="text/javascript" src="./js/altListTable.js"></script>
     </head>
 
     <body>
