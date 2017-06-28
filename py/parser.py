@@ -139,9 +139,9 @@ def mzid_to_json(item):
 
     return JSON_dict
 
-
-print sys.argv[1]
-print sys.argv[2]
+dev = False
+#print sys.argv[1]
+#print sys.argv[2]
 #print sys.argv[3]
 
 dbfolder = "../../dbs/"
@@ -151,8 +151,10 @@ except:
     os.mkdir(dbfolder)
 
 try:
-
-    con = sqlite3.connect(dbfolder+sys.argv[3]+'.db')#con = sqlite3.connect('test.db')#
+    if dev:
+        con = sqlite3.connect('test.db')
+    else:
+        con = sqlite3.connect(dbfolder+sys.argv[3]+'.db')
     cur = con.cursor()
     cur.execute("DROP TABLE IF EXISTS jsonReqs")
     cur.execute(
@@ -171,15 +173,22 @@ try:
     #cur.execute("CREATE TABLE mzids (id INT PRIMARY KEY, mzid TEXT)")
 
 except sqlite3.Error, e:
-
-    print "Error %s:" % e.args[0]
+    print json.dumps({"error": e.args[0]})
     sys.exit(1)
 
+returnJSON = {
+    "response": "",
+    "errors": []
+}
 
-mzid_file = sys.argv[1]#"with_linears_file_B170317_06_Lumos_ML_IN_205_PMBS3_Tryp_SECFr16.mzid"#
-mzml_file = sys.argv[2]#"B170317_06_Lumos_ML_IN_205_PMBS3_Tryp_SECFr16.mzML"#
-# mzid_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzid"
-# mzml_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzML"
+if dev:
+    # mzid_file = "with_linears_file_B170317_06_Lumos_ML_IN_205_PMBS3_Tryp_SECFr16.mzid"
+    # mzml_file = "B170317_06_Lumos_ML_IN_205_PMBS3_Tryp_SECFr16.mzML"
+    mzid_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzid"
+    mzml_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzML"
+else:
+    mzid_file = sys.argv[1]
+    mzml_file = sys.argv[2]
 
 mzid_reader = mzid.MzIdentML(mzid_file)
 premzml = mzml.PreIndexedMzML(mzml_file)
@@ -188,7 +197,7 @@ premzml = mzml.PreIndexedMzML(mzml_file)
 mz_index = 0
 specIdItem_index = 0
 multipleInjList_jsonReqs = []
-#multipleInjList_mzids = []
+
 for mzid_item in mzid_reader:
     # find pairs of cross-linked items
     CLSpecIdItemSet = set()
@@ -199,7 +208,7 @@ for mzid_item in mzid_reader:
     for specIdItem in mzid_item['SpectrumIdentificationItem']:
         if 'cross-link spectrum identification item' in specIdItem.keys():
             CLSpecIdItemSet.add(specIdItem['cross-link spectrum identification item'])
-        else: #assuming linear
+        else:   # assuming linear
             specIdItem['cross-link spectrum identification item'] = linear_index
             CLSpecIdItemSet.add(specIdItem['cross-link spectrum identification item'])
             linear_index -= 1
@@ -224,7 +233,7 @@ for mzid_item in mzid_reader:
             matches = re.findall("([0-9]+)", mzid_item["spectrumID"])
             scanID = int(matches[0])
         except KeyError:
-            print "Error parsing scanID from mzidentml!"
+            returnJSON['errors'].append({"type": "mzidParseError", "message": "Error parsing scanID from mzidentml!"})
             continue
 
     if premzml._offset_index.has_key(str(scanID)):
@@ -232,10 +241,14 @@ for mzid_item in mzid_reader:
     elif premzml._offset_index.has_key('controllerType=0 controllerNumber=1 scan=' + str(scanID)):
         scan = premzml.get_by_id('controllerType=0 controllerNumber=1 scan=' + str(scanID))
     else:
-        print "scanID not found in mzml file"
+        returnJSON['errors'].append({"type": "mzmlParseError", "message": "requested scanID %i not found in mzml file" % scanID})
         continue
 
-    # peaklist
+    if scan['ms level'] == 1:
+        returnJSON['errors'].append({"type": "mzmlParseError", "message": "requested scanID %i is not a MSn scan" % scanID})
+        continue
+
+    # peakList
     peaklist = get_peaklist_from_mzml(scan, scanID)
 
     for alt in alternatives:
@@ -270,7 +283,8 @@ for mzid_item in mzid_reader:
         try:
             rawFileName = mzid_item['spectraData_ref']
         except KeyError:
-            print "Error parsing rawfile name"
+            returnJSON['errors'].append(
+            {"type": "mzidParseError", "message": "no spectraData_ref specified"})
             rawFileName = ""
         # passThreshold
         if alt['passThreshold']:
@@ -297,18 +311,10 @@ for mzid_item in mzid_reader:
             [specIdItem_index, json.dumps(json_dict), mzid, pep1, pep2, linkpos1, linkpos2, passThreshold, rank, rawFileName, scanID]
         )
         specIdItem_index += 1
-        print specIdItem_index
 
-    # with con:
-    #     cur.execute("INSERT INTO mzids VALUES (%s, '%s')" % (mz_index, mzid))
-    #multipleInjList_mzids.append([mz_index, mzid])
     mz_index += 1
 
     if specIdItem_index % 500 == 0:
-        #cur.executemany("""
-        #    INSERT INTO mzids ('id', 'mzid')
-        #    VALUES (?, ?)""", multipleInjList_mzids)
-        #multipleInjList_mzids = []
 
         cur.executemany("""
             INSERT INTO jsonReqs (
@@ -328,11 +334,17 @@ for mzid_item in mzid_reader:
         multipleInjList_jsonReqs = []
         con.commit()
         break
-        #print "INSERT INTO jsonReqs VALUES(%s, '%s', %s, %s)" % (i, json.dumps(json_dict), altId, passThreshold)
 
 
-
+if len(returnJSON["errors"]) > 0:
+    returnJSON['response'] = "Warning: %i errors occured! See error log for more details." % len(returnJSON['errors'])
+else:
+    returnJSON['response'] = "No errors! Smooth sailing."
+    
+print json.dumps(returnJSON)
 if con:
     con.close()
-    print "end"
+    #print "end"
+
+
 

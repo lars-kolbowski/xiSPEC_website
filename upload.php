@@ -120,7 +120,16 @@
 					processData: false,
 					success: function (data) {
 						spinner.stop();
-						console.log(data);
+						resp = JSON.parse(data);
+						if (resp.errors.length == 0)
+							window.location.href = "viewSpectrum.php";
+						else{
+							alert("There were errors parsing your data. See the console for more information");
+							resp.errors.forEach(function (error){
+								console.log("error type: " + error.type + "\n message: "+ error.message);
+							})
+							
+						}
 					}
 				  });	 
 				  return false;					
@@ -256,7 +265,7 @@
 						</div>
 						<div class="fileName_box" id="mzid_fileBox">mzid file: <span class="fileName"></span> <span class="statusBox" data-filetype="mzid"></span><input class="uploadCheckbox" type="checkbox" id="mzid_checkbox" style="visibility: hidden;"></div>
 						<div class="fileName_box" id="mzml_fileBox">mzid file: <span class="fileName"></span> <span class="statusBox" data-filetype="mzml"></span><input class="uploadCheckbox" type="checkbox" id="mzml_checkbox" style="visibility: hidden;"></div>
-						<button id="startParsing" onclick="console.log('start parsing');" disabled="true">Submit Data</button>
+						<button id="startParsing" disabled="true">Submit Data</button>
 				</div>
 
 			</section>
