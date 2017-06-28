@@ -317,6 +317,22 @@ body, input, select, textarea {
     position: relative; /* will overlay previous absolute divs i.e. distance slider */
 }
 
+/*#specListTable_filter{
+    margin-right: 20px;
+}*/
+
+#specListTable_filter input{
+    height: 2.2em;
+    margin: 4px 20px;
+}
+
+.closeTable{
+    font-size: 1.4em;
+    margin-right: 2px;
+    margin-top: 2px;
+    margin-bottom: -27px;
+}
+
 .tableDiv{
     background: #750000;
     color: #fff;

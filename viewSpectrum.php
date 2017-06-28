@@ -316,9 +316,9 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		});
 
 		$('.closeTable').click(function(){
-			$(this).parent().hide();
+			$(this).closest('.tableDiv').hide();
 			window.Spectrum.resize();
-		})
+		});
 
 		$('#toggleSpecList').click(function(){
 			$('#bottomDiv').toggle();
@@ -637,7 +637,7 @@ function updateJScolor(jscolor) {
 				</div><!-- end top div -->
 <!-- 				<div class="gutter gutter-vertical" style="height: 10px;"></div> -->
 				<div id="altDiv" class="tableDiv">
-					<i class="fa fa-times-circle closeButton closeTable" id="altListClose" style="font-size: 1.5em; margin-right: 2px;"></i>
+					<i class="fa fa-times-circle closeButton closeTable" id="altListClose"></i>
 					<div id="altListWrapper" class="listWrapper">
 						<div id="altList_main">
 							<span style="color: #fff;">Alternative Explanations:</span>
@@ -660,7 +660,7 @@ function updateJScolor(jscolor) {
 					</div>
 				</div>
 				<div id="bottomDiv" class="tableDiv">
-					<i class="fa fa-times-circle closeButton closeTable" id="specListClose" style="font-size: 1.5em; margin-right: 2px;"></i>
+				<i class="fa fa-times-circle closeButton closeTable" id="specListClose"></i> 
 					<div id="specListWrapper" class="listWrapper">
 						<div id="specList_main">
 							<table id="specListTable" class="display" width="100%" style="text-align:center;">

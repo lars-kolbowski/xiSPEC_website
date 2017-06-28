@@ -7,6 +7,8 @@ $(function() {
 	 //    "info":     false,
 	 	"dom": '<"specListToolbar">frtip',
 	    "searching": true,
+	    "pageLength": 10,
+	    //"lengthMenu": [ 3, 5, 10 ],
 	    // "processing": true,
 	    // "serverSide": true,
 	    "ajax": "php/getSpecList.php",
@@ -56,7 +58,7 @@ $(function() {
 
 	$("div.specListToolbar").html('Filter: <label class="btn"><input id="passThreshold" type="checkbox">passing threshold</label><label class="btn"><input id="hideLinear" type="checkbox">hide linear</label>');
 
-	$('div.dataTables_filter input').addClass('form-control').css('margin-bottom', '5px');
+	$('div.dataTables_filter input').addClass('form-control');
 
 	//filters TODO: adjust pagination to show current selected one if it is in list
 	$('#passThreshold').on( 'click', function () {
