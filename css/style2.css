@@ -151,6 +151,7 @@ body, input, select, textarea {
     line-height: 1.75em;
     color: #888;
     -webkit-text-stroke: .15px;
+    overflow: hidden;
 }
 .centre {
     text-align: center;
@@ -215,12 +216,13 @@ body, input, select, textarea {
 /
     overflow:hidden;
     /* z-index:-1; */
-    overflow: hidden;
+    /* overflow: hidden; */
+    /* height: 100vh !important; */
     }
 
 #mainView .mainContent {
     top: 0px;
-    bottom: 65px;
+    /* bottom: 65px; */
     position: absolute;
     display: flex;
     flex-flow: column;
@@ -230,6 +232,7 @@ body, input, select, textarea {
     */
     width: 100%;
     overflow: none;
+    height: 100vh !important;
 }
 
 .page-header p {
