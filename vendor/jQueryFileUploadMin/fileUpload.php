@@ -15,7 +15,10 @@ session_start();
 //date_default_timezone_set ('Europe/Berlin');
 //$timeStamp = (new DateTime())->format("-H_i_s-d_M_Y");
 //$baseDir = $_SESSION["baseDir"];
-$target_dir = "../../../uploads/";
+$target_dir = "../../../uploads/".session_id()."/";
+if (!file_exists($target_dir)) {
+    mkdir($target_dir, 0777, true);
+}
 
 // if (isset ($_POST["newacqID"])) {
 //     $tsName = "acqUploadTimeStamp".$tabId;
