@@ -333,7 +333,12 @@ for mzid_item in mzid_reader:
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
         multipleInjList_jsonReqs = []
         con.commit()
-        break
+        if dev:    
+            break
+
+if not dev:
+    os.remove(mzid_file)
+    os.remove(mzml_file)
 
 
 if len(returnJSON["errors"]) > 0:
