@@ -19,7 +19,7 @@ foreach ($dbh->query($query) as $row)
 	array_push($JSON, $row);
 }
 
-$arr = array('data' => $JSON);
+$arr = array('data' => $JSON, 'db' => $dbname);
 
 echo json_encode($arr);
 

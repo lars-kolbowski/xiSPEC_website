@@ -264,7 +264,7 @@
 							<div class="file_upload_bar" style="width: 1%;"></div>
 						</div>
 						<div class="fileName_box" id="mzid_fileBox">mzid file: <span class="fileName"></span> <span class="statusBox" data-filetype="mzid"></span><input class="uploadCheckbox" type="checkbox" id="mzid_checkbox" style="visibility: hidden;"></div>
-						<div class="fileName_box" id="mzml_fileBox">mzid file: <span class="fileName"></span> <span class="statusBox" data-filetype="mzml"></span><input class="uploadCheckbox" type="checkbox" id="mzml_checkbox" style="visibility: hidden;"></div>
+						<div class="fileName_box" id="mzml_fileBox">mzml file: <span class="fileName"></span> <span class="statusBox" data-filetype="mzml"></span><input class="uploadCheckbox" type="checkbox" id="mzml_checkbox" style="visibility: hidden;"></div>
 						<button id="startParsing" disabled="true">Submit Data</button>
 				</div>
 
