@@ -313,6 +313,17 @@ body, input, select, textarea {
 .brush .extent {
 }
 
+#topDiv-overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #666;
+    opacity: 0.5; 
+    z-index: 100;
+}
+
 #bottomDiv {
     position: relative; /* will overlay previous absolute divs i.e. distance slider */
 }

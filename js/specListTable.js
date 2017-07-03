@@ -52,7 +52,8 @@ $(function() {
 				console.log("db could not be found. Redirecting...");
 				window.location.href = "upload.php";
 			}
-
+			window.initSpinner.stop();
+			$("#topDiv-overlay").css("z-index", -1);
 		 	loadSpectrum(window.specListTable.row(0).data());
 		},
 		"drawCallback": function( settings ) {

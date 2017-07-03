@@ -198,6 +198,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		if(dbView){
 			window.SpectrumModel.requestId = "0";
 			$('#bottomDiv').show();
+			window.initSpinner = new Spinner({scale: 5}).spin (d3.select("#topDiv").node());
 		}
 		else{
 
@@ -243,13 +244,11 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			{
 				"render": function ( data, type, row, meta ) {
 					data = 0;
-					for (var i = 0; i < window.SettingsSpectrumModel.userModifications.length; i++) {
-						if(window.SettingsSpectrumModel.userModifications[i].id == row.id){
-							data = window.SettingsSpectrumModel.userModifications[i].mass;
-							var found = true;
-						}
-					}
-					if (!found){
+
+					userMod = window.SettingsSpectrumModel.JSONdata.annotation.modifications.filter(function(mod){ return mod.id == row.id;});
+					if (userMod.length > 0)
+						data = userMod[0].massDifference.toFixed(4);
+					else{
 						for (var i = 0; i < window.SettingsSpectrumModel.knownModifications['modifications'].length; i++) {
 							if(window.SettingsSpectrumModel.knownModifications['modifications'][i].id == row.id)
 								data = window.SettingsSpectrumModel.knownModifications['modifications'][i].mass;
@@ -488,6 +487,7 @@ function updateJScolor(jscolor) {
             <div class="mainContent">
            
             	 <div id="topDiv"><!--style="height: calc(60% - 5px);">-->
+            	 <div id="topDiv-overlay"></div>
 	                <div id="spectrumPanel">
 
 						<div class="dynDiv" id="settingsWrapper" style="display: none; z-index: 2; right: 5%; top: 10%; width: 800px; height: 600px;">
