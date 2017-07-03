@@ -48,6 +48,11 @@ $(function() {
 			}		
         ],
 		"initComplete": function(settings, json) {
+			if (json.data.length == 0){
+				console.log("db could not be found. Redirecting...");
+				window.location.href = "upload.php";
+			}
+
 		 	loadSpectrum(window.specListTable.row(0).data());
 		},
 		"drawCallback": function( settings ) {
