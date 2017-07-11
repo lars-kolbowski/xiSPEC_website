@@ -451,12 +451,14 @@ function loadSpectrum(rowdata){
 		$('#toggleAltList').prop('disabled', false);
 		$('#toggleAltList').prop('title', "Click to view alternatives");
 		$('#toggleAltList').css('cursor', "pointer");
+		$('#toggleAltList').addClass("btn-1a");
 		window.altListTable.ajax.url( "php/getAltList.php?id="+mzid ).load();
 	}
 	else{
 		$('#toggleAltList').prop('disabled', true);
 		$('#toggleAltList').prop('title', "No alternative explanations available");
 		$('#toggleAltList').css('cursor', "not-allowed");
+		$('#toggleAltList').removeClass("btn-1a");
 		$('#altDiv').hide();
 	}
 
@@ -634,7 +636,7 @@ function updateJScolor(jscolor) {
 								<button id="toggleSpecList" title="Spectra list" class="btn btn-1a">&#9776;</button>
 								<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a">&#x203A;</button>
 								<button id="saveDB" title="Save" class="btn btn-1a">&#x1f4be;</button>
-								<button id="toggleAltList" title="Click to view alternatives" class="btn btn-1 btn-1a">Alternatives</button>
+								<button id="toggleAltList" title="Click to view alternatives" class="btn btn-1">Alternatives</button>
 							</span>         		
 		            	</div> 
 	                    <div class="heightFill">
