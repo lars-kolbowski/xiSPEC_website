@@ -227,7 +227,11 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		        { "data": "aminoAcid" },
 		        ],
 
-		    "columnDefs": [
+	    																														"columnDefs": [
+    			{ 
+				"className": "dt-center",
+				"targets": [ 1, 2, 3 ]
+				},		
 		    	{
 					"render": function ( data, type, row, meta ) {
 						return '<input class="form-control" id="modName_'+meta.row+'" name="mods[]" readonly type="text" value='+data+'>';
@@ -445,10 +449,14 @@ function loadSpectrum(rowdata){
 	if(rowdata['alt_count'] > 1){
 		$('#altDiv').show();
 		$('#toggleAltList').prop('disabled', false);
+		$('#toggleAltList').prop('title', "Click to view alternatives");
+		$('#toggleAltList').css('cursor', "pointer");
 		window.altListTable.ajax.url( "php/getAltList.php?id="+mzid ).load();
 	}
 	else{
 		$('#toggleAltList').prop('disabled', true);
+		$('#toggleAltList').prop('title', "No alternative explanations available");
+		$('#toggleAltList').css('cursor', "not-allowed");
 		$('#altDiv').hide();
 	}
 
@@ -487,10 +495,10 @@ function updateJScolor(jscolor) {
             <div class="mainContent">
            
             	 <div id="topDiv"><!--style="height: calc(60% - 5px);">-->
-            	 <div id="topDiv-overlay"></div>
+            	 <div class="overlay" id="topDiv-overlay"></div>
 	                <div id="spectrumPanel">
 
-						<div class="dynDiv" id="settingsWrapper" style="display: none; z-index: 2; right: 5%; top: 10%; width: 800px; height: 600px;">
+						<div class="dynDiv" id="settingsWrapper">
 							<div class="dynDiv_moveParentDiv" style="cursor: move;">
 								<span class="dynTitle">Settings</span>
 								<i class="fa fa-times-circle closeButton settingsCancel" id="closeSettings"></i>
@@ -505,7 +513,7 @@ function updateJScolor(jscolor) {
 							<div id="settings_main">
 								<div id="settingsData">
 									<form id="settingsForm" method="post">
-										<section style="margin-bottom:2%;">
+										<section style="margin-bottom:2%;display: flex;">
 										<div style="margin-bottom:30px;width:30%;min-width:300px;display:inline;min-width:300px;margin-right:2%;float:left;">
 											<input style="width:100%;margin-bottom:10px" class="form-control" id="settingsPeptide" autocomplete="off" required="" type="text" placeholder="Peptide Sequence1[;Peptide Sequence2]" name="peps" autofocus="">
 											<textarea class="form-control" style="padding-bottom:0px;" id="settingsPeaklist" required="" type="text" placeholder="Peak List [m/z intensity]" name="peaklist"></textarea>
@@ -516,7 +524,7 @@ function updateJScolor(jscolor) {
 											</label>
 
 											<label for="settingsPrecursorZ"><span class="label btn">Precursor charge: </span>
-								  				<input class="form-control" style="margin-right:2%;width:10%" required="" id="settingsPrecursorZ" type="number" min="1" placeholder="Charge" name="preCharge" autocomplete="off">
+								  				<input class="form-control" style="margin-right:2%;width:15%" required="" id="settingsPrecursorZ" type="number" min="1" placeholder="Charge" name="preCharge" autocomplete="off">
 											</label>
 
 											<label for="settingsIons"><span class="label btn">Ions: </span>
