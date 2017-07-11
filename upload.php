@@ -28,20 +28,21 @@
 				        'width',
 				        progress + '%'
 				    );
+				    $('#uploadProgress .file_upload_percent').html(progress + '%');
 				},
 				add: function (e, data) {
 
 					if(new RegExp("(.mzid)$", 'i').test(data.files[0].name)){
 						$('#mzid_checkbox').prop( "checked", false ).change();
 						$('#mzid_fileBox .fileName').html(data.files[0].name);
-						data.context = $('#mzid_fileBox .statusBox').html("Uploading...");
+						data.context = $('#mzid_fileBox .statusBox').html('<div class="loader"></div>');
 						data.submit();
 					}
 
 					if(new RegExp("(.mzml)$", 'i').test(data.files[0].name)){
 						$('#mzml_checkbox').prop( "checked", false ).change();
 						$('#mzml_fileBox .fileName').html(data.files[0].name);
-						data.context = $('#mzml_fileBox .statusBox').html("Uploading...");
+						data.context = $('#mzml_fileBox .statusBox').html('<div class="loader"></div>');
 						data.submit();						
 					}
 
@@ -91,7 +92,7 @@
 						$('#mzml_checkbox').prop( "checked", true ).change();
 					if(data.context[0].dataset['filetype'] == 'mzid')
 						$('#mzid_checkbox').prop( "checked", true ).change();
-				    data.context.text('Upload finished.');
+				    data.context.html('<span class="checkmark"><div class="checkmark_stem"></div><div class="checkmark_kick"></div></span>');
 				}
 		    });
 
@@ -104,8 +105,11 @@
 			    }
 			});
 
-			$("#startParsing").click(function(){
-				var spinner = new Spinner({scale: 5}).spin (d3.select("#jquery-fileupload").node());
+			$("#startParsing").click(function(e){
+				e.preventDefault();
+				var spinner = new Spinner({scale: 5}).spin();
+				var target = d3.select("#jquery-fileupload").node();
+				//var spinner = new Spinner({scale: 5}).spin (d3.select("#jquery-fileupload").node());
 				var formData = new FormData();
 				formData.append("mzml_fn", $('#mzml_fileBox .fileName').html());
 				formData.append("mzid_fn", $('#mzid_fileBox .fileName').html());
@@ -114,10 +118,13 @@
 			        url: "php/parseData.php",
 					type: 'POST',
 					data: formData,
-					async: false,
-					cache: false,
+					//async: false,
 					contentType: false,
 					processData: false,
+					beforeSend: function(){
+						$(".overlay").css("visibility", "visible").css("z-index", 1);
+						target.appendChild(spinner.el);
+					},
 					success: function (data) {
 						spinner.stop();
 						resp = JSON.parse(data);
@@ -256,20 +263,42 @@
 				</div>
 			</section>
 			<section id="bottom" class="one">
-
+<span class="glyphicon glyphicon-upload"></span>
 				<div class="container" id="jquery-fileupload">
 					<h1 class="page-header">Data Upload</h1>
-						<input id="fileupload" type="file" name="files[]" accept=".mzid,.mzml" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
-						<div id="uploadProgress">
-							<div class="file_upload_bar" style="width: 1%;"></div>
+						<div style="display:flex;">
+							<input id="fileupload" type="file" name="files[]" accept=".mzid,.mzml" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
+							<label for="fileupload"><span class="uploadbox"></span><span class="btn">Choose file(s)</span></label>
+							<div id="uploadProgress">
+								<div class="file_upload_bar" style="width: 0%;"><div class="file_upload_percent"></div></div>
+							</div>
+							<button id="startParsing" disabled="true" class="btn btn-1a">Submit Data</button>
 						</div>
-						<div class="fileName_box" id="mzid_fileBox">mzid file: <span class="fileName"></span> <span class="statusBox" data-filetype="mzid"></span><input class="uploadCheckbox" type="checkbox" id="mzid_checkbox" style="visibility: hidden;"></div>
-						<div class="fileName_box" id="mzml_fileBox">mzml file: <span class="fileName"></span> <span class="statusBox" data-filetype="mzml"></span><input class="uploadCheckbox" type="checkbox" id="mzml_checkbox" style="visibility: hidden;"></div>
-						<button id="startParsing" disabled="true">Submit Data</button>
+						<div class="fileupload_info">
+						<table>
+							<tr id="mzid_fileBox">
+							  <td style="text-align: center;">mzid file:</td>
+							  <td>
+							  	<span class="fileName">Select a mzid file to upload</span>
+							  	<span class="statusBox" data-filetype="mzid"></span>
+							  	<input class="uploadCheckbox" type="checkbox" id="mzid_checkbox" style="visibility: hidden;">
+							  </td>
+							</tr>
+							<tr id="mzml_fileBox">
+							  <td style="text-align: center;">mzml file:</td>
+							  <td>
+							  	<span class="fileName">Select a mzml file to upload</span>
+							  	<span class="statusBox" data-filetype="mzml"></span>
+							  	<input class="uploadCheckbox" type="checkbox" id="mzml_checkbox" style="visibility: hidden;">
+							  </td>
+							</tr>
+						</table>
+						</div>
 				</div>
 
 			</section>
 			</section>
 		</div> <!-- MAIN -->
+		<div class="overlay" style="z-index: -1; visibility: hidden;"></div>
 	</body>
 </html>

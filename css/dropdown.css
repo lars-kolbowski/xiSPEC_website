@@ -19,7 +19,7 @@
     position: absolute;
     background-color: #750000;
     font-family: "Lato-Regular", Helvetica, Arial, sans-serif;
-    font-size: 15px;
+    font-size: 0.8em;
     color: #fff;
     min-width: 160px;
     border: 1px solid #fff;
@@ -40,15 +40,19 @@
 
 .dropdown DIV UL {
     list-style-type: none;
+    padding: 0 10px;
+    margin: 2px;
 }
 
-.dropdown DIV LI .btn {
-    font-size: inherit;
+.dropdown label {
+    cursor: pointer;
+    display: block;
 }
 
 .dropdown DIV LI:hover {
     color: #091D42;
     background: #fff;
+    cursor: pointer;
 }
 
 .dropdown DIV HR {

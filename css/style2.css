@@ -313,17 +313,6 @@ body, input, select, textarea {
 .brush .extent {
 }
 
-#topDiv-overlay{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #666;
-    opacity: 0.5; 
-    z-index: 100;
-}
-
 #bottomDiv {
     position: relative; /* will overlay previous absolute divs i.e. distance slider */
 }
@@ -372,6 +361,15 @@ body, input, select, textarea {
     border-left: 1px solid white;
 }
 
+#settingsWrapper{
+    display: none;
+    z-index: 2;
+    right: 5%;
+    top: 10%;
+    width: 800px;
+    height: auto;
+}
+
 #lock{
     margin-left: -11px;
     margin-right: -3px;
@@ -386,10 +384,13 @@ body, input, select, textarea {
     padding-left: 10px;
     padding-right: 10px;
     line-height: 3.48;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
 }
 
 .label{
-    font-size: 1.1em;
+    font-size: 0.9em;
 }
 
 .dynDiv{
@@ -415,7 +416,18 @@ body, input, select, textarea {
 .specListToolbar{
     color: #fff;
     float: left;
+    display: flex;
+    font-size: 1.2em;
+    margin-left: 5px;
 }
+.specListToolbar .btn{
+    border-right: 1px solid white;
+    margin: 0px;
+    cursor: pointer;
+    display: inline-block;
+
+}
+
 .ellipsis{
     color: #fff;
 }

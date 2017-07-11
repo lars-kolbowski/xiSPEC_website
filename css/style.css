@@ -137,6 +137,120 @@ nav a {
 nav a:focus, nav a:hover {
     outline: 0;
 }
+
+#fileupload {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+.uploadbox{
+    background-image: url("../images/icons/upload-box.png");
+    background-color: transparent; /* make the button transparent */
+    background-repeat: no-repeat;  /* make the background image appear only once */
+    background-position: 0px 0px;  /* equivalent to 'top left' */
+    /* border: none; */           /* assuming we don't want any borders */
+    cursor: pointer;        /* make the cursor like hovering over an <a> element */
+    height: 32px;           /* make this the size of your image */
+    padding-left: 32px;     /* make text start to the right of the image */
+    vertical-align: middle; /* align the text vertically centered */
+    margin-right: -17px;
+}
+#fileupload + label {
+    cursor: pointer;
+    border: 1px solid #666;
+    color: #666;
+    padding-left: 15px;
+}
+
+#fileupload:focus + label,
+#fileupload + label:hover {
+    color: #fff;
+    background-color: #666;
+}
+#uploadProgress{
+    flex-grow: 1;
+    margin: 10px;
+}
+#startParsing{
+    border: 1px solid #666;
+}
+#startParsing:disabled{
+    border: 1px solid #eee;
+    cursor: not-allowed;
+    color: #eee;
+}
+.file_upload_bar {
+    height: 30px;
+    background: #8f3131;
+    -moz-border-radius: 25px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    box-shadow: inset 0 -1px 1px rgba(255,255,255,0.3);
+    font-size: 0.7em;
+    text-align: center;
+    /* vertical-align: top; */
+}
+.file_upload_percent{
+    top: -3px;
+    position: relative;
+    color: #fff;
+}
+.loader {
+    border: 3px solid #cbc8c8; /* Light grey */
+    border-top: 3px solid #8f3131; /* Blue */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 2s linear infinite;
+    display: inline-block;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.checkmark {
+    display:inline-block;
+    width: 22px;
+    height:22px;
+    -ms-transform: rotate(45deg); /* IE 9 */
+    -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+    transform: rotate(45deg);
+}
+
+.checkmark_stem {
+    position: absolute;
+    width: 4px;
+    height: 14px;
+    background-color: #8f3131;
+    left:11px;
+    top:6px;
+}
+
+.checkmark_kick {
+    position: absolute;
+    width: 6px;
+    height: 4px;
+    background-color: #8f3131;
+    left: 7px;
+    top: 16px;
+}
+.statusBox{
+    margin-left: 5px;
+}
+.overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #666;
+    opacity: 0.5; 
+    z-index: 100;
+}
 .currentPage a {
     margin-right: 10px;
     content: '-';
@@ -466,10 +580,7 @@ h4{
     background: linear-gradient(135deg, rgba(255, 255, 255, .2)0, rgba(9, 29, 66, 0)100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#33ffffff',  endColorstr='#00750000',  GradientType=1);
 }
-.file_upload_bar {
-    height: 18px;
-    background: green;
-}
+
 #header {
     position: fixed;
     top: 0;
@@ -728,6 +839,11 @@ code {
     display: inline-block;
     position: relative;
 }
+.fileupload_info{
+    margin-top: 10px;
+    font-size: 0.8em;
+}
+
 .annotation-csv-file, .cross-link-csv, .fasta-file {
     position: relative;
     width: 250px;
