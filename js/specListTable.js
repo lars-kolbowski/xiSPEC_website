@@ -62,8 +62,19 @@ $(function() {
 		}
 	});
 
-	$("div.specListToolbar").html('Filter: <label class="btn"><input id="passThreshold" type="checkbox">passing threshold</label><label class="btn"><input id="hideLinear" type="checkbox">hide linear</label>');
+	$( "<div id='data-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );
+	$("#data-filter").html('Filter: <label class="btn btn-1a"><input id="passThreshold" type="checkbox">passing threshold</label><label class="btn btn-1a"><input id="hideLinear" type="checkbox">hide linear</label>');
+	$( "<div id='column-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );
+	$("#column-filter").html('<div class="dropdown"><span class="btn btn-1a">Select columns</span><div class="dropdown-content mutliSelect"><ul></ul></div></div>');
 
+ 	specListTable.columns()[0].forEach(function(col){
+ 		if (!specListTable.columns().header()[col].classList.contains("invisible")){ 		
+	 		var colname =  specListTable.columns().header()[col].innerHTML;
+	 		$("#column-filter .dropdown ul").append('<li><label><input type="checkbox" checked class="toggle-vis" data-column="'+col+'">'+colname+'</label></li>');
+ 		}	
+ 	});
+
+	
 	$('div.dataTables_filter input').addClass('form-control');
 
 	//filters TODO: adjust pagination to show current selected one if it is in list
@@ -103,12 +114,9 @@ $(function() {
 		loadSpectrum(window.specListTable.row(this).data());
 	});
 
-	$('a.toggle-vis').on( 'click', function (e) {
-		e.preventDefault();
-
+	$('.toggle-vis').change(function (e) {
 		// Get the column API object
 		var column = window.specListTable.column( $(this).attr('data-column') );
-
 		// Toggle the visibility
 		column.visible( ! column.visible() );
 	} );
