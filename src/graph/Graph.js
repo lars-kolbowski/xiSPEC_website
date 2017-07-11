@@ -287,7 +287,8 @@ Graph.prototype.enableZoom = function(){
 
 	function brushmove() {
 	  var s = self.brush.extent();
-	  var width = self.x(s[1] - s[0]) - self.x(0);
+	  //var width = self.x(s[1] - s[0]) - self.x(0);
+	  var width = self.x(s[1]) - self.x(s[0]);
 	  self.dragZoomHighlight.attr("x",self.x(s[0])).attr("width", width);
 	}
 
