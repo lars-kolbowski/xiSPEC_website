@@ -260,9 +260,6 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	changeMod: function(oldPos, newPos, oldPepIndex, newPepIndex){
 
-		if (oldPos == newPos && oldPepIndex == newPepIndex)
-			return
-
 		if(this.get("JSONrequest") !== undefined){ 
 			json_req = this.get("JSONrequest");
 			//standalone
