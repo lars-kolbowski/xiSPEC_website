@@ -97,7 +97,8 @@ Graph = function(targetSvg, model, options) {
 			.style("background-color", "black")
 			.style("pointer-events", "none")
 			.style("position", "absolute")				
-			.style("opacity", 0);
+			.style("opacity", 0)
+			.style("z-index", 1);
 	}
 
 
