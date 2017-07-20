@@ -415,10 +415,23 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		$('#saveDB').click(function(){
 			$("#saveModal").trigger('openModal');
 		});
-		$('#requestShareLink').click(function(){
-			$('#shareLink').html("<input id='shareURL' type='text' class='form-control' style='width:600px' onClick=this.select();'' readonly value='"+window.location.href+"?s="+document.cookie.match(/PHPSESSID=([^;]+)/)[1]+"'>");
-			$('#shareURL').select();
-		});			
+
+		$('#saveDataSet').click(function(){
+			$.ajax({
+				type: "GET",
+				datatype: "json",
+				async: false,
+				url: "php/saveDataSet.php?name="+$('#saveDbName').val(),
+				success: function(response) {
+					console.log(response);
+				}
+			});	
+		});
+
+		// $('#requestShareLink').click(function(){
+		// 	$('#shareLink').html("<input id='shareURL' type='text' class='form-control' style='width:600px' onClick=this.select();'' readonly value='"+window.location.href+"?s="+document.cookie.match(/PHPSESSID=([^;]+)/)[1]+"'>");
+		// 	$('#shareURL').select();
+		// });			
 
 });
 function render_settings(){
@@ -486,7 +499,7 @@ function loadSpectrum(rowdata){
 
 function updateJScolor(jscolor) {
 	window.SpectrumModel.changeHighlightColor('#' + jscolor);
-}
+};
     </script>
     </head>
 
@@ -611,7 +624,7 @@ function updateJScolor(jscolor) {
 								<div class="dropdown-content">
 									<ul>
 									<li><label class="btn"><input id="moveLabels" type="checkbox">Movable Labels</label></li>
-									<li><label class="btn"><input id="lossyChkBx" type="checkbox">Lossy Labels</label></li>
+									<li><label class="btn"><input id="lossyChkBx" type="checkbox">Neutral Loss Labels</label></li>
 									</ul>
 								</div>
 							</div>
@@ -624,18 +637,18 @@ function updateJScolor(jscolor) {
 		            			<input type="text" id="xleft" size="7">
 		            			<span>-</span>
 		            			<input type="text" id="xright" size="7">
-		            			<input type="submit" id="rangeSubmit" value="Set" class="btn btn-1 btn-1a">                			
+		            			<input type="submit" id="rangeSubmit" value="Set" class="btn btn-1 btn-1a" style="display: none;">            			
 		            			<span id="range-error"></span>
 		            			<button id="reset" title="reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
 		            			<input id="lockZoom" type="checkbox" style="visibility: hidden;">
 		            		</form>
-		            		<button id="toggleView" title="Click to toggle view" class="btn btn-1 btn-1a">QC</button>
-		    				<button id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a">&#9881;</button>
+		            		<button id="toggleView" title="Click to toggle view" class="btn btn-1 btn-1a">Quality Control</button>
+		    				<button id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav">&#9881;</button>
+							<button id="saveDB" title="Save" class="btn btn-1a btn-topNav">&#x1f4be;</button>
 		    				<span id="dbControls">
-								<button id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a">&#x2039;</button>
-								<button id="toggleSpecList" title="Spectra list" class="btn btn-1a">&#9776;</button>
-								<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a">&#x203A;</button>
-								<button id="saveDB" title="Save" class="btn btn-1a">&#x1f4be;</button>
+								<button id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav">&#x2039;</button>
+								<button id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav">&#9776;</button>
+								<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav">&#x203A;</button>
 								<button id="toggleAltList" title="Click to view alternatives" class="btn btn-1">Alternatives</button>
 							</span>         		
 		            	</div> 
@@ -704,9 +717,10 @@ function updateJScolor(jscolor) {
 			<div class="header" style="background: #750000; color:#fff"">
 				Save/Share
 			</div>
-			<div id="shareLink" class="btn clearfix" style="font-size: 1.1em;margin:10px 5px;">
+			Name: <input class="form-control" id="saveDbName" name="dbName" type="text" placeholder="Enter a name for your dataset"> <button id="saveDataSet" class="btn btn-1a">Save</button>
+<!-- 			<div id="shareLink" class="btn clearfix" style="font-size: 1.1em;margin:10px 5px;">
 				<button id="requestShareLink" type="submit" class="btn btn-1a" >Click here to generate a link for later access or sharing</button>
-			</div>
+			</div> -->
 		</div>
     </body>
 </html>
