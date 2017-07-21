@@ -6,10 +6,9 @@ error_reporting(E_ALL);
 
 require("functions.php");
 
-if(isset($_GET['s'])){
-	session_start();
-	$_SESSION['db'] = $_GET['s'];
-}
+if(isset($_GET['db']))
+	require("php/logAccess.php");
+
 
 if (empty($_POST)){
 	$dbView = TRUE;
@@ -173,6 +172,7 @@ else{
         <script type="text/javascript" src="./src/graph/Graph.js"></script>
         <script type="text/javascript" src="./src/graph/Peak.js"></script>
         <script type="text/javascript" src="./src/graph/Fragment.js"></script>
+        <script type="text/javascript" src="./js/modTable.js"></script>
 <?php if($dbView)
 echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		<script type="text/javascript" src="./js/altListTable.js"></script>';
@@ -201,8 +201,8 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			window.initSpinner = new Spinner({scale: 5}).spin (d3.select("#topDiv").node());
 		}
 		else{
-
         	console.log(json_req);
+        	$("#topDiv-overlay").css("z-index", -1);
 			$('#dbControls').hide();
 			$('#bottomDiv').hide();
 			$('#altDiv').hide();		
@@ -212,81 +212,6 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
         _.extend(window, Backbone.Events);
         window.onresize = function() { window.trigger('resize') };
 
-		window.modTable = $('#modificationTable').DataTable( {
-			"paging":   false,
-		    "ordering": false,
-		    "info":     false,
-		    "searching":false,
-		    "processing": true,
-		    "serverSide": true,
-		    "ajax": "forms/convertMods.php?peps=",
-		    "columns": [
-		        { "data": "id" },
-		    	{},
-		        {},
-		        { "data": "aminoAcid" },
-		        ],
-
-	    																														"columnDefs": [
-    			{ 
-				"className": "dt-center",
-				"targets": [ 1, 2, 3 ]
-				},		
-		    	{
-					"render": function ( data, type, row, meta ) {
-						return '<input class="form-control" id="modName_'+meta.row+'" name="mods[]" readonly type="text" value='+data+'>';
-					},
-					"class": "invisible",
-					"targets": 0,
-				},
-				{
-					"render": function ( data, type, row, meta ) {
-						return row['id'];
-					},
-					"targets": 1,
-				},
-			{
-				"render": function ( data, type, row, meta ) {
-					data = 0;
-
-					userMod = window.SettingsSpectrumModel.JSONdata.annotation.modifications.filter(function(mod){ return mod.id == row.id;});
-					if (userMod.length > 0)
-						data = userMod[0].massDifference.toFixed(4);
-					else{
-						for (var i = 0; i < window.SettingsSpectrumModel.knownModifications['modifications'].length; i++) {
-							if(window.SettingsSpectrumModel.knownModifications['modifications'][i].id == row.id)
-								data = window.SettingsSpectrumModel.knownModifications['modifications'][i].mass;
-						}
-					}
-					return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" name="modMasses[]" type="number" min=0 step=0.0001 required value='+data+' autocomplete=off>';
-				},
-				"targets": 2,
-			},
-			{
-				"render": function ( data, type, row, meta ) {
-					for (var i = 0; i < window.SettingsSpectrumModel.userModifications.length; i++) {
-						if(window.SettingsSpectrumModel.userModifications[i].id == row.id){
-							data = window.SettingsSpectrumModel.userModifications[i].aminoAcids.join("");
-							var found = true;
-						}
-					}
-					if (!found){				
-						for (var i = 0; i < window.SpectrumModel.knownModifications['modifications'].length; i++) {
-							if(window.SettingsSpectrumModel.knownModifications['modifications'][i].id == row.id){						
-								data = data.split(",");
-								data = _.union(data, window.SettingsSpectrumModel.knownModifications['modifications'][i].aminoAcids);
-								data.sort();
-								data = data.join("");
-								
-							}
-						}
-					}
-					return '<input class="form-control" id="modSpec_'+meta.row+'" row="'+meta.row+'" name="modSpecificities[]" type="text" required value='+data+' autocomplete=off>'
-				},
-				"targets": 3,
-			}
-            ]
-		});
         window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumPanel"});
         window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
         window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
@@ -298,12 +223,12 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			var json_data_copy = jQuery.extend({}, json_data);
 			SpectrumModel.settingsModel = SettingsSpectrumModel;
 			SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
+			render_settings();
 		}
 		
 
 		//settings panel - put into model? or extra view?
 
-		//render_settings();
 
 		$('.settingsCancel').click(function(){
 			$('#settingsWrapper').hide();
@@ -423,15 +348,16 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 				async: false,
 				url: "php/saveDataSet.php?name="+$('#saveDbName').val(),
 				success: function(response) {
+					response = JSON.parse(response);
+					if (response.hasOwnProperty('error'))
+						$('#saveDBerror').html(response.error);
+					else
+						$('#saveModal_content').html("<p>Dataset was successfully saved!</p><p>url for access: "+response.url+"</p>");
 					console.log(response);
 				}
 			});	
 		});
 
-		// $('#requestShareLink').click(function(){
-		// 	$('#shareLink').html("<input id='shareURL' type='text' class='form-control' style='width:600px' onClick=this.select();'' readonly value='"+window.location.href+"?s="+document.cookie.match(/PHPSESSID=([^;]+)/)[1]+"'>");
-		// 	$('#shareURL').select();
-		// });			
 
 });
 function render_settings(){
@@ -465,7 +391,7 @@ function loadSpectrum(rowdata){
 		$('#toggleAltList').prop('title', "Click to view alternatives");
 		$('#toggleAltList').css('cursor', "pointer");
 		$('#toggleAltList').addClass("btn-1a");
-		window.altListTable.ajax.url( "php/getAltList.php?id="+mzid ).load();
+		window.altListTable.ajax.url( "php/getAltList.php?id=" + mzid).load();
 	}
 	else{
 		$('#toggleAltList').prop('disabled', true);
@@ -528,7 +454,7 @@ function updateJScolor(jscolor) {
 							<div id="settings_main">
 								<div id="settingsData">
 									<form id="settingsForm" method="post">
-										<section style="margin-bottom:2%;display: flex;">
+										<div style="display: flex;">
 										<div style="margin-bottom:30px;width:30%;min-width:300px;display:inline;min-width:300px;margin-right:2%;float:left;">
 											<input style="width:100%;margin-bottom:10px" class="form-control" id="settingsPeptide" autocomplete="off" required="" type="text" placeholder="Peptide Sequence1[;Peptide Sequence2]" name="peps" autofocus="">
 											<textarea class="form-control" style="padding-bottom:0px;" id="settingsPeaklist" required="" type="text" placeholder="Peak List [m/z intensity]" name="peaklist"></textarea>
@@ -584,8 +510,8 @@ function updateJScolor(jscolor) {
 												</select>									
 											</label>
 										</div>
-										</section>
-										<section style="margin-bottom:2%;">
+										</div>
+										<div style="margin-bottom:2%;">
 											<div class="form-control" style="height:auto" id="myMods">
 											<div id="modificationTable_wrapper" class="dataTables_wrapper no-footer"><div id="modificationTable_processing" class="dataTables_processing" style="display: none;">Processing...</div><table id="modificationTable" class="display dataTable no-footer" width="100%" style="text-align: center; width: 100%;" role="grid">
 												<thead>
@@ -595,8 +521,8 @@ function updateJScolor(jscolor) {
 												</thead>
 											<tbody><tr class="odd"><td valign="top" colspan="3" class="dataTables_empty">No matching records found</td></tr></tbody></table></div>
 											</div>
-										</section>	
-										<div style="margin-top:30px; text-align: center">
+										</div>	
+										<div style="margin-top:10px; text-align: center">
 											<input class="btn btn-1 btn-1a network-control" type="submit" value="Apply" id="settingsApply">
 											<input class="btn btn-1 btn-1a network-control settingsCancel" type="button" value="Cancel" id="settingsCancel">
 										</div>
@@ -644,8 +570,9 @@ function updateJScolor(jscolor) {
 		            		</form>
 		            		<button id="toggleView" title="Click to toggle view" class="btn btn-1 btn-1a">Quality Control</button>
 		    				<button id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav">&#9881;</button>
-							<button id="saveDB" title="Save" class="btn btn-1a btn-topNav">&#x1f4be;</button>
 		    				<span id="dbControls">
+		    					
+		    					<?php if(!isset($_SESSION['db'])) echo '<button id="saveDB" title="Save" class="btn btn-1a btn-topNav">&#x1f4be;</button> '?>
 								<button id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav">&#x2039;</button>
 								<button id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav">&#9776;</button>
 								<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav">&#x203A;</button>
@@ -715,12 +642,18 @@ function updateJScolor(jscolor) {
 		<!-- Modal -->
 		<div id="saveModal" role="dialog" class="modal" style="background: #333; width:650px; text-align: center">
 			<div class="header" style="background: #750000; color:#fff"">
-				Save/Share
+				Save your dataset
 			</div>
-			Name: <input class="form-control" id="saveDbName" name="dbName" type="text" placeholder="Enter a name for your dataset"> <button id="saveDataSet" class="btn btn-1a">Save</button>
-<!-- 			<div id="shareLink" class="btn clearfix" style="font-size: 1.1em;margin:10px 5px;">
-				<button id="requestShareLink" type="submit" class="btn btn-1a" >Click here to generate a link for later access or sharing</button>
-			</div> -->
+			<div class="content" id="saveModal_content">
+				<span id="saveDBerror"></span>
+				<p>
+					<label>Name: <input class="form-control" length=30 id="saveDbName" name="dbName" type="text" placeholder="Enter a name for your dataset" style="width:30%"></label>
+				</p>
+				<p><button id="saveDataSet" class="btn btn-1 btn-1a">Save</button></p>
+	<!-- 			<div id="shareLink" class="btn clearfix" style="font-size: 1.1em;margin:10px 5px;">
+					<button id="requestShareLink" type="submit" class="btn btn-1a" >Click here to generate a link for later access or sharing</button>
+				</div> -->
+			</div>
 		</div>
     </body>
 </html>

@@ -144,7 +144,7 @@ dev = False
 #print sys.argv[2]
 #print sys.argv[3]
 
-dbfolder = "../../dbs/"
+dbfolder = "../../dbs/tmp/"
 try:
     os.stat(dbfolder)
 except:

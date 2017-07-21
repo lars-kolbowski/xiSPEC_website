@@ -326,13 +326,18 @@ body, input, select, textarea {
     position: relative; /* will overlay previous absolute divs i.e. distance slider */
 }
 
-/*#specListTable_filter{
-    margin-right: 20px;
-}*/
+#modificationTable .form-control{
+    height: 2.3em;
+    font-size: 1em;
+}
 
 #specListTable_filter input{
     height: 2.2em;
     margin: 4px 20px;
+}
+
+#saveModal .content{
+    margin-top: 20px;
 }
 
 .closeTable{

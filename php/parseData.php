@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-$_SESSION['db'] = session_id();
+unset($_SESSION['db']);
 
 $target_dir = "../../uploads/".session_id()."/";
 $mzid_file = $target_dir . $_POST['mzid_fn'];

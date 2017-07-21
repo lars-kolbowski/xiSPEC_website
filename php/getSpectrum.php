@@ -4,7 +4,7 @@ session_start();
 if (isset($_SESSION['db']))
 	$dbname = $_SESSION['db'];
 else
-	$dbname = session_id();
+	$dbname = "tmp/".session_id();
 
 $dir = 'sqlite:../../dbs/'.$dbname.'.db';
 $dbh = new PDO($dir) or die("cannot open the database");
