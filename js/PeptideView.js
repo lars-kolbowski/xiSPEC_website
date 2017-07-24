@@ -59,14 +59,19 @@ var PeptideView = Backbone.View.extend({
 			//instructions
 			var html = "";
 			if (this.peptides.length > 1){
-				if (this.linkPos.length == 0)
+				if (this.linkPos.length == 0){
+					this.changeCL = Array({id: 0, linkSite: 0, peptideId: 0}, {id: 1, linkSite: 0, peptideId: 1});
+					for (var i = 0; i < this.pepLetters.length; i++) {
+						this.pepLetters[i].style("cursor", "pointer");
+					}
 					html += "Set the cross-link position by clicking on the amino acids.<br/>";
+				}
 				if (this.linkPos.length > 1)
 					html += "Click on the cross-link line to change the position.<br/>";
 			}
 			var modifications = false;
-			for (var i = 0; i < this.modLetters.length; i++) {
-				if (this.modLetters[i].length > 0)
+			for (var i = 0; i < this.pepModsArray.length; i++) {
+				if (this.pepModsArray[i].length > 0)
 					modifications = true;
 			}
 			if (modifications)
@@ -386,8 +391,7 @@ var PeptideView = Backbone.View.extend({
 			;
 
 			function changeCrossLink(){
-				//self.linkPos[d.pepIndex].linkSite = d.pos; not necessary pos is already updated through mouseover
-				var newlinkpos = new Array(self.linkPos[0].linkSite, self.linkPos[1].linkSite);
+				var newlinkpos = new Array(self.changeCL[0].linkSite, self.changeCL[1].linkSite);
 				self.model.changeLinkPos(newlinkpos);
 			};
 
