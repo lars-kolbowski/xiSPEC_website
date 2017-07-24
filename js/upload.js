@@ -1,3 +1,4 @@
+
 $( document ).ready(function() {
 	_.extend(window, Backbone.Events);
 	window.onresize = function() { window.trigger('resize') };
@@ -10,6 +11,8 @@ $( document ).ready(function() {
 			$('#myCL').val('');
 		}
 	});
+	$("#submitDataModal").easyModal();
+
 
 	$('#myCL').change(function(){ 
 		var value = $(this).val();
@@ -73,7 +76,10 @@ $( document ).ready(function() {
 		$('.ionSelectChkbox:checkbox:checked').each(function(){
 			ionSelectionArr.push($(this).val());
 		});
-		$('#ionSelection').val(ionSelectionArr.join(", "));
+		if (ionSelectionArr.length == 0)
+			$('#ionSelection').val("Select ions...");
+		else
+			$('#ionSelection').val(ionSelectionArr.join(", "));
 	});
 
     window.modTable = $('#modificationTable').DataTable( {
@@ -148,8 +154,131 @@ $( document ).ready(function() {
 				"targets": 3,
 			}
             ]
-
     });
+    $('#fileupload').fileupload({
+        dataType: 'json',
+        fileTypes: "mzid|mzml",
+		maxChunkSize: 100000000,	//100MB
+		progressall: function (e, data) {
+		    var progress = parseInt(data.loaded / data.total * 100, 10);
+		    $('#uploadProgress .file_upload_bar').css(
+		        'width',
+		        progress + '%'
+		    );
+		    $('#uploadProgress .file_upload_percent').html(progress + '%');
+		},
+		add: function (e, data) {
+
+			if(new RegExp("(.mzid)$", 'i').test(data.files[0].name)){
+				$('#mzid_checkbox').prop( "checked", false ).change();
+				$('#mzid_fileBox .fileName').html(data.files[0].name);
+				data.context = $('#mzid_fileBox .statusBox').html('<div class="loader"></div>');
+				data.submit();
+			}
+
+			if(new RegExp("(.mzml)$", 'i').test(data.files[0].name)){
+				$('#mzml_checkbox').prop( "checked", false ).change();
+				$('#mzml_fileBox .fileName').html(data.files[0].name);
+				data.context = $('#mzml_fileBox .statusBox').html('<div class="loader"></div>');
+				data.submit();						
+			}
+
+			var that = this;
+			$.getJSON('vendor/jQueryFileUploadMin/fileUpload.php', {file: data.files[0].name}, function (result) {
+			    var file = result.file;
+			    data.uploadedBytes = file && file.size;
+			    $.blueimp.fileupload.prototype
+			        .options.add.call(that, e, data);
+			});
+
+		},
+		maxRetries: 100,
+		retryTimeout: 500,
+		fail: function (e, data) {
+		    // jQuery Widget Factory uses "namespace-widgetname" since version 1.10.0:
+		    var fu = $(this).data('blueimp-fileupload') || $(this).data('fileupload'),
+		        retries = data.context.data('retries') || 0,
+		        retry = function () {
+		            $.getJSON('vendor/jQueryFileUploadMin/fileUpload.php', {file: data.files[0].name})
+		                .done(function (result) {
+		                    var file = result.file;
+		                    data.uploadedBytes = file && file.size;
+		                    // clear the previous data:
+		                    data.data = null;
+		                    data.submit();
+		                })
+		                .fail(function () {
+		                    fu._trigger('fail', e, data);
+		                });
+		        };
+		    if (data.errorThrown !== 'abort' &&
+		            data.uploadedBytes < data.files[0].size &&
+		            retries < fu.options.maxRetries) {
+		        retries += 1;
+		        data.context.data('retries', retries);
+		        window.setTimeout(retry, retries * fu.options.retryTimeout);
+		        return;
+		    }
+		    data.context.removeData('retries');
+		    $.blueimp.fileupload.prototype
+		        .options.fail.call(this, e, data);
+		},
+
+		done: function (e, data) {
+			if(data.context[0].dataset['filetype'] == 'mzml')
+				$('#mzml_checkbox').prop( "checked", true ).change();
+			if(data.context[0].dataset['filetype'] == 'mzid')
+				$('#mzid_checkbox').prop( "checked", true ).change();
+		    data.context.html('<span class="checkmark"><div class="checkmark_stem"></div><div class="checkmark_kick"></div></span>');
+		}
+    });
+
+	$(".uploadCheckbox").change(function(){
+	    if ($('.uploadCheckbox:checked').length == $('.uploadCheckbox').length) {
+	       $('#startParsing').prop('disabled', false);
+	    }
+	    else{
+	    	$('#startParsing').prop('disabled', true);
+	    }
+	});
+
+	$("#startParsing").click(function(e){
+		e.preventDefault();
+		var spinner = new Spinner({scale: 5}).spin();
+		var target = d3.select("#submitDataModal > .spinnerWrapper").node();
+		var formData = new FormData();
+		formData.append("mzml_fn", $('#mzml_fileBox .fileName').html());
+		formData.append("mzid_fn", $('#mzid_fileBox .fileName').html());
+
+		$.ajax({
+	        url: "php/parseData.php",
+			type: 'POST',
+			data: formData,
+			//async: false,
+			contentType: false,
+			processData: false,
+			beforeSend: function(){
+				$(".overlay").css("visibility", "visible").css("z-index", 1);
+				target.appendChild(spinner.el);
+				$("#submitDataModal").trigger('openModal');
+
+			},
+			success: function (data) {
+				spinner.stop();
+				resp = JSON.parse(data);
+				if (resp.errors.length == 0)
+					window.location.href = "viewSpectrum.php";
+				else{
+					alert("There were errors parsing your data. See the console for more information");
+					resp.errors.forEach(function (error){
+						console.log("error type: " + error.type + "\n message: "+ error.message);
+					})
+					
+				}
+			}
+		  });	 
+		  return false;					
+	});    
 
 });
 
