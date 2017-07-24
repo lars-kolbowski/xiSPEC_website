@@ -738,10 +738,11 @@ nav {
 #main>section {
     margin: 0;
     overflow: hidden;
-    padding: 3em 0 4em;
+    padding: 3em 0 1.5em;
     box-shadow: inset 0 1px 0 0 rgba(0, 0, 0, .05), inset 0 .1em .1em 0 rgba(0, 0, 0, .025);
     background-image: url("../images/overlay.png");
-    height: 100%}
+    height: 100%;
+    }
 #main>section.one {
     background: #fff;
     padding-top: 0;
@@ -1206,10 +1207,10 @@ div.file_upload {
     .form-control[readonly],
     fieldset[disabled] .form-control {
       background-color: #f4f6f6;
-      border-color: #d5dbdb;
+      /* border-color: #d5dbdb; */
       color: #d5dbdb;
       cursor: default;
-      opacity: 0.7;
+      /* opacity: 0.7; */
       filter: alpha(opacity=70);
     }
     .form-control.flat {

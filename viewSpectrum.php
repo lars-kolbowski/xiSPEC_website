@@ -540,21 +540,14 @@ function updateJScolor(jscolor) {
 									</label>
 									<label class="btn label">Highlight Color:
 										<input class="jscolor form-control" id="highlightColor" value="#FFFF00" onchange="updateJScolor(this.jscolor);">
-									</label>								
+									</label>
+									<label class="btn label"><input id="lossyChkBx" type="checkbox">Neutral Loss Labels</label>							
 								</div>
 							</div>
 						</div><!-- end settings -->
 		            	<div id="spectrumControls">
-							<div class="dropdown">
-								<button class="btn btn-1 btn-1a btn-drop">Labels</button>
-								<div class="dropdown-content">
-									<ul>
-									<li><label class="btn"><input id="moveLabels" type="checkbox">Movable Labels</label></li>
-									<li><label class="btn"><input id="lossyChkBx" type="checkbox">Neutral Loss Labels</label></li>
-									</ul>
-								</div>
-							</div>
 		            		<button class="downloadButton btn btn-1 btn-1a" id="downloadSVG">Download SVG</button>
+							<label class="btn">Move Labels<input id="moveLabels" type="checkbox"></label>
 		            		<button id="clearHighlights" class="btn btn-1 btn-1a">Clear Highlights</button>
 		            		<label class="btn">Measure<input id="measuringTool" type="checkbox"></label>
 		            		<form id="setrange">
