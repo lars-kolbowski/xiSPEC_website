@@ -17,26 +17,47 @@ $(function() {
 	        { "data": "mzid" },
 			{ "data": "pep1" },
 			{ "data": "pep2" },
-			{ "data": "linkpos1" },	
-			{ "data": "linkpos2" },	
+			{ "data": "linkpos1", "className": "dt-center" },	
+			{ "data": "linkpos2", "className": "dt-center" },	
+			{ "data": "isDecoy", "className": "dt-center" },
+			{ "data": "scores", "className": "dt-center" },			
 			{ "data": "passThreshold" },
 			{ "data": "alt_count" },
 			{ "data": "file" },
-			{ "data": "scanID" },		
+			{ "data": "scanID", "className": "dt-center" },		
 	        ],
 		"createdRow": function( row, data, dataIndex ) {
-			if ( data['passThreshold'] == "0" )         
+			if ( data['passThreshold'] == 0 )         
 				$(row).addClass('red');
-			if ( data['id'] == window.SpectrumModel.requestId)
-				$(row).addClass("selected");
+			// if ( data['id'] == window.SpectrumModel.requestId)
+			// 	$(row).addClass("selected");
 		 },
 	    "columnDefs": [
-	    	{
+			{
 				"class": "invisible",
-				"targets": [ 0, 6, 7 ],
-			},	
+				"targets": [ 0, 8, 9 ],
+			},
+			{
+				"render": function ( data, type, row, meta ) {
+					if (data == "0")
+						return 'False';
+					else
+						return 'True';
+				},				
+				"targets": [ 6 ],
+			},		
+			{
+				"render": function ( data, type, row, meta ) {
+					var json = JSON.parse(data);
+					var result = new Array();
+					for (key in json) {
+						result.push('<span title="'+key+'='+json[key]+'">'+json[key].toFixed(2)+'</span>');
+					}
+					return result.join("; ");
+				},				
+				"targets": [ 7 ],
+			},				
 			{ 
-				"className": "dt-center",
 				"render": function ( data, type, row, meta ) {
 					if (data == -1)
 						return '';
@@ -45,7 +66,8 @@ $(function() {
 				},
 				"searchable": false, 
 				"targets": [ 4, 5 ]
-			}		
+			},
+
         ],
 		"initComplete": function(settings, json) {
 			if (json.data.length == 0){
@@ -54,7 +76,10 @@ $(function() {
 			}
 			window.initSpinner.stop();
 			$("#topDiv-overlay").css("z-index", -1);
-		 	loadSpectrum(window.specListTable.row(0).data());
+		    window.specListTable.columns( 8 ).search( "1" ).draw();			
+		 	loadSpectrum(window.specListTable.rows( { filter : 'applied'} ).data()[0]);
+			firstRow = $('#specListWrapper tr:first-child');
+			$(firstRow).addClass('selected');
 		},
 		"drawCallback": function( settings ) {
 			if (window.Spectrum !== undefined)
@@ -63,7 +88,7 @@ $(function() {
 	});
 
 	$( "<div id='data-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );
-	$("#data-filter").html('Filter: <label class="btn btn-1a"><input id="passThreshold" type="checkbox">passing threshold</label><label class="btn btn-1a"><input id="hideLinear" type="checkbox">hide linear</label>');
+	$("#data-filter").html('Filter: <label class="btn btn-1a"><input id="passThreshold" type="checkbox" checked>passing threshold</label><label class="btn btn-1a"><input id="hideLinear" type="checkbox">hide linear</label><label class="btn btn-1a"><input id="hideDecoy" type="checkbox">hide decoys</label>');
 	$( "<div id='column-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );
 	$("#column-filter").html('<div class="dropdown"><span class="btn btn-1a">Select columns</span><div class="dropdown-content mutliSelect"><ul></ul></div></div>');
 
@@ -81,13 +106,13 @@ $(function() {
 	$('#passThreshold').on( 'click', function () {
 		if (this.checked){
 		    window.specListTable
-		        .columns( 6 )
+		        .columns( 8 )
 		        .search( "1" )
 		        .draw();				
 		}
 		else{
 		    window.specListTable
-		        .columns( 6 )
+		        .columns( 8 )
 		        .search( "" )
 		        .draw();
 		}
@@ -103,6 +128,21 @@ $(function() {
 		else{
 		    window.specListTable
 		        .columns( 3 )
+		        .search( "" )
+		        .draw();
+		}
+	} );
+
+	$('#hideDecoy').on( 'click', function () {
+		if (this.checked){
+		    window.specListTable
+		        .columns( 6 )
+		        .search( "False" )
+		        .draw();				
+		}
+		else{
+		    window.specListTable
+		        .columns( 6 )
 		        .search( "" )
 		        .draw();
 		}

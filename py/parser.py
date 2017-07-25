@@ -7,6 +7,7 @@ import json
 import sys
 import sqlite3
 import os
+import shutil
 
 
 def add_to_modlist(mod, modlist):
@@ -91,12 +92,15 @@ def mzid_to_json(item):
     #         break
 
     pepIndex = 0
-    for spectrumId_item in item:
+    targetDecoy = []
+    for spectrumId_item in item:    # len = 1 for linear
         # crosslinkId = spectrumId_item["cross-link spectrum identification item"]    # id of both peptides has to match
         JSON_dict["annotation"]["precursorCharge"] = spectrumId_item['chargeState']
         pepId = spectrumId_item['peptide_ref']
         peptide = mzid_reader.get_by_id(pepId)
-
+        peptideEvidence = mzid_reader.get_by_id(spectrumId_item['PeptideEvidenceRef'][0]['peptideEvidence_ref'])    # TODO: multiple PeptideEvidenceRefs?!
+        targetDecoy.append({"peptideId": pepIndex, 'isDecoy': peptideEvidence['isDecoy']})
+        # TODO: peptideEvidence['dBSequence_ref'] for protein
         # convert pepsequence to dict
         peptide_dict = {"sequence": []}
         for aa in peptide['PeptideSequence']:
@@ -127,6 +131,7 @@ def mzid_to_json(item):
             pepIndex += 1
 
         JSON_dict['annotation']['precursorCharge'] = spectrumId_item['chargeState']
+        JSON_dict['annotation']['isDecoy'] = targetDecoy
         JSON_dict['annotation']['modifications'] = []
         for mod in all_mods:
             JSON_dict['annotation']['modifications'].append({
@@ -140,7 +145,7 @@ def mzid_to_json(item):
     return JSON_dict
 
 
-dev = True
+dev = False
 # print sys.argv[1]
 # print sys.argv[2]
 # print sys.argv[3]
@@ -170,6 +175,7 @@ try:
         "passThreshold INT, "
         "rank INT, "
         "scores TEXT, "
+        "isDecoy INT, "
         "file TEXT, "
         "scanID INT)")
     # cur.execute("DROP TABLE IF EXISTS mzids")
@@ -192,6 +198,9 @@ if dev:
 else:
     mzid_file = sys.argv[1]
     mzml_file = sys.argv[2]
+    upload_folder = "../../uploads/" + sys.argv[3]
+
+
 
 mzid_reader = mzid.MzIdentML(mzid_file)
 premzml = mzml.PreIndexedMzML(mzml_file)
@@ -291,6 +300,8 @@ for mzid_item in mzid_reader:
         rank = alt['rank']
         mzid = mzid_item['id']
         scores = json.dumps(alt['scores'])
+
+        isDecoy = any([pep['isDecoy'] for pep in json_dict['annotation']['isDecoy']])
         try:
             rawFileName = mzid_item['spectraData_ref']
         except KeyError:
@@ -319,8 +330,19 @@ for mzid_item in mzid_reader:
         #     specIdItem_index, json.dumps(json_dict), mzid, passThreshold, rank))
 
         multipleInjList_jsonReqs.append(
-            [specIdItem_index, json.dumps(json_dict), mzid, pep1, pep2, linkpos1, linkpos2, passThreshold, rank, scores,
-             rawFileName, scanID]
+            [specIdItem_index,
+             json.dumps(json_dict),
+             mzid,
+             pep1,
+             pep2,
+             linkpos1,
+             linkpos2,
+             passThreshold,
+             rank,
+             scores,
+             isDecoy,
+             rawFileName,
+             scanID]
         )
         specIdItem_index += 1
 
@@ -340,18 +362,20 @@ for mzid_item in mzid_reader:
                 'passThreshold',
                 'rank',
                 'scores',
+                'isDecoy',
                 'file',
                 'scanID'
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
         multipleInjList_jsonReqs = []
         con.commit()
         if dev:
             break
 
 if not dev:
-    os.remove(mzid_file)
-    os.remove(mzml_file)
+    shutil.rmtree(upload_folder)
+    # os.remove(mzid_file)
+    # os.remove(mzml_file)
 
 if len(returnJSON["errors"]) > 0:
     returnJSON['response'] = "Warning: %i errors occured! See error log for more details." % len(returnJSON['errors'])

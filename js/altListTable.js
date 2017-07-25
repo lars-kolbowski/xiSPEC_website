@@ -9,11 +9,13 @@ $(function() {
 	    "columns": [
 	        { "data": "id" },
 	        { "data": "mzid" },
-			{ "data": "rank" },	
+			{ "data": "rank", "className": "dt-center" },		
 			{ "data": "pep1" },
 			{ "data": "pep2" },
-			{ "data": "linkpos1" },	
-			{ "data": "linkpos2" },	
+			{ "data": "linkpos1", "className": "dt-center" },	
+			{ "data": "linkpos2", "className": "dt-center" },	
+			{ "data": "isDecoy", "className": "dt-center" },
+			{ "data": "scores", "className": "dt-center" },		
 			{ "data": "passThreshold" },
 			{ "data": "alt_count" },	
 	        ],
@@ -26,10 +28,9 @@ $(function() {
 	    "columnDefs": [
 	    	{
 				"class": "invisible",
-				"targets": [ 0, 7, 8 ],
+				"targets": [ 0, 9, 10 ],
 			},	
 			{ 
-				"className": "dt-center",
 				"render": function ( data, type, row, meta ) {
 					if (data == -1)
 						return '';
@@ -37,8 +38,28 @@ $(function() {
 						return data;
 				},
 				"searchable": false, 
-				"targets": [ 2, 5, 6 ]
-			}		
+				"targets": [ 2, 5, 6, ]
+			},
+			{
+				"render": function ( data, type, row, meta ) {
+					if (data == 0)
+						return 'False';
+					else
+						return 'True';
+				},				
+				"targets": [ 7 ],
+			},	
+			{
+				"render": function ( data, type, row, meta ) {
+					var json = JSON.parse(data);
+					var result = new Array();
+					for (key in json) {
+						result.push('<span title="'+key+'='+json[key]+'">'+json[key].toFixed(2)+'</span>');
+					}
+					return result.join(";");
+				},				
+				"targets": [ 8 ],
+			},				
         ],
 		"drawCallback": function( settings ) {
 			if (window.Spectrum !== undefined)
