@@ -22,7 +22,7 @@
 //		and https://gist.github.com/mbostock/3019563
 
 Graph = function(targetSvg, model, options) {
-	this.x = d3.scale.linear().clamp(true);
+	this.x = d3.scale.linear();
 	this.y = d3.scale.linear();
 	this.y_right = d3.scale.linear();
 	this.model = model;
@@ -378,6 +378,18 @@ Graph.prototype.measure = function(on){
 			
 			//draw vertical end Line
 			if(endPeak){
+				//check if distance matches the mass of an aminoAcid
+				if(endPeak.x > self.measureStartPeak.x){
+					var delta = endPeak.x - self.measureStartPeak.x;
+					var matchPeak = endPeak.x;
+				}
+				else{
+					var delta = self.measureStartPeak.x - endPeak.x;
+					var matchPeak = self.measureStartPeak.x;
+				}
+				endPeak.matchedAA = self.model.matchMassToAA(delta, matchPeak);
+
+				//set end of the measuringTool to endPeak
 				self.measuringToolVLineEnd
 					.attr("x1", self.x(endPeak.x))
 					.attr("x2", self.x(endPeak.x))
@@ -416,29 +428,30 @@ Graph.prototype.measure = function(on){
 			else
 				var labelX = measureEndX + deltaX/2;
 
-			self.measureDistance.text(distance.toFixed(2)+" Th");		
+			self.measureDistance.text(distance.toFixed(self.model.showDecimals)+" Th");		
 			//var PeakInfo = distance.toFixed(2)+" Th<br/>"
 			var PeakInfo = ""
 			if(self.measureStartPeak.fragments.length > 0)
-					PeakInfo += "From: <span style='color:"+ self.measureStartPeak.colour +"'>" + self.measureStartPeak.fragments[0].name +"</span> (" + self.measureStartPeak.x + " m/z)";
+					PeakInfo += "From: <span style='color:"+ self.measureStartPeak.colour +"'>" + self.measureStartPeak.fragments[0].name +"</span> (" + self.measureStartPeak.x.toFixed(self.model.showDecimals) + " m/z)";
 			else if (self.measureStartPeak.isotopes.length > 0)
-					PeakInfo += "From: <span style='color:"+ self.measureStartPeak.colour +"'>" + self.measureStartPeak.isotopes[0].name + "+" + self.measureStartPeak.isotopenumbers[0]+ "</span> (" + self.measureStartPeak.x + " m/z)";
+					PeakInfo += "From: <span style='color:"+ self.measureStartPeak.colour +"'>" + self.measureStartPeak.isotopes[0].name + "+" + self.measureStartPeak.isotopenumbers[0]+ "</span> (" + self.measureStartPeak.x.toFixed(self.model.showDecimals) + " m/z)";
 			else
-				PeakInfo += "From: Peak (" + self.measureStartPeak.x + " m/z)"; 
+				PeakInfo += "From: Peak (" + self.measureStartPeak.x.toFixed(self.model.showDecimals) + " m/z)"; 
 			if(endPeak){
 				if(endPeak.fragments.length > 0)
-						PeakInfo += "<br/>To: <span style='color:"+ endPeak.colour +"'>" + endPeak.fragments[0].name +"</span> (" + endPeak.x + " m/z)";
+						PeakInfo += "<br/>To: <span style='color:"+ endPeak.colour +"'>" + endPeak.fragments[0].name +"</span> (" + endPeak.x.toFixed(self.model.showDecimals) + " m/z)";
 				else if(endPeak.isotopes.length > 0)
-						PeakInfo += "<br/>To: <span style='color:"+ endPeak.colour +"'>" + endPeak.isotopes[0].name + "+" + endPeak.isotopenumbers[0]+ "</span> (" + endPeak.x + " m/z)";
-				else{
-					PeakInfo += "<br/>To: Peak (" + endPeak.x + " m/z)";
-					} 
+						PeakInfo += "<br/>To: <span style='color:"+ endPeak.colour +"'>" + endPeak.isotopes[0].name + "+" + endPeak.isotopenumbers[0]+ "</span> (" + endPeak.x.toFixed(self.model.showDecimals) + " m/z)";
+				else
+					PeakInfo += "<br/>To: Peak (" + endPeak.x.toFixed(self.model.showDecimals) + " m/z)";
+				if (endPeak.matchedAA.length > 0)
+					PeakInfo += "<br/>possible match: " + endPeak.matchedAA + " ";
 			} else {
                 PeakInfo += "<br/>";
             }
 			PeakInfo += "<br/><br/><p style='font-size:0.8em'>";
 			for(i=1; i<7; i++){
-			PeakInfo += "z = "+i+": "+(distance*i).toFixed(2)+" Da</br>";	
+			PeakInfo += "z = "+i+": "+(distance*i).toFixed(self.model.showDecimals)+" Da</br>";	
 			}
 			PeakInfo += "</p>";
 			
@@ -472,7 +485,6 @@ Graph.prototype.measure = function(on){
                 pBCR = pBCR || {top: 0, left: 0};
                 return {top: svgBCR.top - pBCR.top, left: svgBCR.left - pBCR.left};
             }
-            
             
             var svgNode = self.g.node().parentNode;
             var rectBounds = this.getBoundingClientRect();

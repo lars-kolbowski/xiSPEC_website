@@ -319,6 +319,10 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			$('#settingsAppearance').show();
 		});
 
+		$('#settingsDecimals').change(function(){
+			window.SpectrumModel.showDecimals = $(this).val();
+		})
+
 		$('#settings-data').click(function(){
 			$('#settingsAppearance').hide();			
 			$('#settingsData').show();
@@ -378,6 +382,7 @@ function render_settings(){
 	$("#settingsTolerance").val(parseInt(window.SettingsSpectrumModel.JSONdata.annotation.fragementTolerance));
 	$("#settingsToleranceUnit").val(window.SettingsSpectrumModel.JSONdata.annotation.fragementTolerance.split(" ")[1]);
 	$("#settingsCL").val(window.SettingsSpectrumModel.JSONdata.annotation['cross-linker'].modMass);
+	$('#settingsDecimals').val(window.SpectrumModel.showDecimals);
 }
 
 function loadSpectrum(rowdata){
@@ -541,7 +546,11 @@ function updateJScolor(jscolor) {
 									<label class="btn label">Highlight Color:
 										<input class="jscolor form-control" id="highlightColor" value="#FFFF00" onchange="updateJScolor(this.jscolor);">
 									</label>
-									<label class="btn label"><input id="lossyChkBx" type="checkbox">Neutral Loss Labels</label>							
+									<label class="btn label"><input id="lossyChkBx" type="checkbox">Neutral Loss Labels</label>
+									<label>
+										<span class="label btn">Decimals: </span>
+				  						<input class="form-control" style="margin-right:2%;width:15%" id="settingsDecimals" type="number" min="1"  autocomplete="off">
+									</label>		
 								</div>
 							</div>
 						</div><!-- end settings -->
