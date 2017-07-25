@@ -278,7 +278,12 @@ $( document ).ready(function() {
 			}
 		  });	 
 		  return false;					
-	});    
+	});  
+
+	$('.accordionHead').click(function(){
+		$('.accordionContent').slideToggle();
+		//$(this).next('.accordionContent').show();
+	}); 
 
 });
 
