@@ -38,7 +38,7 @@ def add_to_modlist(mod, modlist):
 # print add_to_modlist(mod3_test, modlist_test)
 # print modlist_test
 
-def get_peaklist_from_mzml(scan, scanID):
+def get_peaklist_from_mzml(scan):
     """
     Function to get peaklist in mgf format from mzml
 
@@ -69,12 +69,11 @@ def mzid_to_json(item):
     item: mzidentml item
     """
     JSON_dict = {
-                 "Peptides": [],
-                 "LinkSite": [],
-                 "annotation": {"cross-linker": {"modMass": 0}},    #necessary for xiAnn atm-> told Lutz about it
-                 "peaks": []
-                 }
-
+        "Peptides": [],
+        "LinkSite": [],
+        "annotation": {"cross-linker": {"modMass": 0}},  # necessary for xiAnn atm-> told Lutz about it
+        "peaks": []
+    }
 
     all_mods = []  # Modifications list
     mod_aliases = {
@@ -110,7 +109,7 @@ def mzid_to_json(item):
                 link_index = 0  # TODO: multilink support
                 mod_location = mod['location'] - 1
                 if 'name' in mod.keys():
-                    #fix mod names
+                    # fix mod names
                     mod['name'] = mod['name'].lower()
                     mod['name'] = mod['name'].replace(" ", "_")
                     if mod['name'] in mod_aliases.keys():
@@ -121,7 +120,8 @@ def mzid_to_json(item):
 
                         # add CL locations
                 if 'cross-link donor' in mod.keys() or 'cross-link acceptor' in mod.keys():
-                    JSON_dict['LinkSite'].append({"id": link_index, "peptideId": pepIndex, "linkSite": mod_location-1})
+                    JSON_dict['LinkSite'].append(
+                        {"id": link_index, "peptideId": pepIndex, "linkSite": mod_location - 1})
                     JSON_dict["annotation"]["cross-linker"] = {"modMass": mod['monoisotopicMassDelta']}
 
             pepIndex += 1
@@ -139,22 +139,24 @@ def mzid_to_json(item):
 
     return JSON_dict
 
-dev = False
-#print sys.argv[1]
-#print sys.argv[2]
-#print sys.argv[3]
 
-dbfolder = "../../dbs/tmp/"
-try:
-    os.stat(dbfolder)
-except:
-    os.mkdir(dbfolder)
+dev = True
+# print sys.argv[1]
+# print sys.argv[2]
+# print sys.argv[3]
+
+if not dev:
+    dbfolder = "../../dbs/tmp/"
+    try:
+        os.stat(dbfolder)
+    except:
+        os.mkdir(dbfolder)
 
 try:
     if dev:
         con = sqlite3.connect('test.db')
     else:
-        con = sqlite3.connect(dbfolder+sys.argv[3]+'.db')
+        con = sqlite3.connect(dbfolder + sys.argv[3] + '.db')
     cur = con.cursor()
     cur.execute("DROP TABLE IF EXISTS jsonReqs")
     cur.execute(
@@ -167,10 +169,11 @@ try:
         "linkpos2 INT, "
         "passThreshold INT, "
         "rank INT, "
-        "file TEXT,"
+        "scores TEXT, "
+        "file TEXT, "
         "scanID INT)")
-    #cur.execute("DROP TABLE IF EXISTS mzids")
-    #cur.execute("CREATE TABLE mzids (id INT PRIMARY KEY, mzid TEXT)")
+    # cur.execute("DROP TABLE IF EXISTS mzids")
+    # cur.execute("CREATE TABLE mzids (id INT PRIMARY KEY, mzid TEXT)")
 
 except sqlite3.Error, e:
     print json.dumps({"error": e.args[0]})
@@ -182,10 +185,10 @@ returnJSON = {
 }
 
 if dev:
-    # mzid_file = "with_linears_file_B170317_06_Lumos_ML_IN_205_PMBS3_Tryp_SECFr16.mzid"
-    # mzml_file = "B170317_06_Lumos_ML_IN_205_PMBS3_Tryp_SECFr16.mzML"
-    mzid_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzid"
-    mzml_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzML"
+    mzid_file = "test_file_B170317_06_Lumos_ML_IN_205_PMBS3_Tryp_SECFr16.mzid"
+    mzml_file = "B170317_06_Lumos_ML_IN_205_PMBS3_Tryp_SECFr16.mzML"
+    # mzid_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzid"
+    # mzml_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzML"
 else:
     mzid_file = sys.argv[1]
     mzml_file = sys.argv[2]
@@ -193,22 +196,23 @@ else:
 mzid_reader = mzid.MzIdentML(mzid_file)
 premzml = mzml.PreIndexedMzML(mzml_file)
 
-
 mz_index = 0
 specIdItem_index = 0
 multipleInjList_jsonReqs = []
 
+
+# mzid_item = mzid_reader.next()
 for mzid_item in mzid_reader:
     # find pairs of cross-linked items
     CLSpecIdItemSet = set()
-    linear_index = -1
+    linear_index = -1   # negative index values for linear peptides
 
     info = {}
 
     for specIdItem in mzid_item['SpectrumIdentificationItem']:
         if 'cross-link spectrum identification item' in specIdItem.keys():
             CLSpecIdItemSet.add(specIdItem['cross-link spectrum identification item'])
-        else:   # assuming linear
+        else:  # assuming linear
             specIdItem['cross-link spectrum identification item'] = linear_index
             CLSpecIdItemSet.add(specIdItem['cross-link spectrum identification item'])
             linear_index -= 1
@@ -218,14 +222,18 @@ for mzid_item in mzid_reader:
         CLSpecIdItemPair = [SpecIdItem for SpecIdItem in mzid_item['SpectrumIdentificationItem'] if
                             SpecIdItem['cross-link spectrum identification item'] == id]
 
-        alternatives.append({
+        scores = {k: v for k, v in CLSpecIdItemPair[0].iteritems() if 'score' in k.lower()}
+
+        alternative = {
             "json_dict": mzid_to_json(CLSpecIdItemPair),
             "passThreshold": CLSpecIdItemPair[0]['passThreshold'],
-            "rank": CLSpecIdItemPair[0]['rank']
-        })
+            "rank": CLSpecIdItemPair[0]['rank'],
+            "scores": scores
+        }
 
+        alternatives.append(alternative)
 
-    #extract scanID
+    # extract scanID
     try:
         scanID = int(mzid_item['peak list scans'])
     except KeyError:
@@ -241,15 +249,17 @@ for mzid_item in mzid_reader:
     elif premzml._offset_index.has_key('controllerType=0 controllerNumber=1 scan=' + str(scanID)):
         scan = premzml.get_by_id('controllerType=0 controllerNumber=1 scan=' + str(scanID))
     else:
-        returnJSON['errors'].append({"type": "mzmlParseError", "message": "requested scanID %i not found in mzml file" % scanID})
+        returnJSON['errors'].append(
+            {"type": "mzmlParseError", "message": "requested scanID %i not found in mzml file" % scanID})
         continue
 
     if scan['ms level'] == 1:
-        returnJSON['errors'].append({"type": "mzmlParseError", "message": "requested scanID %i is not a MSn scan" % scanID})
+        returnJSON['errors'].append(
+            {"type": "mzmlParseError", "message": "requested scanID %i is not a MSn scan" % scanID})
         continue
 
     # peakList
-    peaklist = get_peaklist_from_mzml(scan, scanID)
+    peaklist = get_peaklist_from_mzml(scan)
 
     for alt in alternatives:
         json_dict = alt['json_dict']
@@ -280,11 +290,12 @@ for mzid_item in mzid_reader:
         # extract other useful info to display
         rank = alt['rank']
         mzid = mzid_item['id']
+        scores = json.dumps(alt['scores'])
         try:
             rawFileName = mzid_item['spectraData_ref']
         except KeyError:
             returnJSON['errors'].append(
-            {"type": "mzidParseError", "message": "no spectraData_ref specified"})
+                {"type": "mzidParseError", "message": "no spectraData_ref specified"})
             rawFileName = ""
         # passThreshold
         if alt['passThreshold']:
@@ -293,9 +304,9 @@ for mzid_item in mzid_reader:
             passThreshold = 0
 
         # peps and linkpos
-        pep1 = "".join([x['aminoAcid']+x['Modification'] for x in json_dict['Peptides'][0]['sequence']])
+        pep1 = "".join([x['aminoAcid'] + x['Modification'] for x in json_dict['Peptides'][0]['sequence']])
         if len(json_dict['Peptides']) > 1:
-            pep2 = "".join([x['aminoAcid']+x['Modification'] for x in json_dict['Peptides'][1]['sequence']])
+            pep2 = "".join([x['aminoAcid'] + x['Modification'] for x in json_dict['Peptides'][1]['sequence']])
             linkpos1 = [x['linkSite'] for x in json_dict['LinkSite'] if x['peptideId'] == 0][0] + 1
             linkpos2 = [x['linkSite'] for x in json_dict['LinkSite'] if x['peptideId'] == 1][0] + 1
         else:
@@ -308,7 +319,8 @@ for mzid_item in mzid_reader:
         #     specIdItem_index, json.dumps(json_dict), mzid, passThreshold, rank))
 
         multipleInjList_jsonReqs.append(
-            [specIdItem_index, json.dumps(json_dict), mzid, pep1, pep2, linkpos1, linkpos2, passThreshold, rank, rawFileName, scanID]
+            [specIdItem_index, json.dumps(json_dict), mzid, pep1, pep2, linkpos1, linkpos2, passThreshold, rank, scores,
+             rawFileName, scanID]
         )
         specIdItem_index += 1
 
@@ -327,29 +339,29 @@ for mzid_item in mzid_reader:
                 'linkpos2',
                 'passThreshold',
                 'rank',
+                'scores',
                 'file',
                 'scanID'
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
         multipleInjList_jsonReqs = []
         con.commit()
-        if dev:    
+        if dev:
             break
 
 if not dev:
     os.remove(mzid_file)
     os.remove(mzml_file)
 
-
 if len(returnJSON["errors"]) > 0:
     returnJSON['response'] = "Warning: %i errors occured! See error log for more details." % len(returnJSON['errors'])
 else:
     returnJSON['response'] = "No errors! Smooth sailing."
-    
+
 print json.dumps(returnJSON)
 if con:
     con.close()
-    #print "end"
+    # print "end"
 
 
 
