@@ -13,18 +13,19 @@ $(function() {
 	    // "serverSide": true,
 	    "ajax": "php/getSpecList.php",
 	    "columns": [
-	        { "data": "id" },
-	        { "data": "mzid" },
-			{ "data": "pep1" },
-			{ "data": "pep2" },
-			{ "data": "linkpos1", "className": "dt-center" },	
-			{ "data": "linkpos2", "className": "dt-center" },	
-			{ "data": "isDecoy", "className": "dt-center" },
-			{ "data": "scores", "className": "dt-center" },			
-			{ "data": "passThreshold" },
-			{ "data": "alt_count" },
-			{ "data": "file" },
-			{ "data": "scanID", "className": "dt-center" },		
+	        { "data": "id" },	//0
+	        { "data": "mzid" },	//1
+			{ "data": "pep1" },	//2
+			{ "data": "pep2" },	//3
+			{ "data": "linkpos1", "className": "dt-center" },	//4	
+			{ "data": "linkpos2", "className": "dt-center" },	//5
+			{ "data": "isDecoy", "className": "dt-center" },	//6
+			{ "data": "scores", "className": "dt-center" },		//7
+			{ "data": "protein", "className": "dt-center" },	//8		
+			{ "data": "passThreshold" },	//9
+			{ "data": "alt_count" },		//10
+			{ "data": "file" },				//11
+			{ "data": "scanID", "className": "dt-center" },		//12	
 	        ],
 		"createdRow": function( row, data, dataIndex ) {
 			if ( data['passThreshold'] == 0 )         
@@ -35,7 +36,7 @@ $(function() {
 	    "columnDefs": [
 			{
 				"class": "invisible",
-				"targets": [ 0, 8, 9 ],
+				"targets": [ 0, 9, 10 ],
 			},
 			{
 				"render": function ( data, type, row, meta ) {
@@ -76,7 +77,7 @@ $(function() {
 			}
 			window.initSpinner.stop();
 			$("#topDiv-overlay").css("z-index", -1);
-		    window.specListTable.columns( 8 ).search( "1" ).draw();			
+		    window.specListTable.columns( 9 ).search( "1" ).draw();			
 		 	loadSpectrum(window.specListTable.rows( { filter : 'applied'} ).data()[0]);
 			firstRow = $('#specListWrapper tr:first-child');
 			$(firstRow).addClass('selected');
@@ -106,13 +107,13 @@ $(function() {
 	$('#passThreshold').on( 'click', function () {
 		if (this.checked){
 		    window.specListTable
-		        .columns( 8 )
+		        .columns( 9 )
 		        .search( "1" )
 		        .draw();				
 		}
 		else{
 		    window.specListTable
-		        .columns( 8 )
+		        .columns( 9 )
 		        .search( "" )
 		        .draw();
 		}
@@ -134,13 +135,18 @@ $(function() {
 	} );
 
 	$('#hideDecoy').on( 'click', function () {
+		var column = window.specListTable.column( 6 );
 		if (this.checked){
+			//column.visible( false );
+			//$(".toggle-vis[data-column='6']").attr("checked", "");
 		    window.specListTable
 		        .columns( 6 )
 		        .search( "False" )
 		        .draw();				
 		}
 		else{
+			//column.visible( true );
+			//$(".toggle-vis[data-column='6']").attr("checked", "checked");
 		    window.specListTable
 		        .columns( 6 )
 		        .search( "" )

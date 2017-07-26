@@ -61,7 +61,7 @@ def get_peaklist_from_mzml(scan):
     return peaklist
 
 
-def mzid_to_json(item):
+def mzid_to_json(item, mzidreader):
     """
     Function to convert a mzidentml item into xiAnnotator JSON format dict
 
@@ -97,10 +97,13 @@ def mzid_to_json(item):
         # crosslinkId = spectrumId_item["cross-link spectrum identification item"]    # id of both peptides has to match
         JSON_dict["annotation"]["precursorCharge"] = spectrumId_item['chargeState']
         pepId = spectrumId_item['peptide_ref']
-        peptide = mzid_reader.get_by_id(pepId)
-        peptideEvidence = mzid_reader.get_by_id(spectrumId_item['PeptideEvidenceRef'][0]['peptideEvidence_ref'])    # TODO: multiple PeptideEvidenceRefs?!
-        targetDecoy.append({"peptideId": pepIndex, 'isDecoy': peptideEvidence['isDecoy']})
-        # TODO: peptideEvidence['dBSequence_ref'] for protein
+        peptide = mzidreader.get_by_id(pepId)
+        peptideEvidences = [mzidreader.get_by_id(s['peptideEvidence_ref']) for s in spectrumId_item['PeptideEvidenceRef']]
+
+        targetDecoy.append({"peptideId": pepIndex, 'isDecoy': peptideEvidences[0]['isDecoy']}) # TODO: multiple PeptideEvidenceRefs TD?
+
+        proteins = [mzidreader.get_by_id(p['dBSequence_ref']) for p in peptideEvidences]
+        accessions = [p['accession'] for p in proteins]
         # convert pepsequence to dict
         peptide_dict = {"sequence": []}
         for aa in peptide['PeptideSequence']:
@@ -132,6 +135,7 @@ def mzid_to_json(item):
 
         JSON_dict['annotation']['precursorCharge'] = spectrumId_item['chargeState']
         JSON_dict['annotation']['isDecoy'] = targetDecoy
+        JSON_dict['annotation']['proteins'] = accessions
         JSON_dict['annotation']['modifications'] = []
         for mod in all_mods:
             JSON_dict['annotation']['modifications'].append({
@@ -176,6 +180,7 @@ try:
         "rank INT, "
         "scores TEXT, "
         "isDecoy INT, "
+        "protein TEXT, "
         "file TEXT, "
         "scanID INT)")
     # cur.execute("DROP TABLE IF EXISTS mzids")
@@ -231,10 +236,10 @@ for mzid_item in mzid_reader:
         CLSpecIdItemPair = [SpecIdItem for SpecIdItem in mzid_item['SpectrumIdentificationItem'] if
                             SpecIdItem['cross-link spectrum identification item'] == id]
 
-        scores = {k: v for k, v in CLSpecIdItemPair[0].iteritems() if 'score' in k.lower()}
+        scores = {k: v for k, v in CLSpecIdItemPair[0].iteritems() if 'score' in k.lower() or 'pvalue' in k.lower() or 'evalue' in k.lower()}
 
         alternative = {
-            "json_dict": mzid_to_json(CLSpecIdItemPair),
+            "json_dict": mzid_to_json(CLSpecIdItemPair, mzid_reader),
             "passThreshold": CLSpecIdItemPair[0]['passThreshold'],
             "rank": CLSpecIdItemPair[0]['rank'],
             "scores": scores
@@ -302,6 +307,12 @@ for mzid_item in mzid_reader:
         scores = json.dumps(alt['scores'])
 
         isDecoy = any([pep['isDecoy'] for pep in json_dict['annotation']['isDecoy']])
+        accessions = ";".join(json_dict['annotation']['proteins'])
+
+        #TODO: don't save them in json_dict in first place?
+        del json_dict['annotation']['proteins']
+        del json_dict['annotation']['isDecoy']
+
         try:
             rawFileName = mzid_item['spectraData_ref']
         except KeyError:
@@ -341,6 +352,7 @@ for mzid_item in mzid_reader:
              rank,
              scores,
              isDecoy,
+             accessions,
              rawFileName,
              scanID]
         )
@@ -363,10 +375,11 @@ for mzid_item in mzid_reader:
                 'rank',
                 'scores',
                 'isDecoy',
+                'protein',
                 'file',
                 'scanID'
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
         multipleInjList_jsonReqs = []
         con.commit()
         if dev:

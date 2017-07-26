@@ -7,17 +7,18 @@ $(function() {
         "info":     false,
 	    "ajax": "php/getAltList.php?id=-1",
 	    "columns": [
-	        { "data": "id" },
-	        { "data": "mzid" },
-			{ "data": "rank", "className": "dt-center" },		
-			{ "data": "pep1" },
-			{ "data": "pep2" },
-			{ "data": "linkpos1", "className": "dt-center" },	
-			{ "data": "linkpos2", "className": "dt-center" },	
-			{ "data": "isDecoy", "className": "dt-center" },
-			{ "data": "scores", "className": "dt-center" },		
-			{ "data": "passThreshold" },
-			{ "data": "alt_count" },	
+	        { "data": "id" },		//0
+	        { "data": "mzid" }, 	//1
+			{ "data": "rank", "className": "dt-center" },		//2		
+			{ "data": "pep1" },		//3
+			{ "data": "pep2" },		//4
+			{ "data": "linkpos1", "className": "dt-center" },	//5
+			{ "data": "linkpos2", "className": "dt-center" },	//6	
+			{ "data": "isDecoy", "className": "dt-center" },	//7
+			{ "data": "scores", "className": "dt-center" },		//8
+			{ "data": "protein", "className": "dt-center" },	//9			
+			{ "data": "passThreshold" },	//10
+			{ "data": "alt_count" },		//11
 	        ],
 		"createdRow": function( row, data, dataIndex ) {
 			if ( data[6] == "0" )         
@@ -28,7 +29,7 @@ $(function() {
 	    "columnDefs": [
 	    	{
 				"class": "invisible",
-				"targets": [ 0, 9, 10 ],
+				"targets": [ 0, 10, 11 ],
 			},	
 			{ 
 				"render": function ( data, type, row, meta ) {
