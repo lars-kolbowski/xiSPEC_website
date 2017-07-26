@@ -596,12 +596,23 @@ Graph.prototype.updatePeakColors = function(){
 		}
 	}
 	else{
-		for (var p = 0; p < peakCount; p++) {
-			if (_.intersection(this.model.highlights, this.points[p].fragments).length == 0)
-				this.points[p].line.attr("stroke", this.model.lossFragBarColour);
+		var self = this; 
+		//var curPeaks = this.points.filter(function(peak){ if (peak.x > self.x.domain()[0] && peak.x < self.x.domain()[1]) return peak; })
+		var highlightClusterIds = [].concat.apply([], this.model.highlights.map(function(h){ return h.clusterIds;}));
+		this.points.forEach(function(p){
+			if (_.intersection(self.model.highlights, p.fragments).length > 0 || _.intersection(highlightClusterIds, p.clusterIds).length > 0)
+				p.line.attr("stroke", p.colour);
 			else
-				this.points[p].line.attr("stroke", this.points[p].colour);
-		}
+				p.line.attr("stroke", self.model.peakColour);
+						
+		});
+
+		// for (var p = 0; p < peakCount; p++) {
+		// 	if (_.intersection(this.model.highlights, this.points[p].fragments).length == 0)
+		// 		this.points[p].line.attr("stroke", this.model.peakColour);
+		// 	else
+		// 		this.points[p].line.attr("stroke", this.points[p].colour);
+		// }
 	}
 }
 

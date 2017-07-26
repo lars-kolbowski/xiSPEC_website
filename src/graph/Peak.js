@@ -372,7 +372,7 @@ function Peak (id, graph){
 	}
 
 
-	this.colour = this.graph.model.lossFragBarColour;
+	this.colour = this.graph.model.peakColour;
 	if (this.fragments.length > 0){
 
 		var lossy = true;
@@ -527,7 +527,7 @@ Peak.prototype.showLabels = function(lossyOverride){
 }
 
 Peak.prototype.updateColor = function(){
-	this.colour = this.graph.model.lossFragBarColour;
+	this.colour = this.graph.model.peakColour;
 	if (this.fragments.length > 0){
 		if (this.fragments[0].peptideId == 0) {
 			if (this.fragments[0].class == "non-lossy")
