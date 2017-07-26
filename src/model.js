@@ -55,10 +55,13 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.randId = this.get("randId");
 		//console.log(this.JSONdata);
 		this.annotationData = this.JSONdata.annotation;
-		this.MSnTolerance = { 
-			"value": parseFloat(this.annotationData.fragementTolerance.split(" ")[0]),
-			"unit": this.annotationData.fragementTolerance.split(" ")[1]
-		};
+
+		if (this.annotationData !== undefined){
+			this.MSnTolerance = { 
+				"value": parseFloat(this.annotationData.fragementTolerance.split(" ")[0]),
+				"unit": this.annotationData.fragementTolerance.split(" ")[1]
+			};
+		}
 
 		this.pepStrs = [];
 		this.pepStrsMods = [];
