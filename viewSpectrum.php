@@ -143,7 +143,7 @@ else{
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
+		<link rel="icon" type="image/ico" href="images/logos/favicon.ico">
 		<link rel="stylesheet" href="./css/style.css" />
         <link rel="stylesheet" href="./css/style2.css" />
         <link rel="stylesheet" href="./css/tooltip.css">
@@ -287,11 +287,12 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			//window.SpectrumModel.request_annotation(window.SettingsSpectrumModel.JSONdata);			
 		});
 
-		// $("#settingsApply").click(function(){
-		// 	$('#settingsForm').hide();
-		// 	var spinner = new Spinner({scale: 5}).spin (d3.select("#settings_main").node());
-		// 	window.SpectrumModel.request_annotation(window.SpectrumModel.JSONdata);
-		// });
+		$("#settingsCustomCfgApply").click(function(){
+			var json = window.SpectrumModel.get("JSONrequest");
+			json['annotation']['custom'] = $("#settingsCustomCfg-input").val().split("\n");
+
+		 	window.SpectrumModel.request_annotation(json);
+		 });
 
 		$('#modificationTable').on('input', 'input', function() {
 
@@ -315,16 +316,21 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 
 
 		$('#settings-appearance').click(function(){
-			$('#settingsData').hide();
+			$('.settings-tab').hide();
 			$('#settingsAppearance').show();
 		});
+
+		$('#settings-custom_cfg').click(function(){
+			$('.settings-tab').hide();
+			$('#settingsCustomCfg').show();
+		});		
 
 		$('#settingsDecimals').change(function(){
 			window.SpectrumModel.showDecimals = $(this).val();
 		})
 
 		$('#settings-data').click(function(){
-			$('#settingsAppearance').hide();			
+			$('.settings-tab').hide();		
 			$('#settingsData').show();
 		});
 
@@ -356,7 +362,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 					if (response.hasOwnProperty('error'))
 						$('#saveDBerror').html(response.error);
 					else
-						$('#saveModal_content').html("<p>Dataset was successfully saved!</p><p>url for access: "+response.url+"</p>");
+						$('#saveModal_content').html("<p>Dataset was successfully saved!</p><p>URL for access: <input type='text' value='"+response.url+"' readonly style='width: 70%; font-size: 1em; color: #000;' onClick='this.select();'></p>");
 					console.log(response);
 				}
 			});	
@@ -450,14 +456,16 @@ function updateJScolor(jscolor) {
 								<i class="fa fa-times-circle closeButton settingsCancel" id="closeSettings"></i>
 							</div>
 							<div class="settings_menu">
-								<button class="btn btn-1a" id="settings-data">Data</button><button class="btn btn-1a" id="settings-appearance">Appearance</button>
+								<button class="btn btn-1a" id="settings-data">Data</button>
+								<button class="btn btn-1a" id="settings-appearance">Appearance</button>
+								<button class="btn btn-1a" id="settings-custom_cfg">Custom config</button>
 							</div>
 							<div class="dynDiv_resizeDiv_tl" style="cursor: nw-resize;"></div>
 							<div class="dynDiv_resizeDiv_tr" style="cursor: ne-resize;"></div>
 							<div class="dynDiv_resizeDiv_bl" style="cursor: sw-resize;"></div>
 							<div class="dynDiv_resizeDiv_br" style="cursor: se-resize;"></div>
 							<div id="settings_main">
-								<div id="settingsData">
+								<div class="settings-tab" id="settingsData">
 									<form id="settingsForm" method="post">
 										<div style="display: flex;">
 										<div style="margin-bottom:30px;width:30%;min-width:300px;display:inline;min-width:300px;margin-right:2%;float:left;">
@@ -533,7 +541,7 @@ function updateJScolor(jscolor) {
 										</div>
 									</form>
 								</div>
-								<div id="settingsAppearance" style="display:none">
+								<div id="settingsAppearance" class="settings-tab" style="display:none">
 									<label class="btn label">Colour scheme:
 									<select id="colorSelector">
 										<option value="RdBu">Red &amp; Blue</option>
@@ -552,9 +560,15 @@ function updateJScolor(jscolor) {
 				  						<input class="form-control" style="margin-right:2%;width:15%" id="settingsDecimals" type="number" min="1"  autocomplete="off">
 									</label>		
 								</div>
+								<div id="settingsCustomCfg" class="settings-tab" style="display:none">
+									<textarea class="form-control" style="padding-bottom:0px;width:100%;" id="settingsCustomCfg-input" type="text"></textarea>
+									<input class="btn btn-1 btn-1a network-control" type="submit" value="Apply" id="settingsCustomCfgApply">
+								</div>								
 							</div>
 						</div><!-- end settings -->
 		            	<div id="spectrumControls">
+		            	<i class="fa fa-home fa-xi" onclick="window.location = 'index.php';" title="Home"></i>
+		            	<i class="fa fa-github fa-xi btn-1a" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>
 		            		<button class="downloadButton btn btn-1 btn-1a" id="downloadSVG">Download SVG</button>
 							<label class="btn">Move Labels<input id="moveLabels" type="checkbox"></label>
 		            		<button id="clearHighlights" class="btn btn-1 btn-1a">Clear Highlights</button>
