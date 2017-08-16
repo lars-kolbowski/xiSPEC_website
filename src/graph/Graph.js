@@ -95,6 +95,7 @@ Graph = function(targetSvg, model, options) {
 			.style("border-radius", "6px")		
 			.attr("class", "tooltip")
 			.style("background-color", "black")
+			.style("color", "#ccc")
 			.style("pointer-events", "none")
 			.style("position", "absolute")				
 			.style("opacity", 0)
