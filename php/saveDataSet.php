@@ -25,9 +25,10 @@ try {
 	if (!copy($tmpDB, $newDB)) {
 	    $json['error'] = "Error saving database!";
 	}
-	if (file_exists($tmpDB))
-		unlink($tmpDB);
-    $json['url'] = "http://" . $_SERVER['SERVER_NAME'] . "/spectrumViewer_website/viewSpectrum.php?db=" . $dbname;
+    //delete tmpDBs with cronjob
+	//if (file_exists($tmpDB))
+	//	unlink($tmpDB);
+    $json['url'] = "http://" . $_SERVER['SERVER_NAME'] . "/xiSPEC/viewSpectrum.php?db=" . $dbname;
 
 } catch (PDOException $e) {
     if ($e->getCode() == 23000) {

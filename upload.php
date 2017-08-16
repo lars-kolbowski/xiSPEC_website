@@ -67,17 +67,17 @@
 						<div class="fileupload_info">
 						<table>
 							<tr id="mzid_fileBox">
-							  <td style="text-align: center;">mzid file:</td>
+							  <td style="text-align: center;">mzIdentML file:</td>
 							  <td>
-							  	<span class="fileName">Select a mzid file to upload</span>
+							  	<span class="fileName">Select a mzIdentML file to upload</span>
 							  	<span class="statusBox" data-filetype="mzid"></span>
 							  	<input class="uploadCheckbox" type="checkbox" id="mzid_checkbox" style="visibility: hidden;">
 							  </td>
 							</tr>
 							<tr id="mzml_fileBox">
-							  <td style="text-align: center;">mzml file:</td>
+							  <td style="text-align: center;">mzML file:</td>
 							  <td>
-							  	<span class="fileName">Select a mzml file to upload</span>
+							  	<span class="fileName">Select a mzML file to upload</span>
 							  	<span class="statusBox" data-filetype="mzml"></span>
 							  	<input class="uploadCheckbox" type="checkbox" id="mzml_checkbox" style="visibility: hidden;">
 							  </td>
