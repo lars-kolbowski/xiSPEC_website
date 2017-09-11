@@ -139,25 +139,21 @@ $(function() {
 		if (this.checked){
 			//column.visible( false );
 			//$(".toggle-vis[data-column='6']").attr("checked", "");
-		    window.specListTable
-		        .columns( 6 )
-		        .search( "False" )
-		        .draw();				
+		    window.specListTable.columns( 6 ).search( "False" ).draw();				
 		}
 		else{
 			//column.visible( true );
 			//$(".toggle-vis[data-column='6']").attr("checked", "checked");
-		    window.specListTable
-		        .columns( 6 )
-		        .search( "" )
-		        .draw();
+		    window.specListTable.columns( 6 ).search( "" ).draw();
 		}
 	} );
 
-	window.specListTable.on('click', 'tbody tr', function() {
+	window.specListTable.on('click', 'tbody tr', function(e) {
+
 		window.specListTable.$('tr.selected').removeClass('selected');
 		$(this).addClass('selected');
-		loadSpectrum(window.specListTable.row(this).data());
+		loadSpectrum(window.specListTable.row(this).data());		
+
 	});
 
 	$('.toggle-vis').change(function (e) {
