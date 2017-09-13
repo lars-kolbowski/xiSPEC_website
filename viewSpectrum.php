@@ -617,6 +617,7 @@ function updateJScolor(jscolor) {
 									    <th>peptide 2</th>
 									    <th style="min-width: 50px">CL pos 1</th>
 									    <th style="min-width: 50px">CL pos 2</th>
+									    <th>charge</th>
 									    <th>isDecoy</th>
 										<th>score</th>
 										<th>protein</th>
@@ -641,6 +642,7 @@ function updateJScolor(jscolor) {
 										<th>peptide 2</th>
 										<th style="min-width: 50px">CL pos 1</th>
 										<th style="min-width: 50px">CL pos 2</th>
+										<th>charge</th>
 										<th>isDecoy</th>
 										<th>score</th>
 										<th>protein</th>
