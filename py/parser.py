@@ -11,11 +11,18 @@ import shutil
 
 
 def add_to_modlist(mod, modlist):
+    if mod['name'] == "unknown_modification":
+        mod['name'] = "unk_mod1"
+
+
     if mod['name'] in [m['name'] for m in modlist]:
         old_mod = modlist[[m['name'] for m in modlist].index(mod['name'])]
-        # check if different mod with different masses exists
+        # check if modname with different mass exists already
         if mod['monoisotopicMassDelta'] != old_mod['monoisotopicMassDelta']:
-            mod['name'] += "*"
+            if mod['name'].startswith("unk_mod"):
+                mod['name'] = mod['name'].translate(None, '0123456789') + str(int(filter(str.isdigit, mod['name'])) + 1)
+            else:
+                mod['name'] += "*"
             add_to_modlist(mod, modlist)
         else:
             for res in mod['residues']:
@@ -29,7 +36,7 @@ def add_to_modlist(mod, modlist):
 # modlist_test = [
 #     {'name': "bs3nh2", 'monoisotopicMassDelta': 123, 'residues': ["A"]}
 # ]
-# mod1_test = {'name': "bs3nh2", 'monoisotopicMassDelta': 1232, 'residues': ["A"]}
+# mod1_test = {'name': "unknown_modification", 'monoisotopicMassDelta': 123, 'residues': ["B"]}
 # mod2_test = {'name': "bs3nh2", 'monoisotopicMassDelta': 1232, 'residues': ["B"]}
 # mod3_test = {'name': "bs3nh2", 'monoisotopicMassDelta': 12323, 'residues': ["A"]}
 # print add_to_modlist(mod1_test, modlist_test)
@@ -41,23 +48,22 @@ def add_to_modlist(mod, modlist):
 
 def get_peaklist_from_mzml(scan):
     """
-    Function to get peaklist in mgf format from mzml
+    Function to extract peaklist in xiAnnotator JSON format dict from mzml
 
     Parameters:
     ------------------------
-    scan, preindexed mzml reader scan
+    scan, pymzml reader spectrum
     id: scanID
     """
 
+    if "profile spectrum" in scan.keys():
+        peaks = scan.centroidedPeaks
+    else:
+        peaks = scan.Peaks
+
     peaklist = []
-    i = 0
-    while i < len(scan["m/z array"]):
-        peak = {
-            "mz": scan["m/z array"][i],
-            "intensity": scan["intensity array"][i]
-        }
-        peaklist.append(peak)
-        i += 1
+    for peak in peaks:
+        peaklist.append({"mz": peak[0], "intensity": peak[1]})
     return peaklist
 
 
@@ -176,6 +182,7 @@ try:
         "pep2 TEXT, "
         "linkpos1 INT, "
         "linkpos2 INT, "
+        "charge INT, "
         "passThreshold INT, "
         "rank INT, "
         "scores TEXT, "
@@ -196,8 +203,8 @@ returnJSON = {
 }
 
 if dev:
-    mzid_file = "test_file_B170317_06_Lumos_ML_IN_205_PMBS3_Tryp_SECFr16.mzid"
-    mzml_file = "B170317_06_Lumos_ML_IN_205_PMBS3_Tryp_SECFr16.mzML"
+    mzid_file = "DSSO_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD_CID-only.mzid"
+    mzml_file = "B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
     # mzid_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzid"
     # mzml_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzML"
 else:
@@ -208,7 +215,9 @@ else:
 
 
 mzid_reader = mzid.MzIdentML(mzid_file)
-premzml = mzml.PreIndexedMzML(mzml_file)
+#premzml = mzml.PreIndexedMzML(mzml_file)
+import pymzml
+pymzmlReader = pymzml.run.Reader(mzml_file)
 
 mz_index = 0
 specIdItem_index = 0
@@ -242,7 +251,8 @@ for mzid_item in mzid_reader:
             "json_dict": mzid_to_json(CLSpecIdItemPair, mzid_reader),
             "passThreshold": CLSpecIdItemPair[0]['passThreshold'],
             "rank": CLSpecIdItemPair[0]['rank'],
-            "scores": scores
+            "scores": scores,
+            "charge": CLSpecIdItemPair[0]['chargeState']
         }
 
         alternatives.append(alternative)
@@ -258,14 +268,16 @@ for mzid_item in mzid_reader:
             returnJSON['errors'].append({"type": "mzidParseError", "message": "Error parsing scanID from mzidentml!"})
             continue
 
-    if premzml._offset_index.has_key(str(scanID)):
-        scan = premzml.get_by_id(str(scanID))
-    elif premzml._offset_index.has_key('controllerType=0 controllerNumber=1 scan=' + str(scanID)):
-        scan = premzml.get_by_id('controllerType=0 controllerNumber=1 scan=' + str(scanID))
-    else:
-        returnJSON['errors'].append(
-            {"type": "mzmlParseError", "message": "requested scanID %i not found in mzml file" % scanID})
-        continue
+    # if premzml._offset_index.has_key(str(scanID)):
+    #     scan = premzml.get_by_id(str(scanID))
+    # elif premzml._offset_index.has_key('controllerType=0 controllerNumber=1 scan=' + str(scanID)):
+    #     scan = premzml.get_by_id('controllerType=0 controllerNumber=1 scan=' + str(scanID))
+    # else:
+    #     returnJSON['errors'].append(
+    #         {"type": "mzmlParseError", "message": "requested scanID %i not found in mzml file" % scanID})
+    #     continue
+
+    scan = pymzmlReader[scanID]
 
     if scan['ms level'] == 1:
         returnJSON['errors'].append(
@@ -292,8 +304,10 @@ for mzid_item in mzid_reader:
             'electron transfer dissociation': ["CIon", "ZIon"],
 
         }
+
+        # get fragMethod and translate that to Ion Types
         ion_types = []
-        for key in scan['precursorList']['precursor'][0]['activation'].keys():
+        for key in scan.keys():
             if key in frag_methods.keys():
                 ion_types += frag_methods[key]
 
@@ -305,6 +319,7 @@ for mzid_item in mzid_reader:
         rank = alt['rank']
         mzid = mzid_item['id']
         scores = json.dumps(alt['scores'])
+        charge = alt['charge']
 
         isDecoy = any([pep['isDecoy'] for pep in json_dict['annotation']['isDecoy']])
         accessions = ";".join(json_dict['annotation']['proteins'])
@@ -348,6 +363,7 @@ for mzid_item in mzid_reader:
              pep2,
              linkpos1,
              linkpos2,
+             charge,
              passThreshold,
              rank,
              scores,
@@ -371,6 +387,7 @@ for mzid_item in mzid_reader:
                 'pep2',
                 'linkpos1',
                 'linkpos2',
+                'charge',
                 'passThreshold',
                 'rank',
                 'scores',
@@ -379,10 +396,11 @@ for mzid_item in mzid_reader:
                 'file',
                 'scanID'
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
         multipleInjList_jsonReqs = []
         con.commit()
         if dev:
+            #pass
             break
 
 if not dev:
