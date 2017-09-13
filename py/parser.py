@@ -9,25 +9,30 @@ import os
 import shutil
 import logging
 
+dev = False
 
-logging.basicConfig(filename='../log/parser.log', level=logging.DEBUG,
+if dev:
+    logDir = "log/parser.log"
+else:
+    logDir = "../log/parser.log"
+
+logging.basicConfig(filename=logDir, level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger = logging.getLogger(__name__)
 
 
 def add_to_modlist(mod, modlist):
     if mod['name'] == "unknown_modification":
-        mod['name'] = "unk_mod1"
-
+        mod['name'] = "({0:.2f})".format(mod['monoisotopicMassDelta'])
 
     if mod['name'] in [m['name'] for m in modlist]:
         old_mod = modlist[[m['name'] for m in modlist].index(mod['name'])]
         # check if modname with different mass exists already
         if mod['monoisotopicMassDelta'] != old_mod['monoisotopicMassDelta']:
-            if mod['name'].startswith("unk_mod"):
-                mod['name'] = mod['name'].translate(None, '0123456789') + str(int(filter(str.isdigit, mod['name'])) + 1)
-            else:
-                mod['name'] += "*"
+            # if mod['name'].startswith("unk_mod"):
+            #     mod['name'] = mod['name'].translate(None, '0123456789') + str(int(filter(str.isdigit, mod['name'])) + 1)
+            # else:
+            mod['name'] += "*"
             add_to_modlist(mod, modlist)
         else:
             for res in mod['residues']:
@@ -51,6 +56,7 @@ def add_to_modlist(mod, modlist):
 # print add_to_modlist(mod3_test, modlist_test)
 # print modlist_test
 
+
 def get_peaklist_from_mzml(scan):
     """
     Function to extract peaklist in xiAnnotator JSON format dict from mzml
@@ -64,12 +70,9 @@ def get_peaklist_from_mzml(scan):
     if "profile spectrum" in scan.keys():
         peaks = scan.centroidedPeaks
     else:
-        peaks = scan.peaks
+        peaks = scan.centroidedPeaks
 
-    peaklist = []
-    for peak in peaks:
-        peaklist.append({"mz": peak[0], "intensity": peak[1]})
-    return peaklist
+    return [{"mz": peak[0], "intensity": peak[1]} for peak in peaks]
 
 
 def mzid_to_json(item, mzidreader):
@@ -140,6 +143,7 @@ def mzid_to_json(item, mzidreader):
                 if 'cross-link donor' in mod.keys() or 'cross-link acceptor' in mod.keys():
                     JSON_dict['LinkSite'].append(
                         {"id": link_index, "peptideId": pepIndex, "linkSite": mod_location - 1})
+                if 'cross-link donor' in mod.keys():
                     JSON_dict["annotation"]["cross-linker"] = {"modMass": mod['monoisotopicMassDelta']}
 
             pepIndex += 1
@@ -160,7 +164,6 @@ def mzid_to_json(item, mzidreader):
     return JSON_dict
 
 
-dev = False
 # print sys.argv[1]
 # print sys.argv[2]
 # print sys.argv[3]
@@ -211,7 +214,7 @@ returnJSON = {
 try:
     if dev:
         mzid_file = "DSSO_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD_CID-only.mzid"
-        mzml_file = "B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
+        mzml_file = "profile_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
         # mzid_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzid"
         # mzml_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzML"
     else:
@@ -404,9 +407,10 @@ try:
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
             multipleInjList_jsonReqs = []
             con.commit()
+            break
             if dev:
-                pass
-                # break
+                # pass
+                break
 
     # delete uploaded files after they have been parsed
     if not dev:
