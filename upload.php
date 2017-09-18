@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<?php
+		error_reporting(E_ALL & ~E_NOTICE);
 		$pageName = "Home";
 		include("head.php");
 		?>
@@ -18,7 +19,6 @@
 		<script src="vendor/jQueryFileUploadMin/jquery.fileupload.js"></script>
 
         <link rel="stylesheet" href="./css/dropdown.css" />
-
 	</head>
 	<body>
 		<!-- Sidebar -->
@@ -27,35 +27,11 @@
   	 	<!-- Main -->
    	 	<div id="main">
 
-		<!-- Modal -->
-		<div id="addCLModal" role="dialog" class="modal">
-			<div class="header">
-				<h1>Add custom cross-linker</h1>
-			</div>
-			<form id="addCustomCLform" action="#">
-				<div style="text-align:center;">
-					<input class="form-control" style="margin-top:30px;width:40%;display:inline;"  required id="newCLname" type="text" placeholder="name" name="newCLname">
-					<input class="form-control" style="margin-top:30px;margin-left:2%;width:40%;display:inline;"  required id="newCLmodmass" type="text" placeholder="modMass" name="newCLmodmass">
-				</div>
-				<div class="btn clearfix">
-					<input type="submit" class="btn network-control" value="add">
-					<input type="button" class="close cancel btn network-control" value="cancel">
-				</div>
-			</form>
-		</div>
-		<div id="submitDataModal" role="dialog" class="modal">
-			<div class="spinnerWrapper" style="position: relative; margin-top: 130px;"></div>
-			<div style="text-align: center; padding-top: 140px; margin:10px;">
-				<p>Your data is being processed. Please wait...</p>
-				<p>Depending on the size of your data this process may take up to several minutes.</p>
-			</div>
-		</div>
-	
    	 	<!-- Intro -->
 			<section id="top" class="one">
 				<div class="container" id="jquery-fileupload">
 					<h1 class="page-header accordionHead">Data Upload - Upload your data as mzIdentML + mzML pair</h1>
-					<div class="accordionContent">
+					<div class="accordionContent" <?php echo ($_GET['v'] == "example" ? 'style="display: none;"' : '');?>>
 						<div style="display:flex;">
 							<input id="fileupload" type="file" name="files[]" accept=".mzid,.mzml" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
 							<label for="fileupload"><span class="uploadbox"></span><span class="btn">Choose file(s)</span></label>
@@ -91,7 +67,7 @@
 <!-- <span class="glyphicon glyphicon-upload"></span> -->
 				<div class="container">
 					<h1 class="page-header accordionHead">Data Input - Manually input your spectrum data</h1>
-					<div class="accordionContent" style="display: none;">
+					<div class="accordionContent" <?php echo ($_GET['v'] == "example" ? '' : 'style="display: none;"');?> >
 						<form id="manUpPepForm" action="viewSpectrum.php" method="post" target="_blank">
 						<!-- <form id="xisv_entryform"  action="http://spectrumviewer.org/xisv/index.php" method="post" target="_blank" onsubmit="doPreSubmission();"> -->
 							<section style="margin-bottom:2%;">
@@ -178,6 +154,38 @@
 				</div>
 			</section>
 		</div> <!-- MAIN -->
+		<!-- Modal -->
+		<div id="addCLModal" role="dialog" class="modal" style="display: none;">
+			<div class="header">
+				<h1>Add custom cross-linker</h1>
+			</div>
+			<form id="addCustomCLform" action="#">
+				<div style="text-align:center;">
+					<input class="form-control" style="margin-top:30px;width:40%;display:inline;"  required id="newCLname" type="text" placeholder="name" name="newCLname">
+					<input class="form-control" style="margin-top:30px;margin-left:2%;width:40%;display:inline;"  required id="newCLmodmass" type="text" placeholder="modMass" name="newCLmodmass">
+				</div>
+				<div class="btn clearfix">
+					<input type="submit" class="btn network-control" value="add">
+					<input type="button" class="close cancel btn network-control" value="cancel">
+				</div>
+			</form>
+		</div>
+		<div id="submitDataModal" role="dialog" class="modal">
+			<div class="spinnerWrapper" style="position: relative; margin-top: 130px;"></div>
+			<div style="text-align: center; padding-top: 140px; margin:10px;">
+				<p>Your data is being processed. Please wait...</p>
+				<p>Depending on the size of your data this process may take up to several minutes.</p>
+			</div>
+		</div>
 		<div class="overlay" style="z-index: -1; visibility: hidden;"></div>
+
+        <script type="text/javascript">
+     	<?php echo "var example = ".($_GET['v'] == "example" ? 'true' : 'false');?>   	
+        	$( document ).ready(function() {
+        		if (example)
+        			doExample();
+        	});
+        </script>
+
 	</body>
 </html>

@@ -17,14 +17,14 @@
 			slideIndex = $('.sliderImg').length-1;
 		else
 			slideIndex += n;
-		$('.sliderImg').eq(oldSlide).fadeOut(200, function(){ $('.sliderImg').eq(slideIndex).fadeIn(200); });
+		$('.sliderImg').eq(oldSlide).fadeOut(300, function(){ $('.sliderImg').eq(slideIndex).fadeIn(300); });
 	}
 
 	$( document ).ready(function() {
-		showDiv(slideIndex);
-		// window.setInterval(function(){
-		// 	showDiv(slideIndex+1);
-		// }, 2000);
+		//showDiv(slideIndex);
+		window.setInterval(function(){
+			showDiv(slideIndex+1);
+		}, 4000);
 	});
 
 	</script>
@@ -42,12 +42,13 @@
 
    	 					<p>A tool for visualizing and analyzing your mass spectrometry data. XiSPEC features automated spectra annotation with intuitive tools for data analysis and hypothesis testing.</p>
    	 					<p>xiSPEC allows you to upload whole MS datasets (<a href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> & <a href="http://www.psidev.info/mzml" target="blank">mzML</a> pair) and save them for later access (share with colleagues / online access for publication).</p>
-						<div id="spectrumWrapper" style="width:100%;margin-top: 20px;position:relative;">
- 							<img class="sliderImg" alt="example spectrum" src="example/example_spectrum.svg" style="max-width: 100%;">
- 							<img class="sliderImg" alt="zoom spectrum" src="example/zoom.png" style="max-width: 100%;display:none;">
- 							<img class="sliderImg" alt="zoom spectrum" src="example/highlight.png" style="max-width: 100%;display:none;">
-							<button class="sliderBtn slider-left" onclick="showDiv(-1)">&#10094;</button>
-							<button class="sliderBtn slider-right" onclick="showDiv(1)">&#10095;</button>
+   	 					<div style="text-align: center;">
+							<div class="sliderWrapper">
+	 							<img class="sliderImg" alt="zoom spectrum" src="example/zoom.png">
+	 							<img class="sliderImg" alt="highlight spectrum" src="example/highlight.png" style="display:none;">
+								<button class="sliderBtn slider-left" onclick="showDiv(-1)">&#10094;</button>
+								<button class="sliderBtn slider-right" onclick="showDiv(1)">&#10095;</button>
+	 						</div>
  						</div>
 							
 			 			</div> <!-- CONTAINER -->
