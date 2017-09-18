@@ -567,14 +567,14 @@ function updateJScolor(jscolor) {
 							</div>
 						</div><!-- end settings -->
 		            	<div id="spectrumControls">
-		            	<i class="fa fa-home fa-xi" onclick="window.location = 'index.php';" title="Home"></i>
-		            	<i class="fa fa-github fa-xi btn-1a" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>
-		            		<button class="downloadButton btn btn-1 btn-1a" id="downloadSVG">Download SVG</button>
+		            		<i class="fa fa-home fa-xi" onclick="window.location = 'index.php';" title="Home"></i>
+		            		<i class="fa fa-github fa-xi btn-1a" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>
+	            			<i class="fa fa-download btn-1a" aria-hidden="true" id="downloadSVG" title="download SVG" style="cursor: pointer;"></i>
 							<label class="btn">Move Labels<input id="moveLabels" type="checkbox"></label>
 		            		<button id="clearHighlights" class="btn btn-1 btn-1a">Clear Highlights</button>
 		            		<label class="btn">Measure<input id="measuringTool" type="checkbox"></label>
 		            		<form id="setrange">
-		            			<label class="btn">m/z Range:</label>
+		            			<label class="btn" title="m/z range">m/z:</label>
 								<label class="btn" for="lockZoom" title="Lock current zoom level" id="lock" class="btn">🔓</label>
 		            			<input type="text" id="xleft" size="7">
 		            			<span>-</span>
