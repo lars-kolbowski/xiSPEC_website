@@ -22,11 +22,13 @@
 									<tr>
 						   		 <td><div class="contact no-hover">
 						   		 		<ul id="navlist"  class="no-hover">
-						   		 			<li class="no-hover"><a href="mailto:lars.b.kolbowski@campus.tu-berlin.de" class="no-hover" title="Email Lars!"></a></li>
+						   		 			<li><a href="mailto:lars.b.kolbowski@campus.tu-berlin.de" title="Email Lars!">
+						   		 				<img src="images/team/lars-kolbowski.jpg" class="grayscale" />
+						   		 			</a></li>
 						   		 		</ul>
 						   		 	</a>
 									<div class="external-link">
-						   		 	<p class="colintext">
+						   		 	<p>
 						   		 		<strong>Lars Kolbowski</strong>
 						   		 		<br/><a href="mailto:lars.b.kolbowski@campus.tu-berlin.de">lars.b.kolbowski@campus.tu-berlin.de</a>
 						   		 		<br/>Developer
@@ -39,14 +41,16 @@
 						   		 	</p>
 									</div>
 						   		 </div> <!-- CONTACT--></td>
-			               	<td>	 <div class="contact">
+			               	<td>	 <div class="contact contact-right">
 						   		 
 						   		 		<ul id="navlist">
-						   		 			<li><a class="juri no-hover" href="mailto:juri.rappsilber@ed.ac.uk" title="Email Juri!"></a></li>
+						   		 			<li><a href="mailto:juri.rappsilber@ed.ac.uk" title="Email Juri!">
+						   		 				<img src="images/team/juri-rappsilber.jpg" class="grayscale" />
+						   		 			</a></li>
 						   		 		</ul>
 						   		 	</a>
 									<div class="external-link">
-						   		 	<p class="juritext">
+						   		 	<p>
 						   		 		<strong>Prof Juri Rappsilber</strong>
 						   		 		<br/><a  href="mailto:juri.rappsilber@ed.ac.uk">juri.rappsilber@ed.ac.uk</a>
 						   		 		<br/>General Inquiries
