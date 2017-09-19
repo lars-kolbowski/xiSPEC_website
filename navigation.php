@@ -3,16 +3,17 @@
 		<div class="top">
 			<div class="logogroup">
 				<a style="text-decoration:none;" href="index.php"><h1 class="logo">xiSPEC</h1></a>
-				<h4 class="logo-subtitle">Cross-Link Spectrum Viewer</h4>
+				<h4 class="logo-subtitle">(Cross-Link) Spectrum Viewer</h4>
 			</div>
 			<nav class="hover-effect">
 				<a href="index.php" data-hover="Home" data-no-instant>Home</a><br/>
 <!--
 				<a href="features.php" data-hover="Features">Features</a><br/>
 -->
-				<a href="#" data-hover="Examples" data-no-instant>Examples</a><br/>
+				<a href="examples.php" data-hover="Examples" data-no-instant>Examples</a><br/>
 				<a href="upload.php" data-hover="Upload">Upload</a><br/>
-				<a href="#" data-hover="Contact">Contact</a><br/>
+				<a href="help.php" data-hover="Help">Help</a><br/>
+				<a href="contact.php" data-hover="Contact">Contact</a><br/>
 			</nav>
 		</div>
 		<div class="bottom">

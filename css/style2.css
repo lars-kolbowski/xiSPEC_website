@@ -148,7 +148,7 @@ body, input, select, textarea {
     Font-family: "Lato-Regular", Helvetica, Arial, sans-serif;
     font-size: 10pt;
     font-weight: 300;
-    line-height: 1.75em;
+    line-height: 1.3em;
     color: #888;
     -webkit-text-stroke: .15px;
     overflow: hidden;
@@ -332,7 +332,7 @@ body, input, select, textarea {
 }
 
 #specListTable_filter input{
-    height: 2.2em;
+    height: 2em;
     margin: 4px 20px;
 }
 
@@ -369,6 +369,7 @@ body, input, select, textarea {
 .listWrapper{
     padding: 3px 10px;
     color: #000;
+    overflow-x: auto;
 }
 
 #settings-appearance{
@@ -423,6 +424,7 @@ body, input, select, textarea {
 }
 #specListTable tr {
     cursor: pointer;
+    white-space: nowrap;
 }
 #altListTable tr {
     cursor: pointer;
@@ -437,9 +439,9 @@ body, input, select, textarea {
 .specListToolbar .btn{
     border-right: 1px solid white;
     margin: 0px;
+    padding: 8px 15px;
     cursor: pointer;
     display: inline-block;
-
 }
 
 .ellipsis{

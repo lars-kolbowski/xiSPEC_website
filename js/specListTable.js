@@ -19,13 +19,14 @@ $(function() {
 			{ "data": "pep2" },	//3
 			{ "data": "linkpos1", "className": "dt-center" },	//4	
 			{ "data": "linkpos2", "className": "dt-center" },	//5
-			{ "data": "isDecoy", "className": "dt-center" },	//6
-			{ "data": "scores", "className": "dt-center" },		//7
-			{ "data": "protein", "className": "dt-center" },	//8		
-			{ "data": "passThreshold" },	//9
-			{ "data": "alt_count" },		//10
-			{ "data": "file" },				//11
-			{ "data": "scanID", "className": "dt-center" },		//12	
+			{ "data": "charge", "className": "dt-center" },		//6
+			{ "data": "isDecoy", "className": "dt-center" },	//7
+			{ "data": "scores", "className": "dt-center" },		//8
+			{ "data": "protein", "className": "dt-center" },	//9		
+			{ "data": "passThreshold" },	//10
+			{ "data": "alt_count" },		//11
+			{ "data": "file" },				//12
+			{ "data": "scanID", "className": "dt-center" },		//13	
 	        ],
 		"createdRow": function( row, data, dataIndex ) {
 			if ( data['passThreshold'] == 0 )         
@@ -36,7 +37,7 @@ $(function() {
 	    "columnDefs": [
 			{
 				"class": "invisible",
-				"targets": [ 0, 9, 10 ],
+				"targets": [ 0, 10, 11 ],
 			},
 			{
 				"render": function ( data, type, row, meta ) {
@@ -45,7 +46,7 @@ $(function() {
 					else
 						return 'True';
 				},				
-				"targets": [ 6 ],
+				"targets": [ 7 ],
 			},		
 			{
 				"render": function ( data, type, row, meta ) {
@@ -56,7 +57,7 @@ $(function() {
 					}
 					return result.join("; ");
 				},				
-				"targets": [ 7 ],
+				"targets": [ 8 ],
 			},				
 			{ 
 				"render": function ( data, type, row, meta ) {
@@ -77,7 +78,7 @@ $(function() {
 			}
 			window.initSpinner.stop();
 			$("#topDiv-overlay").css("z-index", -1);
-		    window.specListTable.columns( 9 ).search( "1" ).draw();			
+		    window.specListTable.columns( 10 ).search( "1" ).draw();			
 		 	loadSpectrum(window.specListTable.rows( { filter : 'applied'} ).data()[0]);
 			firstRow = $('#specListWrapper tr:first-child');
 			$(firstRow).addClass('selected');
@@ -107,13 +108,13 @@ $(function() {
 	$('#passThreshold').on( 'click', function () {
 		if (this.checked){
 		    window.specListTable
-		        .columns( 9 )
+		        .columns( 10 )
 		        .search( "1" )
 		        .draw();				
 		}
 		else{
 		    window.specListTable
-		        .columns( 9 )
+		        .columns( 10 )
 		        .search( "" )
 		        .draw();
 		}
@@ -135,29 +136,25 @@ $(function() {
 	} );
 
 	$('#hideDecoy').on( 'click', function () {
-		var column = window.specListTable.column( 6 );
+		var column = window.specListTable.column( 7 );
 		if (this.checked){
 			//column.visible( false );
-			//$(".toggle-vis[data-column='6']").attr("checked", "");
-		    window.specListTable
-		        .columns( 6 )
-		        .search( "False" )
-		        .draw();				
+			//$(".toggle-vis[data-column='7']").attr("checked", "");
+		    window.specListTable.columns( 7 ).search( "False" ).draw();				
 		}
 		else{
 			//column.visible( true );
-			//$(".toggle-vis[data-column='6']").attr("checked", "checked");
-		    window.specListTable
-		        .columns( 6 )
-		        .search( "" )
-		        .draw();
+			//$(".toggle-vis[data-column='7']").attr("checked", "checked");
+		    window.specListTable.columns( 7 ).search( "" ).draw();
 		}
 	} );
 
-	window.specListTable.on('click', 'tbody tr', function() {
+	window.specListTable.on('click', 'tbody tr', function(e) {
+
 		window.specListTable.$('tr.selected').removeClass('selected');
 		$(this).addClass('selected');
-		loadSpectrum(window.specListTable.row(this).data());
+		loadSpectrum(window.specListTable.row(this).data());		
+
 	});
 
 	$('.toggle-vis').change(function (e) {

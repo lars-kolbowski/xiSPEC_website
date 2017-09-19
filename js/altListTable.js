@@ -2,9 +2,12 @@ $(function() {
 
 	window.altListTable = $('#altListTable').DataTable( {
 	    "searching": false,
-        "paging":   false,
-        //"ordering": false,
-        "info":     false,
+        "paging":   true,
+        "pageLength": 3,
+        "bLengthChange": false,
+        //"ordering": true,
+        "order": [[2, "desc"], [9, "desc"]],
+        //"info":     false,
 	    "ajax": "php/getAltList.php?id=-1",
 	    "columns": [
 	        { "data": "id" },		//0
@@ -13,12 +16,13 @@ $(function() {
 			{ "data": "pep1" },		//3
 			{ "data": "pep2" },		//4
 			{ "data": "linkpos1", "className": "dt-center" },	//5
-			{ "data": "linkpos2", "className": "dt-center" },	//6	
-			{ "data": "isDecoy", "className": "dt-center" },	//7
-			{ "data": "scores", "className": "dt-center" },		//8
-			{ "data": "protein", "className": "dt-center" },	//9			
-			{ "data": "passThreshold" },	//10
-			{ "data": "alt_count" },		//11
+			{ "data": "linkpos2", "className": "dt-center" },	//6
+			{ "data": "charge", "className": "dt-center" },		//7	
+			{ "data": "isDecoy", "className": "dt-center" },	//8
+			{ "data": "scores", "className": "dt-center" },		//9
+			{ "data": "protein", "className": "dt-center" },	//10			
+			{ "data": "passThreshold" },	//11
+			{ "data": "alt_count" },		//12
 	        ],
 		"createdRow": function( row, data, dataIndex ) {
 			if ( data[6] == "0" )         
@@ -29,7 +33,7 @@ $(function() {
 	    "columnDefs": [
 	    	{
 				"class": "invisible",
-				"targets": [ 0, 10, 11 ],
+				"targets": [ 0, 1, 11, 12 ],
 			},	
 			{ 
 				"render": function ( data, type, row, meta ) {
@@ -48,7 +52,7 @@ $(function() {
 					else
 						return 'True';
 				},				
-				"targets": [ 7 ],
+				"targets": [ 8 ],
 			},	
 			{
 				"render": function ( data, type, row, meta ) {
@@ -59,7 +63,7 @@ $(function() {
 					}
 					return result.join(";");
 				},				
-				"targets": [ 8 ],
+				"targets": [ 9 ],
 			},				
         ],
 		"drawCallback": function( settings ) {

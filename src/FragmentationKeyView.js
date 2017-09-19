@@ -107,6 +107,7 @@ var FragmentationKeyView = Backbone.View.extend({
 			.style("border-radius", "6px")		
 			.attr("class", "tooltip")
 			.style("background-color", "black")
+			.style("color", "#ccc")
 			.style("pointer-events", "none")
 			.style("position", "absolute")				
 			.style("opacity", 0);
@@ -598,7 +599,8 @@ var FragmentationKeyView = Backbone.View.extend({
 				.on("mouseout", function() {
 					if (!self.changeMod  && !self.changeCL){
 						d3.selectAll("text.pepLetterHighlight").style("opacity", 0);
-						self.CLlineHighlight.attr("opacity", 0);
+						if (!_.isUndefined(self.CLlineHighlight))
+							self.CLlineHighlight.attr("opacity", 0);
 						self.tooltip.transition()		
 							.duration(500)		
 							.style("opacity", 0);	
@@ -617,9 +619,11 @@ var FragmentationKeyView = Backbone.View.extend({
 						self.tooltip.transition()		
 							.duration(500)		
 							.style("opacity", 0);
-							
-						self.CLline.style("cursor", "not-allowed");
-						self.CLlineHighlight.style("cursor", "not-allowed");
+						
+						if (!_.isUndefined(self.CLline))
+							self.CLline.style("cursor", "not-allowed");
+						if (!_.isUndefined(self.CLlineHighlight))
+							self.CLlineHighlight.style("cursor", "not-allowed");
 						
 
 						var highlight = d3.select(this).select(".modLetterHighlight");
