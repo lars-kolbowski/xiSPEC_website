@@ -606,7 +606,7 @@ function updateJScolor(jscolor) {
 					<i class="fa fa-times-circle closeButton closeTable" id="altListClose"></i>
 					<div id="altListWrapper" class="listWrapper">
 						<div id="altList_main">
-							<span style="color: #fff;">Alternative Explanations:</span>
+							<span style="color: #fff;">Alternative Explanations for current spectrum:</span>
 							<table id="altListTable" class="display" width="100%" style="text-align:center;">
 								<thead>
 									<tr>

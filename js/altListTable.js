@@ -2,9 +2,12 @@ $(function() {
 
 	window.altListTable = $('#altListTable').DataTable( {
 	    "searching": false,
-        "paging":   false,
-        //"ordering": false,
-        "info":     false,
+        "paging":   true,
+        "pageLength": 3,
+        "bLengthChange": false,
+        //"ordering": true,
+        "order": [[2, "desc"], [9, "desc"]],
+        //"info":     false,
 	    "ajax": "php/getAltList.php?id=-1",
 	    "columns": [
 	        { "data": "id" },		//0
@@ -30,7 +33,7 @@ $(function() {
 	    "columnDefs": [
 	    	{
 				"class": "invisible",
-				"targets": [ 0, 11, 12 ],
+				"targets": [ 0, 1, 11, 12 ],
 			},	
 			{ 
 				"render": function ( data, type, row, meta ) {
