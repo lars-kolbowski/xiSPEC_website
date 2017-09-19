@@ -399,14 +399,14 @@ function loadSpectrum(rowdata){
 	if(rowdata['alt_count'] > 1){
 		$('#altDiv').show();
 		$('#toggleAltList').prop('disabled', false);
-		$('#toggleAltList').prop('title', "Click to view alternatives");
+		$('#toggleAltList').prop('title', "Show/Hide alternative explanation list");
 		$('#toggleAltList').css('cursor', "pointer");
 		$('#toggleAltList').addClass("btn-1a");
 		window.altListTable.ajax.url( "php/getAltList.php?id=" + mzid).load();
 	}
 	else{
 		$('#toggleAltList').prop('disabled', true);
-		$('#toggleAltList').prop('title', "No alternative explanations available");
+		$('#toggleAltList').prop('title', "No alternative explanations for this spectrum");
 		$('#toggleAltList').css('cursor', "not-allowed");
 		$('#toggleAltList').removeClass("btn-1a");
 		$('#altDiv').hide();
@@ -570,21 +570,21 @@ function updateJScolor(jscolor) {
 		            		<i class="fa fa-home fa-xi" onclick="window.location = 'index.php';" title="Home"></i>
 		            		<i class="fa fa-github fa-xi btn-1a" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>
 	            			<i class="fa fa-download btn-1a" aria-hidden="true" id="downloadSVG" title="download SVG" style="cursor: pointer;"></i>
-							<label class="btn">Move Labels<input id="moveLabels" type="checkbox"></label>
+							<label class="btn" title="toggle moveable labels on/off">Move Labels<input id="moveLabels" type="checkbox"></label>
 		            		<button id="clearHighlights" class="btn btn-1 btn-1a">Clear Highlights</button>
-		            		<label class="btn">Measure<input id="measuringTool" type="checkbox"></label>
+		            		<label class="btn" title="toggle measure mode on/off">Measure<input id="measuringTool" type="checkbox"></label>
 		            		<form id="setrange">
-		            			<label class="btn" title="m/z range">m/z:</label>
+		            			<label class="btn" title="m/z range" style="cursor: default;">m/z:</label>
 								<label class="btn" for="lockZoom" title="Lock current zoom level" id="lock" class="btn">🔓</label>
-		            			<input type="text" id="xleft" size="7">
+		            			<input type="text" id="xleft" size="7" title="m/z range from:">
 		            			<span>-</span>
-		            			<input type="text" id="xright" size="7">
+		            			<input type="text" id="xright" size="7" title="m/z range to:">
 		            			<input type="submit" id="rangeSubmit" value="Set" class="btn btn-1 btn-1a" style="display: none;">            			
 		            			<span id="range-error"></span>
-		            			<button id="reset" title="reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
+		            			<button id="reset" title="Reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
 		            			<input id="lockZoom" type="checkbox" style="visibility: hidden;">
 		            		</form>
-		            		<button id="toggleView" title="Click to toggle view" class="btn btn-1 btn-1a">Quality Control</button>
+		            		<button id="toggleView" title="Toggle between quality control/spectrum view" class="btn btn-1 btn-1a">QC</button>
 		    				<button id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav">&#9881;</button>
 		    				<span id="dbControls">
 		    					
@@ -592,7 +592,7 @@ function updateJScolor(jscolor) {
 								<button id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav">&#x2039;</button>
 								<button id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav">&#9776;</button>
 								<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav">&#x203A;</button>
-								<button id="toggleAltList" title="Click to view alternatives" class="btn btn-1">Alternatives</button>
+								<button id="toggleAltList" title="Show/Hide alternative explanation list" class="btn btn-1">Alternatives</button>
 							</span>         		
 		            	</div> 
 	                    <div class="heightFill">

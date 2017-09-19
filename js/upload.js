@@ -282,7 +282,8 @@ $( document ).ready(function() {
 
 	$('.accordionHead').click(function(){
 		$('.accordionContent').slideToggle();
-		//$(this).next('.accordionContent').show();
+		$('.accordionSym').html("+");
+		$(this).children('.accordionSym').html("-");
 	}); 
 
 });
