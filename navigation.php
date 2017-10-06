@@ -14,6 +14,7 @@
 				<a href="upload.php" data-hover="Upload">Upload</a><br/>
 				<a href="help.php" data-hover="Help">Help</a><br/>
 				<a href="contact.php" data-hover="Contact">Contact</a><br/>
+				<a href="legacy.php" data-hover="Legacy">Legacy</a><br/>
 			</nav>
 		</div>
 		<div class="bottom">
