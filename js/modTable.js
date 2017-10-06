@@ -43,14 +43,14 @@ $(function() {
         "columnDefs": [
         	{
 				"render": function ( data, type, row, meta ) {
-					return '<input class="form-control" id="modName_'+meta.row+'" name="mods[]" readonly type="text" value='+data+'>';
+					return '<input class="form-control" id="modName_'+meta.row+'" title="modification code" name="mods[]" readonly type="text" value='+data+'>';
 				},
 				"class": "invisible",
 				"targets": 0,
 			},
 			{
 				"render": function ( data, type, row, meta ) {
-					return row['id']+'<i class="fa fa-undo resetMod" aria-hidden="true"></i></span>';
+					return row['id']+'<i class="fa fa-undo resetMod" title="reset modification to default" aria-hidden="true"></i></span>';
 				},
 				"targets": 1,
 			},
@@ -73,7 +73,7 @@ $(function() {
 								data = model.knownModifications['modifications'][i].mass;
 						}
 					}
-					return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" name="modMasses[]" type="number" min=0 step=0.0001 required value='+data+' autocomplete=off>';
+					return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" title="modification mass" name="modMasses[]" type="number" min=0 step=0.0001 required value='+data+' autocomplete=off>';
 				},
 				"targets": 2,
 			},
@@ -97,7 +97,7 @@ $(function() {
 							}
 						}
 					}
-					return '<input class="form-control" id="modSpec_'+meta.row+'" row="'+meta.row+'" name="modSpecificities[]" type="text" required value='+data+' autocomplete=off>'
+					return '<input class="form-control" id="modSpec_'+meta.row+'" row="'+meta.row+'" title="amino acids that can be modified" name="modSpecificities[]" type="text" required value='+data+' autocomplete=off>'
 				},
 				"targets": 3,
 			}
