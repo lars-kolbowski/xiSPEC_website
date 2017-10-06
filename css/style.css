@@ -225,6 +225,22 @@ nav a:focus, nav a:hover {
     color: #333!important;
     background-color: #ccc!important;
 }
+.input-charge-plus {
+    position: relative;
+    /* width: 100%; */
+}
+.input-charge-plus input {
+    padding-right: 19px;
+    width: 8%;
+    text-align: right;
+}
+.input-charge-plus:after {
+    position: absolute;
+    top: 0;
+    content:"+";
+    right: 10px;
+    top: -3px;
+}
 .file_upload_bar {
     height: 30px;
     background: #8f3131;

@@ -72,8 +72,8 @@
 						<!-- <form id="xisv_entryform"  action="http://spectrumviewer.org/xisv/index.php" method="post" target="_blank" onsubmit="doPreSubmission();"> -->
 							<section style="margin-bottom:2%;">
 							<div style="margin-bottom:30px;width:30%;min-width:300px;display:inline;min-width:300px;margin-right:2%;float:left;">
-								<input style="width:100%;margin-bottom:10px" class="form-control" id="myPeptide" required type="text" placeholder="Peptide Sequence1[;Peptide Sequence2]" name="peps" autofocus>
-								<textarea class="form-control" style="padding-bottom:0px;" id="myPeaklist" required type="text" placeholder="Peak List [m/z intensity]" name="peaklist"></textarea>
+								<input style="width:100%;margin-bottom:10px" class="form-control" id="myPeptide" title="peptide sequence" required type="text" placeholder="Peptide Sequence1[;Peptide Sequence2]" name="peps" autofocus>
+								<textarea class="form-control" style="padding-bottom:0px;" id="myPeaklist" title="peak list [m/z intensity]" required type="text" placeholder="Peak List [m/z intensity]" name="peaklist"></textarea>
 							</div>
 							<div style="width:68%;display:inline;">
 								<div style="padding-bottom:15px;"> Peptide Preview:</div>
@@ -81,17 +81,21 @@
 							</div>
 							</section>
 							<section style="clear:left;text-align:center;margin-bottom:2%;">
-								<select class="form-control" style="margin-right:2%;width:22%;display:inline;" required id="myCL" name="clModMass">
+								<select class="form-control" style="margin-right:2%;width:22%;display:inline;cursor:pointer;" required id="myCL" title="cross-linker" name="clModMass">
 									<option value="" disabled selected>Select cross-linker...</option>
 									<option value="add">add your own...</option>
+									<option value="0">none (linear peptide)</option>
 									<option value="138.06807961">BS3 [138.06807961 Da]</option>
 								</select>
 
-						  		<input class="form-control" style="margin-right:2%;width:10%;display:inline;"  required id="myPrecursorZ" type="number" min="1" placeholder="Charge" name="preCharge" autocomplete="off">
-
+								<div style="margin-right:2%;width:10%;display:inline;">
+									<span class="input-charge-plus">
+							  			<input class="form-control"   required id="myPrecursorZ" title="charge state" placeholder="z" name="preCharge" autocomplete="off">
+							  		</span>
+						  		</div>
 
 								<div class="dropdown" style="margin-right:2%;">
-									<input type="text" class="form-control btn-drop" id="ionSelection" value="Select ions..." readonly>
+									<input type="text" class="form-control btn-drop" id="ionSelection" title="fragment ion types" value="Select ions..." readonly>
 									<div class="dropdown-content mutliSelect">
 										<ul>
 							                <li>
@@ -121,9 +125,9 @@
 									<option value="EThcD">EThcD</option>
 								</select> -->
 
-								<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myTolerance" type="number" min="0" step="0.1" placeholder="Tolerance" name="ms2Tol" autocomplete="off">
+								<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myTolerance" title="error tolerance" type="number" min="0" step="0.1" placeholder="Tolerance" name="ms2Tol" autocomplete="off">
 
-								<select class="form-control" style="margin-right:2%;width:13%;display:inline;" required id="myToleranceUnit" name="tolUnit">
+								<select class="form-control" style="margin-right:2%;width:13%;display:inline;" required id="myToleranceUnit" title="error tolerance unit" name="tolUnit">
 									<option value="ppm">ppm</option> 
 									<option value="Da">Da</option>
 								</select>
