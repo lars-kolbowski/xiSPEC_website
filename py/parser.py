@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-from pyteomics import mzid
+import pyteomics.mzid as py_mzid
+import pymzml
 import re
 import json
 import sys
@@ -19,6 +20,36 @@ else:
 logging.basicConfig(filename=logDir, level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger = logging.getLogger(__name__)
+
+import ntpath
+
+
+def path_leaf(path):
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
+
+
+def write_to_db(multiple_inj_list, cur):
+    cur.executemany("""
+INSERT INTO jsonReqs (
+    'id',
+    'json',
+    'mzid',
+    'pep1',
+    'pep2',
+    'linkpos1',
+    'linkpos2',
+    'charge',
+    'passThreshold',
+    'rank',
+    'scores',
+    'isDecoy',
+    'protein',
+    'file',
+    'scanID'
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", multiple_inj_list)
+    return
 
 
 def add_to_modlist(mod, modlist):
@@ -114,7 +145,12 @@ def mzid_to_json(item, mzidreader):
         peptide = mzidreader.get_by_id(pepId)
         peptideEvidences = [mzidreader.get_by_id(s['peptideEvidence_ref']) for s in spectrumId_item['PeptideEvidenceRef']]
 
-        targetDecoy.append({"peptideId": pepIndex, 'isDecoy': peptideEvidences[0]['isDecoy']}) # TODO: multiple PeptideEvidenceRefs TD?
+        #ToDo: isDecoy might not be defined. How to handle? (could make use of pyteomics.mzid.is_decoy())
+        try:
+            decoy = peptideEvidences[0]['isDecoy']
+        except KeyError:
+            decoy = None
+        targetDecoy.append({"peptideId": pepIndex, 'isDecoy': decoy}) # TODO: multiple PeptideEvidenceRefs TD?
 
         proteins = [mzidreader.get_by_id(p['dBSequence_ref']) for p in peptideEvidences]
         accessions = [p['accession'] for p in proteins]
@@ -129,6 +165,9 @@ def mzid_to_json(item, mzidreader):
             for mod in peptide['Modification']:
                 link_index = 0  # TODO: multilink support
                 mod_location = mod['location'] - 1
+                if 'residues' not in mod:
+                    mod['residues'] = peptide['PeptideSequence'][mod_location]
+
                 if 'name' in mod.keys():
                     # fix mod names
                     mod['name'] = mod['name'].lower()
@@ -213,8 +252,12 @@ returnJSON = {
 
 try:
     if dev:
-        mzid_file = "DSSO_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD_CID-only.mzid"
-        mzml_file = "profile_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
+        baseDir = "/data/rappstore/users/lkolbowski/xiSPEC/"
+        mzid_file = baseDir+"DSSO_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD_CID-only.mzid"
+        mzml_file = baseDir+"B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
+
+        # mzid_file = baseDir+"PD_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD-(2).mzid"
+        # mzml_file = baseDir+"B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
         # mzid_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzid"
         # mzml_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzML"
     else:
@@ -222,9 +265,9 @@ try:
         mzml_file = sys.argv[2]
         upload_folder = "../../uploads/" + sys.argv[3]
 
-    mzid_reader = mzid.MzIdentML(mzid_file)
+    mzid_reader = py_mzid.MzIdentML(mzid_file)
     #premzml = mzml.PreIndexedMzML(mzml_file)
-    import pymzml
+
     pymzmlReader = pymzml.run.Reader(mzml_file)
 
     mz_index = 0
@@ -270,6 +313,7 @@ try:
             scanID = int(mzid_item['peak list scans'])
         except KeyError:
             try:
+                # ToDo: this might not work for all mzids. ProteomeDiscoverer 2.2 format 'scan=xx file=xx'
                 matches = re.findall("([0-9]+)", mzid_item["spectrumID"])
                 scanID = int(matches[0])
             except KeyError:
@@ -300,7 +344,7 @@ try:
             json_dict['annotation']['mzid'] = mzid_item['id']
             json_dict['peaks'] = peaklist
 
-            # ms2 tolerance
+            # ms2 tolerance ToDo: necessary? what to use as standard values?
             json_dict['annotation']['fragmentTolerance'] = {"tolerance": 20, "unit": "ppm"}
 
             # fragmentation ions
@@ -329,6 +373,7 @@ try:
             scores = json.dumps(alt['scores'])
             charge = alt['charge']
 
+            # ToDo: handling for mzid that don't include isDecoy
             isDecoy = any([pep['isDecoy'] for pep in json_dict['annotation']['isDecoy']])
             accessions = ";".join(json_dict['annotation']['proteins'])
 
@@ -342,6 +387,12 @@ try:
                 returnJSON['errors'].append(
                     {"type": "mzidParseError", "message": "no spectraData_ref specified"})
                 rawFileName = ""
+
+            try:
+                rawFileName = path_leaf(mzid_reader.get_by_id(rawFileName)['location'])
+            except KeyError:
+                pass
+
             # passThreshold
             if alt['passThreshold']:
                 passThreshold = 1
@@ -385,32 +436,17 @@ try:
         mz_index += 1
 
         if specIdItem_index % 500 == 0:
-
-            cur.executemany("""
-                INSERT INTO jsonReqs (
-                    'id',
-                    'json',
-                    'mzid',
-                    'pep1',
-                    'pep2',
-                    'linkpos1',
-                    'linkpos2',
-                    'charge',
-                    'passThreshold',
-                    'rank',
-                    'scores',
-                    'isDecoy',
-                    'protein',
-                    'file',
-                    'scanID'
-                )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", multipleInjList_jsonReqs)
+            write_to_db(multipleInjList_jsonReqs, cur)
             multipleInjList_jsonReqs = []
             con.commit()
-            break
             if dev:
-                # pass
                 break
+
+    # once its done submit the last reqs to DB
+    if len(multipleInjList_jsonReqs) > 0:
+        write_to_db(multipleInjList_jsonReqs, cur)
+        multipleInjList_jsonReqs = []
+        con.commit()
 
     # delete uploaded files after they have been parsed
     if not dev:
