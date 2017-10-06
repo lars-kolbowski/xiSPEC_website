@@ -294,27 +294,6 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		 	window.SpectrumModel.request_annotation(json);
 		 });
 
-		$('#modificationTable').on('input', 'input', function() {
-
-			var row = this.getAttribute("row")
-			var modName = $('#modName_'+row).val();
-			var modMass = parseFloat($('#modMass_'+row).val());
-			var modSpec = $('#modSpec_'+row).val();
-
-			var mod = {'id': modName, 'mass': modMass, 'aminoAcids': modSpec};
-
-			window.SpectrumModel.updateUserModifications(mod);
-
-		 });
-
-		$('#resetModMasses').click(function(){
-			Cookies.remove('customMods');
-			window.SpectrumModel.getKnownModifications();
-			if(window.SpectrumModel.pepStrsMods !== undefined)
-				modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(window.SpectrumModel.pepStrsMods.join(";"))).load();	
-		});
-
-
 		$('#settings-appearance').click(function(){
 			$('.settings-tab').hide();
 			$('#settingsAppearance').show();
@@ -528,9 +507,7 @@ function updateJScolor(jscolor) {
 											<div class="form-control" style="height:auto" id="myMods">
 											<div id="modificationTable_wrapper" class="dataTables_wrapper no-footer"><div id="modificationTable_processing" class="dataTables_processing" style="display: none;">Processing...</div><table id="modificationTable" class="display dataTable no-footer" width="100%" style="text-align: center; width: 100%;" role="grid">
 												<thead>
-													<tr role="row"><th class="sorting_disabled invisible" rowspan="1" colspan="1" style="width: 0px;">Mod-Input</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 206px;">Modification</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 144px;">Mass <div class="tooltip"><a href="#" id="resetModMasses"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAFaUlEQVRoQ+1YaWwUZRh+3plp60pJC4GIZUEgsXigRgvqD0BqW2oLpYWkaLiCoYjUNlgx9fphDcSDCBVbSitVCRCRJYQA5ehFEfihUjRqUFoTqhzVKpRyuWW7O6+Z0iHDdnZnZncIEJhkszPf937P8b3fNUO4xS+6xfXjjoEbncE7Gbg9MjBzixNeKsWmaVl2G76+QyjbJQqSmA+mJQCi5a+n2c5nO6DawxEztibIjAoACWqZb+NU2/lsB0S2K1qSopaAOB+AqB0y3q+ybOezFTBy1tYsMJUAcOqNdY/HE4vN08/ZOQ9sMeCYucUpQyoFIdNAnJuBzQK4snND1gE7jIRnINslRkVF5RFhqTJJLQpqInCFu9PzKTZP91lsezU8LAN3z95eAcJLoZL3tKv6j6NewPrUS6HghGUA2S6xj8ORx4SlZD0DGr3ciAiefKkys82qifAM9LA5cnY5Ra9cCrDRHAh2emwBkH5hbcZRKyZsMaAS9p27IwtEJRRgFTIURmg+Lw0ahc9GdxnG9gTYakDBHJjrir7cGb2E0HsfAKga4NRg4ghY3PHFpBU3zIBKHJNTlSAyVbBmJz77+STql7M7HSyvAjAsgMhzXRFS/MXy1H/MmLA9A9eQZrvE/jHRyo7cfRZqr0zv5oudt/M+gUjZB4boi6TK9sq0+TfeQI+C/jm7nERUemZN2tXT6ID5O+MZdDjA/iFD9A09U55xysjE9c2AAfvABbvfB+MtvTBmIeP0mtSqm9qAc96e/h4Jf+plgcFv/1uR9sFNbUARd8+CPXtBSNQRurGt/LkZthiIW1gzhYE0EF8dcsTU1il5l7eXpJ83IglWf+/C6jIAC3Vijvy1OnWUEbapORCXW90BIKYXGFNe6+qJypIY8jU4t/odRvdh0P/qbC1LdRgBmzIw+JWakwAG9zaADafKJs42IglW78ytWQ/CLJ2YUydXTdR9r9DGmjIwJL/2ezDG6JD8dqI05aFwDAzJq/0VwIO9MAiHTpSkPGmEbcrA0PzaTQCm64DJDocjtmnZ2AtGRHr1IwsP9nW73crwFHTqXcdLUp43wjVlYFh+/Vwm/lIPjIk/Ob4ypcCISK9+2KLaYjC9qtuW6cU/SpLWGuGaMhC/uGFAl9f3t/9Leg84AzShZWXSfiMybf3wRfXjAd4H6J6wfRGSOKh5eeJpI0xTBhSQEQX1O8CYrAtI1CJBTm4uTj5mRKjUxxfUjfBCqAPzcH08VB0rTsowg2XawPBFdY+KgvBjgPGqcF0i8Ou/FyeVByO+v6D+ZQZ9DKBPgDjZJ8uPt6xM/tlWA1d6bu86Jhgtm/uJaTsL8qFIt/CD0s7jkJ8gWRjDxFMAjA8mjBjrm4ufnWNGvBJjOgNK8CNvHuh3ucv3LcDx5ghIvhLHeqvMtRDdSqg5ShKf/uXDcWfN4Vs0oIA+8FpdPAvidwTEmiUJMG+uKWagg3ziU0dXjGu2gmspAyrwyMKG0QLTNgBxVsgCTFiluFUGZzYtS2y0iheSAYVkZOHBOAG+bQSMtkJKvRkbvSxmNi0b22oFR40N2YACMKGoQTrtpvkAvaucjAMK0GdpA/N7Axy8Zl9RojcU8ZYncSCSh4saosVOaQ6DpwJ4BoSIALHK55JviGmr7y7vuiNFiRdDFW5LBvTIE96ojfFIkY8RUxwRdc8RZm5l4tZIr+enwx+l3Hxfp8PtxXDahzUHwiG2q+1tbUAxr/60C4KZTuGeDCj/evemE2SGTBWpHAe0ov2fAxnSivEXqxpQ/5Wjh7ZM+xxkHwzs11+8VrR6r1emNaPc+wtVnrXi1Hv/Mm15SAb8G6kZ0+ttf9Ha4WXU8yEPpf8BwRqnQJnMMukAAAAASUVORK5CYII=" width="16" height="16" alt="revert"></a>
-													<span class="tooltiptext">Reset to default</span>
-																 </div></th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 175px;">Specificity</th></tr>
+													<tr role="row"><th class="sorting_disabled invisible" rowspan="1" colspan="1" style="width: 0px;">Mod-Input</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 206px;">Modification</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 144px;">Mass</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 175px;">Specificity</th></tr>
 												</thead>
 											<tbody><tr class="odd"><td valign="top" colspan="3" class="dataTables_empty">No matching records found</td></tr></tbody></table></div>
 											</div>
