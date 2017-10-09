@@ -328,12 +328,12 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	matchMassToAA: function(delta, peak) {
 		var self = this;
-		var result = this.aaMasses.filter(function(d){
+		var aaArray = this.aaMasses.filter(function(d){
 			if(self.MSnTolerance.unit == "ppm"){
 				var uplim = d.monoisotopicMass + peak * self.MSnTolerance.value * 1e-6;
 				var lowlim = d.monoisotopicMass - peak * self.MSnTolerance.value * 1e-6;
 				if(delta < uplim && delta > lowlim)
-					return d.aminoAcid;
+					return true;
 			}
 			//TODO: matchMass for Da error type
 			// if(self.MSnTolerance.unit == "Da"){
@@ -342,11 +342,8 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			// 	if(delta < uplim && delta > lowlim)
 			// 		return d.aminoAcid;
 			// }
-		})
-		aaStr = ""
-		for (var i = 0; i < result.length; i++) {
-			aaStr += result[i].aminoAcid;
-		}
+		}).map(function(d){return d.aminoAcid});
+		aaStr = aaArray.join();
 		return aaStr;
 	},
 
