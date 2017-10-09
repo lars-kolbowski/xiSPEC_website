@@ -250,36 +250,31 @@ returnJSON = {
     "errors": []
 }
 
-
-if dev:
-    baseDir = "/data/rappstore/users/lkolbowski/xiSPEC/"
-    mzid_file = baseDir+"DSSO_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD_CID-only.mzid"
-    mzml_file = baseDir+"B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
-
-    # mzid_file = baseDir+"PD_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD-(2).mzid"
-    # mzml_file = baseDir+"B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
-    # mzid_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzid"
-    # mzml_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzML"
-else:
-    mzid_file = sys.argv[1]
-    mzml_file = sys.argv[2]
-    upload_folder = "../../uploads/" + sys.argv[3]
-
 try:
+    if dev:
+        baseDir = "/data/rappstore/users/lkolbowski/xiSPEC/"
+        mzid_file = baseDir+"DSSO_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD_CID-only.mzid"
+        mzml_file = baseDir+"B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
+
+        # mzid_file = baseDir+"PD_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD-(2).mzid"
+        # mzml_file = baseDir+"B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
+        # mzid_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzid"
+        # mzml_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzML"
+    else:
+        mzid_file = sys.argv[1]
+        mzml_file = sys.argv[2]
+        upload_folder = "../../uploads/" + sys.argv[3]
+
     mzid_reader = py_mzid.MzIdentML(mzid_file)
-except IOError:
-    returnJSON['errors'].append({"type": "IOError", "message": "%s was not found" % mzid_file})
-#premzml = mzml.PreIndexedMzML(mzml_file)
-try:
+    #premzml = mzml.PreIndexedMzML(mzml_file)
+
     pymzmlReader = pymzml.run.Reader(mzml_file)
-except IOError:
-    returnJSON['errors'].append({"type": "IOError", "message": "%s was not found" % mzml_file})
 
-mz_index = 0
-specIdItem_index = 0
-multipleInjList_jsonReqs = []
+    mz_index = 0
+    specIdItem_index = 0
+    multipleInjList_jsonReqs = []
 
-try:
+
     # mzid_item = mzid_reader.next()
     for mzid_item in mzid_reader:
         # find pairs of cross-linked items
@@ -469,7 +464,8 @@ try:
 
 except Exception as e:
     logger.exception(e)
-    returnJSON['errors'].append({"type": "Error", "message": e})
+    returnJSON['errors'].append(
+        {"type": "Error", "message": e})
 
 
 
