@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import pyteomics.mzid as py_mzid
 import pymzml
 import re
