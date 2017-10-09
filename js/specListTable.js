@@ -1,5 +1,14 @@
 $(function() {
 
+	$(".tabs").click(function() {
+	    initiateTable();
+
+	});
+	function initiateTable() {
+	    var table = $.fn.dataTable.fnTables(true);
+	    $(table).dataTable().fnAdjustColumnSizing();
+	}
+
 	//SpecListTable
 	window.specListTable = $('#specListTable').DataTable( {
 		// "paging":   false,
@@ -13,20 +22,20 @@ $(function() {
 	    // "serverSide": true,
 	    "ajax": "php/getSpecList.php",
 	    "columns": [
-	        { "data": "id" },	//0
-	        { "data": "mzid" },	//1
-			{ "data": "pep1" },	//2
-			{ "data": "pep2" },	//3
-			{ "data": "linkpos1", "className": "dt-center" },	//4	
-			{ "data": "linkpos2", "className": "dt-center" },	//5
-			{ "data": "charge", "className": "dt-center" },		//6
-			{ "data": "isDecoy", "className": "dt-center" },	//7
-			{ "data": "scores", "className": "dt-center" },		//8
-			{ "data": "protein", "className": "dt-center" },	//9		
-			{ "data": "passThreshold" },	//10
-			{ "data": "alt_count" },		//11
-			{ "data": "file" },				//12
-			{ "data": "scanID", "className": "dt-center" },		//13	
+	        { "title": "internal_id", "data": "id" },	//0
+	        { "title": "id", "data": "mzid" },	//1
+			{ "title": "peptide 1", "data": "pep1" },	//2
+			{ "title": "peptide 2", "data": "pep2" },	//3
+			{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center" },	//4	
+			{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center" },	//5
+			{ "title": "charge", "data": "charge", "className": "dt-center" },		//6
+			{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center" },	//7
+			{ "title": "score", "data": "scores", "className": "dt-center" },		//8
+			{ "title": "protein", "data": "protein", "className": "dt-center" },	//9		
+			{ "title": "passThreshold", "data": "passThreshold" },	//10
+			{ "title": "alt_count", "data": "alt_count" },		//11
+			{ "title": "dataRef", "data": "file" },				//12
+			{ "title": "scanID", "data": "scanID", "className": "dt-center" },		//13	
 	        ],
 		"createdRow": function( row, data, dataIndex ) {
 			if ( data['passThreshold'] == 0 )         
@@ -88,7 +97,7 @@ $(function() {
 				window.Spectrum.resize();
 		}
 	});
-
+	$('.specListToolbar').addClass("listToolbar");
 	$( "<div id='data-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );
 	$("#data-filter").html('Filter: <label class="btn btn-1a"><input id="passThreshold" type="checkbox" checked>passing threshold</label><label class="btn btn-1a"><input id="hideLinear" type="checkbox">hide linear</label><label class="btn btn-1a"><input id="hideDecoy" type="checkbox">hide decoys</label>');
 	$( "<div id='column-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );

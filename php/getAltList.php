@@ -27,10 +27,12 @@ $JSON = array();
 $stmt = $dbh->prepare("SELECT id, mzid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, scores, protein, passThreshold, rank FROM jsonReqs WHERE mzid=:mzid ORDER BY id,rank;");
 $stmt->bindParam(':mzid', $mzid);
 if ($stmt->execute()) {
-  while ($row = $stmt->fetch()) {
-  	$row['alt_count'] = 2;
-    array_push($JSON, $row);
-  }
+
+	$result = $stmt->fetchAll(); 
+	foreach ($result as $row) {
+		$row['alt_count'] = count($result);
+		array_push($JSON, $row);
+	}
 }
 
 $arr = array('data' => $JSON);

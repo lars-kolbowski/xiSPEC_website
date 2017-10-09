@@ -324,6 +324,7 @@ body, input, select, textarea {
 
 #bottomDiv {
     position: relative; /* will overlay previous absolute divs i.e. distance slider */
+    padding-top: 2px;
 }
 
 #modificationTable .form-control{
@@ -331,9 +332,9 @@ body, input, select, textarea {
     font-size: 1em;
 }
 
-#specListTable_filter input{
+.dataTables_filter input{
     height: 2em;
-    margin: 4px 20px;
+    margin: 4px 0px;
 }
 
 #saveModal .content{
@@ -429,7 +430,7 @@ body, input, select, textarea {
 #altListTable tr {
     cursor: pointer;
 }
-.specListToolbar{
+.listToolbar{
     color: #fff;
     float: left;
     display: flex;
@@ -447,11 +448,23 @@ body, input, select, textarea {
 .ellipsis{
     color: #fff;
 }
+.paginate_button a{
+    color: #000;
+}
+.paginate_button.active{
+  background-color: #333;
+}
+.paginate_button.active a{
+  color: #999;
+}
+.paginate_button:hover a{
+    color: #fff;
+}
+.paginate_button.disabled a{
+    color: #fff;
+}
 .paginate_button {
     background-color: #fff;
-}
-.paginate_button.current{
-    color: #999;
 }
 
 .dynDiv_moveParentDiv{

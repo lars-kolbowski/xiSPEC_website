@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 
 require("functions.php");
 
-if(isset($_GET['db']))
+if(isset($_GET['db']) && !empty($_GET['db']))
 	require("php/logAccess.php");
 
 
@@ -93,7 +93,7 @@ else{
 
 	$cl = array('modMass' => $clModMass);
 
-	$annotation = array('fragmentTolerance' => $tol, 'modifications' => $modifications, 'ions' => $ions, 'cross-linker' => $cl, 'precursorCharge' => $preCharge);
+	$annotation = array('fragmentTolerance' => $tol, 'modifications' => $modifications, 'ions' => $ions, 'cross-linker' => $cl, 'precursorCharge' => $preCharge, 'custom' => "LOWRESOLUTION:false"); //ToDo: LOWRESOLUTION: true setting
 
 	//final array
 	$postData = array('Peptides' => $peptides, 'LinkSite' => $linkSites, 'peaks' => $peaks, 'annotation' => $annotation);
@@ -126,8 +126,9 @@ else{
 	}
 	$errorQuery = "java.lang.NullPointerException";
 	if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQuery){
-	    
-	    echo ("xiAnnotator experienced a problem. Please try again later!");
+	    var_dump($response);
+
+	    echo ("<p>xiAnnotator experienced a problem. Please try again later!</p><br/>");
 	    var_dump($postJSON);
 	    die();
 	}
@@ -159,7 +160,9 @@ else{
         <script type="text/javascript" src="./vendor/spin.js"></script>
         <script type="text/javascript" src="./vendor/byrei-dyndiv_1.0rc1.js"></script>
         <script type="text/javascript" src="./vendor/download.js"></script>
-
+		<script type="text/javascript" src="./vendor/bootstrap/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="./vendor/dataTables.bootstrap.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
         <!-- Spectrum view .js files -->
         <script type="text/javascript" src="./src/model.js"></script>
         <script type="text/javascript" src="./src/SpectrumView2.js"></script>
@@ -227,9 +230,14 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		}
 		
 
+		$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
+			if ($(this).parent().hasClass("disabled")) {
+				e.preventDefault();
+				return false;
+			}
+		});
+
 		//settings panel - put into model? or extra view?
-
-
 		$('.settingsCancel').click(function(){
 			$('#settingsWrapper').hide();
 			document.getElementById('highlightColor').jscolor.hide();
@@ -289,31 +297,12 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 
 		$("#settingsCustomCfgApply").click(function(){
 			var json = window.SpectrumModel.get("JSONrequest");
-			json['annotation']['custom'] = $("#settingsCustomCfg-input").val().split("\n");
+			//ToDo: LOWRESOLUTION: true setting
+			json['annotation']['custom'] = "LOWRESOLUTION:false\n";
+			json['annotation']['custom'] += $("#settingsCustomCfg-input").val().split("\n");
 
 		 	window.SpectrumModel.request_annotation(json);
 		 });
-
-		$('#modificationTable').on('input', 'input', function() {
-
-			var row = this.getAttribute("row")
-			var modName = $('#modName_'+row).val();
-			var modMass = parseFloat($('#modMass_'+row).val());
-			var modSpec = $('#modSpec_'+row).val();
-
-			var mod = {'id': modName, 'mass': modMass, 'aminoAcids': modSpec};
-
-			window.SpectrumModel.updateUserModifications(mod);
-
-		 });
-
-		$('#resetModMasses').click(function(){
-			Cookies.remove('customMods');
-			window.SpectrumModel.getKnownModifications();
-			if(window.SpectrumModel.pepStrsMods !== undefined)
-				modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(window.SpectrumModel.pepStrsMods.join(";"))).load();	
-		});
-
 
 		$('#settings-appearance').click(function(){
 			$('.settings-tab').hide();
@@ -393,27 +382,37 @@ function render_settings(){
 
 function loadSpectrum(rowdata){
 
+	console.log(rowdata['alt_count']);
 	var id = rowdata['id'];
 	var mzid = rowdata['mzid'];
 
+	//ToDo change to navtabs
+
+	$("#altListId").html("Alternatives for "+rowdata['mzid']);
+
 	if(rowdata['alt_count'] > 1){
-		$('#altDiv').show();
-		$('#toggleAltList').prop('disabled', false);
-		$('#toggleAltList').prop('title', "Click to view alternatives");
-		$('#toggleAltList').css('cursor', "pointer");
-		$('#toggleAltList').addClass("btn-1a");
+		
+		$('#nav-altListTable').removeClass('disabled');
+		$('#altExpNum').text("(" + rowdata['alt_count'] + ")");
+		// $('#altDiv').show();
+		// $('#toggleAltList').prop('disabled', false);
+		// $('#toggleAltList').prop('title', "Show/Hide alternative explanation list");
+		// $('#toggleAltList').css('cursor', "pointer");
+		// $('#toggleAltList').addClass("btn-1a");
 		window.altListTable.ajax.url( "php/getAltList.php?id=" + mzid).load();
 	}
 	else{
-		$('#toggleAltList').prop('disabled', true);
-		$('#toggleAltList').prop('title', "No alternative explanations available");
-		$('#toggleAltList').css('cursor', "not-allowed");
-		$('#toggleAltList').removeClass("btn-1a");
-		$('#altDiv').hide();
+		$('#altExpNum').text("(0)");
+		$('#nav-altListTable').addClass('disabled');
+		// $('#toggleAltList').prop('disabled', true);
+		// $('#toggleAltList').prop('title', "No alternative explanations for this spectrum");
+		// $('#toggleAltList').css('cursor', "not-allowed");
+		// $('#toggleAltList').removeClass("btn-1a");
+		// $('#altDiv').hide();
 	}
 
 	$.ajax({
-		url: 'php/getSpectrum.php?i='+id,
+		url: 'php/getSpectrumReq.php?i='+id,
 		type: 'GET',
 		async: false,
 		cache: false,
@@ -528,9 +527,7 @@ function updateJScolor(jscolor) {
 											<div class="form-control" style="height:auto" id="myMods">
 											<div id="modificationTable_wrapper" class="dataTables_wrapper no-footer"><div id="modificationTable_processing" class="dataTables_processing" style="display: none;">Processing...</div><table id="modificationTable" class="display dataTable no-footer" width="100%" style="text-align: center; width: 100%;" role="grid">
 												<thead>
-													<tr role="row"><th class="sorting_disabled invisible" rowspan="1" colspan="1" style="width: 0px;">Mod-Input</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 206px;">Modification</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 144px;">Mass <div class="tooltip"><a href="#" id="resetModMasses"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAFaUlEQVRoQ+1YaWwUZRh+3plp60pJC4GIZUEgsXigRgvqD0BqW2oLpYWkaLiCoYjUNlgx9fphDcSDCBVbSitVCRCRJYQA5ehFEfihUjRqUFoTqhzVKpRyuWW7O6+Z0iHDdnZnZncIEJhkszPf937P8b3fNUO4xS+6xfXjjoEbncE7Gbg9MjBzixNeKsWmaVl2G76+QyjbJQqSmA+mJQCi5a+n2c5nO6DawxEztibIjAoACWqZb+NU2/lsB0S2K1qSopaAOB+AqB0y3q+ybOezFTBy1tYsMJUAcOqNdY/HE4vN08/ZOQ9sMeCYucUpQyoFIdNAnJuBzQK4snND1gE7jIRnINslRkVF5RFhqTJJLQpqInCFu9PzKTZP91lsezU8LAN3z95eAcJLoZL3tKv6j6NewPrUS6HghGUA2S6xj8ORx4SlZD0DGr3ciAiefKkys82qifAM9LA5cnY5Ra9cCrDRHAh2emwBkH5hbcZRKyZsMaAS9p27IwtEJRRgFTIURmg+Lw0ahc9GdxnG9gTYakDBHJjrir7cGb2E0HsfAKga4NRg4ghY3PHFpBU3zIBKHJNTlSAyVbBmJz77+STql7M7HSyvAjAsgMhzXRFS/MXy1H/MmLA9A9eQZrvE/jHRyo7cfRZqr0zv5oudt/M+gUjZB4boi6TK9sq0+TfeQI+C/jm7nERUemZN2tXT6ID5O+MZdDjA/iFD9A09U55xysjE9c2AAfvABbvfB+MtvTBmIeP0mtSqm9qAc96e/h4Jf+plgcFv/1uR9sFNbUARd8+CPXtBSNQRurGt/LkZthiIW1gzhYE0EF8dcsTU1il5l7eXpJ83IglWf+/C6jIAC3Vijvy1OnWUEbapORCXW90BIKYXGFNe6+qJypIY8jU4t/odRvdh0P/qbC1LdRgBmzIw+JWakwAG9zaADafKJs42IglW78ytWQ/CLJ2YUydXTdR9r9DGmjIwJL/2ezDG6JD8dqI05aFwDAzJq/0VwIO9MAiHTpSkPGmEbcrA0PzaTQCm64DJDocjtmnZ2AtGRHr1IwsP9nW73crwFHTqXcdLUp43wjVlYFh+/Vwm/lIPjIk/Ob4ypcCISK9+2KLaYjC9qtuW6cU/SpLWGuGaMhC/uGFAl9f3t/9Leg84AzShZWXSfiMybf3wRfXjAd4H6J6wfRGSOKh5eeJpI0xTBhSQEQX1O8CYrAtI1CJBTm4uTj5mRKjUxxfUjfBCqAPzcH08VB0rTsowg2XawPBFdY+KgvBjgPGqcF0i8Ou/FyeVByO+v6D+ZQZ9DKBPgDjZJ8uPt6xM/tlWA1d6bu86Jhgtm/uJaTsL8qFIt/CD0s7jkJ8gWRjDxFMAjA8mjBjrm4ufnWNGvBJjOgNK8CNvHuh3ucv3LcDx5ghIvhLHeqvMtRDdSqg5ShKf/uXDcWfN4Vs0oIA+8FpdPAvidwTEmiUJMG+uKWagg3ziU0dXjGu2gmspAyrwyMKG0QLTNgBxVsgCTFiluFUGZzYtS2y0iheSAYVkZOHBOAG+bQSMtkJKvRkbvSxmNi0b22oFR40N2YACMKGoQTrtpvkAvaucjAMK0GdpA/N7Axy8Zl9RojcU8ZYncSCSh4saosVOaQ6DpwJ4BoSIALHK55JviGmr7y7vuiNFiRdDFW5LBvTIE96ojfFIkY8RUxwRdc8RZm5l4tZIr+enwx+l3Hxfp8PtxXDahzUHwiG2q+1tbUAxr/60C4KZTuGeDCj/evemE2SGTBWpHAe0ov2fAxnSivEXqxpQ/5Wjh7ZM+xxkHwzs11+8VrR6r1emNaPc+wtVnrXi1Hv/Mm15SAb8G6kZ0+ttf9Ha4WXU8yEPpf8BwRqnQJnMMukAAAAASUVORK5CYII=" width="16" height="16" alt="revert"></a>
-													<span class="tooltiptext">Reset to default</span>
-																 </div></th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 175px;">Specificity</th></tr>
+													<tr role="row"><th class="sorting_disabled invisible" rowspan="1" colspan="1" style="width: 0px;">Mod-Input</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 206px;">Modification</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 144px;">Mass</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 175px;">Specificity</th></tr>
 												</thead>
 											<tbody><tr class="odd"><td valign="top" colspan="3" class="dataTables_empty">No matching records found</td></tr></tbody></table></div>
 											</div>
@@ -570,21 +567,21 @@ function updateJScolor(jscolor) {
 		            		<i class="fa fa-home fa-xi" onclick="window.location = 'index.php';" title="Home"></i>
 		            		<i class="fa fa-github fa-xi btn-1a" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>
 	            			<i class="fa fa-download btn-1a" aria-hidden="true" id="downloadSVG" title="download SVG" style="cursor: pointer;"></i>
-							<label class="btn">Move Labels<input id="moveLabels" type="checkbox"></label>
+							<label class="btn" title="toggle moveable labels on/off">Move Labels<input id="moveLabels" type="checkbox"></label>
 		            		<button id="clearHighlights" class="btn btn-1 btn-1a">Clear Highlights</button>
-		            		<label class="btn">Measure<input id="measuringTool" type="checkbox"></label>
+		            		<label class="btn" title="toggle measure mode on/off">Measure<input id="measuringTool" type="checkbox"></label>
 		            		<form id="setrange">
-		            			<label class="btn" title="m/z range">m/z:</label>
+		            			<label class="btn" title="m/z range" style="cursor: default;">m/z:</label>
 								<label class="btn" for="lockZoom" title="Lock current zoom level" id="lock" class="btn">🔓</label>
-		            			<input type="text" id="xleft" size="7">
+		            			<input type="text" id="xleft" size="7" title="m/z range from:">
 		            			<span>-</span>
-		            			<input type="text" id="xright" size="7">
+		            			<input type="text" id="xright" size="7" title="m/z range to:">
 		            			<input type="submit" id="rangeSubmit" value="Set" class="btn btn-1 btn-1a" style="display: none;">            			
 		            			<span id="range-error"></span>
-		            			<button id="reset" title="reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
+		            			<button id="reset" title="Reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
 		            			<input id="lockZoom" type="checkbox" style="visibility: hidden;">
 		            		</form>
-		            		<button id="toggleView" title="Click to toggle view" class="btn btn-1 btn-1a">Quality Control</button>
+		            		<button id="toggleView" title="Toggle between quality control/spectrum view" class="btn btn-1 btn-1a">QC</button>
 		    				<button id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav">&#9881;</button>
 		    				<span id="dbControls">
 		    					
@@ -592,7 +589,6 @@ function updateJScolor(jscolor) {
 								<button id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav">&#x2039;</button>
 								<button id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav">&#9776;</button>
 								<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav">&#x203A;</button>
-								<button id="toggleAltList" title="Click to view alternatives" class="btn btn-1">Alternatives</button>
 							</span>         		
 		            	</div> 
 	                    <div class="heightFill">
@@ -602,12 +598,12 @@ function updateJScolor(jscolor) {
 					</div>
 				</div><!-- end top div -->
 <!-- 				<div class="gutter gutter-vertical" style="height: 10px;"></div> -->
-				<div id="altDiv" class="tableDiv">
+<!-- 				<div id="altDiv" class="tableDiv">
 					<i class="fa fa-times-circle closeButton closeTable" id="altListClose"></i>
 					<div id="altListWrapper" class="listWrapper">
 						<div id="altList_main">
 							<span style="color: #fff;">Alternative Explanations for current spectrum:</span>
-							<table id="altListTable" class="display" width="100%" style="text-align:center;">
+							<table id="altListTable" width="100%" style="text-align:center;display:none;">
 								<thead>
 									<tr>
 									    <th>internal_id</th>
@@ -628,31 +624,33 @@ function updateJScolor(jscolor) {
 							</table>
 						</div>
 					</div>
-				</div>
+				</div> -->
 				<div id="bottomDiv" class="tableDiv">
 				<i class="fa fa-times-circle closeButton closeTable" id="specListClose"></i> 
-					<div id="specListWrapper" class="listWrapper">
-						<div id="specList_main">
-							<table id="specListTable" class="display" width="100%" style="text-align:center;">
-								<thead>
-									<tr>
-										<th>internal_id</th>
-										<th>id</th>
-										<th>peptide 1</th>
-										<th>peptide 2</th>
-										<th style="min-width: 50px">CL pos 1</th>
-										<th style="min-width: 50px">CL pos 2</th>
-										<th>charge</th>
-										<th>isDecoy</th>
-										<th>score</th>
-										<th>protein</th>
-										<th>passThreshold</th>
-										<th>alt_count</th>
-										<th>dataRef</th>
-										<th>scanID</th>									    
-									</tr>
-								</thead>
-							</table>
+
+					<ul class="nav nav-tabs">
+						<li class="active">
+							<a data-toggle="tab" href="#tab-specListTable">Spectra List</a>
+						</li>
+						<li id="nav-altListTable">
+							<a data-toggle="tab" href="#tab-altListTable">Alternative Explanations <span id="altExpNum"></span></a>
+						</li>
+					</ul>
+
+					<div class="tab-content">
+						<div id="tab-specListTable" class="tab-pane fade in active">
+							<div id="specListWrapper" class="listWrapper">
+								<div id="specList_main">
+									<table id="specListTable" class="display" width="100%" style="text-align:center;"></table>
+								</div>
+							</div>
+						</div>
+						<div id="tab-altListTable" class="tab-pane fade">
+							<div id="altListWrapper" class="listWrapper">
+								<div id="altList_main">
+									<table id="altListTable" width="100%" style="text-align:center;"></table>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

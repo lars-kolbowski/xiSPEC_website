@@ -9,7 +9,10 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.moveLabels = false;
 		this.measureMode = false;
 		this.showSpectrum = true;
-		this.userModifications = [];
+		if (_.isUndefined(Cookies.get('customMods')))
+			this.userModifications = [];
+		else
+			this.userModifications = JSON.parse(Cookies.get('customMods'));
 		$.getJSON('json/aaMasses.json', function(data) {         
     		self.aaMasses = data
 		});
@@ -325,12 +328,12 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	matchMassToAA: function(delta, peak) {
 		var self = this;
-		var result = this.aaMasses.filter(function(d){
+		var aaArray = this.aaMasses.filter(function(d){
 			if(self.MSnTolerance.unit == "ppm"){
 				var uplim = d.monoisotopicMass + peak * self.MSnTolerance.value * 1e-6;
 				var lowlim = d.monoisotopicMass - peak * self.MSnTolerance.value * 1e-6;
 				if(delta < uplim && delta > lowlim)
-					return d.aminoAcid;
+					return true;
 			}
 			//TODO: matchMass for Da error type
 			// if(self.MSnTolerance.unit == "Da"){
@@ -339,11 +342,8 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			// 	if(delta < uplim && delta > lowlim)
 			// 		return d.aminoAcid;
 			// }
-		})
-		aaStr = ""
-		for (var i = 0; i < result.length; i++) {
-			aaStr += result[i].aminoAcid;
-		}
+		}).map(function(d){return d.aminoAcid});
+		aaStr = aaArray.join();
 		return aaStr;
 	},
 
@@ -465,14 +465,27 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	updateUserModifications: function(mod){
 
-		for (var j = 0; j < this.userModifications.length; j++) {
-			if(this.userModifications[j].id == mod.id){
-				this.userModifications[j].mass = mod.mass;
-				this.userModifications[j].aminoAcids = mod.aminoAcids;
-				return;
-			}
+		var userMod = this.userModifications.filter(function(m){ return mod.id == m.id;});
+		if (userMod.length > 0){
+			userMod[0].mass = mod.mass;
+			userMod[0].aminoAcids = mod.aminoAcids;
 		}
-		this.userModifications.push(mod);			
+		else
+			this.userModifications.push(mod);
+
+		cookie = JSON.stringify(this.userModifications);
+		Cookies.set('customMods', cookie);
+	},
+
+	delUserModification: function(modId){
+		var userModIndex = this.userModifications.findIndex(function(m){ return modId == m.id;});
+		if (userModIndex != -1){
+			this.userModifications.splice(userModIndex, 1);
+		}
+		else
+			console.log("Error modification "+modId+"could not be found!");
+		cookie = JSON.stringify(this.userModifications);
+		Cookies.set('customMods', cookie);		
 	},
 
 	request_annotation: function(json_request){
