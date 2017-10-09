@@ -16,6 +16,16 @@ foreach ($dbh->query($query) as $row)
 {
     $postJSON = $row['json'];
 }
-print $postJSON;
+$jsonArr = json_decode($postJSON, true);
+//die();
+if (array_key_exists('custom', $jsonArr['annotation'])){
+	if (strpos($jsonArr['annotation']['custom'], "LOWRESOLUTION:false"))
+		$jsonArr['annotation']['custom'] += "LOWRESOLUTION:false\n";
+}
+else{
+	$jsonArr['annotation']['custom'] = "LOWRESOLUTION:false\n";
+}
+
+print json_encode($jsonArr);
 
 ?>

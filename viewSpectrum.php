@@ -93,7 +93,7 @@ else{
 
 	$cl = array('modMass' => $clModMass);
 
-	$annotation = array('fragmentTolerance' => $tol, 'modifications' => $modifications, 'ions' => $ions, 'cross-linker' => $cl, 'precursorCharge' => $preCharge);
+	$annotation = array('fragmentTolerance' => $tol, 'modifications' => $modifications, 'ions' => $ions, 'cross-linker' => $cl, 'precursorCharge' => $preCharge, 'custom' => "LOWRESOLUTION:false"); //ToDo: LOWRESOLUTION: true setting
 
 	//final array
 	$postData = array('Peptides' => $peptides, 'LinkSite' => $linkSites, 'peaks' => $peaks, 'annotation' => $annotation);
@@ -126,8 +126,9 @@ else{
 	}
 	$errorQuery = "java.lang.NullPointerException";
 	if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQuery){
-	    
-	    echo ("xiAnnotator experienced a problem. Please try again later!");
+	    var_dump($response);
+
+	    echo ("<p>xiAnnotator experienced a problem. Please try again later!</p><br/>");
 	    var_dump($postJSON);
 	    die();
 	}
@@ -289,7 +290,9 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 
 		$("#settingsCustomCfgApply").click(function(){
 			var json = window.SpectrumModel.get("JSONrequest");
-			json['annotation']['custom'] = $("#settingsCustomCfg-input").val().split("\n");
+			//ToDo: LOWRESOLUTION: true setting
+			json['annotation']['custom'] = "LOWRESOLUTION:false\n";
+			json['annotation']['custom'] += $("#settingsCustomCfg-input").val().split("\n");
 
 		 	window.SpectrumModel.request_annotation(json);
 		 });
