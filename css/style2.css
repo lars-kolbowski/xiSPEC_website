@@ -448,11 +448,23 @@ body, input, select, textarea {
 .ellipsis{
     color: #fff;
 }
+.paginate_button a{
+    color: #000;
+}
+.paginate_button.active{
+  background-color: #333;
+}
+.paginate_button.active a{
+  color: #999;
+}
+.paginate_button:hover a{
+    color: #fff;
+}
+.paginate_button.disabled a{
+    color: #fff;
+}
 .paginate_button {
     background-color: #fff;
-}
-.paginate_button.current{
-    color: #999;
 }
 
 .dynDiv_moveParentDiv{

@@ -412,7 +412,7 @@ function loadSpectrum(rowdata){
 	}
 
 	$.ajax({
-		url: 'php/getSpectrum.php?i='+id,
+		url: 'php/getSpectrumReq.php?i='+id,
 		type: 'GET',
 		async: false,
 		cache: false,
