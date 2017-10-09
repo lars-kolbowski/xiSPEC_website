@@ -464,5 +464,8 @@ try:
 
 except Exception as e:
     logger.exception(e)
+    returnJSON['errors'].append(
+        {"type": "Error", "message": e})
+
 
 
