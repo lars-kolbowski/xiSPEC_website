@@ -324,6 +324,7 @@ body, input, select, textarea {
 
 #bottomDiv {
     position: relative; /* will overlay previous absolute divs i.e. distance slider */
+    padding-top: 2px;
 }
 
 #modificationTable .form-control{
@@ -331,9 +332,9 @@ body, input, select, textarea {
     font-size: 1em;
 }
 
-#specListTable_filter input{
+.dataTables_filter input{
     height: 2em;
-    margin: 4px 20px;
+    margin: 4px 0px;
 }
 
 #saveModal .content{
@@ -429,7 +430,7 @@ body, input, select, textarea {
 #altListTable tr {
     cursor: pointer;
 }
-.specListToolbar{
+.listToolbar{
     color: #fff;
     float: left;
     display: flex;

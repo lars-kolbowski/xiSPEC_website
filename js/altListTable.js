@@ -3,26 +3,28 @@ $(function() {
 	window.altListTable = $('#altListTable').DataTable( {
 	    "searching": false,
         "paging":   true,
-        "pageLength": 3,
+        "pageLength": 10,
+        "searching": true,
         "bLengthChange": false,
+        "dom": '<"altListToolbar">frtip',
         //"ordering": true,
         "order": [[2, "desc"], [9, "desc"]],
         //"info":     false,
 	    "ajax": "php/getAltList.php?id=-1",
 	    "columns": [
-	        { "data": "id" },		//0
-	        { "data": "mzid" }, 	//1
-			{ "data": "rank", "className": "dt-center" },		//2		
-			{ "data": "pep1" },		//3
-			{ "data": "pep2" },		//4
-			{ "data": "linkpos1", "className": "dt-center" },	//5
-			{ "data": "linkpos2", "className": "dt-center" },	//6
-			{ "data": "charge", "className": "dt-center" },		//7	
-			{ "data": "isDecoy", "className": "dt-center" },	//8
-			{ "data": "scores", "className": "dt-center" },		//9
-			{ "data": "protein", "className": "dt-center" },	//10			
-			{ "data": "passThreshold" },	//11
-			{ "data": "alt_count" },		//12
+	        { "title": "internal_id", "data": "id" },		//0
+	        { "title": "id", "data": "mzid" }, 	//1
+			{ "title": "rank", "data": "rank", "className": "dt-center" },		//2		
+			{ "title": "peptide 1", "data": "pep1" },		//3
+			{ "title": "peptide 2", "data": "pep2" },		//4
+			{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center" },	//5
+			{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center" },	//6
+			{ "title": "charge", "data": "charge", "className": "dt-center" },		//7	
+			{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center" },	//8
+			{ "title": "score", "data": "scores", "className": "dt-center" },		//9
+			{ "title": "protein", "data": "protein", "className": "dt-center" },	//10			
+			{ "title": "passThreshold", "data": "passThreshold" },	//11
+			{ "title": "alt_count", "data": "alt_count" },		//12
 	        ],
 		"createdRow": function( row, data, dataIndex ) {
 			if ( data[6] == "0" )         
@@ -71,6 +73,8 @@ $(function() {
 				window.Spectrum.resize();
 		}
 	});
+	$('.altListToolbar').addClass("listToolbar");
+	$( "<div id='altListId'></div>" ).appendTo( $( "div.altListToolbar" ) );
 
 	window.altListTable.on('click', 'tbody tr', function() {
 

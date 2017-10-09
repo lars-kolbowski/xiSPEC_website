@@ -160,7 +160,9 @@ else{
         <script type="text/javascript" src="./vendor/spin.js"></script>
         <script type="text/javascript" src="./vendor/byrei-dyndiv_1.0rc1.js"></script>
         <script type="text/javascript" src="./vendor/download.js"></script>
-
+		<script type="text/javascript" src="./vendor/bootstrap/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="./vendor/dataTables.bootstrap.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
         <!-- Spectrum view .js files -->
         <script type="text/javascript" src="./src/model.js"></script>
         <script type="text/javascript" src="./src/SpectrumView2.js"></script>
@@ -228,9 +230,14 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		}
 		
 
+		$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
+			if ($(this).parent().hasClass("disabled")) {
+				e.preventDefault();
+				return false;
+			}
+		});
+
 		//settings panel - put into model? or extra view?
-
-
 		$('.settingsCancel').click(function(){
 			$('#settingsWrapper').hide();
 			document.getElementById('highlightColor').jscolor.hide();
@@ -375,23 +382,33 @@ function render_settings(){
 
 function loadSpectrum(rowdata){
 
+	console.log(rowdata['alt_count']);
 	var id = rowdata['id'];
 	var mzid = rowdata['mzid'];
 
+	//ToDo change to navtabs
+
+	$("#altListId").html("Alternatives for "+rowdata['mzid']);
+
 	if(rowdata['alt_count'] > 1){
-		$('#altDiv').show();
-		$('#toggleAltList').prop('disabled', false);
-		$('#toggleAltList').prop('title', "Show/Hide alternative explanation list");
-		$('#toggleAltList').css('cursor', "pointer");
-		$('#toggleAltList').addClass("btn-1a");
+		
+		$('#nav-altListTable').removeClass('disabled');
+		$('#altExpNum').text("(" + rowdata['alt_count'] + ")");
+		// $('#altDiv').show();
+		// $('#toggleAltList').prop('disabled', false);
+		// $('#toggleAltList').prop('title', "Show/Hide alternative explanation list");
+		// $('#toggleAltList').css('cursor', "pointer");
+		// $('#toggleAltList').addClass("btn-1a");
 		window.altListTable.ajax.url( "php/getAltList.php?id=" + mzid).load();
 	}
 	else{
-		$('#toggleAltList').prop('disabled', true);
-		$('#toggleAltList').prop('title', "No alternative explanations for this spectrum");
-		$('#toggleAltList').css('cursor', "not-allowed");
-		$('#toggleAltList').removeClass("btn-1a");
-		$('#altDiv').hide();
+		$('#altExpNum').text("(0)");
+		$('#nav-altListTable').addClass('disabled');
+		// $('#toggleAltList').prop('disabled', true);
+		// $('#toggleAltList').prop('title', "No alternative explanations for this spectrum");
+		// $('#toggleAltList').css('cursor', "not-allowed");
+		// $('#toggleAltList').removeClass("btn-1a");
+		// $('#altDiv').hide();
 	}
 
 	$.ajax({
@@ -572,7 +589,6 @@ function updateJScolor(jscolor) {
 								<button id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav">&#x2039;</button>
 								<button id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav">&#9776;</button>
 								<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav">&#x203A;</button>
-								<button id="toggleAltList" title="Show/Hide alternative explanation list" class="btn btn-1">Alternatives</button>
 							</span>         		
 		            	</div> 
 	                    <div class="heightFill">
@@ -582,12 +598,12 @@ function updateJScolor(jscolor) {
 					</div>
 				</div><!-- end top div -->
 <!-- 				<div class="gutter gutter-vertical" style="height: 10px;"></div> -->
-				<div id="altDiv" class="tableDiv">
+<!-- 				<div id="altDiv" class="tableDiv">
 					<i class="fa fa-times-circle closeButton closeTable" id="altListClose"></i>
 					<div id="altListWrapper" class="listWrapper">
 						<div id="altList_main">
 							<span style="color: #fff;">Alternative Explanations for current spectrum:</span>
-							<table id="altListTable" class="display" width="100%" style="text-align:center;">
+							<table id="altListTable" width="100%" style="text-align:center;display:none;">
 								<thead>
 									<tr>
 									    <th>internal_id</th>
@@ -608,31 +624,33 @@ function updateJScolor(jscolor) {
 							</table>
 						</div>
 					</div>
-				</div>
+				</div> -->
 				<div id="bottomDiv" class="tableDiv">
 				<i class="fa fa-times-circle closeButton closeTable" id="specListClose"></i> 
-					<div id="specListWrapper" class="listWrapper">
-						<div id="specList_main">
-							<table id="specListTable" class="display" width="100%" style="text-align:center;">
-								<thead>
-									<tr>
-										<th>internal_id</th>
-										<th>id</th>
-										<th>peptide 1</th>
-										<th>peptide 2</th>
-										<th style="min-width: 50px">CL pos 1</th>
-										<th style="min-width: 50px">CL pos 2</th>
-										<th>charge</th>
-										<th>isDecoy</th>
-										<th>score</th>
-										<th>protein</th>
-										<th>passThreshold</th>
-										<th>alt_count</th>
-										<th>dataRef</th>
-										<th>scanID</th>									    
-									</tr>
-								</thead>
-							</table>
+
+					<ul class="nav nav-tabs">
+						<li class="active">
+							<a data-toggle="tab" href="#tab-specListTable">Spectra List</a>
+						</li>
+						<li id="nav-altListTable">
+							<a data-toggle="tab" href="#tab-altListTable">Alternative Explanations <span id="altExpNum"></span></a>
+						</li>
+					</ul>
+
+					<div class="tab-content">
+						<div id="tab-specListTable" class="tab-pane fade in active">
+							<div id="specListWrapper" class="listWrapper">
+								<div id="specList_main">
+									<table id="specListTable" class="display" width="100%" style="text-align:center;"></table>
+								</div>
+							</div>
+						</div>
+						<div id="tab-altListTable" class="tab-pane fade">
+							<div id="altListWrapper" class="listWrapper">
+								<div id="altList_main">
+									<table id="altListTable" width="100%" style="text-align:center;"></table>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
