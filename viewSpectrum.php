@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 
 require("functions.php");
 
-if(isset($_GET['db']))
+if(isset($_GET['db']) && !empty($_GET['db']))
 	require("php/logAccess.php");
 
 
