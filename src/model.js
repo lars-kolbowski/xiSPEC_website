@@ -2,6 +2,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	initialize: function(){
 		var self = this;
+		this.xiAnnotatorBaseURL = "xiAnnotator/"	// change to "xiAnnotator/" for release
 		this.getKnownModifications();
 		//this.sticky = Array();
 		//this.highlights = Array();
@@ -452,14 +453,18 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	getKnownModifications: function(){
 		var self = this;
+
 		var response = $.ajax({
 			type: "GET",
 			datatype: "json",
 			async: false,
-			url: "/xiAnnotator/annotate/knownModifications",
+			url: self.xiAnnotatorBaseURL+"annotate/knownModifications",
 			success: function(data) {
 				self.knownModifications = data;
-			}
+			},
+		    error: function(xhr, status, error){
+        		alert("xiAnnotator could not be reached. Please try again later!");
+    		},
 		});	
 	},
 
@@ -501,16 +506,16 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			},
 			data: JSON.stringify(json_request),
 			async: false,
-			url: "/xiAnnotator/annotate/FULL",
+			url: self.xiAnnotatorBaseURL + "annotate/FULL",
 			success: function(data) {
 
 				self.set({"JSONdata": data, "JSONrequest": json_request});
 				self.setData();
 
-				if (self.settingsModel !== undefined){
+				if (self.otherModel !== undefined){
 					var json_data_copy = jQuery.extend({}, data);
-					self.settingsModel.set({"JSONdata": json_data_copy, "JSONrequest": json_request});
-					self.settingsModel.trigger("change:JSONdata");		
+					self.otherModel.set({"JSONdata": json_data_copy, "JSONrequest": json_request});
+					self.otherModel.trigger("change:JSONdata");		
 				}
 			}
 		});			

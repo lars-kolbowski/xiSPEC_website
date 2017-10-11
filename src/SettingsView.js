@@ -23,6 +23,9 @@ var SettingsView = Backbone.View.extend({
 	events : {
 		'click .settingsTab' : 'changeTab',
 		'click .settingsCancel' : 'cancel',
+		'change #settingsDecimals' : 'changeDecimals',
+		'click #settingsCustomCfgApply' : 'applyCustomCfg',
+		'submit #settingsForm' : 'applyData',
 	},
 	initialize: function() {
 		 
@@ -79,15 +82,15 @@ var SettingsView = Backbone.View.extend({
 			.attr("name", "peaklist")
 		;
 
-		this.crossLinkerModMass = dataTab.append("label").attr("class", "btn").text("Cross-linker mod mass: ")
+		this.crossLinkerModMass = dataForm.append("label").attr("class", "btn").text("Cross-linker mod mass: ")
 			.append("input").attr("placeholder", "CL mod mass").attr("autocomplete", "off").attr("name", "clModMass").attr("required", "")
 		;											
 
-		this.precursorZ = dataTab.append("label").attr("class", "btn").text("Precursor charge: ")
+		this.precursorZ = dataForm.append("label").attr("class", "btn").text("Precursor charge: ")
 			.append("input").attr("type", "number").attr("placeholder", "Charge").attr("autocomplete", "off").attr("name", "preCharge").attr("min", "1").attr("required", "")
 		;			
 
-		var ionSelector = dataTab.append("label").attr("class", "btn").text("Ions: ")
+		var ionSelector = dataForm.append("label").attr("class", "btn").text("Ions: ")
 			.append("div").attr("class", "dropdown")
 		;	
 		ionSelector.append("input").attr("type", "text").attr("class", "form-control btn-drop").attr("id", "ionSelection").attr("readonly", "");
@@ -113,24 +116,22 @@ var SettingsView = Backbone.View.extend({
 
 		;
 
-		var toleranceWrapper = dataTab.append("label").attr("class", "btn").text("MS2 tolerance: ");
-			
+		var toleranceWrapper = dataForm.append("label").attr("class", "btn").text("MS2 tolerance: ");
 		this.toleranceValue = toleranceWrapper.append("input").attr("type", "number").attr("placeholder", "Charge").attr("autocomplete", "off").attr("name", "ms2Tol").attr("min", "0").attr("step", "0.1").attr("required", "");
 		this.toleranceUnit = toleranceWrapper.append("select").attr("name", "tolUnit").attr("required", "");
-
 		this.toleranceUnit.append("option").attr("value", "ppm").text("ppm");
 		this.toleranceUnit.append("option").attr("value", "Da").text("Da");
 
 
 		//modTable
-		var modTableWrapper = dataTab.append("div").attr("class", "form-control").attr("style", "height:auto").append("div").attr("class", "dataTables_wrapper no-footer");
+		var modTableWrapper = dataForm.append("div").attr("class", "form-control").attr("style", "height:auto").append("div").attr("class", "dataTables_wrapper no-footer");
 		var modTable = modTableWrapper.append("table").attr("id", "modificationTable");
 		this.initializeModTable();
 
 		//end modTable
-		var bottom = dataTab.append("div").attr("style", "margin-top:10px; text-align: center")
+		var bottom = dataForm.append("div").attr("style", "margin-top:10px; text-align: center")
 
-		var applyBtn = bottom.append("input").attr("class", "btn btn-1 btn-1a network-control").attr("value", "Apply").attr("id", "settingsApply").attr("type", "button");
+		var applyBtn = bottom.append("input").attr("class", "btn btn-1 btn-1a network-control").attr("value", "Apply").attr("id", "settingsDataApply").attr("type", "submit");
 		var cancelBtn = bottom.append("input").attr("class", "btn btn-1 btn-1a network-control settingsCancel").attr("value", "Cancel").attr("id", "settingsCancel").attr("type", "button");
 
 		//appearance
@@ -161,6 +162,7 @@ var SettingsView = Backbone.View.extend({
         var highlightColorSelector = appearanceTab.append("label").attr("class", "btn").text("Highlight Color: ")
         	.append("input").attr("class", "jscolor").attr("id", "highlightColor").attr("value", "#FFFF00").attr("onchange", "updateJScolor(this.jscolor);")
         ;
+        jscolor.installByClassName("jscolor");
 
 		var lossyChkBx = appearanceTab.append("label").attr("class", "btn").text("Neutral Loss Labels")
 			.append("input").attr("type", "checkbox").attr("id", "lossyChkBx")
@@ -184,6 +186,43 @@ var SettingsView = Backbone.View.extend({
 
 	},
 
+	changeDecimals: function(){
+		this.model.otherModel.showDecimals = parseInt(this.decimals[0][0].value);
+	},
+
+	applyCustomCfg: function(){
+		var json = this.model.get("JSONrequest");
+		json['annotation']['custom'] = "LOWRESOLUTION:false\n";	//ToDo: temp fix until new xiAnnotator version is released
+		json['annotation']['custom'] += $("#settingsCustomCfg-input").val().split("\n");
+
+		this.model.otherModel.request_annotation(json);
+	},
+
+	applyData: function(e){
+		e.preventDefault();
+		var self = this;
+		var formData = new FormData($(e.currentTarget)[0]);
+		$('#settingsForm').hide();
+		var spinner = new Spinner({scale: 5}).spin (d3.select("#settings_main").node());
+
+		$.ajax({
+			url: "php/formToJson.php",
+			type: 'POST',
+			data: formData,
+			async: false,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function (data) {
+				self.model.otherModel.request_annotation(JSON.parse(data));
+				spinner.stop();
+				$('#settingsForm').show();
+			}
+		  });	 
+		  return false;	
+
+		//window.SpectrumModel.request_annotation(window.SettingsSpectrumModel.JSONdata);		
+	},
 
 	initializeModTable: function(){
 		var self = this;
@@ -318,7 +357,7 @@ var SettingsView = Backbone.View.extend({
 	},
 
 	cancel: function(){
-		$(this.wrapper).hide();
+		$(this.wrapper[0]).hide();
 		document.getElementById('highlightColor').jscolor.hide();
 		// var json_data_copy = jQuery.extend({}, window.SpectrumModel.JSONdata);
 		// SettingsSpectrumModel.set({JSONdata: json_data_copy});
@@ -331,6 +370,10 @@ var SettingsView = Backbone.View.extend({
 		var activeTab = $(e.currentTarget).data('tab');
 		$('.settings-tab').hide();
 		$('#settings_'+activeTab).show();
+	},
+
+	updateJScolor: function(jscolor) {
+		this.model.changeHighlightColor('#' + jscolor);
 	},
 
 

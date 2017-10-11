@@ -224,8 +224,9 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		if(!dbView){
 			SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
 			var json_data_copy = jQuery.extend({}, json_data);
-			SpectrumModel.settingsModel = SettingsSpectrumModel;
+			SpectrumModel.otherModel = SettingsSpectrumModel;
 			SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
+			SettingsSpectrumModel.otherModel = SpectrumModel;
 			//window.SettingsView.render();
 		}
 		
@@ -262,44 +263,8 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			e.preventDefault();
 		});
 
-		$('#settingsForm').submit(function(e) {
-			e.preventDefault();
-			var formData = new FormData($(this)[0]);
-			$('#settingsForm').hide();
-			var spinner = new Spinner({scale: 5}).spin (d3.select("#settings_main").node());
 
-			$.ajax({
-		        url: "php/formToJson.php",
-				type: 'POST',
-				data: formData,
-				async: false,
-				cache: false,
-				contentType: false,
-				processData: false,
-				success: function (data) {
-					window.SpectrumModel.request_annotation(JSON.parse(data));
-					spinner.stop();
-					$('#settingsForm').show();
-				}
-			  });	 
-			  return false;	
-
-			//window.SpectrumModel.request_annotation(window.SettingsSpectrumModel.JSONdata);			
-		});
-
-		$("#settingsCustomCfgApply").click(function(){
-			var json = window.SpectrumModel.get("JSONrequest");
-			//ToDo: LOWRESOLUTION: true setting
-			json['annotation']['custom'] = "LOWRESOLUTION:false\n";
-			json['annotation']['custom'] += $("#settingsCustomCfg-input").val().split("\n");
-
-		 	window.SpectrumModel.request_annotation(json);
-		 });
-
-		$('#settingsDecimals').change(function(){
-			window.SpectrumModel.showDecimals = $(this).val();
-		})
-
+		//ToDo move to SettingsView
 		$('.mutliSelect input[type="checkbox"]').on('click', function() {
 
 		    var ionSelectionArr = new Array();
@@ -373,15 +338,13 @@ function loadSpectrum(rowdata){
 			var json_data_copy = jQuery.extend({}, window.SpectrumModel.JSONdata);
 			var json_req = window.SpectrumModel.get('JSONrequest');
 			window.SpectrumModel.settingsModel = SettingsSpectrumModel;
-			window.SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
-			//window.SettingsView.render();
+			window.SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req, realModel: SpectrumModel}); //JSONrequest necessary?
+
 		}
 	});	 			
 };
 
-function updateJScolor(jscolor) {
-	window.SpectrumModel.changeHighlightColor('#' + jscolor);
-};
+
     </script>
     </head>
 
