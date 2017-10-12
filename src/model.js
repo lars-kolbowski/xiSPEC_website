@@ -17,10 +17,13 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		$.getJSON('json/aaMasses.json', function(data) {         
     		self.aaMasses = data
 		});
+
+		//ToDo: change JSONdata gets called 3 times for some reason?
 		this.on("change:JSONdata", function(){
 			var json = this.get("JSONdata");
-			if (typeof json !== 'undefined')
+			if (typeof json !== 'undefined'){
 				this.setData();
+			}
 			else
 				this.trigger("cleared");
 		});
@@ -499,11 +502,11 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	request_annotation: function(json_request){
 
-		console.log(json_request);
+		console.log("annotation request:", json_request);
 		var self = this;
 		var response = $.ajax({
 			type: "POST",
-			datatype: "json",
+			datatype: "jsonp",
 			headers: { 
 			    'Accept': 'application/json',
 			    'Content-Type': 'application/json' 
@@ -512,9 +515,10 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			async: false,
 			url: self.xiAnnotatorBaseURL + "annotate/FULL",
 			success: function(data) {
-
+				//ToDo: Error handling -> talked to Lutz, he will implement transfer of error message as json
+				console.log("annotation response:", data);
 				self.set({"JSONdata": data, "JSONrequest": json_request});
-				self.setData();
+				//self.setData();
 
 				if (self.otherModel !== undefined){
 					var json_data_copy = jQuery.extend({}, data);

@@ -319,7 +319,6 @@ function loadSpectrum(rowdata){
 	else{
 		$('#altExpNum').text("(0)");
 		$('#nav-altListTable').addClass('disabled');
-
 	}
 
 	$.ajax({
