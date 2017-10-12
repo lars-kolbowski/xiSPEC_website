@@ -229,9 +229,15 @@ var SettingsView = Backbone.View.extend({
 	},
 
 	applyData: function(e){
+
 		e.preventDefault();
+
+		var form = e.currentTarget;
+		if(!this.checkInputsForValidity(form))
+			return false;
+
 		var self = this;
-		var formData = new FormData($(e.currentTarget)[0]);
+		var formData = new FormData($(form)[0]);
 		$('#settingsForm').hide();
 		var spinner = new Spinner({scale: 5}).spin (d3.select("#settings_main").node());
 
@@ -248,10 +254,45 @@ var SettingsView = Backbone.View.extend({
 				spinner.stop();
 				$('#settingsForm').show();
 			}
-		  });	 
-		  return false;	
+		});
+
+		this.model.saveUserModificationsToCookie();
+		return false;	
 
 		//window.SpectrumModel.request_annotation(window.SettingsSpectrumModel.JSONdata);		
+	},
+
+	checkInputsForValidity: function(formData){
+		
+		var invalidChars = function(input, unknownCharPattern){
+			var unknownChars = /([^GALMFWKQESPVICYHRNDTa-z;#0-9]+)/;
+			var match = input.match(unknownCharPattern);
+			if (match){
+				console.log(match);
+				return match;
+			}	
+			return false;	
+		}
+		//peptideStr
+		if (invalidChars(formData['peps'].value, /([^GALMFWKQESPVICYHRNDTa-z;#0-9]+)/))
+			return false
+
+		//peakList
+		if (invalidChars(formData['peaklist'].value, /([^0-9\.\s]+)/))
+			return false
+		//clModMass
+		if (invalidChars(formData['clModMass'].value, /([^0-9\.]+)/))
+			return false
+		//precursor charge state
+		if (invalidChars(formData['preCharge'].value, /([^0-9]+)/))
+			return false
+		//ms2Tolerance
+		if (invalidChars(formData['ms2Tol'].value, /([^0-9\.]+)/))
+			return false
+		
+
+		return true;
+
 	},
 
 	initializeModTable: function(){
@@ -335,6 +376,8 @@ var SettingsView = Backbone.View.extend({
 
 	    this.modTable = $('#modificationTable').DataTable( modTableVars );
 
+
+	    //ToDo: change to BB event handling
 		$('#modificationTable').on('input', 'input', function() {
 
 			var row = this.getAttribute("row");
@@ -344,7 +387,7 @@ var SettingsView = Backbone.View.extend({
 
 			var mod = {'id': modName, 'mass': modMass, 'aminoAcids': modSpec};
 
-			window.SettingsSpectrumModel.updateUserModifications(mod);
+			self.model.updateUserModifications(mod, false);
 			displayModified($(this).closest("tr"));
 
 		 });
@@ -356,7 +399,7 @@ var SettingsView = Backbone.View.extend({
 
 		$('#modificationTable').on('click', '.resetMod', function() {
 			var modId = $(this).parent()[0].innerText;
-			window.SettingsSpectrumModel.delUserModification(modId);
+			self.model.delUserModification(modId, false);
 			self.modTable.ajax.reload();
 		});
 
@@ -366,6 +409,7 @@ var SettingsView = Backbone.View.extend({
 	render: function() {
 
 		this.pepInputView.render();
+		//ToDo: convertMods could be changed to pure JS
 		this.modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(this.model.pepStrsMods.join(";"))).load();
 		//ions
 		this.model.JSONdata.annotation.ions.forEach(function(ion){
@@ -389,9 +433,11 @@ var SettingsView = Backbone.View.extend({
 	cancel: function(){
 		$(this.wrapper[0]).hide();
 		document.getElementById('highlightColor').jscolor.hide();
-		// var json_data_copy = jQuery.extend({}, window.SpectrumModel.JSONdata);
-		// SettingsSpectrumModel.set({JSONdata: json_data_copy});
-		// SettingsSpectrumModel.trigger("change:JSONdata");
+		//reset the model by copying the original model
+		var model_copy = jQuery.extend({}, this.model.otherModel);
+		model_copy.otherModel = this.model.otherModel;
+		this.model = model_copy;
+		this.render();
 		// window.SettingsView.render();
 
 	},
