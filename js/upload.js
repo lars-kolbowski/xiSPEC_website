@@ -324,6 +324,8 @@ function doClearForm(){
 	$("#myPrecursorZ").val("");
 	$("#myCL").val("");
 	$('.ionSelectChkbox').prop('checked', false);
+	$('.ionSelectChkbox').change();
+	
 	window.peptide.clear();
 	pepInputView.contentChanged();
 };
