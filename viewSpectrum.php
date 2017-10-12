@@ -168,6 +168,7 @@ else{
         <script type="text/javascript" src="./src/SpectrumView2.js"></script>
         <script type="text/javascript" src="./src/FragmentationKeyView.js"></script>
         <script type="text/javascript" src="./src/PrecursorInfoView.js"></script>
+        <script type="text/javascript" src="./src/SettingsView.js"></script>
 		<script type="text/javascript" src="./js/PeptideView.js"></script>
 		<script type="text/javascript" src="./js/PepInputView.js"></script>	
         <script type="text/javascript" src="./src/ErrorIntensityPlotView.js"></script>     
@@ -175,7 +176,6 @@ else{
         <script type="text/javascript" src="./src/graph/Graph.js"></script>
         <script type="text/javascript" src="./src/graph/Peak.js"></script>
         <script type="text/javascript" src="./src/graph/Fragment.js"></script>
-        <script type="text/javascript" src="./js/modTable.js"></script>
 <?php if($dbView)
 echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		<script type="text/javascript" src="./js/altListTable.js"></script>';
@@ -219,14 +219,15 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
         window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
         window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
         window.ErrorIntensityPlot = new ErrorIntensityPlotView({model: SpectrumModel, el:"#spectrumPanel"});
-		window.SettingsPepInputView = new PepInputView({model: SettingsSpectrumModel, el:"#settingsPeptide"});
+		window.SettingsView = new SettingsView({model: SettingsSpectrumModel, el:"#settingsWrapper"});
 
 		if(!dbView){
 			SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
 			var json_data_copy = jQuery.extend({}, json_data);
-			SpectrumModel.settingsModel = SettingsSpectrumModel;
+			SpectrumModel.otherModel = SettingsSpectrumModel;
 			SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
-			render_settings();
+			SettingsSpectrumModel.otherModel = SpectrumModel;
+			//window.SettingsView.render();
 		}
 		
 
@@ -237,15 +238,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			}
 		});
 
-		//settings panel - put into model? or extra view?
-		$('.settingsCancel').click(function(){
-			$('#settingsWrapper').hide();
-			document.getElementById('highlightColor').jscolor.hide();
-			var json_data_copy = jQuery.extend({}, window.SpectrumModel.JSONdata);
-			SettingsSpectrumModel.set({JSONdata: json_data_copy});
-			SettingsSpectrumModel.trigger("change:JSONdata");
-			render_settings();
-		});
+		//settings panel - put into extra view
 
 		$('#toggleSettings').click(function(){
 			$('#settingsWrapper').toggle();
@@ -270,59 +263,8 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			e.preventDefault();
 		});
 
-		$('#settingsForm').submit(function(e) {
-			e.preventDefault();
-			var formData = new FormData($(this)[0]);
-			$('#settingsForm').hide();
-			var spinner = new Spinner({scale: 5}).spin (d3.select("#settings_main").node());
 
-			$.ajax({
-		        url: "php/formToJson.php",
-				type: 'POST',
-				data: formData,
-				async: false,
-				cache: false,
-				contentType: false,
-				processData: false,
-				success: function (data) {
-					window.SpectrumModel.request_annotation(JSON.parse(data));
-					spinner.stop();
-					$('#settingsForm').show();
-				}
-			  });	 
-			  return false;	
-
-			//window.SpectrumModel.request_annotation(window.SettingsSpectrumModel.JSONdata);			
-		});
-
-		$("#settingsCustomCfgApply").click(function(){
-			var json = window.SpectrumModel.get("JSONrequest");
-			//ToDo: LOWRESOLUTION: true setting
-			json['annotation']['custom'] = "LOWRESOLUTION:false\n";
-			json['annotation']['custom'] += $("#settingsCustomCfg-input").val().split("\n");
-
-		 	window.SpectrumModel.request_annotation(json);
-		 });
-
-		$('#settings-appearance').click(function(){
-			$('.settings-tab').hide();
-			$('#settingsAppearance').show();
-		});
-
-		$('#settings-custom_cfg').click(function(){
-			$('.settings-tab').hide();
-			$('#settingsCustomCfg').show();
-		});		
-
-		$('#settingsDecimals').change(function(){
-			window.SpectrumModel.showDecimals = $(this).val();
-		})
-
-		$('#settings-data').click(function(){
-			$('.settings-tab').hide();		
-			$('#settingsData').show();
-		});
-
+		//ToDo move to SettingsView
 		$('.mutliSelect input[type="checkbox"]').on('click', function() {
 
 		    var ionSelectionArr = new Array();
@@ -359,26 +301,6 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 
 
 });
-function render_settings(){
-	window.SettingsPepInputView.render();
-
-	//ions
-	SpectrumModel.JSONdata.annotation.ions.forEach(function(ion){
-		$('#'+ion.type).attr('checked', true);
-	});
-	var ionSelectionArr = new Array();
-	$('.ionSelectChkbox:checkbox:checked').each(function(){
-	    ionSelectionArr.push($(this).val());
-	});
-	$('#ionSelection').val(ionSelectionArr.join(", "));
-
-	$("#settingsPeaklist").val(window.SettingsSpectrumModel.peaksToMGF()); 
-	$("#settingsPrecursorZ").val(window.SettingsSpectrumModel.JSONdata.annotation.precursorCharge);
-	$("#settingsTolerance").val(parseInt(window.SettingsSpectrumModel.JSONdata.annotation.fragementTolerance));
-	$("#settingsToleranceUnit").val(window.SettingsSpectrumModel.JSONdata.annotation.fragementTolerance.split(" ")[1]);
-	$("#settingsCL").val(window.SettingsSpectrumModel.JSONdata.annotation['cross-linker'].modMass);
-	$('#settingsDecimals').val(window.SpectrumModel.showDecimals);
-}
 
 function loadSpectrum(rowdata){
 
@@ -386,29 +308,18 @@ function loadSpectrum(rowdata){
 	var id = rowdata['id'];
 	var mzid = rowdata['mzid'];
 
-	//ToDo change to navtabs
-
 	$("#altListId").html("Alternatives for "+rowdata['mzid']);
 
 	if(rowdata['alt_count'] > 1){
 		
 		$('#nav-altListTable').removeClass('disabled');
 		$('#altExpNum').text("(" + rowdata['alt_count'] + ")");
-		// $('#altDiv').show();
-		// $('#toggleAltList').prop('disabled', false);
-		// $('#toggleAltList').prop('title', "Show/Hide alternative explanation list");
-		// $('#toggleAltList').css('cursor', "pointer");
-		// $('#toggleAltList').addClass("btn-1a");
 		window.altListTable.ajax.url( "php/getAltList.php?id=" + mzid).load();
 	}
 	else{
 		$('#altExpNum').text("(0)");
 		$('#nav-altListTable').addClass('disabled');
-		// $('#toggleAltList').prop('disabled', true);
-		// $('#toggleAltList').prop('title', "No alternative explanations for this spectrum");
-		// $('#toggleAltList').css('cursor', "not-allowed");
-		// $('#toggleAltList').removeClass("btn-1a");
-		// $('#altDiv').hide();
+
 	}
 
 	$.ajax({
@@ -427,15 +338,13 @@ function loadSpectrum(rowdata){
 			var json_data_copy = jQuery.extend({}, window.SpectrumModel.JSONdata);
 			var json_req = window.SpectrumModel.get('JSONrequest');
 			window.SpectrumModel.settingsModel = SettingsSpectrumModel;
-			window.SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
-			render_settings();
+			window.SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req, realModel: SpectrumModel}); //JSONrequest necessary?
+
 		}
 	});	 			
 };
 
-function updateJScolor(jscolor) {
-	window.SpectrumModel.changeHighlightColor('#' + jscolor);
-};
+
     </script>
     </head>
 
@@ -450,119 +359,15 @@ function updateJScolor(jscolor) {
 	                <div id="spectrumPanel">
 
 						<div class="dynDiv" id="settingsWrapper">
-							<div class="dynDiv_moveParentDiv" style="cursor: move;">
+							<div class="dynDiv_moveParentDiv">
 								<span class="dynTitle">Settings</span>
 								<i class="fa fa-times-circle closeButton settingsCancel" id="closeSettings"></i>
 							</div>
-							<div class="settings_menu">
-								<button class="btn btn-1a" id="settings-data">Data</button>
-								<button class="btn btn-1a" id="settings-appearance">Appearance</button>
-								<button class="btn btn-1a" id="settings-custom_cfg">Custom config</button>
-							</div>
-							<div class="dynDiv_resizeDiv_tl" style="cursor: nw-resize;"></div>
-							<div class="dynDiv_resizeDiv_tr" style="cursor: ne-resize;"></div>
-							<div class="dynDiv_resizeDiv_bl" style="cursor: sw-resize;"></div>
-							<div class="dynDiv_resizeDiv_br" style="cursor: se-resize;"></div>
-							<div id="settings_main">
-								<div class="settings-tab" id="settingsData">
-									<form id="settingsForm" method="post">
-										<div style="display: flex;">
-										<div style="margin-bottom:30px;width:30%;min-width:300px;display:inline;min-width:300px;margin-right:2%;float:left;">
-											<input style="width:100%;margin-bottom:10px" class="form-control" id="settingsPeptide" autocomplete="off" required="" type="text" placeholder="Peptide Sequence1[;Peptide Sequence2]" name="peps" autofocus="">
-											<textarea class="form-control" style="padding-bottom:0px;" id="settingsPeaklist" required="" type="text" placeholder="Peak List [m/z intensity]" name="peaklist"></textarea>
-										</div>
-										<div style="width:68%;display:inline;">
-											<label for="settingsCL"><span class="label btn">Cross-linker mod mass: </span>
-												<input class="form-control" style="margin-right:2%;width:25%" required="" id="settingsCL" placeholder="CL mod mass" name="clModMass" autocomplete="off">
-											</label>
-
-											<label for="settingsPrecursorZ"><span class="label btn">Precursor charge: </span>
-								  				<input class="form-control" style="margin-right:2%;width:15%" required="" id="settingsPrecursorZ" type="number" min="1" placeholder="Charge" name="preCharge" autocomplete="off">
-											</label>
-
-											<label for="settingsIons"><span class="label btn">Ions: </span>
-												<div class="dropdown">
-													<input type="text" class="form-control btn-drop" id="ionSelection" readonly>
-													<div class="dropdown-content mutliSelect">
-														<ul>
-											                <li>
-											                    <label><input type="checkbox" class="ionSelectChkbox" value="peptide" id="PeptideIon" name="ions[]"/>Peptide ion</label></li>
-											                <li>
-											                    <label><input type="checkbox" class="ionSelectChkbox" value="a" id="AIon" name="ions[]"/>A ion</label></li>
-											                <li>
-											                    <label><input type="checkbox" class="ionSelectChkbox" value="b" id="BIon" name="ions[]"/>B ion</label></li>
-											                <li>
-											                    <label><input type="checkbox" class="ionSelectChkbox" value="c" id="CIon" name="ions[]"/>C ion</label></li>
-											                <li>
-											                    <label><input type="checkbox" class="ionSelectChkbox" value="x" id="XIon" name="ions[]"/>X ion</label></li>
-											                <li>
-											                    <label><input type="checkbox" class="ionSelectChkbox" value="y" id="YIon" name="ions[]"/>Y ion</label></li>
-											                <li>
-											                    <label><input type="checkbox" class="ionSelectChkbox" value="z" id="ZIon" name="ions[]"/>Z ion</label></li>
-														</ul>
-													</div>
-												</div>
-											</label>
-			<!-- 
-											<label for="settingsFragmentation"><span class="label btn">Fragmentation method: </span>
-												<select class="form-control" style="margin-right:2%;width:15%;display:inline;" id="settingsFragmentation" name="fragMethod">
-													<option value="HCD">HCD</option>
-													<option value="CID">CID</option>
-													<option value="ETD">ETD</option>
-													<option value="ETciD">ETciD</option>
-													<option value="EThcD">EThcD</option>
-												</select>
-											</label> -->
-
-											<label for="settingsTolerance"><span class="label btn">MS2 tolerance: </span>
-												<input class="form-control" style="margin-right:2%;width:15%;display:inline;" required="" id="settingsTolerance" type="number" min="0" step="0.1" placeholder="Tolerance" name="ms2Tol" autocomplete="off">
-												<select class="form-control" style="margin-right:2%;width:15%;display:inline;" required="" id="settingsToleranceUnit" name="tolUnit">
-													<option value="ppm">ppm</option> 
-													<option value="Da">Da</option>
-												</select>									
-											</label>
-										</div>
-										</div>
-										<div style="margin-bottom:2%;">
-											<div class="form-control" style="height:auto" id="myMods">
-											<div id="modificationTable_wrapper" class="dataTables_wrapper no-footer"><div id="modificationTable_processing" class="dataTables_processing" style="display: none;">Processing...</div><table id="modificationTable" class="display dataTable no-footer" width="100%" style="text-align: center; width: 100%;" role="grid">
-												<thead>
-													<tr role="row"><th class="sorting_disabled invisible" rowspan="1" colspan="1" style="width: 0px;">Mod-Input</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 206px;">Modification</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 144px;">Mass</th><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 175px;">Specificity</th></tr>
-												</thead>
-											<tbody><tr class="odd"><td valign="top" colspan="3" class="dataTables_empty">No matching records found</td></tr></tbody></table></div>
-											</div>
-										</div>	
-										<div style="margin-top:10px; text-align: center">
-											<input class="btn btn-1 btn-1a network-control" type="submit" value="Apply" id="settingsApply">
-											<input class="btn btn-1 btn-1a network-control settingsCancel" type="button" value="Cancel" id="settingsCancel">
-										</div>
-									</form>
-								</div>
-								<div id="settingsAppearance" class="settings-tab" style="display:none">
-									<label class="btn label">Colour scheme:
-									<select id="colorSelector">
-										<option value="RdBu">Red &amp; Blue</option>
-										<option value="BrBG">Brown &amp; Teal</option>
-										<option value="PiYG">Pink &amp; Green</option>
-										<option value="PRGn">Purple &amp; Green</option>
-										<option value="PuOr">Orange &amp; Purple</option>
-									</select>
-									</label>
-									<label class="btn label">Highlight Color:
-										<input class="jscolor form-control" id="highlightColor" value="#FFFF00" onchange="updateJScolor(this.jscolor);">
-									</label>
-									<label class="btn label"><input id="lossyChkBx" type="checkbox">Neutral Loss Labels</label>
-									<label>
-										<span class="label btn">Decimals: </span>
-				  						<input class="form-control" style="margin-right:2%;width:15%" id="settingsDecimals" type="number" min="1"  autocomplete="off">
-									</label>		
-								</div>
-								<div id="settingsCustomCfg" class="settings-tab" style="display:none">
-									<textarea class="form-control" style="padding-bottom:0px;width:100%;" id="settingsCustomCfg-input" type="text"></textarea>
-									<input class="btn btn-1 btn-1a network-control" type="submit" value="Apply" id="settingsCustomCfgApply">
-								</div>								
-							</div>
-						</div><!-- end settings -->
+							<div class="dynDiv_resizeDiv_tl"></div>
+							<div class="dynDiv_resizeDiv_tr"></div>
+							<div class="dynDiv_resizeDiv_bl"></div>
+							<div class="dynDiv_resizeDiv_br"></div>
+						</div>
 		            	<div id="spectrumControls">
 		            		<i class="fa fa-home fa-xi" onclick="window.location = 'index.php';" title="Home"></i>
 		            		<i class="fa fa-github fa-xi btn-1a" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>

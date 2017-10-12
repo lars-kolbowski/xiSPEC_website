@@ -28,4 +28,27 @@
 	</div> <!-- headerbg -->
 </div> <!-- header -->
 
-<a  class="menu" href="menu.php"><div class="menu"></div></a>
+<script type="text/javascript">
+	$( document ).ready(function() {
+		$('.menu').click(function(){
+			$('.header-top').slideToggle();
+		});
+	});
+</script>
+
+<div class="menu"></div>
+
+<div class="menu-top">
+	<div class="header-top">
+		<div class="header-top-bg">
+			<nav class="hover-effect">
+				<a href="index.php" data-hover="Home" data-no-instant>Home</a>
+				<a href="examples.php" data-hover="Examples" data-no-instant>Examples</a>
+				<a href="upload.php" data-hover="Upload">Upload</a>
+				<a href="help.php" data-hover="Help">Help</a>
+				<a href="contact.php" data-hover="Contact">Contact</a>
+				<a href="legacy.php" data-hover="Legacy">Legacy</a>
+			</nav>
+		</div> <!-- headerbg -->
+	</div> <!-- header -->
+</div>

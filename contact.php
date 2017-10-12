@@ -2,8 +2,9 @@
 <html>
 	<head>
 	    <?php
-	    $pageName = "Home";
+	    $pageName = "Contact";
 	    include("head.php");
+		include("xiSPEC_scripts.php");
 	    ?>
 	</head>
 		<body>

@@ -48,21 +48,25 @@
 .dynDiv_resizeDiv_tl {
  top: -1px;
  left: -1px;
+ cursor: nw-resize;
 }
 
 .dynDiv_resizeDiv_tr {
  top: -1px;
  right: -1px;
+ cursor: ne-resize;
 }
 
 .dynDiv_resizeDiv_bl {
  bottom: -1px;
  left: -1px;
+ cursor: sw-resize;
 }
 
 .dynDiv_resizeDiv_br {
  bottom: -1px;
  right: -1px;
+ cursor: se-resize;
 }
 
 .dynDiv_moveParentDiv {
@@ -80,6 +84,7 @@
  padding: 0;
  overflow: hidden;
  white-space:nowrap;
+ cursor: move;
 }
 
 .dynDiv_minmaxDiv {
