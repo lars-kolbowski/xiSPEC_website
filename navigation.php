@@ -31,7 +31,7 @@
 <script type="text/javascript">
 	$( document ).ready(function() {
 		$('.menu').click(function(){
-			$('.header-top').toggle();
+			$('.header-top').slideToggle();
 		});
 	});
 </script>
