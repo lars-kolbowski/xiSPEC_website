@@ -35,10 +35,6 @@ var SettingsView = Backbone.View.extend({
 		this.listenTo(this.model, 'change:JSONdata', this.render);
 		this.wrapper = d3.select(this.el);
 
-		var dynDivMove = this.wrapper.append("div").attr("class", "dynDiv_moveParentDiv");
-		dynDivMove.append("span").attr("class", "dynTitle").text("Settings");
-		dynDivMove.append("i").attr("class", "fa fa-times-circle closeButton settingsCancel").attr("id", "closeSettings");
-
 		//menu
 		var menu = this.wrapper.append("div").attr("class", "settings_menu");
         var buttonData = ["Data", "Appearance", "Custom config"]
@@ -49,14 +45,7 @@ var SettingsView = Backbone.View.extend({
         		.attr("data-tab", b_id)
         		.text(b)
         	;
-        })
-
-        //dynDiv divs
-		this.wrapper.append("div").attr("class", "dynDiv_resizeDiv_tl");
-		this.wrapper.append("div").attr("class", "dynDiv_resizeDiv_tr");
-		this.wrapper.append("div").attr("class", "dynDiv_resizeDiv_bl");
-		this.wrapper.append("div").attr("class", "dynDiv_resizeDiv_br");
-
+        });
 
 		var mainDiv = this.wrapper.append("div").attr("id", "settings_main");	
 
@@ -65,35 +54,51 @@ var SettingsView = Backbone.View.extend({
 
 		var dataForm = dataTab.append("form").attr("id", "settingsForm").attr("method", "post");
 
-		this.peptideViewEl = dataForm.append("input")
+		var dataFlexColumn = dataForm.append("div").attr("class", "flex-column");
+
+		var peptideLabel = dataFlexColumn.append("label").text("Peptide Sequence: ")
+		this.peptideViewEl = peptideLabel.append("input")
 			.attr("type", "text")
 			.attr("required", "")
 			.attr("autofocus", "")
 			.attr("placeholder", "Peptide Sequence1[;Peptide Sequence2]")
 			.attr("name", "peps")
+			.attr("style", "width: 80%; margin-bottom: 1%;")
 		;
 		this.pepInputView = new PepInputView({model: this.model, el: this.peptideViewEl[0] });
+		
+		var dataFlexRow = dataFlexColumn.append("div").attr("class", "flex-row");
 
-		this.peaklist = dataForm.append("textarea")
+		var leftDiv = dataFlexRow.append("div").attr("class", "settingsDataLeft");
+		this.peaklist = leftDiv.append("textarea")
 			.attr("required", "")
 			.attr("id", "settingsPeaklist")
 			.attr("type", "text")
 			.attr("placeholder", "Peak List [m/z intensity]")
 			.attr("name", "peaklist")
+			.attr("class", "form-control")
 		;
 
-		this.crossLinkerModMass = dataForm.append("label").attr("class", "btn").text("Cross-linker mod mass: ")
-			.append("input").attr("placeholder", "CL mod mass").attr("autocomplete", "off").attr("name", "clModMass").attr("required", "")
+		var rightDiv = dataFlexRow.append("div").attr("class", "settingsDataRight"); 
+
+		this.crossLinkerModMass = rightDiv.append("label").text("Cross-linker mod mass: ")
+			.append("input").attr("placeholder", "CL mod mass").attr("autocomplete", "off").attr("name", "clModMass").attr("required", "").attr("type", "text").attr("style", "width: 150px;")
 		;											
 
-		this.precursorZ = dataForm.append("label").attr("class", "btn").text("Precursor charge: ")
-			.append("input").attr("type", "number").attr("placeholder", "Charge").attr("autocomplete", "off").attr("name", "preCharge").attr("min", "1").attr("required", "")
+		this.precursorZ = rightDiv.append("label").text("Precursor charge state: ")
+			.append("input").attr("type", "number").attr("placeholder", "Charge").attr("autocomplete", "off").attr("name", "preCharge").attr("min", "1").attr("required", "").attr("style", "width: 70px")
 		;			
 
-		var ionSelector = dataForm.append("label").attr("class", "btn").text("Ions: ")
+		var ionSelector = rightDiv.append("label").text("Fragment Ions: ")
 			.append("div").attr("class", "dropdown")
 		;	
-		ionSelector.append("input").attr("type", "text").attr("class", "form-control btn-drop").attr("id", "ionSelection").attr("readonly", "");
+		ionSelector.append("input")
+			.attr("type", "text")
+			.attr("class", "btn-drop")
+			.attr("id", "ionSelection")
+			.attr("readonly", "")
+			.attr("style", "width: 160px")
+		;
 		var ionSelectorDropdown = ionSelector.append("div").attr("class", "dropdown-content mutliSelect").append("ul").attr("id", 'ionList');
 		var ionOptions = [
 			{value: "peptide", text: "Peptide ion"},
@@ -116,23 +121,37 @@ var SettingsView = Backbone.View.extend({
 
 		;
 
-		var toleranceWrapper = dataForm.append("label").attr("class", "btn").text("MS2 tolerance: ");
-		this.toleranceValue = toleranceWrapper.append("input").attr("type", "number").attr("placeholder", "Charge").attr("autocomplete", "off").attr("name", "ms2Tol").attr("min", "0").attr("step", "0.1").attr("required", "");
-		this.toleranceUnit = toleranceWrapper.append("select").attr("name", "tolUnit").attr("required", "");
+		var toleranceWrapper = rightDiv.append("label").text("MS2 tolerance: ");
+		this.toleranceValue = toleranceWrapper.append("input")
+			.attr("type", "number")
+			.attr("placeholder", "Charge")
+			.attr("autocomplete", "off")
+			.attr("name", "ms2Tol")
+			.attr("min", "0")
+			.attr("step", "0.1")
+			.attr("required", "")
+			.attr("style", "width: 70px")
+		;
+		this.toleranceUnit = toleranceWrapper.append("select")
+			.attr("name", "tolUnit")
+			.attr("required", "")
+			.attr("style", "width: 100px; margin-left: 10px;")
+			.attr("class", "form-control")
+		;
 		this.toleranceUnit.append("option").attr("value", "ppm").text("ppm");
 		this.toleranceUnit.append("option").attr("value", "Da").text("Da");
 
 
 		//modTable
-		var modTableWrapper = dataForm.append("div").attr("class", "form-control").attr("style", "height:auto").append("div").attr("class", "dataTables_wrapper no-footer");
-		var modTable = modTableWrapper.append("table").attr("id", "modificationTable");
+		var modTableWrapper = dataForm.append("div").attr("class", "form-control").attr("style", "height:auto; width: 100%; margin-top: -25px;").append("div").attr("class", "dataTables_wrapper");
+		var modTable = modTableWrapper.append("table").attr("id", "modificationTable").attr("style", "width: 100%");
 		this.initializeModTable();
 
 		//end modTable
-		var bottom = dataForm.append("div").attr("style", "margin-top:10px; text-align: center")
+		var dataBottom = dataForm.append("div").attr("class", "settings-bottom");
 
-		var applyBtn = bottom.append("input").attr("class", "btn btn-1 btn-1a network-control").attr("value", "Apply").attr("id", "settingsDataApply").attr("type", "submit");
-		var cancelBtn = bottom.append("input").attr("class", "btn btn-1 btn-1a network-control settingsCancel").attr("value", "Cancel").attr("id", "settingsCancel").attr("type", "button");
+		var applyBtn = dataBottom.append("input").attr("class", "btn btn-1 btn-1a network-control").attr("value", "Apply").attr("id", "settingsDataApply").attr("type", "submit");
+		var cancelBtn = dataBottom.append("input").attr("class", "btn btn-1 btn-1a network-control settingsCancel").attr("value", "Cancel").attr("id", "settingsCancel").attr("type", "button");
 
 		//appearance
 		var appearanceTab = mainDiv.append("div")
@@ -142,7 +161,7 @@ var SettingsView = Backbone.View.extend({
 		;
 
 		var colorSchemeSelector = appearanceTab.append("label").attr("class", "btn").text("Color scheme: ")
-			.append("select").attr("id", 'colorSelector')
+			.append("select").attr("id", 'colorSelector').attr("class", 'form-control')
 		;     
 		var colOptions = [
 			{value: "RdBu", text: "Red & Blue"},
@@ -160,28 +179,39 @@ var SettingsView = Backbone.View.extend({
 		;
 
         var highlightColorSelector = appearanceTab.append("label").attr("class", "btn").text("Highlight Color: ")
-        	.append("input").attr("class", "jscolor").attr("id", "highlightColor").attr("value", "#FFFF00").attr("onchange", "updateJScolor(this.jscolor);")
+        	.append("input").attr("class", "jscolor").attr("id", "highlightColor").attr("value", "#FFFF00").attr("type", "text").attr("onchange", "updateJScolor(this.jscolor);")
         ;
         jscolor.installByClassName("jscolor");
 
-		var lossyChkBx = appearanceTab.append("label").attr("class", "btn").text("Neutral Loss Labels")
+		var lossyChkBx = appearanceTab.append("label").attr("class", "btn").text("Show neutral loss labels")
 			.append("input").attr("type", "checkbox").attr("id", "lossyChkBx")
 		;     
 
-		this.decimals = appearanceTab.append("label").attr("class", "btn").text("Decimals: ")
-			.append("input").attr("type", "number").attr("id", "settingsDecimals").attr("min", "1").attr("autocomplete", "off")
+		this.decimals = appearanceTab.append("label").attr("class", "btn").text("Number of decimals to display: ")
+			.append("input").attr("type", "number").attr("id", "settingsDecimals").attr("min", "1").attr("max", "10").attr("autocomplete", "off").attr("style", "width: 60px;")
 		;     
 
 
         //custom config
 		var customConfigTab = mainDiv.append("div").attr("class", "settings-tab").attr("id", "settings_custom_config").style("display", "none");
 
-		var customConfigInput = customConfigTab.append("textarea").attr("id", "settingsCustomCfg-input").attr("type", "text");
-		var customConfigSubmit = customConfigTab.append("input").attr("class", "btn btn-1 btn-1a network-control").attr("value", "apply").attr("id", "settingsCustomCfgApply");
+		var customConfigInput = customConfigTab.append("textarea").attr("id", "settingsCustomCfg-input").attr("class", "form-control");
+		var customConfigBottom = customConfigTab.append("div").attr("class", "settings-bottom");
+		var customConfigSubmit = customConfigBottom.append("input").attr("class", "btn btn-1 btn-1a network-control").attr("value", "Apply").attr("id", "settingsCustomCfgApply").attr("type", "submit");
 
 
 		d3.select(this.el).selectAll("label")
 			.classed ("label", true)
+		;
+
+		d3.select(this.el).selectAll("input[type=text]")
+			.classed ("form-control", true)
+		;
+		d3.select(this.el).selectAll("input[type=number]")
+			.classed ("form-control", true)
+		;
+		d3.select(this.el).selectAll("input[type=textarea]")
+			.classed ("form-control", true)
 		;
 
 	},
@@ -236,9 +266,9 @@ var SettingsView = Backbone.View.extend({
 	        "ajax": "forms/convertMods.php?peps=",
 	        "columns": [
 	            { "title": "Mod-Input", "data": "id" },
-	        	{ "title": "Modification" },
-	            { "title": "Mass" },
-	            { "title": "Specificity", "data": "aminoAcid" },
+	        	{ "title": "Modification", "className": "dt-center" },
+	            { "title": "Mass", "className": "dt-center" },
+	            { "title": "Specificity", "data": "aminoAcid", "className": "dt-center" },
 	            ],
 
 	        "columnDefs": [

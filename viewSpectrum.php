@@ -359,91 +359,15 @@ function loadSpectrum(rowdata){
 	                <div id="spectrumPanel">
 
 						<div class="dynDiv" id="settingsWrapper">
-
-<!-- 							
-								<div id="settings_main">
-									<div class="settings-tab" id="settingsData">
-										<form id="settingsForm" method="post">
-											<div style="display: flex;">
-											<div style="margin-bottom:30px;width:30%;min-width:300px;display:inline;min-width:300px;margin-right:2%;float:left;">
-												<input style="width:100%;margin-bottom:10px" class="form-control" id="settingsPeptide" autocomplete="off" required="" type="text" placeholder="Peptide Sequence1[;Peptide Sequence2]" name="peps" autofocus="">
-												<textarea class="form-control" style="padding-bottom:0px;" id="settingsPeaklist" required="" type="text" placeholder="Peak List [m/z intensity]" name="peaklist"></textarea>
-											</div>
-											<div style="width:68%;display:inline;">
-												<label for="settingsCL"><span class="label btn">Cross-linker mod mass: </span>
-													<input class="form-control" style="margin-right:2%;width:25%" required="" id="settingsCL" placeholder="CL mod mass" name="clModMass" autocomplete="off">
-												</label>
-
-												<label for="settingsPrecursorZ"><span class="label btn">Precursor charge: </span>
-									  				<input class="form-control" style="margin-right:2%;width:15%" required="" id="settingsPrecursorZ" type="number" min="1" placeholder="Charge" name="preCharge" autocomplete="off">
-												</label>
-
-												<label for="settingsIons"><span class="label btn">Ions: </span>
-													<div class="dropdown">
-														<input type="text" class="form-control btn-drop" id="ionSelection" readonly>
-														<div class="dropdown-content mutliSelect">
-															<ul>
-												                <li>
-												                    <label><input type="checkbox" class="ionSelectChkbox" value="peptide" id="PeptideIon" name="ions[]"/>Peptide ion</label></li>
-												                <li>
-												                    <label><input type="checkbox" class="ionSelectChkbox" value="a" id="AIon" name="ions[]"/>A ion</label></li>
-												                <li>
-												                    <label><input type="checkbox" class="ionSelectChkbox" value="b" id="BIon" name="ions[]"/>B ion</label></li>
-												                <li>
-												                    <label><input type="checkbox" class="ionSelectChkbox" value="c" id="CIon" name="ions[]"/>C ion</label></li>
-												                <li>
-												                    <label><input type="checkbox" class="ionSelectChkbox" value="x" id="XIon" name="ions[]"/>X ion</label></li>
-												                <li>
-												                    <label><input type="checkbox" class="ionSelectChkbox" value="y" id="YIon" name="ions[]"/>Y ion</label></li>
-												                <li>
-												                    <label><input type="checkbox" class="ionSelectChkbox" value="z" id="ZIon" name="ions[]"/>Z ion</label></li>
-															</ul>
-														</div>
-													</div>
-												</label>
-				
-												<label for="settingsFragmentation"><span class="label btn">Fragmentation method: </span>
-													<select class="form-control" style="margin-right:2%;width:15%;display:inline;" id="settingsFragmentation" name="fragMethod">
-														<option value="HCD">HCD</option>
-														<option value="CID">CID</option>
-														<option value="ETD">ETD</option>
-														<option value="ETciD">ETciD</option>
-														<option value="EThcD">EThcD</option>
-													</select>
-												</label>
-
-												<label for="settingsTolerance"><span class="label btn">MS2 tolerance: </span>
-													<input class="form-control" style="margin-right:2%;width:15%;display:inline;" required="" id="settingsTolerance" type="number" min="0" step="0.1" placeholder="Tolerance" name="ms2Tol" autocomplete="off">
-													<select class="form-control" style="margin-right:2%;width:15%;display:inline;" required="" id="settingsToleranceUnit" name="tolUnit">
-														<option value="ppm">ppm</option> 
-														<option value="Da">Da</option>
-													</select>									
-												</label>
-											</div>
-											</div>
-											<div style="margin-bottom:2%;">
-												<div class="form-control" style="height:auto" id="myMods">
-												<div id="modificationTable_wrapper" class="dataTables_wrapper no-footer"><table id="modificationTable" class="display dataTable no-footer" width="100%" style="text-align: center; width: 100%;" role="grid">
-													<thead>
-														<tr role="row">
-														<th class="sorting_disabled invisible" rowspan="1" colspan="1" style="width: 0px;">Mod-Input</th>
-														<th class="sorting_disabled" rowspan="1" colspan="1" style="width: 206px;">Modification</th>
-														<th class="sorting_disabled" rowspan="1" colspan="1" style="width: 144px;">Mass</th>
-														<th class="sorting_disabled" rowspan="1" colspan="1" style="width: 175px;">Specificity</th></tr>
-													</thead>
-												<tbody><tr class="odd"><td valign="top" colspan="3" class="dataTables_empty">No matching records found</td></tr></tbody></table></div>
-												</div>
-											</div>	
-											<div style="margin-top:10px; text-align: center">
-												<input class="btn btn-1 btn-1a network-control" type="submit" value="Apply" id="settingsApply">
-												<input class="btn btn-1 btn-1a network-control settingsCancel" type="button" value="Cancel" id="settingsCancel">
-											</div>
-										</form>
-									</div>
-						
-								</div> -->
-
-						</div><!-- end settings -->
+							<div class="dynDiv_moveParentDiv">
+								<span class="dynTitle">Settings</span>
+								<i class="fa fa-times-circle closeButton settingsCancel" id="closeSettings"></i>
+							</div>
+							<div class="dynDiv_resizeDiv_tl"></div>
+							<div class="dynDiv_resizeDiv_tr"></div>
+							<div class="dynDiv_resizeDiv_bl"></div>
+							<div class="dynDiv_resizeDiv_br"></div>
+						</div>
 		            	<div id="spectrumControls">
 		            		<i class="fa fa-home fa-xi" onclick="window.location = 'index.php';" title="Home"></i>
 		            		<i class="fa fa-github fa-xi btn-1a" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>
