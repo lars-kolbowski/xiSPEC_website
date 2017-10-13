@@ -7,7 +7,7 @@
 		include("head.php");
 		?>
 		<?php include("xiSPEC_scripts.php");?>
-		<script type="text/javascript" src="./js/PepInputView.js"></script>			
+		<script type="text/javascript" src="./src/PepInputView.js"></script>			
 		<script type="text/javascript" src="./js/PeptideView.js"></script>	
 		<script type="text/javascript" src="./src/PrecursorInfoView.js"></script>	
 		<script type="text/javascript" src="./src/model.js"></script>		

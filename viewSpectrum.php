@@ -168,9 +168,9 @@ else{
         <script type="text/javascript" src="./src/SpectrumView2.js"></script>
         <script type="text/javascript" src="./src/FragmentationKeyView.js"></script>
         <script type="text/javascript" src="./src/PrecursorInfoView.js"></script>
-        <script type="text/javascript" src="./src/SettingsView.js"></script>
+        <script type="text/javascript" src="./src/SpectrumSettingsView.js"></script>
 		<script type="text/javascript" src="./js/PeptideView.js"></script>
-		<script type="text/javascript" src="./js/PepInputView.js"></script>	
+		<script type="text/javascript" src="./src/PepInputView.js"></script>	
         <script type="text/javascript" src="./src/ErrorIntensityPlotView.js"></script>     
         <script type="text/javascript" src="./src/FragKey/KeyFragment.js"></script>
         <script type="text/javascript" src="./src/graph/Graph.js"></script>
@@ -219,7 +219,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
         window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
         window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
         window.ErrorIntensityPlot = new ErrorIntensityPlotView({model: SpectrumModel, el:"#spectrumPanel"});
-		window.SettingsView = new SettingsView({model: SettingsSpectrumModel, el:"#settingsWrapper"});
+		window.SettingsView = new SpectrumSettingsView({model: SettingsSpectrumModel, el:"#settingsWrapper"});
 
 		if(!dbView){
 			SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
