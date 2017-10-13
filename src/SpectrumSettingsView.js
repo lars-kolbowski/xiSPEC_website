@@ -249,8 +249,10 @@ var SpectrumSettingsView = Backbone.View.extend({
 			cache: false,
 			contentType: false,
 			processData: false,
-			success: function (data) {
-				self.model.otherModel.request_annotation(JSON.parse(data));
+			success: function (response) {
+				var json = JSON.parse(response);
+				json['annotation']['custom'] = "LOWRESOLUTION:false\n";	//ToDo: temp fix until new xiAnnotator version is released
+				self.model.otherModel.request_annotation(json);
 				spinner.stop();
 				$('#settingsForm').show();
 			}
@@ -304,7 +306,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 	        "searching":false,
 	        "processing": true,
 	        "serverSide": true,
-	        "ajax": "forms/convertMods.php?peps=",
+	        "ajax": "php/convertModsToJSON.php?peps=",
 	        "columns": [
 	            { "title": "Mod-Input", "data": "id" },
 	        	{ "title": "Modification", "className": "dt-center" },
@@ -367,6 +369,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 								}
 							}
 						}
+						data = data.split(",").join("");
 						return '<input class="form-control" id="modSpec_'+meta.row+'" row="'+meta.row+'" title="amino acids that can be modified" name="modSpecificities[]" type="text" required value='+data+' autocomplete=off>'
 					},
 					"targets": 3,
@@ -409,8 +412,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 	render: function() {
 
 		this.pepInputView.render();
-		//ToDo: convertMods could be changed to pure JS
-		this.modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(this.model.pepStrsMods.join(";"))).load();
+		this.modTable.ajax.url( "php/convertModsToJSON.php?peps="+encodeURIComponent(this.model.pepStrsMods.join(";"))).load();
 		//ions
 		this.model.JSONdata.annotation.ions.forEach(function(ion){
 			$('#'+ion.type).attr('checked', true);

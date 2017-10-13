@@ -90,7 +90,7 @@ $( document ).ready(function() {
         "searching":false,
         "processing": true,
         "serverSide": true,
-        "ajax": "forms/convertMods.php?peps=",
+        "ajax": "php/convertModsToJSON.php?peps=",
         "columns": [
             { "data": "id" },
         	{},
