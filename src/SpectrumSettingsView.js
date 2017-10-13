@@ -17,8 +17,8 @@
 //		authors: Lars Kolbowski
 //
 //
-//		SettingsView.js
-var SettingsView = Backbone.View.extend({
+//		SpectrumSettingsView.js
+var SpectrumSettingsView = Backbone.View.extend({
 
 	events : {
 		'click .settingsTab' : 'changeTab',
