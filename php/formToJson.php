@@ -1,6 +1,6 @@
 <?php
 
-require("../functions.php");
+require("functions.php");
 
 $dbView = FALSE;
 $mods = [];
@@ -66,17 +66,17 @@ foreach ($_POST['ions'] as $iontype) {
 // array_push($ions, array('type' => 'PeptideIon'));
 // if ($method == "HCD" or $method == "CID") {
 //     array_push($ions, array('type' => 'BIon'));
-//     array_push($ions, array('type' => 'YIon')); 
+//     array_push($ions, array('type' => 'YIon'));
 // };
 // if ($method == "EThcD" or $method == "ETciD") {
 //     array_push($ions, array('type' => 'BIon'));
 //     array_push($ions, array('type' => 'CIon'));
 //     array_push($ions, array('type' => 'YIon'));
-//     array_push($ions, array('type' => 'ZIon'));     
+//     array_push($ions, array('type' => 'ZIon'));
 // };
 // if ($method == "ETD") {
 //     array_push($ions, array('type' => 'CIon'));
-//     array_push($ions, array('type' => 'ZIon')); 
+//     array_push($ions, array('type' => 'ZIon'));
 // };
 
 $cl = array('modMass' => $clModMass);
