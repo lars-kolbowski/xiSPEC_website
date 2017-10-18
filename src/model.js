@@ -1,8 +1,16 @@
 var AnnotatedSpectrumModel = Backbone.Model.extend({
 
+	defaults: function() {
+    return {
+      baseDir:  '',
+      JSONdata: false,
+    };
+  },
+
 	initialize: function(){
 		var self = this;
 		this.xiAnnotatorBaseURL = "/xiAnnotator/"	// change to "/xiAnnotator/" for release
+		this.baseDir = this.get('baseDir');
 		this.getKnownModifications();
 		//this.sticky = Array();
 		//this.highlights = Array();
@@ -14,7 +22,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			this.userModifications = [];
 		else
 			this.userModifications = JSON.parse(Cookies.get('customMods'));
-		$.getJSON('json/aaMasses.json', function(data) {         
+		$.getJSON(self.baseDir + 'json/aaMasses.json', function(data) {
     		self.aaMasses = data
 		});
 
@@ -104,7 +112,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 		//change this to SettignsView related call
 		if (window.modTable !== undefined)
-			modTable.ajax.url( "php/convertModsToJSON.php?peps="+encodeURIComponent(this.pepStrsMods.join(";"))).load();
+			modTable.ajax.url( this.baseDir + "php/convertModsToJSON.php?peps="+encodeURIComponent(this.pepStrsMods.join(";"))).load();
 		this.trigger("changed:data");
 		
 		if (this.JSONdata.peaks !== undefined)
@@ -463,7 +471,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			type: "GET",
 			datatype: "json",
 			async: false,
-			url: self.xiAnnotatorBaseURL+"annotate/knownModifications",
+			url: self.xiAnnotatorBaseURL + "annotate/knownModifications",
 			success: function(data) {
 				self.knownModifications = data;
 			},

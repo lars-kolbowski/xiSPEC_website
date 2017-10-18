@@ -182,9 +182,11 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 ?>  
         <script>
 
-    SpectrumModel = new AnnotatedSpectrumModel();
-    SettingsSpectrumModel = new AnnotatedSpectrumModel();
+    SpectrumModel = new AnnotatedSpectrumModel({baseDir: "/xiSPEC/"});
+    SettingsSpectrumModel = new AnnotatedSpectrumModel({baseDir: "/xiSPEC/"});
 
+		SpectrumModel.otherModel = SettingsSpectrumModel;
+		SettingsSpectrumModel.otherModel = SpectrumModel;
     $(function() {
 
 		<?php 
@@ -219,17 +221,17 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
         window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
         window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
         window.ErrorIntensityPlot = new ErrorIntensityPlotView({model: SpectrumModel, el:"#spectrumPanel"});
-		window.SettingsView = new SpectrumSettingsView({model: SettingsSpectrumModel, el:"#settingsWrapper"});
+				window.SettingsView = new SpectrumSettingsView({model: SettingsSpectrumModel, el:"#settingsWrapper"});
 
 		if(!dbView){
 			SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
 			var json_data_copy = jQuery.extend({}, json_data);
-			SpectrumModel.otherModel = SettingsSpectrumModel;
+			//SpectrumModel.otherModel = SettingsSpectrumModel;
 			SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
-			SettingsSpectrumModel.otherModel = SpectrumModel;
+			//SettingsSpectrumModel.otherModel = SpectrumModel;
 			//window.SettingsView.render();
 		}
-		
+
 
 		$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
 			if ($(this).parent().hasClass("disabled")) {
@@ -334,13 +336,13 @@ function loadSpectrum(rowdata){
 			window.SpectrumModel.mzid = mzid;
 			//console.log(window.SpectrumModel.requestId);
 			window.SpectrumModel.request_annotation(json);
-			var json_data_copy = jQuery.extend({}, window.SpectrumModel.JSONdata);
-			var json_req = window.SpectrumModel.get('JSONrequest');
-			window.SpectrumModel.settingsModel = SettingsSpectrumModel;
-			window.SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req, realModel: SpectrumModel}); //JSONrequest necessary?
+			//var json_data_copy = jQuery.extend({}, window.SpectrumModel.JSONdata);
+			//var json_req = window.SpectrumModel.get('JSONrequest');
+			//window.SpectrumModel.settingsModel = SettingsSpectrumModel;
+			//window.SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req, realModel: SpectrumModel}); //JSONrequest necessary?
 
 		}
-	});	 			
+	});
 };
 
 

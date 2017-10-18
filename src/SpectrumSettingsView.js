@@ -242,7 +242,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 		var spinner = new Spinner({scale: 5}).spin (d3.select("#settings_main").node());
 
 		$.ajax({
-			url: "php/formToJson.php",
+			url: self.model.baseDir+"php/formToJson.php",
 			type: 'POST',
 			data: formData,
 			async: false,
@@ -306,7 +306,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 	        "searching":false,
 	        "processing": true,
 	        "serverSide": true,
-	        "ajax": "php/convertModsToJSON.php?peps=",
+	        "ajax": self.model.baseDir + "php/convertModsToJSON.php?peps=",
 	        "columns": [
 	            { "title": "Mod-Input", "data": "id" },
 	        	{ "title": "Modification", "className": "dt-center" },
@@ -412,7 +412,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 	render: function() {
 
 		this.pepInputView.render();
-		this.modTable.ajax.url( "php/convertModsToJSON.php?peps="+encodeURIComponent(this.model.pepStrsMods.join(";"))).load();
+		this.modTable.ajax.url( this.model.baseDir + "php/convertModsToJSON.php?peps="+encodeURIComponent(this.model.pepStrsMods.join(";"))).load();
 		//ions
 		this.model.JSONdata.annotation.ions.forEach(function(ion){
 			$('#'+ion.type).attr('checked', true);
