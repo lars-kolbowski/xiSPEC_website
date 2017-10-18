@@ -259,24 +259,23 @@ var SpectrumSettingsView = Backbone.View.extend({
 		});
 
 		this.model.saveUserModificationsToCookie();
-		return false;	
+		return false;
 
-		//window.SpectrumModel.request_annotation(window.SettingsSpectrumModel.JSONdata);		
+		//window.SpectrumModel.request_annotation(window.SettingsSpectrumModel.JSONdata);
 	},
 
 	checkInputsForValidity: function(formData){
-		
+
 		var invalidChars = function(input, unknownCharPattern){
-			var unknownChars = /([^GALMFWKQESPVICYHRNDTa-z;#0-9]+)/;
 			var match = input.match(unknownCharPattern);
 			if (match){
 				console.log(match);
 				return match;
-			}	
-			return false;	
+			}
+			return false;
 		}
 		//peptideStr
-		if (invalidChars(formData['peps'].value, /([^GALMFWKQESPVICYHRNDTa-z;#0-9]+)/))
+		if (invalidChars(formData['peps'].value, /([^GALMFWKQESPVICYHRNDTa-z;#0-9(.)]+)/))
 			return false
 
 		//peakList
