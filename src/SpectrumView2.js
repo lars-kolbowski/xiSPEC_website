@@ -2,11 +2,11 @@ var SpectrumView = Backbone.View.extend({
 
 	events : {
 		'click #reset' : 'resetZoom',
-		'click #lossyChkBx': 'showLossy',
+// 		'click #lossyChkBx': 'showLossy',
 		'submit #setrange' : 'setrange',
 		'click #lockZoom' : 'lockZoom',
 		'click #clearHighlights' : 'clearHighlights',
-		'change #colorSelector': 'changeColorScheme',
+// 		'change #colorSelector': 'changeColorScheme',
 		'click #measuringTool': 'measuringTool',
 		'click #moveLabels': 'moveLabels',
 		'click #downloadSVG': 'downloadSVG',
@@ -28,6 +28,7 @@ var SpectrumView = Backbone.View.extend({
 		this.listenTo(this.model, 'changed:ColorScheme', this.updateColors);
 		this.listenTo(this.model, 'changed:HighlightColor', this.updateHighlightColors);
 		this.listenTo(this.model, 'changed:Highlights', this.updateHighlights);
+		this.listenTo(this.model, 'changed:lossyShown', this.showLossy);
 		//this.listenTo(this.model, 'destroy', this.remove);
 	},
 
@@ -48,10 +49,7 @@ var SpectrumView = Backbone.View.extend({
 	},
 
 	showLossy: function(e){
-		var $target = $(e.target);
-        var selected = $target .is(':checked');
-        //this.model.lossyShown = selected;
-		this.graph.lossyShown = selected;
+		this.graph.lossyShown = this.model.lossyShown;
 		this.graph.updatePeakLabels();
 	},
 
@@ -130,9 +128,9 @@ var SpectrumView = Backbone.View.extend({
 		this.model.clearStickyHighlights();
 	},
 
-	changeColorScheme: function(e){
-		this.model.changeColorScheme(e.target.value);
-	},
+// 	changeColorScheme: function(e){
+// 		this.model.changeColorScheme(e.target.value);
+// 	},
 
 	updateColors: function(){
 		this.graph.updateColors();
