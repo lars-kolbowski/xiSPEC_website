@@ -24,11 +24,12 @@ var SpectrumSettingsView = Backbone.View.extend({
 		'click .settingsTab' : 'changeTab',
 		'click .settingsCancel' : 'cancel',
 		'change #settingsDecimals' : 'changeDecimals',
+		'change #highlightColor' : 'updateJScolor',
 		'click #settingsCustomCfgApply' : 'applyCustomCfg',
 		'submit #settingsForm' : 'applyData',
 	},
 	initialize: function() {
-		 
+
 		var self = this;
 
 		this.listenTo(this.model, 'change', this.render);
@@ -47,7 +48,7 @@ var SpectrumSettingsView = Backbone.View.extend({
         	;
         });
 
-		var mainDiv = this.wrapper.append("div").attr("id", "settings_main");	
+		var mainDiv = this.wrapper.append("div").attr("id", "settings_main");
 
 		//data ToDo: change to more BBlike data handling
 		var dataTab = mainDiv.append("div").attr("class", "settings-tab").attr("id", "settings_data");
@@ -66,7 +67,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 			.attr("style", "width: 80%; margin-bottom: 1%;")
 		;
 		this.pepInputView = new PepInputView({model: this.model, el: this.peptideViewEl[0] });
-		
+
 		var dataFlexRow = dataFlexColumn.append("div").attr("class", "flex-row");
 
 		var leftDiv = dataFlexRow.append("div").attr("class", "settingsDataLeft");
@@ -79,19 +80,19 @@ var SpectrumSettingsView = Backbone.View.extend({
 			.attr("class", "form-control")
 		;
 
-		var rightDiv = dataFlexRow.append("div").attr("class", "settingsDataRight"); 
+		var rightDiv = dataFlexRow.append("div").attr("class", "settingsDataRight");
 
 		this.crossLinkerModMass = rightDiv.append("label").text("Cross-linker mod mass: ")
 			.append("input").attr("placeholder", "CL mod mass").attr("autocomplete", "off").attr("name", "clModMass").attr("required", "").attr("type", "text").attr("style", "width: 150px;")
-		;											
+		;
 
 		this.precursorZ = rightDiv.append("label").text("Precursor charge state: ")
 			.append("input").attr("type", "number").attr("placeholder", "Charge").attr("autocomplete", "off").attr("name", "preCharge").attr("min", "1").attr("required", "").attr("style", "width: 70px")
-		;			
+		;
 
 		var ionSelector = rightDiv.append("label").text("Fragment Ions: ")
 			.append("div").attr("class", "dropdown")
-		;	
+		;
 		ionSelector.append("input")
 			.attr("type", "text")
 			.attr("class", "btn-drop")
@@ -162,7 +163,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 		var colorSchemeSelector = appearanceTab.append("label").attr("class", "btn").text("Color scheme: ")
 			.append("select").attr("id", 'colorSelector').attr("class", 'form-control')
-		;     
+		;
 		var colOptions = [
 			{value: "RdBu", text: "Red & Blue"},
 			{value: "BrBG", text: "Brown & Teal"},
@@ -179,17 +180,17 @@ var SpectrumSettingsView = Backbone.View.extend({
 		;
 
         var highlightColorSelector = appearanceTab.append("label").attr("class", "btn").text("Highlight Color: ")
-        	.append("input").attr("class", "jscolor").attr("id", "highlightColor").attr("value", "#FFFF00").attr("type", "text").attr("onchange", "updateJScolor(this.jscolor);")
+        	.append("input").attr("class", "jscolor").attr("id", "highlightColor").attr("value", "#FFFF00").attr("type", "text")
         ;
         jscolor.installByClassName("jscolor");
 
 		var lossyChkBx = appearanceTab.append("label").attr("class", "btn").text("Show neutral loss labels")
 			.append("input").attr("type", "checkbox").attr("id", "lossyChkBx")
-		;     
+		;
 
 		this.decimals = appearanceTab.append("label").attr("class", "btn").text("Number of decimals to display: ")
 			.append("input").attr("type", "number").attr("id", "settingsDecimals").attr("min", "1").attr("max", "10").attr("autocomplete", "off").attr("style", "width: 60px;")
-		;     
+		;
 
 
         //custom config
@@ -290,7 +291,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 		//ms2Tolerance
 		if (invalidChars(formData['ms2Tol'].value, /([^0-9\.]+)/))
 			return false
-		
+
 
 		return true;
 
@@ -357,14 +358,14 @@ var SpectrumSettingsView = Backbone.View.extend({
 								var found = true;
 							}
 						}
-						if (!found){				
+						if (!found){
 							for (var i = 0; i < self.model.knownModifications['modifications'].length; i++) {
-								if(self.model.knownModifications['modifications'][i].id == row.id){						
+								if(self.model.knownModifications['modifications'][i].id == row.id){
 									data = data.split(",");
 									data = _.union(data, self.model.knownModifications['modifications'][i].aminoAcids);
 									data.sort();
 									data = data.join("");
-									
+
 								}
 							}
 						}
@@ -422,7 +423,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 		});
 		$('#ionSelection').val(ionSelectionArr.join(", "));
 
-		this.peaklist[0][0].value = this.model.peaksToMGF(); 
+		this.peaklist[0][0].value = this.model.peaksToMGF();
 		this.precursorZ[0][0].value  = this.model.JSONdata.annotation.precursorCharge;
 		this.toleranceValue[0][0].value  = parseInt(this.model.JSONdata.annotation.fragementTolerance);
 		this.toleranceUnit[0][0].value = this.model.JSONdata.annotation.fragementTolerance.split(" ")[1];
@@ -449,10 +450,12 @@ var SpectrumSettingsView = Backbone.View.extend({
 		$('#settings_'+activeTab).show();
 	},
 
-	updateJScolor: function(jscolor) {
-		this.model.changeHighlightColor('#' + jscolor);
+	updateJScolor: function(event) {
+		var color = '#' + event.originalEvent.srcElement.value;
+		//for now change color of model directly
+		//ToDo: Maybe change this also to apply/cancel and/or put in reset to default values
+		this.model.otherModel.changeHighlightColor( color );
 	},
 
 
 });
-
