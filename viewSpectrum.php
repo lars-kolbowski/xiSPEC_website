@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require("functions.php");
+require("php/functions.php");
 
 if(isset($_GET['db']) && !empty($_GET['db']))
 	require("php/logAccess.php");
@@ -78,17 +78,17 @@ else{
 	// array_push($ions, array('type' => 'PeptideIon'));
 	// if ($method == "HCD" or $method == "CID") {
 	//     array_push($ions, array('type' => 'BIon'));
-	//     array_push($ions, array('type' => 'YIon')); 
+	//     array_push($ions, array('type' => 'YIon'));
 	// };
 	// if ($method == "EThcD" or $method == "ETciD") {
 	//     array_push($ions, array('type' => 'BIon'));
 	//     array_push($ions, array('type' => 'CIon'));
 	//     array_push($ions, array('type' => 'YIon'));
-	//     array_push($ions, array('type' => 'ZIon'));     
+	//     array_push($ions, array('type' => 'ZIon'));
 	// };
 	// if ($method == "ETD") {
 	//     array_push($ions, array('type' => 'CIon'));
-	//     array_push($ions, array('type' => 'ZIon')); 
+	//     array_push($ions, array('type' => 'ZIon'));
 	// };
 
 	$cl = array('modMass' => $clModMass);
@@ -170,8 +170,8 @@ else{
         <script type="text/javascript" src="./src/PrecursorInfoView.js"></script>
         <script type="text/javascript" src="./src/SpectrumSettingsView.js"></script>
 		<script type="text/javascript" src="./js/PeptideView.js"></script>
-		<script type="text/javascript" src="./src/PepInputView.js"></script>	
-        <script type="text/javascript" src="./src/ErrorIntensityPlotView.js"></script>     
+		<script type="text/javascript" src="./src/PepInputView.js"></script>
+        <script type="text/javascript" src="./src/ErrorIntensityPlotView.js"></script>
         <script type="text/javascript" src="./src/FragKey/KeyFragment.js"></script>
         <script type="text/javascript" src="./src/graph/Graph.js"></script>
         <script type="text/javascript" src="./src/graph/Peak.js"></script>
@@ -179,7 +179,7 @@ else{
 <?php if($dbView)
 echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		<script type="text/javascript" src="./js/altListTable.js"></script>';
-?>  
+?>
         <script>
 
     SpectrumModel = new AnnotatedSpectrumModel({baseDir: "/xiSPEC/"});
@@ -189,7 +189,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		SettingsSpectrumModel.otherModel = SpectrumModel;
     $(function() {
 
-		<?php 
+		<?php
 			if($dbView){
 				echo 'window.dbView = true;';
 			}
@@ -197,7 +197,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 				echo 'window.dbView = false;';
 	        	echo 'var json_data = '.$response.';';
         		echo 'var json_req = '.$postJSON.';';
-			} 
+			}
 		?>
 
 		if(dbView){
@@ -210,7 +210,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
         	$("#topDiv-overlay").css("z-index", -1);
 			$('#dbControls').hide();
 			$('#bottomDiv').hide();
-			$('#altDiv').hide();		
+			$('#altDiv').hide();
 		}
 
 
@@ -298,7 +298,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 						$('#saveModal_content').html("<p>Dataset was successfully saved!</p><p>URL for access: <input type='text' value='"+response.url+"' readonly style='width: 70%; font-size: 1em; color: #000;' onClick='this.select();'></p>");
 					console.log(response);
 				}
-			});	
+			});
 		});
 
 
@@ -313,7 +313,7 @@ function loadSpectrum(rowdata){
 	$("#altListId").html("Alternatives for "+rowdata['mzid']);
 
 	if(rowdata['alt_count'] > 1){
-		
+
 		$('#nav-altListTable').removeClass('disabled');
 		$('#altExpNum').text("(" + rowdata['alt_count'] + ")");
 		window.altListTable.ajax.url( "php/getAltList.php?id=" + mzid).load();
@@ -352,9 +352,9 @@ function loadSpectrum(rowdata){
     <body>
         <!-- Main -->
         <div id="mainView">
-			
+
             <div class="mainContent">
-           
+
             	 <div id="topDiv"><!--style="height: calc(60% - 5px);">-->
             	 <div class="overlay" id="topDiv-overlay"></div>
 	                <div id="spectrumPanel">
@@ -382,7 +382,7 @@ function loadSpectrum(rowdata){
 		            			<input type="text" id="xleft" size="7" title="m/z range from:">
 		            			<span>-</span>
 		            			<input type="text" id="xright" size="7" title="m/z range to:">
-		            			<input type="submit" id="rangeSubmit" value="Set" class="btn btn-1 btn-1a" style="display: none;">            			
+		            			<input type="submit" id="rangeSubmit" value="Set" class="btn btn-1 btn-1a" style="display: none;">
 		            			<span id="range-error"></span>
 		            			<button id="reset" title="Reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
 		            			<input id="lockZoom" type="checkbox" style="visibility: hidden;">
@@ -390,13 +390,13 @@ function loadSpectrum(rowdata){
 		            		<button id="toggleView" title="Toggle between quality control/spectrum view" class="btn btn-1 btn-1a">QC</button>
 		    				<button id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav">&#9881;</button>
 		    				<span id="dbControls">
-		    					
+
 		    					<?php if(!isset($_SESSION['db'])) echo '<button id="saveDB" title="Save" class="btn btn-1a btn-topNav">&#x1f4be;</button> '?>
 								<button id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav">&#x2039;</button>
 								<button id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav">&#9776;</button>
 								<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav">&#x203A;</button>
-							</span>         		
-		            	</div> 
+							</span>
+		            	</div>
 	                    <div class="heightFill">
 	                        <svg id="spectrumSVG"></svg>
 	                        <div id="measureTooltip"></div>
@@ -432,7 +432,7 @@ function loadSpectrum(rowdata){
 					</div>
 				</div> -->
 				<div id="bottomDiv" class="tableDiv">
-				<i class="fa fa-times-circle closeButton closeTable" id="specListClose"></i> 
+				<i class="fa fa-times-circle closeButton closeTable" id="specListClose"></i>
 
 					<ul class="nav nav-tabs">
 						<li class="active">
