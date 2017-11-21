@@ -68,16 +68,13 @@
 }
 
 .settingsDataLeft{
-    /* margin-bottom: 30px; */
-    /* width: 40%; */
     display: inline;
     margin-right: 2%;
-    /* float: left; */
-    flex-grow: 3;
+    flex-grow: 5;
+    flex-basis: 60%;
 }
 
 .settingsDataRight{
-    /* width: 100%; */
     flex-grow: 1;
 }
 #modificationTable_wrapper{
@@ -91,9 +88,9 @@
 }
 
 #settingsCustomCfg-input{
-  height: 100px;
-  width: 75%;
-  margin: 0px 20% 0px 6px;
+  height: 440px;
+  width: 100%;
+  /* margin: 0px 20% 0px 6px; */
 }
 
 #settings {
