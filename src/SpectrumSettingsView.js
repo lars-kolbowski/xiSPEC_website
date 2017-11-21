@@ -231,7 +231,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 	changeDecimals: function(){
 		var model = this.model.otherModel; //apply changes directly for now
-		model.otherModel.showDecimals = parseInt(this.decimals[0][0].value);
+		model.showDecimals = parseInt(this.decimals[0][0].value);
 	},
 
 	applyCustomCfg: function(){
