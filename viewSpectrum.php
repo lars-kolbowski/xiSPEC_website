@@ -137,20 +137,21 @@ else{
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>xiSPEC</title>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <meta name="description" content="common platform for downstream analysis of CLMS data" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<link rel="icon" type="image/ico" href="images/logos/favicon.ico">
-		<link rel="stylesheet" href="./css/style.css" />
-        <link rel="stylesheet" href="./css/style2.css" />
-        <link rel="stylesheet" href="./css/tooltip.css">
-        <link rel="stylesheet" href="./css/spectrumViewWrapper.css">
-        <link rel="stylesheet" href="./css/validationPage.css">
-        <link rel="stylesheet" href="./css/dropdown.css">
+	<head>
+		<title>xiSPEC</title>
+			<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+			<meta name="description" content="common platform for downstream analysis of CLMS data" />
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<meta name="apple-mobile-web-app-capable" content="yes">
+			<meta name="apple-mobile-web-app-status-bar-style" content="black">
+			<link rel="icon" type="image/ico" href="images/logos/favicon.ico">
+			<link rel="stylesheet" href="./css/style.css" />
+			<link rel="stylesheet" href="./css/style2.css" />
+			<link rel="stylesheet" href="./css/settings.css" />
+			<link rel="stylesheet" href="./css/tooltip.css">
+			<link rel="stylesheet" href="./css/spectrumViewWrapper.css">
+			<link rel="stylesheet" href="./css/validationPage.css">
+			<link rel="stylesheet" href="./css/dropdown.css">
 		<?php include("xiSPEC_scripts.php");?>
 
         <script type="text/javascript" src="./vendor/jscolor.min.js"></script>
@@ -164,6 +165,7 @@ else{
 		<script type="text/javascript" src="./vendor/dataTables.bootstrap.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
         <!-- Spectrum view .js files -->
+				<script type="text/javascript" src="./js/app.js"></script>
         <script type="text/javascript" src="./src/model.js"></script>
         <script type="text/javascript" src="./src/SpectrumView2.js"></script>
         <script type="text/javascript" src="./src/FragmentationKeyView.js"></script>
@@ -241,10 +243,6 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		});
 
 		//settings panel - put into extra view
-
-		$('#toggleSettings').click(function(){
-			$('#settingsWrapper').toggle();
-		});
 
 		$('.closeTable').click(function(){
 			$(this).closest('.tableDiv').hide();
@@ -364,10 +362,10 @@ function loadSpectrum(rowdata){
 								<span class="dynTitle">Settings</span>
 								<i class="fa fa-times-circle closeButton settingsCancel" id="closeSettings"></i>
 							</div>
-							<div class="dynDiv_resizeDiv_tl"></div>
-							<div class="dynDiv_resizeDiv_tr"></div>
-							<div class="dynDiv_resizeDiv_bl"></div>
-							<div class="dynDiv_resizeDiv_br"></div>
+							<div class="dynDiv_resizeDiv_tl draggableCorner"></div>
+							<div class="dynDiv_resizeDiv_tr draggableCorner"></div>
+							<div class="dynDiv_resizeDiv_bl draggableCorner"></div>
+							<div class="dynDiv_resizeDiv_br draggableCorner"></div>
 						</div>
 		            	<div id="spectrumControls">
 		            		<i class="fa fa-home fa-xi" onclick="window.location = 'index.php';" title="Home"></i>

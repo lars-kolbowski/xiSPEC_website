@@ -1,3 +1,5 @@
+var CLMSUI = CLMSUI || {};
+
 var SpectrumView = Backbone.View.extend({
 
 	events : {
@@ -11,6 +13,7 @@ var SpectrumView = Backbone.View.extend({
 		'click #moveLabels': 'moveLabels',
 		'click #downloadSVG': 'downloadSVG',
 		'click #toggleView' : 'toggleView',
+		'click #toggleSettings' : 'toggleSettings'
 	  },
 
 	initialize: function() {
@@ -84,7 +87,7 @@ var SpectrumView = Backbone.View.extend({
 			$('#xright').prop('disabled', true);
 			this.model.lockZoom = true;
 			this.graph.disableZoom();
-		} else { 
+		} else {
 			$('#lock')[0].innerHTML = "&#128275";
 			$('#rangeSubmit').prop('disabled', false);
 			$('#xleft').prop('disabled', false);
@@ -124,6 +127,12 @@ var SpectrumView = Backbone.View.extend({
 		}
 	},
 
+	toggleSettings: function(event){
+		event.stopPropagation();
+		CLMSUI.vent.trigger('spectrumSettingsToggle', true);
+
+	},
+
 	clearHighlights: function(){
 		this.model.clearStickyHighlights();
 	},
@@ -147,7 +156,7 @@ var SpectrumView = Backbone.View.extend({
 		for(p = 0; p < peaks.length; p++){
 			if(peaks[p].fragments.length > 0)
 				peaks[p].highlight(false);
-			
+
 			var highlightFragments = _.intersection(peaks[p].fragments, this.model.highlights);
 			if(highlightFragments.length != 0){
 				peaks[p].highlight(true, highlightFragments);
@@ -156,7 +165,7 @@ var SpectrumView = Backbone.View.extend({
 		this.graph.updatePeakColors();
 		this.graph.updatePeakLabels();
 	},
-	
+
 	measuringTool: function(e){
 		var $target = $(e.target);
         var selected = $target .is(':checked');
@@ -169,7 +178,7 @@ var SpectrumView = Backbone.View.extend({
 		var $target = $(e.target);
         var selected = $target.is(':checked');
         this.model.moveLabels = selected;
-		
+
 		var peaks = this.graph.points;
 
 		if (selected){
@@ -180,7 +189,7 @@ var SpectrumView = Backbone.View.extend({
 			// 			peaks[p].labels[l].style("cursor", "pointer");
 			// 		}
 			// 	}
-			// }	
+			// }
 			for(p = 0; p < peaks.length; p++){
 				if(peaks[p].labels.length){
 						peaks[p].labels
@@ -196,7 +205,7 @@ var SpectrumView = Backbone.View.extend({
 							.on(".drag", null)
 							//.style("cursor", "default");
 				}
-			}			
+			}
 		}
 
 	},
