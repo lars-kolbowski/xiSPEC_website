@@ -26,19 +26,19 @@ $(function() {
 	        { "title": "id", "data": "mzid" },	//1
 			{ "title": "peptide 1", "data": "pep1" },	//2
 			{ "title": "peptide 2", "data": "pep2" },	//3
-			{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center" },	//4	
+			{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center" },	//4
 			{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center" },	//5
 			{ "title": "charge", "data": "charge", "className": "dt-center" },		//6
 			{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center" },	//7
 			{ "title": "score", "data": "scores", "className": "dt-center" },		//8
-			{ "title": "protein", "data": "protein", "className": "dt-center" },	//9		
+			{ "title": "protein", "data": "protein", "className": "dt-center" },	//9
 			{ "title": "passThreshold", "data": "passThreshold" },	//10
 			{ "title": "alt_count", "data": "alt_count" },		//11
 			{ "title": "dataRef", "data": "file" },				//12
-			{ "title": "scanID", "data": "scanID", "className": "dt-center" },		//13	
+			{ "title": "scanID", "data": "scanID", "className": "dt-center" },		//13
 	        ],
 		"createdRow": function( row, data, dataIndex ) {
-			if ( data['passThreshold'] == 0 )         
+			if ( data['passThreshold'] == 0 )
 				$(row).addClass('red');
 			// if ( data['id'] == window.SpectrumModel.requestId)
 			// 	$(row).addClass("selected");
@@ -54,9 +54,9 @@ $(function() {
 						return 'False';
 					else
 						return 'True';
-				},				
+				},
 				"targets": [ 7 ],
-			},		
+			},
 			{
 				"render": function ( data, type, row, meta ) {
 					var json = JSON.parse(data);
@@ -65,17 +65,17 @@ $(function() {
 						result.push('<span title="'+key+'='+json[key]+'">'+json[key].toFixed(2)+'</span>');
 					}
 					return result.join("; ");
-				},				
+				},
 				"targets": [ 8 ],
-			},				
-			{ 
+			},
+			{
 				"render": function ( data, type, row, meta ) {
 					if (data == -1)
 						return '';
 					else
 						return data;
 				},
-				"searchable": false, 
+				"searchable": false,
 				"targets": [ 4, 5 ]
 			},
 
@@ -87,7 +87,7 @@ $(function() {
 			}
 			window.initSpinner.stop();
 			$("#topDiv-overlay").css("z-index", -1);
-		    window.specListTable.columns( 10 ).search( "1" ).draw();			
+		    window.specListTable.columns( 10 ).search( "1" ).draw();
 		 	loadSpectrum(window.specListTable.rows( { filter : 'applied'} ).data()[0]);
 			firstRow = $('#specListWrapper tr:first-child');
 			$(firstRow).addClass('selected');
@@ -101,16 +101,16 @@ $(function() {
 	$( "<div id='data-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );
 	$("#data-filter").html('Filter: <label class="btn btn-1a"><input id="passThreshold" type="checkbox" checked>passing threshold</label><label class="btn btn-1a"><input id="hideLinear" type="checkbox">hide linear</label><label class="btn btn-1a"><input id="hideDecoy" type="checkbox">hide decoys</label>');
 	$( "<div id='column-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );
-	$("#column-filter").html('<div class="dropdown"><span class="btn btn-1a">Select columns</span><div class="dropdown-content mutliSelect"><ul></ul></div></div>');
+	$("#column-filter").html('<div class="mulitSelect_dropdown"><span class="btn btn-1a">Select columns</span><div class="mulitSelect_dropdown-content mutliSelect"><ul></ul></div></div>');
 
  	specListTable.columns()[0].forEach(function(col){
- 		if (!specListTable.columns().header()[col].classList.contains("invisible")){ 		
+ 		if (!specListTable.columns().header()[col].classList.contains("invisible")){
 	 		var colname =  specListTable.columns().header()[col].innerHTML;
-	 		$("#column-filter .dropdown ul").append('<li><label><input type="checkbox" checked class="toggle-vis" data-column="'+col+'">'+colname+'</label></li>');
- 		}	
+	 		$("#column-filter .mulitSelect_dropdown ul").append('<li><label><input type="checkbox" checked class="toggle-vis" data-column="'+col+'">'+colname+'</label></li>');
+ 		}
  	});
 
-	
+
 	$('div.dataTables_filter input').addClass('form-control');
 
 	//filters TODO: adjust pagination to show current selected one if it is in list
@@ -119,7 +119,7 @@ $(function() {
 		    window.specListTable
 		        .columns( 10 )
 		        .search( "1" )
-		        .draw();				
+		        .draw();
 		}
 		else{
 		    window.specListTable
@@ -134,7 +134,7 @@ $(function() {
 		    window.specListTable
 		        .columns( 3 )
 		        .search( ".+", true, false )
-		        .draw();				
+		        .draw();
 		}
 		else{
 		    window.specListTable
@@ -149,7 +149,7 @@ $(function() {
 		if (this.checked){
 			//column.visible( false );
 			//$(".toggle-vis[data-column='7']").attr("checked", "");
-		    window.specListTable.columns( 7 ).search( "False" ).draw();				
+		    window.specListTable.columns( 7 ).search( "False" ).draw();
 		}
 		else{
 			//column.visible( true );
@@ -162,7 +162,7 @@ $(function() {
 
 		window.specListTable.$('tr.selected').removeClass('selected');
 		$(this).addClass('selected');
-		loadSpectrum(window.specListTable.row(this).data());		
+		loadSpectrum(window.specListTable.row(this).data());
 
 	});
 
