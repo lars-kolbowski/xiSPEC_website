@@ -96,7 +96,9 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 		var rightDiv = dataFlexRow.append("div").attr("class", "settingsDataRight");
 
-		this.crossLinkerModMass = rightDiv.append("label").attr("class", "flex-container").text("Cross-linker mod mass: ").append('div').attr('class', 'flex-grow')
+		this.crossLinkerModMassWrapper = rightDiv.append("label").attr("class", "flex-container").text("Cross-linker mod mass: ");
+
+		this.crossLinkerModMass = this.crossLinkerModMassWrapper.append('div').attr('class', 'flex-grow')
 			.append("input").attr("placeholder", "CL mod mass").attr("autocomplete", "off").attr("name", "clModMass").attr("required", "").attr("type", "text")
 		;
 
@@ -232,6 +234,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 	changeDecimals: function(){
 		var model = this.model.otherModel; //apply changes directly for now
 		model.showDecimals = parseInt(this.decimals[0][0].value);
+		model.trigger('change'); //necessary for PrecursorInfoView update
 	},
 
 	applyCustomCfg: function(){
@@ -449,6 +452,11 @@ var SpectrumSettingsView = Backbone.View.extend({
 		this.toleranceUnit[0][0].value = this.model.JSONdata.annotation.fragementTolerance.split(" ")[1];
 		this.crossLinkerModMass[0][0].value = this.model.JSONdata.annotation['cross-linker'].modMass;
 		this.decimals[0][0].value = this.model.showDecimals;
+		
+		if(this.model.isLinear)
+			$(this.crossLinkerModMassWrapper[0][0]).hide();
+		else
+			$(this.crossLinkerModMassWrapper[0][0]).show();
 	},
 
 	cancel: function(){

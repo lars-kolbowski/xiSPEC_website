@@ -84,6 +84,10 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.pepStrs = [];
 		this.pepStrsMods = [];
 		this.peptides = this.JSONdata.Peptides;
+		if(this.peptides.length == 1)
+			this.isLinear = true;
+		else
+			this.isLinear = false;
 		for(i=0; i < this.peptides.length; i++){
 			this.pepStrs[i] = "";
 			this.pepStrsMods[i] = "";
