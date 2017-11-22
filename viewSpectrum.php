@@ -152,44 +152,47 @@ else{
 			<link rel="stylesheet" href="./css/spectrumViewWrapper.css">
 			<link rel="stylesheet" href="./css/validationPage.css">
 			<link rel="stylesheet" href="./css/dropdown.css">
-		<?php include("xiSPEC_scripts.php");?>
+			<?php include("xiSPEC_scripts.php");?>
 
-        <script type="text/javascript" src="./vendor/jscolor.min.js"></script>
-        <script type="text/javascript" src="./vendor/c3.js"></script>
-        <script type="text/javascript" src="./vendor/split.js"></script>
-        <script type="text/javascript" src="./vendor/svgexp.js"></script>
-        <script type="text/javascript" src="./vendor/spin.js"></script>
-        <script type="text/javascript" src="./vendor/byrei-dyndiv_1.0rc1.js"></script>
-        <script type="text/javascript" src="./vendor/download.js"></script>
-		<script type="text/javascript" src="./vendor/bootstrap/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="./vendor/dataTables.bootstrap.min.js"></script>
-		<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
-        <!-- Spectrum view .js files -->
-				<script type="text/javascript" src="./js/app.js"></script>
-        <script type="text/javascript" src="./src/model.js"></script>
-        <script type="text/javascript" src="./src/SpectrumView2.js"></script>
-        <script type="text/javascript" src="./src/FragmentationKeyView.js"></script>
-        <script type="text/javascript" src="./src/PrecursorInfoView.js"></script>
-        <script type="text/javascript" src="./src/SpectrumSettingsView.js"></script>
-		<script type="text/javascript" src="./js/PeptideView.js"></script>
-		<script type="text/javascript" src="./src/PepInputView.js"></script>
-        <script type="text/javascript" src="./src/ErrorIntensityPlotView.js"></script>
-        <script type="text/javascript" src="./src/FragKey/KeyFragment.js"></script>
-        <script type="text/javascript" src="./src/graph/Graph.js"></script>
-        <script type="text/javascript" src="./src/graph/Peak.js"></script>
-        <script type="text/javascript" src="./src/graph/Fragment.js"></script>
+			<script type="text/javascript" src="./vendor/jscolor.min.js"></script>
+			<script type="text/javascript" src="./vendor/c3.js"></script>
+			<script type="text/javascript" src="./vendor/split.js"></script>
+			<script type="text/javascript" src="./vendor/svgexp.js"></script>
+			<script type="text/javascript" src="./vendor/spin.js"></script>
+			<script type="text/javascript" src="./vendor/byrei-dyndiv_1.0rc1.js"></script>
+			<script type="text/javascript" src="./vendor/download.js"></script>
+			<script type="text/javascript" src="./vendor/bootstrap/js/bootstrap.min.js"></script>
+			<script type="text/javascript" src="./vendor/dataTables.bootstrap.min.js"></script>
+			<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
+
+			<!-- Spectrum view .js files -->
+			<script type="text/javascript" src="./js/app.js"></script>
+			<script type="text/javascript" src="./src/model.js"></script>
+			<script type="text/javascript" src="./src/SpectrumView2.js"></script>
+			<script type="text/javascript" src="./src/FragmentationKeyView.js"></script>
+			<script type="text/javascript" src="./src/PrecursorInfoView.js"></script>
+			<script type="text/javascript" src="./src/SpectrumSettingsView.js"></script>
+			<script type="text/javascript" src="./js/PeptideView.js"></script>
+			<script type="text/javascript" src="./src/PepInputView.js"></script>
+			<script type="text/javascript" src="./src/ErrorIntensityPlotView.js"></script>
+			<script type="text/javascript" src="./src/FragKey/KeyFragment.js"></script>
+			<script type="text/javascript" src="./src/graph/Graph.js"></script>
+			<script type="text/javascript" src="./src/graph/Peak.js"></script>
+			<script type="text/javascript" src="./src/graph/Fragment.js"></script>
 <?php if($dbView)
 echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		<script type="text/javascript" src="./js/altListTable.js"></script>';
 ?>
-        <script>
+			<script>
 
-    SpectrumModel = new AnnotatedSpectrumModel({baseDir: "/xiSPEC/"});
-    SettingsSpectrumModel = new AnnotatedSpectrumModel({baseDir: "/xiSPEC/"});
+		var model_vars = {baseDir: "/xiSPEC/", xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/"};
+
+		SpectrumModel = new AnnotatedSpectrumModel(model_vars);
+		SettingsSpectrumModel = new AnnotatedSpectrumModel(model_vars);
 
 		SpectrumModel.otherModel = SettingsSpectrumModel;
 		SettingsSpectrumModel.otherModel = SpectrumModel;
-    $(function() {
+		$(function() {
 
 		<?php
 			if($dbView){
@@ -197,8 +200,8 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			}
 			else{
 				echo 'window.dbView = false;';
-	        	echo 'var json_data = '.$response.';';
-        		echo 'var json_req = '.$postJSON.';';
+				echo 'var json_data = '.$response.';';
+				echo 'var json_req = '.$postJSON.';';
 			}
 		?>
 
@@ -208,22 +211,22 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			window.initSpinner = new Spinner({scale: 5}).spin (d3.select("#topDiv").node());
 		}
 		else{
-        	console.log(json_req);
-        	$("#topDiv-overlay").css("z-index", -1);
+			console.log(json_req);
+			$("#topDiv-overlay").css("z-index", -1);
 			$('#dbControls').hide();
 			$('#bottomDiv').hide();
 			$('#altDiv').hide();
 		}
 
 
-        _.extend(window, Backbone.Events);
-        window.onresize = function() { window.trigger('resize') };
+		_.extend(window, Backbone.Events);
+		window.onresize = function() { window.trigger('resize') };
 
-        window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumPanel"});
-        window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
-        window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
-        window.ErrorIntensityPlot = new ErrorIntensityPlotView({model: SpectrumModel, el:"#spectrumPanel"});
-				window.SettingsView = new SpectrumSettingsView({model: SettingsSpectrumModel, el:"#settingsWrapper"});
+		window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumPanel"});
+		window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
+		window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
+		window.ErrorIntensityPlot = new ErrorIntensityPlotView({model: SpectrumModel, el:"#spectrumPanel"});
+		window.SettingsView = new SpectrumSettingsView({model: SettingsSpectrumModel, el:"#settingsWrapper"});
 
 		if(!dbView){
 			SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
