@@ -7,13 +7,13 @@
 		include("head.php");
 		?>
 		<?php include("xiSPEC_scripts.php");?>
-		<script type="text/javascript" src="./src/PepInputView.js"></script>			
-		<script type="text/javascript" src="./js/PeptideView.js"></script>	
-		<script type="text/javascript" src="./src/PrecursorInfoView.js"></script>	
-		<script type="text/javascript" src="./src/model.js"></script>		
+		<script type="text/javascript" src="./src/PepInputView.js"></script>
+		<script type="text/javascript" src="./js/PeptideView.js"></script>
+		<script type="text/javascript" src="./src/PrecursorInfoView.js"></script>
+		<script type="text/javascript" src="./src/model.js"></script>
 		<script type="text/javascript" src="./js/upload.js"></script>
         <script type="text/javascript" src="./vendor/spin.js"></script>
-		
+
 		<script src="vendor/jQueryFileUploadMin/jquery.ui.widget.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.iframe-transport.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.fileupload.js"></script>
@@ -94,9 +94,9 @@
 							  		</span>
 						  		</div>
 
-								<div class="dropdown" style="margin-right:2%;">
+								<div class="mulitSelect_dropdown" style="margin-right:2%;">
 									<input type="text" class="form-control btn-drop" id="ionSelection" title="fragment ion types" value="Select ions..." readonly>
-									<div class="dropdown-content mutliSelect">
+									<div class="mulitSelect_dropdown-content mutliSelect">
 										<ul>
 							                <li>
 							                    <label><input type="checkbox" class="ionSelectChkbox" value="peptide" id="PeptideIon" name="ions[]" />Peptide ion</label></li>
@@ -128,7 +128,7 @@
 								<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myTolerance" title="error tolerance" type="number" min="0" step="0.1" placeholder="Tolerance" name="ms2Tol" autocomplete="off">
 
 								<select class="form-control" style="margin-right:2%;width:13%;display:inline;" required id="myToleranceUnit" title="error tolerance unit" name="tolUnit">
-									<option value="ppm">ppm</option> 
+									<option value="ppm">ppm</option>
 									<option value="Da">Da</option>
 								</select>
 							</section>
@@ -145,14 +145,14 @@
 									</thead>
 								</table>
 								</div>
-							</section>	
+							</section>
 							<div class="page-header center" style="background-color: #555;margin-top:30px;">
 								<input class="btn btn-1 btn-1a network-control" type="submit" value="View Spectrum" id="mybutton3">
 							    <input class="btn btn-1 btn-1a network-control" type="button" value="Example" onclick="doExample(); return false;" id="mybutton2">
 								<input class="btn btn-1 btn-1a network-control" type="button" value="Reset" onclick="doClearForm();" id="mybutton1">
 							</div>
-						</form>	
-					</div>							
+						</form>
+					</div>
 				</div>
 			</section>
 		</div> <!-- MAIN -->
@@ -182,7 +182,7 @@
 		<div class="overlay" style="z-index: -1; visibility: hidden;"></div>
 
         <script type="text/javascript">
-     	<?php echo "var example = ".($_GET['v'] == "example" ? 'true' : 'false');?>   	
+     	<?php echo "var example = ".($_GET['v'] == "example" ? 'true' : 'false');?>
         	$( document ).ready(function() {
         		if (example)
         			doExample();
