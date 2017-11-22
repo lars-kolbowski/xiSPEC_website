@@ -7,6 +7,8 @@ import sqlite3
 import os
 import shutil
 import logging
+import ntpath
+
 
 dev = False
 
@@ -18,8 +20,6 @@ else:
 logging.basicConfig(filename=logDir, level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger = logging.getLogger(__name__)
-
-import ntpath
 
 
 def path_leaf(path):
@@ -101,7 +101,7 @@ def get_peaklist_from_mzml(scan):
     else:
         peaks = scan.centroidedPeaks
 
-    return [{"mz": peak[0], "intensity": peak[1]} for peak in peaks]
+    return [{"mz": peak[0], "intensity": peak[1]} for peak in peaks if peak[1] > 0]
 
 
 def mzid_to_json(item, mzidreader):
