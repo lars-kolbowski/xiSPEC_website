@@ -1,20 +1,8 @@
-
-#settings {
-    position: absolute;
-    top: 20%;
-    left: 20%;
-}
-
-#ionSelection {
-    background-color: #FFF;
-    color: #333;
-}
-
-.dropdown {
+.mulitSelect_dropdown {
     display:inline-block;
 }
 
-.dropdown-content {
+.mulitSelect_dropdown-content {
     display: none;
     position: absolute;
     background-color: #750000;
@@ -25,37 +13,38 @@
     border: 1px solid #fff;
     box-shadow: 5px 5px 3px rgba(0,0,0,0.5);
     z-index: 5000;
+    margin-top: -6px;
 }
-.dropdown-content li{
+.mulitSelect_dropdown-content li{
     line-height: 1.2;
 }
-.dropdown:hover .dropdown-content {
+.mulitSelect_dropdown:hover .mulitSelect_dropdown-content {
     display: block;
 }
 
-.dropdown .menuTitle:hover {
+.mulitSelect_dropdown .menuTitle:hover {
     color: #091D42;
     background: #fff;
 }
 
-.dropdown DIV UL {
+.mulitSelect_dropdown DIV UL {
     list-style-type: none;
-    padding: 0 10px;
+    padding: 0 5px;
     margin: 2px;
 }
 
-.dropdown label {
+.mulitSelect_dropdown label {
     cursor: pointer;
     display: block;
 }
 
-.dropdown DIV LI:hover {
+.mulitSelect_dropdown DIV LI:hover {
     color: #091D42;
     background: #fff;
     cursor: pointer;
 }
 
-.dropdown DIV HR {
+.mulitSelect_dropdown DIV HR {
     border: none;
     border-top: 1px dotted white;
     margin: 0;

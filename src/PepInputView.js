@@ -1,5 +1,5 @@
 var PepInputView = Backbone.View.extend({
-  
+
   events: {
     "input":  "contentChanged",
     //"keyup": "contentChanged",
@@ -10,23 +10,57 @@ var PepInputView = Backbone.View.extend({
   },
 
   contentChanged: function(e) {
-    var pep = this.el.value;
-    var self = this;
-    //update model with input data
-    $.post( "./forms/convertPeps.php", {peps: pep}).done(function( data ) {
-      var newJSON = JSON.parse(data);
+    var pepStrs = this.el.value.split(";");
 
-      if (self.model.JSONdata !== undefined && self.model.JSONdata !== null){
-        self.model.JSONdata.Peptides = newJSON.Peptides;
-        self.model.JSONdata.LinkSite = newJSON.LinkSite;
-        self.model.trigger("change:JSONdata");       
+    var peptides = [];
+    var linkSites = [];
+
+    for (var i = 0; i < pepStrs.length; i++) {
+
+      var pep_noMods = pepStrs[i].replace(/([^#0-9])([().a-z0-9]+)/g, '$1');
+
+      //linkSite
+      var cl_re = /#([0-9]+)?/g;
+      while ((match = cl_re.exec(pep_noMods)) != null) {
+        var clIndex = match[1] === undefined ? 0 : match[1];
+        var linkSite = {'id': clIndex, 'peptideId': i, 'linkSite': match.index-1};
+        linkSites.push(linkSite);
       }
-      else
-        self.model.set({JSONdata:newJSON});
 
-      self.model.calcPrecursorMass();
-    });
-    //modTable.ajax.url( "forms/convertMods.php?peps="+encodeURIComponent(pep)).load();
+      //peptide sequence
+      var pepAAseq = pepStrs[i].replace(/[^A-Z]/g, "");
+      var peptide = {'sequence': []};
+      for (var j = 0; j < pepAAseq.length; j++) {
+        peptide['sequence'].push({'aminoAcid': pepAAseq[j], 'Modification': ''});
+      }
+
+      //add in mods
+      var pep_noCL = pepStrs[i].replace(cl_re, "");
+      var modifications = [];
+      var mod_re = /([().a-z0-9]+)/g;
+      var offset = 1;
+      while ((match = mod_re.exec(pep_noCL)) != null) {
+        peptide['sequence'][match.index-offset].Modification = match[1];
+        offset += match[1].length;
+      }
+
+      peptides.push(peptide);
+    }
+
+
+
+    //update model with input data
+
+    if (this.model.JSONdata !== undefined && this.model.JSONdata !== null){
+      this.model.JSONdata.Peptides = peptides;
+      this.model.JSONdata.LinkSite = linkSites;
+      this.model.trigger("change:JSONdata");
+    }
+    else
+      this.model.set({JSONdata: {'Peptides': peptides, 'LinkSite': linkSites} });
+
+    //ToDo: this should be handled inside the model
+    this.model.calcPrecursorMass();
 
   },
 
@@ -52,7 +86,7 @@ var PepInputView = Backbone.View.extend({
 
     var pepsStr = pepStrsArr.join(";");
     if (this.el.value != pepsStr)
-      this.el.value = pepsStr;  
+      this.el.value = pepsStr;
   },
 
 

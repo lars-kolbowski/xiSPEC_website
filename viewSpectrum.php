@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require("functions.php");
+require("php/functions.php");
 
 if(isset($_GET['db']) && !empty($_GET['db']))
 	require("php/logAccess.php");
@@ -78,17 +78,17 @@ else{
 	// array_push($ions, array('type' => 'PeptideIon'));
 	// if ($method == "HCD" or $method == "CID") {
 	//     array_push($ions, array('type' => 'BIon'));
-	//     array_push($ions, array('type' => 'YIon')); 
+	//     array_push($ions, array('type' => 'YIon'));
 	// };
 	// if ($method == "EThcD" or $method == "ETciD") {
 	//     array_push($ions, array('type' => 'BIon'));
 	//     array_push($ions, array('type' => 'CIon'));
 	//     array_push($ions, array('type' => 'YIon'));
-	//     array_push($ions, array('type' => 'ZIon'));     
+	//     array_push($ions, array('type' => 'ZIon'));
 	// };
 	// if ($method == "ETD") {
 	//     array_push($ions, array('type' => 'CIon'));
-	//     array_push($ions, array('type' => 'ZIon')); 
+	//     array_push($ions, array('type' => 'ZIon'));
 	// };
 
 	$cl = array('modMass' => $clModMass);
@@ -137,65 +137,72 @@ else{
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>xiSPEC</title>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <meta name="description" content="common platform for downstream analysis of CLMS data" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<link rel="icon" type="image/ico" href="images/logos/favicon.ico">
-		<link rel="stylesheet" href="./css/style.css" />
-        <link rel="stylesheet" href="./css/style2.css" />
-        <link rel="stylesheet" href="./css/tooltip.css">
-        <link rel="stylesheet" href="./css/spectrumViewWrapper.css">
-        <link rel="stylesheet" href="./css/validationPage.css">
-        <link rel="stylesheet" href="./css/dropdown.css">
-		<?php include("xiSPEC_scripts.php");?>
+	<head>
+		<title>xiSPEC</title>
+			<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+			<meta name="description" content="common platform for downstream analysis of CLMS data" />
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<meta name="apple-mobile-web-app-capable" content="yes">
+			<meta name="apple-mobile-web-app-status-bar-style" content="black">
+			<link rel="icon" type="image/ico" href="images/logos/favicon.ico">
+			<link rel="stylesheet" href="./css/style.css" />
+			<link rel="stylesheet" href="./css/style2.css" />
+			<link rel="stylesheet" href="./css/settings.css" />
+			<link rel="stylesheet" href="./css/tooltip.css">
+			<link rel="stylesheet" href="./css/spectrumViewWrapper.css">
+			<link rel="stylesheet" href="./css/validationPage.css">
+			<link rel="stylesheet" href="./css/dropdown.css">
+			<?php include("xiSPEC_scripts.php");?>
 
-        <script type="text/javascript" src="./vendor/jscolor.min.js"></script>
-        <script type="text/javascript" src="./vendor/c3.js"></script>
-        <script type="text/javascript" src="./vendor/split.js"></script>
-        <script type="text/javascript" src="./vendor/svgexp.js"></script>
-        <script type="text/javascript" src="./vendor/spin.js"></script>
-        <script type="text/javascript" src="./vendor/byrei-dyndiv_1.0rc1.js"></script>
-        <script type="text/javascript" src="./vendor/download.js"></script>
-		<script type="text/javascript" src="./vendor/bootstrap/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="./vendor/dataTables.bootstrap.min.js"></script>
-		<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
-        <!-- Spectrum view .js files -->
-        <script type="text/javascript" src="./src/model.js"></script>
-        <script type="text/javascript" src="./src/SpectrumView2.js"></script>
-        <script type="text/javascript" src="./src/FragmentationKeyView.js"></script>
-        <script type="text/javascript" src="./src/PrecursorInfoView.js"></script>
-        <script type="text/javascript" src="./src/SpectrumSettingsView.js"></script>
-		<script type="text/javascript" src="./js/PeptideView.js"></script>
-		<script type="text/javascript" src="./src/PepInputView.js"></script>	
-        <script type="text/javascript" src="./src/ErrorIntensityPlotView.js"></script>     
-        <script type="text/javascript" src="./src/FragKey/KeyFragment.js"></script>
-        <script type="text/javascript" src="./src/graph/Graph.js"></script>
-        <script type="text/javascript" src="./src/graph/Peak.js"></script>
-        <script type="text/javascript" src="./src/graph/Fragment.js"></script>
+			<script type="text/javascript" src="./vendor/jscolor.min.js"></script>
+			<script type="text/javascript" src="./vendor/c3.js"></script>
+			<script type="text/javascript" src="./vendor/split.js"></script>
+			<script type="text/javascript" src="./vendor/svgexp.js"></script>
+			<script type="text/javascript" src="./vendor/spin.js"></script>
+			<script type="text/javascript" src="./vendor/byrei-dyndiv_1.0rc1.js"></script>
+			<script type="text/javascript" src="./vendor/download.js"></script>
+			<script type="text/javascript" src="./vendor/bootstrap/js/bootstrap.min.js"></script>
+			<script type="text/javascript" src="./vendor/dataTables.bootstrap.min.js"></script>
+			<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
+
+			<!-- Spectrum view .js files -->
+			<script type="text/javascript" src="./js/app.js"></script>
+			<script type="text/javascript" src="./src/model.js"></script>
+			<script type="text/javascript" src="./src/SpectrumView2.js"></script>
+			<script type="text/javascript" src="./src/FragmentationKeyView.js"></script>
+			<script type="text/javascript" src="./src/PrecursorInfoView.js"></script>
+			<script type="text/javascript" src="./src/SpectrumSettingsView.js"></script>
+			<script type="text/javascript" src="./js/PeptideView.js"></script>
+			<script type="text/javascript" src="./src/PepInputView.js"></script>
+			<script type="text/javascript" src="./src/ErrorIntensityPlotView.js"></script>
+			<script type="text/javascript" src="./src/FragKey/KeyFragment.js"></script>
+			<script type="text/javascript" src="./src/graph/Graph.js"></script>
+			<script type="text/javascript" src="./src/graph/Peak.js"></script>
+			<script type="text/javascript" src="./src/graph/Fragment.js"></script>
 <?php if($dbView)
 echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		<script type="text/javascript" src="./js/altListTable.js"></script>';
-?>  
-        <script>
+?>
+			<script>
 
-    SpectrumModel = new AnnotatedSpectrumModel();
-    SettingsSpectrumModel = new AnnotatedSpectrumModel();
+		var model_vars = {baseDir: "/xiSPEC/", xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/"};
 
-    $(function() {
+		SpectrumModel = new AnnotatedSpectrumModel(model_vars);
+		SettingsSpectrumModel = new AnnotatedSpectrumModel(model_vars);
 
-		<?php 
+		SpectrumModel.otherModel = SettingsSpectrumModel;
+		SettingsSpectrumModel.otherModel = SpectrumModel;
+		$(function() {
+
+		<?php
 			if($dbView){
 				echo 'window.dbView = true;';
 			}
 			else{
 				echo 'window.dbView = false;';
-	        	echo 'var json_data = '.$response.';';
-        		echo 'var json_req = '.$postJSON.';';
-			} 
+				echo 'var json_data = '.$response.';';
+				echo 'var json_req = '.$postJSON.';';
+			}
 		?>
 
 		if(dbView){
@@ -204,32 +211,32 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			window.initSpinner = new Spinner({scale: 5}).spin (d3.select("#topDiv").node());
 		}
 		else{
-        	console.log(json_req);
-        	$("#topDiv-overlay").css("z-index", -1);
+			console.log(json_req);
+			$("#topDiv-overlay").css("z-index", -1);
 			$('#dbControls').hide();
 			$('#bottomDiv').hide();
-			$('#altDiv').hide();		
+			$('#altDiv').hide();
 		}
 
 
-        _.extend(window, Backbone.Events);
-        window.onresize = function() { window.trigger('resize') };
+		_.extend(window, Backbone.Events);
+		window.onresize = function() { window.trigger('resize') };
 
-        window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumPanel"});
-        window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
-        window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
-        window.ErrorIntensityPlot = new ErrorIntensityPlotView({model: SpectrumModel, el:"#spectrumPanel"});
+		window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumPanel"});
+		window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
+		window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
+		window.ErrorIntensityPlot = new ErrorIntensityPlotView({model: SpectrumModel, el:"#spectrumPanel"});
 		window.SettingsView = new SpectrumSettingsView({model: SettingsSpectrumModel, el:"#settingsWrapper"});
 
 		if(!dbView){
 			SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
 			var json_data_copy = jQuery.extend({}, json_data);
-			SpectrumModel.otherModel = SettingsSpectrumModel;
+			//SpectrumModel.otherModel = SettingsSpectrumModel;
 			SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
-			SettingsSpectrumModel.otherModel = SpectrumModel;
+			//SettingsSpectrumModel.otherModel = SpectrumModel;
 			//window.SettingsView.render();
 		}
-		
+
 
 		$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
 			if ($(this).parent().hasClass("disabled")) {
@@ -239,10 +246,6 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		});
 
 		//settings panel - put into extra view
-
-		$('#toggleSettings').click(function(){
-			$('#settingsWrapper').toggle();
-		});
 
 		$('.closeTable').click(function(){
 			$(this).closest('.tableDiv').hide();
@@ -296,7 +299,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 						$('#saveModal_content').html("<p>Dataset was successfully saved!</p><p>URL for access: <input type='text' value='"+response.url+"' readonly style='width: 70%; font-size: 1em; color: #000;' onClick='this.select();'></p>");
 					console.log(response);
 				}
-			});	
+			});
 		});
 
 
@@ -311,7 +314,7 @@ function loadSpectrum(rowdata){
 	$("#altListId").html("Alternatives for "+rowdata['mzid']);
 
 	if(rowdata['alt_count'] > 1){
-		
+
 		$('#nav-altListTable').removeClass('disabled');
 		$('#altExpNum').text("(" + rowdata['alt_count'] + ")");
 		window.altListTable.ajax.url( "php/getAltList.php?id=" + mzid).load();
@@ -334,13 +337,13 @@ function loadSpectrum(rowdata){
 			window.SpectrumModel.mzid = mzid;
 			//console.log(window.SpectrumModel.requestId);
 			window.SpectrumModel.request_annotation(json);
-			var json_data_copy = jQuery.extend({}, window.SpectrumModel.JSONdata);
-			var json_req = window.SpectrumModel.get('JSONrequest');
-			window.SpectrumModel.settingsModel = SettingsSpectrumModel;
-			window.SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req, realModel: SpectrumModel}); //JSONrequest necessary?
+			//var json_data_copy = jQuery.extend({}, window.SpectrumModel.JSONdata);
+			//var json_req = window.SpectrumModel.get('JSONrequest');
+			//window.SpectrumModel.settingsModel = SettingsSpectrumModel;
+			//window.SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req, realModel: SpectrumModel}); //JSONrequest necessary?
 
 		}
-	});	 			
+	});
 };
 
 
@@ -350,9 +353,9 @@ function loadSpectrum(rowdata){
     <body>
         <!-- Main -->
         <div id="mainView">
-			
+
             <div class="mainContent">
-           
+
             	 <div id="topDiv"><!--style="height: calc(60% - 5px);">-->
             	 <div class="overlay" id="topDiv-overlay"></div>
 	                <div id="spectrumPanel">
@@ -362,10 +365,10 @@ function loadSpectrum(rowdata){
 								<span class="dynTitle">Settings</span>
 								<i class="fa fa-times-circle closeButton settingsCancel" id="closeSettings"></i>
 							</div>
-							<div class="dynDiv_resizeDiv_tl"></div>
-							<div class="dynDiv_resizeDiv_tr"></div>
-							<div class="dynDiv_resizeDiv_bl"></div>
-							<div class="dynDiv_resizeDiv_br"></div>
+							<div class="dynDiv_resizeDiv_tl draggableCorner"></div>
+							<div class="dynDiv_resizeDiv_tr draggableCorner"></div>
+							<div class="dynDiv_resizeDiv_bl draggableCorner"></div>
+							<div class="dynDiv_resizeDiv_br draggableCorner"></div>
 						</div>
 		            	<div id="spectrumControls">
 		            		<i class="fa fa-home fa-xi" onclick="window.location = 'index.php';" title="Home"></i>
@@ -380,7 +383,7 @@ function loadSpectrum(rowdata){
 		            			<input type="text" id="xleft" size="7" title="m/z range from:">
 		            			<span>-</span>
 		            			<input type="text" id="xright" size="7" title="m/z range to:">
-		            			<input type="submit" id="rangeSubmit" value="Set" class="btn btn-1 btn-1a" style="display: none;">            			
+		            			<input type="submit" id="rangeSubmit" value="Set" class="btn btn-1 btn-1a" style="display: none;">
 		            			<span id="range-error"></span>
 		            			<button id="reset" title="Reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
 		            			<input id="lockZoom" type="checkbox" style="visibility: hidden;">
@@ -388,13 +391,13 @@ function loadSpectrum(rowdata){
 		            		<button id="toggleView" title="Toggle between quality control/spectrum view" class="btn btn-1 btn-1a">QC</button>
 		    				<button id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav">&#9881;</button>
 		    				<span id="dbControls">
-		    					
+
 		    					<?php if(!isset($_SESSION['db'])) echo '<button id="saveDB" title="Save" class="btn btn-1a btn-topNav">&#x1f4be;</button> '?>
 								<button id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav">&#x2039;</button>
 								<button id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav">&#9776;</button>
 								<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav">&#x203A;</button>
-							</span>         		
-		            	</div> 
+							</span>
+		            	</div>
 	                    <div class="heightFill">
 	                        <svg id="spectrumSVG"></svg>
 	                        <div id="measureTooltip"></div>
@@ -430,7 +433,7 @@ function loadSpectrum(rowdata){
 					</div>
 				</div> -->
 				<div id="bottomDiv" class="tableDiv">
-				<i class="fa fa-times-circle closeButton closeTable" id="specListClose"></i> 
+				<i class="fa fa-times-circle closeButton closeTable" id="specListClose"></i>
 
 					<ul class="nav nav-tabs">
 						<li class="active">
