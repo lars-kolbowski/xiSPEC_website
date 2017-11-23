@@ -32,6 +32,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 		'change #highlightColor' : 'updateJScolor',
 		'click #settingsCustomCfgApply' : 'applyCustomCfg',
 		'submit #settingsForm' : 'applyData',
+		'keyup .stepInput' : 'updateStepSize',
 	},
 
 	identifier: "Spectrum Settings",
@@ -139,13 +140,13 @@ var SpectrumSettingsView = Backbone.View.extend({
 		;
 
 		var toleranceWrapper = rightDiv.append("label").attr("class", "flex-container").text("MS2 tolerance: ");
-		this.toleranceValue = toleranceWrapper.append('div').attr('class', 'flex-grow').append("input")
+		this.toleranceValue = toleranceWrapper.append('div').attr('class', 'flex-grow stepInput').append("input")
 			.attr("type", "number")
 			.attr("placeholder", "Error tolerance")
 			.attr("autocomplete", "off")
 			.attr("name", "ms2Tol")
 			.attr("min", "0")
-			.attr("step", "0.1")
+			.attr("step", "1")
 			.attr("required", "")
 		;
 		this.toleranceUnit = toleranceWrapper.append("select")
@@ -372,7 +373,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 						}
 						data = parseFloat(data.toFixed(10).toString());
 						var stepSize = '0.'+'0'.repeat(data.toString().split('.')[1].length - 1) + 1;
-						return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" title="modification mass" name="modMasses[]" type="number" min=0 step="'+stepSize+'" required value='+data+' autocomplete=off>';
+						return '<input class="form-control stepInput" id="modMass_'+meta.row+'" row="'+meta.row+'" title="modification mass" name="modMasses[]" type="number" min=0 step="'+stepSize+'" required value='+data+' autocomplete=off>';
 					},
 					"targets": 2,
 				},
@@ -416,10 +417,6 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 			var mod = {'id': modName, 'mass': modMass, 'aminoAcids': modSpec};
 
-			//update stepsize
-			var stepSize = '0.'+'0'.repeat(modMass.toString().split('.')[1].length - 1) + 1;
-			$('#modMass_'+row).attr('step', stepSize);
-
 			self.model.updateUserModifications(mod, false);
 			displayModified($(this).closest("tr"));
 
@@ -455,7 +452,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 		this.peaklist[0][0].value = this.model.peaksToMGF();
 		this.precursorZ[0][0].value  = this.model.JSONdata.annotation.precursorCharge;
-		this.toleranceValue[0][0].value  = parseInt(this.model.JSONdata.annotation.fragementTolerance);
+		this.toleranceValue[0][0].value  = this.model.JSONdata.annotation.fragementTolerance.split(' ')[0];
 		this.toleranceUnit[0][0].value = this.model.JSONdata.annotation.fragementTolerance.split(" ")[1];
 		this.crossLinkerModMass[0][0].value = this.model.JSONdata.annotation['cross-linker'].modMass;
 		this.decimals[0][0].value = this.model.showDecimals;
@@ -476,6 +473,17 @@ var SpectrumSettingsView = Backbone.View.extend({
 		this.render();
 		// window.SettingsView.render();
 
+	},
+
+	updateStepSize: function(e){
+		var $target = $(e.target);
+		//update stepsize
+		if ($target.val().toString().split('.')[1])
+			var stepSize = '0.'+'0'.repeat($target.val().toString().split('.')[1].length - 1) + 1;
+		else {
+			var stepSize = 1;
+		}
+		$target.attr('step', stepSize);
 	},
 
 	changeTab: function(e) {
