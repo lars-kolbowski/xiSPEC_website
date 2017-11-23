@@ -77,6 +77,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 			.attr("type", "text")
 			.attr("required", "")
 			.attr("autofocus", "")
+			.attr("autocomplete", "off")
 			.attr("placeholder", "Peptide Sequence1[;Peptide Sequence2]")
 			.attr("name", "peps")
 		;
@@ -369,7 +370,9 @@ var SpectrumSettingsView = Backbone.View.extend({
 									data = self.model.knownModifications['modifications'][i].mass;
 							}
 						}
-						return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" title="modification mass" name="modMasses[]" type="number" min=0 step=0.0001 required value='+data+' autocomplete=off>';
+						data = parseFloat(data.toFixed(10).toString());
+						var stepSize = '0.'+'0'.repeat(data.toString().split('.')[1].length - 1) + 1;
+						return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" title="modification mass" name="modMasses[]" type="number" min=0 step="'+stepSize+'" required value='+data+' autocomplete=off>';
 					},
 					"targets": 2,
 				},
@@ -412,6 +415,10 @@ var SpectrumSettingsView = Backbone.View.extend({
 			var modSpec = $('#modSpec_'+row).val();
 
 			var mod = {'id': modName, 'mass': modMass, 'aminoAcids': modSpec};
+
+			//update stepsize
+			var stepSize = '0.'+'0'.repeat(modMass.toString().split('.')[1].length - 1) + 1;
+			$('#modMass_'+row).attr('step', stepSize);
 
 			self.model.updateUserModifications(mod, false);
 			displayModified($(this).closest("tr"));
