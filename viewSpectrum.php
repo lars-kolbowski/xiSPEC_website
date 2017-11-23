@@ -185,7 +185,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 ?>
 			<script>
 
-		var model_vars = {baseDir: "/xiSPEC/", xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/"};
+		var model_vars = {baseDir: "", xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/"};
 
 		SpectrumModel = new AnnotatedSpectrumModel(model_vars);
 		SettingsSpectrumModel = new AnnotatedSpectrumModel(model_vars);
