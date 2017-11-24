@@ -119,9 +119,10 @@ var specListTableView = Backbone.View.extend({
 			 	loadSpectrum(self.DataTable.rows( { filter : 'applied'} ).data()[0]);
 				firstRow = $('#specListWrapper tr:first-child');
 				$(firstRow).addClass('selected');
-				self.initiateTable();
+				// self.initiateTable();
 			},
 			"drawCallback": function( settings ) {
+				// self.hideEmptyColumns();	//hideEmptyColumns very slow
 				//ToDo : change window to SpectrumView ref
 				if (window.Spectrum !== undefined)
 					window.Spectrum.resize();
@@ -159,6 +160,41 @@ var specListTableView = Backbone.View.extend({
 	 	});
 
 		$('div.dataTables_filter input').addClass('form-control');
+	},
+
+	hideEmptyColumns: function(e) {
+
+		if (typeof this.DataTable === 'undefined')
+			return
+
+		var self = this;
+		var selector = this.el;
+		var columnsToHide = [];
+
+		$(selector).find('th').each(function(i) {
+
+			var columnIndex = $(this).index();
+			var rows = $(this).parents('table').find('tr td:nth-child(' + (i + 1) + ')'); //Find all rows of each column
+			var rowsLength = $(rows).length;
+			var emptyRows = 0;
+
+			rows.each(function(r) {
+			if (this.innerHTML == '')
+				emptyRows++;
+			});
+
+			if(emptyRows == rowsLength) {
+				columnsToHide.push(columnIndex); //If all rows in the colmun are empty, add index to array
+			}
+		});
+
+		for(var i=0; i< self.DataTable.columns().header().length; i++) {
+			if(columnsToHide.indexOf(i) != -1)
+				self.DataTable.column(i).visible(false);
+			else
+				self.DataTable.column(i).visible(true);
+// 			self.DataTable.column(columnsToHide[i]).visible(false);
+		}
 	},
 
 	initiateTable: function() {
