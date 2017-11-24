@@ -45,7 +45,7 @@ var PeptideView = Backbone.View.extend({
 		this.listenTo(this.model, 'changed:Highlights', this.updateHighlights);
 		this.listenTo(this.model, 'changed:ColorScheme', this.updateColors);
 		this.listenTo(this.model, 'changed:mass', this.renderInfo);
-		this.listenTo(this.model, 'changed:charge', this.renderInfo);	
+		this.listenTo(this.model, 'changed:charge', this.renderInfo);
 		this.listenTo(window, 'resize', _.debounce(this.resize));
 
 
@@ -168,7 +168,7 @@ var PeptideView = Backbone.View.extend({
 				.attr("stroke", self.model.highlightColour)
 				.attr("stroke-width", 10)
 				.attr("opacity", 0)
-				.style("cursor", "pointer");	
+				.style("cursor", "pointer");
 
 			this.changeCLline = this.CL.append("line")
 				.attr("x1", -1)
@@ -263,8 +263,8 @@ var PeptideView = Backbone.View.extend({
 			console.log(this.annotations);
 
 		    this.drawFragmentationEvents(0);
-			if(this.peptides[1])	
-				this.drawFragmentationEvents(1);	
+			if(this.peptides[1])
+				this.drawFragmentationEvents(1);
 		}*/
 
 	},
@@ -324,7 +324,7 @@ var PeptideView = Backbone.View.extend({
 
 		var pepIndex = 0;
 		peptides.forEach(function(pep){
-			
+
 			var pep_data = []
 			var pos = 0;
 			for (var i = 0; i < pep.sequence.length; i++) {
@@ -343,8 +343,8 @@ var PeptideView = Backbone.View.extend({
 						changeCrossLink();
 					}
 					//if changeMod is active and the mod is from the same peptide and it's a valid modification for this aa
-					//if(self.changeMod !== false && self.validModChange){	
-					if(self.changeMod !== false){	
+					//if(self.changeMod !== false && self.validModChange){
+					if(self.changeMod !== false){
 						changeMod(d);
 					}
 				})
@@ -355,11 +355,11 @@ var PeptideView = Backbone.View.extend({
 
 					if(self.changeCL != false){
 						changeCLHighlight(this, d);
-					};	
+					};
 				})
 			;
 			pepLetterG.append("text")
-				.attr("x", function(d, i){ 
+				.attr("x", function(d, i){
 					return self.xStep * i;
 				})
 				.attr("y", pep.y[0])
@@ -374,9 +374,9 @@ var PeptideView = Backbone.View.extend({
 					if (d.aminoAcid != "#")
 						return d.aminoAcid;
 				})
-			;				
+			;
 			pepLetterG.append("text")
-				.attr("x", function(d, i){ 
+				.attr("x", function(d, i){
 					return self.xStep * i;
 				})
 				.attr("y", pep.y[0])
@@ -409,7 +409,7 @@ var PeptideView = Backbone.View.extend({
 				var pepLetterHighlight = pepLetterG.childNodes[0];
 				var pepLetter = pepLetterG.childNodes[1];
 				pepLetterHighlight.setAttribute("opacity", 1);
-				
+
 				var offset = self.pepoffset[self.changeMod.pepIndex];
 				var highlight = self.modLetterHighlights[self.changeMod.pepIndex][0][self.changeMod.pos-offset];
 				var oldModLetters = self.modLetters[self.changeMod.pepIndex][0][self.changeMod.pos-offset]
@@ -456,13 +456,13 @@ var PeptideView = Backbone.View.extend({
 				var pepLetterHighlight = pepLetterG.childNodes[0];
 				var pepLetter = pepLetterG.childNodes[1];
 				clearHighlights();
-					
+
 				self.CLline.attr("stroke", "grey");
 				// update changeCL to the currently highlighted ones
 				for (var i = 0; i < self.changeCL.length; i++) {
 					if(self.changeCL[i].peptideId == pepLetterData.pepIndex)
 						self.changeCL[i].linkSite = pepLetterData.pos;
-				}						
+				}
 				if (pepLetterData.pepIndex == 0){		//pep1
 					self.changeCLline
 						.attr("x1", pepLetterHighlight.getAttribute("x"))
@@ -490,7 +490,7 @@ var PeptideView = Backbone.View.extend({
 			}
 
 			var modLettersG = pep.group.selectAll("g.modLetterG").data (mod_data);
-			
+
 			var modLetterG = modLettersG.enter()
 				.append('g')
 				.attr('class', "modLetterG")
@@ -498,7 +498,7 @@ var PeptideView = Backbone.View.extend({
 					if (self.changeCL == false){
 						self.CLline.style("cursor", "not-allowed");
 						self.CLlineHighlight.style("cursor", "not-allowed");
-						
+
 						var letters = this.childNodes[1];
 						var highlight = this.childNodes[0];
 						highlight.setAttribute("style","font-size:0.7em; cursor:default;");
@@ -515,7 +515,7 @@ var PeptideView = Backbone.View.extend({
 				})
 			;
 			modLetterG.append("text")
-				.attr("x", function(d){ 
+				.attr("x", function(d){
 					return self.xStep * d.pos;
 				})
 				.attr("class", "modLetterHighlight")
@@ -527,9 +527,9 @@ var PeptideView = Backbone.View.extend({
 				.text(function(d){ return d.mod; })
 				.attr("stroke-width", "2px")
 				.attr("opacity", 0)
-			;				
+			;
 			modLetterG.append("text")
-				.attr("x", function(d){ 
+				.attr("x", function(d){
 					return self.xStep * d.pos;
 				})
 				.attr("class", "modLetter")
@@ -577,7 +577,7 @@ var PeptideView = Backbone.View.extend({
 			this.colorLetters(this.model.highlights);
 		}
 
-		else{	
+		else{
 			var color = true;
 			for(i = 1; i < this.model.highlights.length; i++){
 				if(this.model.highlights[i].range != this.model.highlights[i-1].range)
@@ -615,7 +615,7 @@ var PeptideView = Backbone.View.extend({
 				this.greyLetters();
 				this.colorLetters(this.model.highlights);
 			}
-		}	
+		}
 	},
 
 	greyLetters: function(){
@@ -625,7 +625,7 @@ var PeptideView = Backbone.View.extend({
 				if (this.pepLetters[i][j])
 					this.pepLetters[i][j].attr("fill", this.model.lossFragBarColour);
 				if (this.modLetters[i][j])
-					this.modLetters[i][j].attr("fill", this.model.lossFragBarColour);				
+					this.modLetters[i][j].attr("fill", this.model.lossFragBarColour);
 			}
 		}
 	},
@@ -635,7 +635,7 @@ var PeptideView = Backbone.View.extend({
 		if (fragments == "all"){
 			color(0, this.model.p1color, 0, this.pepLetters[0].length);
 			if(this.peptides[1])
-				color(1, this.model.p2color, 0, this.pepLetters[1].length);			
+				color(1, this.model.p2color, 0, this.pepLetters[1].length);
 		}
 		else{
 			for (var f = 0; f < fragments.length; f++) {
@@ -646,7 +646,7 @@ var PeptideView = Backbone.View.extend({
 						color(1, this.model.p2color, fragments[f].range[i].from, fragments[f].range[i].to+1);
 				};
 			};
-		}	
+		}
 
 		function color(pep, pepColor, start, end){
 			start += self.pepoffset[pep];
@@ -656,7 +656,7 @@ var PeptideView = Backbone.View.extend({
 					self.pepLetters[pep][i].attr("fill", pepColor);
 				if (self.modLetters[pep][i])
 					self.modLetters[pep][i].attr("fill", pepColor);
-			}	
+			}
 		}
 	},
 
@@ -677,10 +677,12 @@ var PeptideView = Backbone.View.extend({
 
 	resize: function(){
 		this.fragKeyWrapper.attr("transform", "scale(1)");
-	    var parentDivWidth = $(this.el).width();
-	    var fragKeyWidth = $(".fragKey")[0].getBBox().width;
+		var parentDivWidth = $(this.el).width();
+		if (parentDivWidth < 0)
+			return
+		var fragKeyWidth = $(".fragKey")[0].getBBox().width;
 		var i = 1;
-		while (parentDivWidth < fragKeyWidth+15){
+		while (parentDivWidth < fragKeyWidth+15 && i < 30){
 			this.fragKeyWrapper.attr("transform", "scale("+parentDivWidth/((fragKeyWidth+25)+20*i)+")")
 			fragKeyWidth = $(".fragKey")[0].getBBox().width;
 			i += 1;
@@ -701,6 +703,6 @@ var PeptideView = Backbone.View.extend({
 		this.linkPos = [];
 		this.g.selectAll("*").remove();
 		this.highlights.selectAll("*").remove();
-	}	
+	}
 
 });
