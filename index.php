@@ -36,11 +36,11 @@
 
    	 	<!-- Main -->
    	 	<div id="main">
-			
+
    	 				<div class="container">
    	 					<h1 class="page-header">Visualizing (cross-link) mass spectrometry spectra.</h1>
 
-   	 					<p>A tool for visualizing and analyzing your mass spectrometry data. XiSPEC features automated spectra annotation with intuitive tools for data analysis and hypothesis testing.</p>
+   	 					<p>An interactive tool for visualizing and analyzing your mass spectrometry data. XiSPEC features automated spectra annotation with intuitive tools for data analysis and hypothesis testing.</p>
    	 					<p>xiSPEC allows you to upload whole MS datasets (<a href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> & <a href="http://www.psidev.info/mzml" target="blank">mzML</a> pair) and save them for later access (share with colleagues / online access for publication).</p>
    	 					<p>xiSPEC is an open source project on <a href="https://github.com/Rappsilber-Laboratory/xiSPEC" >GitHub</a>.</p>
    	 					<div style="text-align: center;">
@@ -51,10 +51,10 @@
 								<button class="sliderBtn slider-right" onclick="showDiv(1)">&#10095;</button>
 	 						</div>
  						</div>
-							
+
 			 			</div> <!-- CONTAINER -->
 		</div> <!-- MAIN -->
-  	 				
-   	 				
+
+
 	</body>
 </html>
