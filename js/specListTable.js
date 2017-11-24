@@ -129,7 +129,7 @@ var specListTableView = Backbone.View.extend({
 		}
 
 		var main = this.wrapper.append('div').attr('id', 'specList_main');
-		var table = main.append('table').attr('id', 'specListTable').attr('class', 'display');
+		var table = main.append('table').attr('id', 'specListTable').attr('class', 'display').attr('style', 'width:100%;');
 
 		this.DataTable = $(table[0]).DataTable(tableVars);
 
