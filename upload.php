@@ -3,7 +3,7 @@
 	<head>
 		<?php
 		error_reporting(E_ALL & ~E_NOTICE);
-		$pageName = "Home";
+		$pageName = "Upload";
 		include("head.php");
 		?>
 		<?php include("xiSPEC_scripts.php");?>
@@ -182,7 +182,7 @@
 		<div class="overlay" style="z-index: -1; visibility: hidden;"></div>
 
         <script type="text/javascript">
-     	<?php echo "var example = ".($_GET['v'] == "example" ? 'true' : 'false');?>
+     	<?php echo "var example = ".($_GET['v'] == "example" ? "true;\r\n" : "false;\r\n");?>
         	$( document ).ready(function() {
         		if (example)
         			doExample();
