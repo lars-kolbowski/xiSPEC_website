@@ -236,6 +236,9 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			//SettingsSpectrumModel.otherModel = SpectrumModel;
 			//window.SettingsView.render();
 		}
+		else {
+			window.specListTable = new specListTableView({model: SpectrumModel, el:"#specListWrapper"});
+		}
 
 
 		$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
@@ -447,9 +450,6 @@ function loadSpectrum(rowdata){
 					<div class="tab-content">
 						<div id="tab-specListTable" class="tab-pane fade in active">
 							<div id="specListWrapper" class="listWrapper">
-								<div id="specList_main">
-									<table id="specListTable" class="display" width="100%" style="text-align:center;"></table>
-								</div>
 							</div>
 						</div>
 						<div id="tab-altListTable" class="tab-pane fade">

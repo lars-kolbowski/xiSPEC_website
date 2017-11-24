@@ -392,6 +392,11 @@ body, input, select, textarea {
     border: 1px solid white;
     border-radius: 5px;
 }
+
+#specListTable {
+  width: 100%;
+  text-align:center;
+}
 #specListTable tr {
     cursor: pointer;
     white-space: nowrap;
