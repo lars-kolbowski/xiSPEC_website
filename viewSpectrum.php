@@ -269,19 +269,6 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			e.preventDefault();
 		});
 
-
-		//ToDo move to SettingsView
-		$('.mutliSelect input[type="checkbox"]').on('click', function() {
-
-		    var ionSelectionArr = new Array();
-			$('.ionSelectChkbox:checkbox:checked').each(function(){
-			    ionSelectionArr.push($(this).val());
-			});
-
-			$('#ionSelection').val(ionSelectionArr.join(", "));
-
-		});
-
 		$("#saveModal").easyModal();
 
 		$('#saveDB').click(function(){

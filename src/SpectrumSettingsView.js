@@ -33,6 +33,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 		'click #settingsCustomCfgApply' : 'applyCustomCfg',
 		'submit #settingsForm' : 'applyData',
 		'keyup .stepInput' : 'updateStepSize',
+		'change .ionSelectChkbox': 'updateIons'
 	},
 
 	identifier: "Spectrum Settings",
