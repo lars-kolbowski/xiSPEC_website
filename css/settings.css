@@ -71,7 +71,7 @@
     display: inline;
     margin-right: 2%;
     flex-grow: 5;
-    flex-basis: 60%;
+    flex-basis: 320px;
 }
 
 .settingsDataRight{
