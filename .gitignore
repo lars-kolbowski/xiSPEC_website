@@ -1,12 +1,7 @@
 
 python_env/
-
 \.idea/
-
-log/
-
+log/[^.]*
 dbs/\.directory
-
-dbs/tmp/
-
-dbs/saved/
+dbs/tmp/[^.]*
+dbs/saved/[^.]*
