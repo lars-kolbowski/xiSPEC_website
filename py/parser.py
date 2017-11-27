@@ -13,11 +13,15 @@ import ntpath
 dev = False
 
 if dev:
-    logDir = "log/parser.log"
+    logFile = "log/parser.log"
 else:
-    logDir = "../log/parser.log"
+    logFile = "../log/parser.log"
 
-logging.basicConfig(filename=logDir, level=logging.DEBUG,
+if not os.path.isfile(logFile):
+    os.fdopen(os.open(logFile, os.O_WRONLY | os.O_CREAT, 0o777), 'w').close()
+    # open(logFile, 'a').close()
+
+logging.basicConfig(filename=logFile, level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger = logging.getLogger(__name__)
 
