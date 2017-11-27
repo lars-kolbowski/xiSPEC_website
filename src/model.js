@@ -117,6 +117,10 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 		this.calcPrecursorMass();
 
+
+		//ToDo: change this to SettignsView related call -> done but still necessary for upload page
+		if (window.modTable !== undefined)
+			modTable.ajax.url( this.baseDir + "php/convertModsToJSON.php?peps="+encodeURIComponent(this.pepStrsMods.join(";"))).load();
 		this.trigger("changed:data");
 
 		if (this.JSONdata.peaks !== undefined)
