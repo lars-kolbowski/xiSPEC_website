@@ -1,7 +1,7 @@
 <?php
 
 	$dbname = $_GET['db'];
-	$dir = 'sqlite:../dbs/xiSPEC.db';
+	$dir = 'sqlite:dbs/xiSPEC.db';
 	$dbh = new PDO($dir) or die("cannot open the database");
 	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 

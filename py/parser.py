@@ -210,7 +210,7 @@ def mzid_to_json(item, mzidreader):
 # print sys.argv[3]
 
 if not dev:
-    dbfolder = "../../dbs/tmp/"
+    dbfolder = "../dbs/tmp/"
     try:
         os.stat(dbfolder)
     except:
@@ -468,6 +468,3 @@ except Exception as e:
     logger.exception(e)
     returnJSON['errors'].append(
         {"type": "Error", "message": e})
-
-
-

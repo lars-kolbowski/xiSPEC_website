@@ -4,3 +4,9 @@ python_env/
 \.idea/
 
 log/
+
+dbs/\.directory
+
+dbs/tmp/
+
+dbs/saved/
