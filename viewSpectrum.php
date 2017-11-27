@@ -153,7 +153,7 @@ else{
 			<link rel="stylesheet" href="./css/validationPage.css">
 			<link rel="stylesheet" href="./css/dropdown.css">
 			<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
-			<link rel="stylesheet" type="text/css" href="./vendor/font-awesome.min.css"/>
+			<link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css"/>
 			<?php include("xiSPEC_scripts.php");?>
 
 			<script type="text/javascript" src="./vendor/jscolor.min.js"></script>
@@ -370,7 +370,7 @@ function loadSpectrum(rowdata){
 							<label class="btn" title="toggle moveable labels on/off">Move Labels<input id="moveLabels" type="checkbox"></label>
 		            		<button id="clearHighlights" class="btn btn-1 btn-1a">Clear Highlights</button>
 		            		<label class="btn" title="toggle measure mode on/off">Measure<input id="measuringTool" type="checkbox"></label>
-		            		<span id="setrange">
+		            		<form id="setrange">
 		            			<label class="btn" title="m/z range" style="cursor: default;">m/z:</label>
 								<label class="btn" for="lockZoom" title="Lock current zoom level" id="lock" class="btn">🔓</label>
 		            			<input type="text" id="xleft" size="7" title="m/z range from:">
@@ -380,7 +380,7 @@ function loadSpectrum(rowdata){
 		            			<span id="range-error"></span>
 		            			<button id="reset" title="Reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
 		            			<input id="lockZoom" type="checkbox" style="visibility: hidden;">
-		            		</span>
+		            		</form>
 		            		<button id="toggleView" title="Toggle between quality control/spectrum view" class="btn btn-1 btn-1a">QC</button>
 		    				<i id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav fa fa-cog" aria-hidden="true"></i>
 		    				<span id="dbControls">
