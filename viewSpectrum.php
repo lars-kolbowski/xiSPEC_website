@@ -238,6 +238,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		}
 		else {
 			window.specListTable = new specListTableView({model: SpectrumModel, el:"#specListWrapper"});
+			window.altListTable = new altListTableView({model: SpectrumModel, el:"#altListWrapper"});
 		}
 
 
@@ -249,7 +250,6 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		});
 
 		//settings panel - put into extra view
-
 		$('.closeTable').click(function(){
 			$(this).closest('.tableDiv').hide();
 			window.Spectrum.resize();
@@ -295,6 +295,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 
 });
 
+// ToDo: change to BB handling
 function loadSpectrum(rowdata){
 
 	console.log(rowdata['alt_count']);
@@ -307,7 +308,7 @@ function loadSpectrum(rowdata){
 
 		$('#nav-altListTable').removeClass('disabled');
 		$('#altExpNum').text("(" + rowdata['alt_count'] + ")");
-		window.altListTable.ajax.url( "php/getAltList.php?id=" + mzid).load();
+		window.altListTable.DataTable.ajax.url( "php/getAltList.php?id=" + mzid).load();
 	}
 	else{
 		$('#altExpNum').text("(0)");
@@ -441,9 +442,9 @@ function loadSpectrum(rowdata){
 						</div>
 						<div id="tab-altListTable" class="tab-pane fade">
 							<div id="altListWrapper" class="listWrapper">
-								<div id="altList_main">
+								<!-- <div id="altList_main">
 									<table id="altListTable" width="100%" style="text-align:center;"></table>
-								</div>
+								</div> -->
 							</div>
 						</div>
 					</div>
