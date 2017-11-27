@@ -1,7 +1,10 @@
 
 python_env/
 \.idea/
-log/[^.]*
 dbs/\.directory
-dbs/tmp/[^.]*
-dbs/saved/[^.]*
+dbs/tmp/*
+!dbs/tmp/.gitkeep
+dbs/saved/*
+!dbs/saved/.gitkeep
+log/*
+!log/.gitkeep
