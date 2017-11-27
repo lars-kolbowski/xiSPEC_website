@@ -242,6 +242,7 @@ body, input, select, textarea {
 }
 
 .btn-topNav{
+    top: 3px;
     font-size: 1.2em;
     padding: 3px 4px;
     margin: 2px 2px 0px 2px;

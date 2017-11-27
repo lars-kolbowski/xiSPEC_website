@@ -152,6 +152,8 @@ else{
 			<link rel="stylesheet" href="./css/spectrumViewWrapper.css">
 			<link rel="stylesheet" href="./css/validationPage.css">
 			<link rel="stylesheet" href="./css/dropdown.css">
+			<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
+			<link rel="stylesheet" type="text/css" href="./vendor/font-awesome.min.css"/>
 			<?php include("xiSPEC_scripts.php");?>
 
 			<script type="text/javascript" src="./vendor/jscolor.min.js"></script>
@@ -163,7 +165,7 @@ else{
 			<script type="text/javascript" src="./vendor/download.js"></script>
 			<script type="text/javascript" src="./vendor/bootstrap/js/bootstrap.min.js"></script>
 			<script type="text/javascript" src="./vendor/dataTables.bootstrap.min.js"></script>
-			<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
+
 
 			<!-- Spectrum view .js files -->
 			<script type="text/javascript" src="./js/app.js"></script>
@@ -362,13 +364,13 @@ function loadSpectrum(rowdata){
 							<div class="dynDiv_resizeDiv_br draggableCorner"></div>
 						</div>
 		            	<div id="spectrumControls">
-		            		<i class="fa fa-home fa-xi" onclick="window.location = 'index.php';" title="Home"></i>
-		            		<i class="fa fa-github fa-xi btn-1a" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>
-	            			<i class="fa fa-download btn-1a" aria-hidden="true" id="downloadSVG" title="download SVG" style="cursor: pointer;"></i>
+		            		<i class="btn btn-1a btn-topNav fa fa-home fa-xi" style='top: 0px;' onclick="window.location = 'index.php';" title="Home"></i>
+		            		<i class="btn btn-1a btn-topNav fa fa-github fa-xi" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>
+	            			<i class="btn btn-1a btn-topNav fa fa-download" aria-hidden="true" id="downloadSVG" title="download SVG" style="cursor: pointer;"></i>
 							<label class="btn" title="toggle moveable labels on/off">Move Labels<input id="moveLabels" type="checkbox"></label>
 		            		<button id="clearHighlights" class="btn btn-1 btn-1a">Clear Highlights</button>
 		            		<label class="btn" title="toggle measure mode on/off">Measure<input id="measuringTool" type="checkbox"></label>
-		            		<form id="setrange">
+		            		<span id="setrange">
 		            			<label class="btn" title="m/z range" style="cursor: default;">m/z:</label>
 								<label class="btn" for="lockZoom" title="Lock current zoom level" id="lock" class="btn">🔓</label>
 		            			<input type="text" id="xleft" size="7" title="m/z range from:">
@@ -378,15 +380,15 @@ function loadSpectrum(rowdata){
 		            			<span id="range-error"></span>
 		            			<button id="reset" title="Reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
 		            			<input id="lockZoom" type="checkbox" style="visibility: hidden;">
-		            		</form>
+		            		</span>
 		            		<button id="toggleView" title="Toggle between quality control/spectrum view" class="btn btn-1 btn-1a">QC</button>
-		    				<button id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav">&#9881;</button>
+		    				<i id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav fa fa-cog" aria-hidden="true"></i>
 		    				<span id="dbControls">
 
-		    					<?php if(!isset($_SESSION['db'])) echo '<button id="saveDB" title="Save" class="btn btn-1a btn-topNav">&#x1f4be;</button> '?>
-								<button id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav">&#x2039;</button>
-								<button id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav">&#9776;</button>
-								<button id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav">&#x203A;</button>
+		    					<?php if(!isset($_SESSION['db'])) echo '<i id="saveDB" title="Save" class="btn btn-1a btn-topNav fa fa-floppy-o" aria-hidden="true"></i>';?>
+								<i id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-left" aria-hidden="true"></i>
+								<i id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav fa fa-bars" aria-hidden="true"></i>
+								<i id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-right" aria-hidden="true"></i>
 							</span>
 		            	</div>
 	                    <div class="heightFill">
