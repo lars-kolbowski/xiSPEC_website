@@ -372,8 +372,11 @@ var SpectrumSettingsView = Backbone.View.extend({
 									data = self.model.knownModifications['modifications'][i].mass;
 							}
 						}
-						data = parseFloat(data.toFixed(10).toString());
-						var stepSize = '0.'+'0'.repeat(data.toString().split('.')[1].length - 1) + 1;
+						data = parseFloat(data.toFixed(10).toString()); // limit to 10 decimal places and get rid of tailing zeroes
+						if(data.toString().indexOf('.') !== -1)
+							var stepSize = '0.'+'0'.repeat(data.toString().split('.')[1].length - 1) + 1;
+						else
+							var stepSize = 1;
 						return '<input class="form-control stepInput" id="modMass_'+meta.row+'" row="'+meta.row+'" title="modification mass" name="modMasses[]" type="number" min=0 step="'+stepSize+'" required value='+data+' autocomplete=off>';
 					},
 					"targets": 2,
