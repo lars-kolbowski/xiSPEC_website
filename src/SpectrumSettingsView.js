@@ -54,16 +54,21 @@ var SpectrumSettingsView = Backbone.View.extend({
 		this.wrapper.selectAll(".draggableCorner").call (drag);
 
 		//menu
-		var menu = this.wrapper.append("div").attr("class", "settings_menu");
+		this.menu = this.wrapper.append("div").attr("class", "settings_menu");
 		var buttonData = ["Data", "Appearance", "Custom config"]
-		buttonData.forEach(function(b){
+		buttonData.forEach(function(b, i){
+			var zIndex = 20 - i;
 			var b_id = b.replace(" ", "_").toLowerCase();
-			menu.append("button")
+			self.menu.append("button")
 				.attr("class", "settingsTab btn btn-1a")
 				.attr("data-tab", b_id)
+				.attr("style", "z-index: " + zIndex)
 				.text(b)
 			;
 		});
+
+		// add active class to first tab-button
+		this.menu.select('button').classed('active', true);
 
 		var mainDiv = this.wrapper.append("div").attr("id", "settings_main");
 
@@ -150,10 +155,10 @@ var SpectrumSettingsView = Backbone.View.extend({
 			.attr("step", "1")
 			.attr("required", "")
 		;
-		this.toleranceUnit = toleranceWrapper.append("select")
+		this.toleranceUnit = toleranceWrapper.append('div').append("select")
 			.attr("name", "tolUnit")
 			.attr("required", "")
-			.attr("style", "width: 100px; margin-left: 10px;")
+			.attr("style", "width: 65px; margin-left: 8px;")
 			.attr("class", "form-control")
 		;
 		this.toleranceUnit.append("option").attr("value", "ppm").text("ppm");
@@ -179,7 +184,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 		;
 
 		var colorSchemeSelector = appearanceTab.append("label").attr("class", "btn").text("Color scheme: ")
-			.append("select").attr("id", 'colorSelector').attr("class", 'form-control')
+			.append("select").attr("id", 'colorSelector').attr("class", 'form-control pointer')
 		;
 		var colOptions = [
 			{value: "RdBu", text: "Red & Blue"},
@@ -197,7 +202,12 @@ var SpectrumSettingsView = Backbone.View.extend({
 		;
 
 		var highlightColorSelector = appearanceTab.append("label").attr("class", "btn").text("Highlight Color: ")
-			.append("input").attr("class", "jscolor").attr("id", "highlightColor").attr("value", "#FFFF00").attr("type", "text")
+			.append("input")
+				.attr("class", "jscolor pointer")
+				.attr("id", "highlightColor")
+				.attr("value", "#FFFF00")
+				.attr("type", "text")
+				.attr("style", "width: 103px;")
 		;
 		jscolor.installByClassName("jscolor");
 
@@ -493,7 +503,9 @@ var SpectrumSettingsView = Backbone.View.extend({
 	changeTab: function(e) {
 		var activeTab = $(e.currentTarget).data('tab');
 		$('.settings-tab').hide();
+		this.menu.selectAll('button').classed('active', false);
 		$('#settings_'+activeTab).show();
+		$(e.target).addClass('active');
 	},
 
 	updateJScolor: function(event) {

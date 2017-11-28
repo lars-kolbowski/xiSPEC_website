@@ -51,8 +51,8 @@
     color: #fff;
 }
 .btn-1a:active, .btn-1a:hover {
-    color: #091D42;
-    background: #fff;
+    color: #000;
+    background: #fff!important;
 }
 
 /*tables*/
@@ -339,8 +339,52 @@ body, input, select, textarea {
 }
 
 #saveModal .content{
-    margin-top: 20px;
+    margin: 10px;
+    color: #fff;
 }
+
+#saveModal #saveDBerror{
+  margin-bottom: 5px;
+}
+
+.label{
+    font-size: 0.9em;
+    cursor: pointer;
+    /* padding: 5px 15px; */
+    /* margin: 10px 0px; */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 300;
+    outline: 0;
+    display: block;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.flex-container{
+    line-height: 3.5em;
+    display: flex;
+    flex-direction: row;
+    /* line-height: normal; */
+}
+
+.flex-grow{
+    flex-grow: 1;
+    margin-left: 5px;
+}
+
+.flex-grow input{
+/*     margin-bottom: 1%; */
+    width: 100%;
+}
+
+
+/* #saveModal .form-control::selection {
+  background: #ffb7b7; 
+}
+#saveModal .form-control::-moz-selection {
+  background: #ffb7b7;
+} */
 
 .closeTable{
     font-size: 1.4em;
@@ -369,7 +413,7 @@ body, input, select, textarea {
 }
 
 .listWrapper{
-    padding: 3px 10px;
+    padding: 1px 10px;
     color: #000;
     overflow-x: auto;
 }
@@ -587,11 +631,10 @@ body, input, select, textarea {
 .dynTitle {
     position: relative;
     left: 30px;
-    top: -2px;
+    top: 2px;
     letter-spacing: 0.5px;
     font-size: 0.9em;
     color: white;
-
 }
 
 #alignPanel{

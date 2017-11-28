@@ -1239,7 +1239,7 @@ div.file_upload {
       font-family: "Lato-Regular", Helvetica, Arial, sans-serif;
       font-size: 10pt;
       text-shadow: 0px;
-      line-height: 1.467;
+      /* line-height: 1.467; */
       padding: 8px 12px;
       height: 42px;
       -webkit-appearance: none;

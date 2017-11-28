@@ -251,7 +251,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			}
 		});
 
-		//settings panel - put into extra view
+		//ToDo: bottomDiv specList-altList-Wrapper -> BBView?
 		$('.closeTable').click(function(){
 			$(this).closest('.tableDiv').hide();
 			window.Spectrum.resize();
@@ -267,6 +267,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			window.Spectrum.resize();
 		});
 
+		//ToDo: spectrumControls -> BBView?
 		$('#setrange').submit(function (e){
 			e.preventDefault();
 		});
@@ -277,7 +278,8 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			$("#saveModal").trigger('openModal');
 		});
 
-		$('#saveDataSet').click(function(){
+		$('#saveDB_form').submit(function(e){
+			e.preventDefault();
 			$.ajax({
 				type: "GET",
 				datatype: "json",
@@ -287,8 +289,10 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 					response = JSON.parse(response);
 					if (response.hasOwnProperty('error'))
 						$('#saveDBerror').html(response.error);
-					else
-						$('#saveModal_content').html("<p>Dataset was successfully saved!</p><p>URL for access: <input type='text' value='"+response.url+"' readonly style='width: 70%; font-size: 1em; color: #000;' onClick='this.select();'></p>");
+					else{
+						$('#saveDBerror').html('Dataset was successfully saved!');
+						$('#saveDB_form').html('<label class="flex-container label">url for access: <div class="flex-grow"><input type="text" class="form-control" value="'+response.url+'" readonly onClick="this.select();"></div>');
+					}
 					console.log(response);
 				}
 			});
@@ -464,11 +468,13 @@ function loadSpectrum(rowdata){
 				Save your dataset
 			</div>
 			<div class="content" id="saveModal_content">
-				<span id="saveDBerror"></span>
-				<p>
-					<label>Name: <input class="form-control" length=30 id="saveDbName" name="dbName" type="text" placeholder="Enter a name for your dataset" style="width:30%"></label>
-				</p>
-				<p><button id="saveDataSet" class="btn btn-1 btn-1a">Save</button></p>
+				<div id="saveDBerror"></div>
+				<form id='saveDB_form'>
+					<label class="flex-container label">
+						Name: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbName" name="dbName" type="text" placeholder="Enter a name for your dataset"></div>
+					</label>
+					<input type="submit" id="saveDataSet" class="btn btn-1 btn-1a" value="save">
+				</form>
 	<!-- 			<div id="shareLink" class="btn clearfix" style="font-size: 1.1em;margin:10px 5px;">
 					<button id="requestShareLink" type="submit" class="btn btn-1a" >Click here to generate a link for later access or sharing</button>
 				</div> -->

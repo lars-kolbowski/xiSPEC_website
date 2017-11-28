@@ -51,7 +51,7 @@ a:focus {
 .nav>li>a {
 	position: relative;
 	display: block;
-	padding: 10px 15px
+	padding: 4px 12px;
 }
 
 .nav>li>a:hover, .nav>li>a:focus {
@@ -97,7 +97,8 @@ a:focus {
 
 .nav-tabs>li>a {
 	margin-right: 2px;
-	line-height: 1.42857143;/* background-color: #fff; */
+	line-height: 1.42857143;
+	/* background-color: #fff; */
 	border: 1px solid transparent;
 	border-radius: 4px 4px 0 0;
 }
