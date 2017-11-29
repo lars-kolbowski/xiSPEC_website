@@ -291,7 +291,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 						$('#saveDBerror').html(response.error);
 					else{
 						$('#saveDBerror').html('Dataset was successfully saved!');
-						$('#saveDB_form').html('<label class="flex-container label">url for access: <div class="flex-grow"><input type="text" class="form-control" value="'+response.url+'" readonly onClick="this.select();"></div>');
+						$('#saveDB_form').html('<label class="flex-row label">url for access: <div class="flex-grow"><input type="text" class="form-control" value="'+response.url+'" readonly onClick="this.select();"></div>');
 					}
 					console.log(response);
 				}
@@ -470,7 +470,7 @@ function loadSpectrum(rowdata){
 			<div class="content" id="saveModal_content">
 				<div id="saveDBerror"></div>
 				<form id='saveDB_form'>
-					<label class="flex-container label">
+					<label class="flex-row label">
 						Name: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbName" name="dbName" type="text" placeholder="Enter a name for your dataset"></div>
 					</label>
 					<input type="submit" id="saveDataSet" class="btn btn-1 btn-1a" value="save">

@@ -9,9 +9,9 @@
     right: 5%;
     top: 10%;
     width: 550px;
-    height: auto;
+    height: 500px;
     min-width: 500px;
-    min-height: 550px;
+    min-height: 490px;
     /* overflow-y: auto; */
     font-size: 10pt;
     border: 1px solid #333;
@@ -20,6 +20,15 @@
 #settingsWrapper .form-control{
   display: inline-block;
   background-color: #fff;
+  /* flex-grow: 1; */
+}
+
+#settingsWrapper .settings-tab{
+  flex-grow: 1;
+}
+
+#settingsWrapper #settingsForm{
+  flex-grow: 1;
 }
 
 #settingsWrapper .flex-column{
@@ -38,8 +47,13 @@
    justify-content: flex-start;
 }
 
+#settingsWrapper .midDataDiv{
+  flex-grow: 1;
+}
+
 #settingsWrapper .settings-bottom{
   /* margin-top:10px; */
+  margin-bottom: 20px;
   text-align: center;
   font-size: 1.5em;
 }
@@ -70,13 +84,18 @@
     padding-top: 10px;
     padding-left: 10px;
     padding-right: 10px;
-    /* display: flex; */
-    /* flex-direction: column; */
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
+    height: 100%;
 }
 
 #settings_main .label .form-control{
   height: 2.5em;
+}
+
+#settingsWrapper #settingsPeaklist{
+  height:100%;
 }
 
 .pointer{
@@ -111,7 +130,7 @@
 #modificationTable_wrapperOuter{
   width: 100%;
   height: auto;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 #settingsCustomCfg-input{
@@ -149,12 +168,13 @@
   text-align: center;
   margin-top: 10px;
   bottom: 10px;
-  position: absolute;
+  /* position: absolute; */
   width: 95%;
 }
 
 #settingsPeaklist{
-  /* height: 180px; */
+  height: 170px;
+  min-height: 100px;
   min-width: 220px;
   white-space: nowrap;
   line-height: 1.4em;

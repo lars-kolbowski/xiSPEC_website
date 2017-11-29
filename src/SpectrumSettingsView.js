@@ -73,13 +73,13 @@ var SpectrumSettingsView = Backbone.View.extend({
 		var mainDiv = this.wrapper.append("div").attr("id", "settings_main");
 
 		//data ToDo: change to more BBlike data handling
-		var dataTab = mainDiv.append("div").attr("class", "settings-tab").attr("id", "settings_data");
+		var dataTab = mainDiv.append("div").attr("class", "settings-tab flex-column").attr("id", "settings_data");
 
-		var dataForm = dataTab.append("form").attr("id", "settingsForm").attr("method", "post");
+		var dataForm = dataTab.append("form").attr("id", "settingsForm").attr("method", "post").attr("class", "flex-column");
 
-		var dataFlexColumn = dataForm.append("div").attr("class", "flex-column");
+		// var dataFlexColumn = dataForm.append("div").attr("class", "flex-column");
 
-		var peptideLabel = dataFlexColumn.append("label").attr("class", "flex-container").text("Peptide Sequence: ")
+		var peptideLabel = dataForm.append("label").attr("class", "flex-row").text("Peptide Sequence: ")
 		this.peptideViewEl = peptideLabel.append('div').attr('class', 'flex-grow').append("input")
 			.attr("type", "text")
 			.attr("required", "")
@@ -90,10 +90,11 @@ var SpectrumSettingsView = Backbone.View.extend({
 		;
 		this.pepInputView = new PepInputView({model: this.model, el: this.peptideViewEl[0] });
 
-		var dataFlexRow = dataFlexColumn.append("div").attr("class", "flex-row");
+		var dataFlexRow = dataForm.append("div").attr("class", "flex-row midDataDiv");
 
 		var leftDiv = dataFlexRow.append("div").attr("class", "settingsDataLeft");
-		this.peaklist = leftDiv.append("textarea")
+
+		this.peaklist = leftDiv.append("label").attr("class", "flex-column").attr("style", "height: 100%").text("Peak list (m/z\tintensity): ").append("textarea")
 			.attr("required", "")
 			.attr("id", "settingsPeaklist")
 			.attr("type", "text")
@@ -104,17 +105,17 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 		var rightDiv = dataFlexRow.append("div").attr("class", "settingsDataRight");
 
-		this.crossLinkerModMassWrapper = rightDiv.append("label").attr("class", "flex-container").text("Cross-linker mod mass: ");
+		this.crossLinkerModMassWrapper = rightDiv.append("label").attr("class", "flex-row").text("Cross-linker mod mass: ");
 
 		this.crossLinkerModMass = this.crossLinkerModMassWrapper.append('div').attr('class', 'flex-grow')
 			.append("input").attr("placeholder", "CL mod mass").attr("autocomplete", "off").attr("name", "clModMass").attr("required", "").attr("type", "text")
 		;
 
-		this.precursorZ = rightDiv.append("label").attr("class", "flex-container").text("Precursor charge state: ").append('div').attr('class', 'flex-grow')
+		this.precursorZ = rightDiv.append("label").attr("class", "flex-row").text("Precursor charge state: ").append('div').attr('class', 'flex-grow')
 			.append("input").attr("type", "number").attr("placeholder", "Charge").attr("autocomplete", "off").attr("name", "preCharge").attr("min", "1").attr("required", "")
 		;
 
-		var ionSelector = rightDiv.append("label").attr("class", "flex-container").text("Fragment Ions: ")
+		var ionSelector = rightDiv.append("label").attr("class", "flex-row").text("Fragment Ions: ")
 			.append("div").attr("class", "mulitSelect_dropdown flex-grow")
 		;
 		ionSelector.append("input")
@@ -145,7 +146,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 		;
 
-		var toleranceWrapper = rightDiv.append("label").attr("class", "flex-container").text("MS2 tolerance: ");
+		var toleranceWrapper = rightDiv.append("label").attr("class", "flex-row").text("MS2 tolerance: ");
 		this.toleranceValue = toleranceWrapper.append('div').attr('class', 'flex-grow stepInput').append("input")
 			.attr("type", "number")
 			.attr("placeholder", "Error tolerance")
@@ -178,7 +179,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 		//appearance
 		var appearanceTab = mainDiv.append("div")
-			.attr("class", "settings-tab")
+			.attr("class", "settings-tab flex-column")
 			.attr("id", "settings_appearance")
 			.style("display", "none")
 		;
@@ -221,7 +222,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 
         //custom config
-		var customConfigTab = mainDiv.append("div").attr("class", "settings-tab").attr("id", "settings_custom_config").style("display", "none");
+		var customConfigTab = mainDiv.append("div").attr("class", "settings-tab flex-column").attr("id", "settings_custom_config").style("display", "none");
 
 		var customConfigInput = customConfigTab.append("textarea").attr("id", "settingsCustomCfg-input").attr("class", "form-control");
 		var customConfigBottom = customConfigTab.append("div").attr("class", "settings-bottom");
@@ -334,7 +335,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 	initializeModTable: function(){
 		var self = this;
 		var modTableVars = {
-			"scrollY": '130px',
+			// "scrollY": '130px',
 			"scrollCollapse": true,
 			"paging":   false,
 			"ordering": false,
