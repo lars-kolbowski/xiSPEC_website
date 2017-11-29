@@ -138,8 +138,8 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 			      .domain([ ymin, ymax ]).nice()
 			      .range([ this.height, 0 ]).nice();
 
-		this.yTicks = this.height / 40;
-		this.xTicks = this.width / 100;
+		var yTicks = this.height / 40;
+		var xTicks = this.width / 100;
 
 		this.wrapper.selectAll('.axis line, .axis path')
 				.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '1.2px'});
@@ -158,12 +158,18 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 		}.bind(this));
 
 		// draw the x axis
-		this.xAxis = d3.svg.axis().scale(self.x).ticks(this.xTicks).orient("bottom");
+		this.xAxis = d3.svg.axis().scale(self.x).ticks(xTicks).orient("bottom").tickFormat(d3.format("s"));
 
 		this.xAxisSVG = this.wrapper.append('g')
 			.attr('transform', 'translate(0,' + this.y(0) + ')')
-			.attr('class', 'axis')
+			.attr('class', 'axis xAxis')
 			.call(this.xAxis);
+
+			// remove every other xTickLabel
+			var ticks = d3.selectAll('.xAxis').selectAll(".tick text");
+			ticks.attr("class", function(d,i){
+			    if(i%2 != 0) d3.select(this).remove();
+			});
 
 		this.xLabel = this.wrapper.append("text")
 			.attr("class", "xAxisLabel")
@@ -173,7 +179,7 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 		this.xLabel.attr("x", this.width/2).attr("y", this.height);
 
 		// draw the y axis
-		self.yAxis = d3.svg.axis().scale(this.y).ticks(this.yTicks).orient("left").tickFormat(d3.format("s"));
+		self.yAxis = d3.svg.axis().scale(this.y).ticks(yTicks).orient("left").tickFormat(d3.format("s"));
 
 		this.yAxisSVG = this.wrapper.append('g')
 			.attr('transform', 'translate(0,0)')
