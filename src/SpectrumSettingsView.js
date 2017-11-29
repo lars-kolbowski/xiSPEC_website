@@ -25,6 +25,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 	events : {
 		'click #lossyChkBx': 'showLossy',
+		'click #absErrChkBx': 'absErrToggle',
 		'change #colorSelector': 'changeColorScheme',
 		'click .settingsTab' : 'changeTab',
 		'click .settingsCancel' : 'cancel',
@@ -218,6 +219,10 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 		this.decimals = appearanceTab.append("label").attr("class", "btn").text("Number of decimals to display: ")
 			.append("input").attr("type", "number").attr("id", "settingsDecimals").attr("min", "1").attr("max", "10").attr("autocomplete", "off")
+		;
+
+		this.absoluteError = appearanceTab.append("label").attr("class", "btn").text("Absolute error values (QC): ")
+			.append("input").attr("type", "checkbox").attr("id", "absErrChkBx")
 		;
 
 
@@ -536,6 +541,13 @@ var SpectrumSettingsView = Backbone.View.extend({
         var selected = $target .is(':checked');
 		model.lossyShown = selected;
 		model.trigger("changed:lossyShown");
+	},
+
+	absErrToggle: function(e) {
+		var model = this.model.otherModel; //apply changes directly for now
+		var $target = $(e.target);
+		var selected = $target.is(':checked');
+		CLMSUI.vent.trigger('QCabsErr', selected);
 	},
 
 	changeColorScheme: function(e){
