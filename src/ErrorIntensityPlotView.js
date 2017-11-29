@@ -144,9 +144,7 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 		this.wrapper.selectAll('.axis line, .axis path')
 				.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '1.2px'});
 
-		this.g = this.wrapper.append('g');
-
-		this.background = this.g.append("rect")
+		this.background = this.wrapper.append("rect")
 			.style("fill", "white")
 			// .style("z-index", -1)
 			.attr("width", this.width)
@@ -199,6 +197,8 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 
 		var p1color = this.model.p1color;
 		var p2color = this.model.p2color;
+
+		this.g = this.wrapper.append('g');
 
 		this.highlights = this.g.selectAll('scatter-dot-highlights')
 			.data(this.data)
