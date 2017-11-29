@@ -34,7 +34,7 @@
     display: flex;
     flex-flow: column;
     background: #fff;
-    /* float: left; */
+    min-height: 200px;
     flex-grow: 1;
 }
 
