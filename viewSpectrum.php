@@ -75,22 +75,6 @@ else{
 		array_push($ions, array('type' => $iontype));
 	}
 
-	// array_push($ions, array('type' => 'PeptideIon'));
-	// if ($method == "HCD" or $method == "CID") {
-	//     array_push($ions, array('type' => 'BIon'));
-	//     array_push($ions, array('type' => 'YIon'));
-	// };
-	// if ($method == "EThcD" or $method == "ETciD") {
-	//     array_push($ions, array('type' => 'BIon'));
-	//     array_push($ions, array('type' => 'CIon'));
-	//     array_push($ions, array('type' => 'YIon'));
-	//     array_push($ions, array('type' => 'ZIon'));
-	// };
-	// if ($method == "ETD") {
-	//     array_push($ions, array('type' => 'CIon'));
-	//     array_push($ions, array('type' => 'ZIon'));
-	// };
-
 	$cl = array('modMass' => $clModMass);
 
 	$annotation = array('fragmentTolerance' => $tol, 'modifications' => $modifications, 'ions' => $ions, 'cross-linker' => $cl, 'precursorCharge' => $preCharge, 'custom' => "LOWRESOLUTION:false"); //ToDo: LOWRESOLUTION: true setting
@@ -256,62 +240,6 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			window.altListTable = new altListTableView({model: SpectrumModel, el:"#altListWrapper"});
 		}
 
-
-		$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
-			if ($(this).parent().hasClass("disabled")) {
-				e.preventDefault();
-				return false;
-			}
-		});
-
-		//ToDo: bottomDiv specList-altList-Wrapper -> BBView?
-		$('.closeTable').click(function(){
-			$(this).closest('.tableDiv').hide();
-			window.trigger('resize')
-		});
-
-		$('#toggleSpecList').click(function(){
-			$('#bottomDiv').toggle();
-			window.trigger('resize')
-		});
-
-		$('#toggleAltList').click(function(){
-			$('#altDiv').toggle();
-			window.trigger('resize')
-		});
-
-		//ToDo: spectrumControls -> BBView?
-		$('#setrange').submit(function (e){
-			e.preventDefault();
-		});
-
-		$("#saveModal").easyModal();
-
-		$('#saveDB').click(function(){
-			$("#saveModal").trigger('openModal');
-		});
-
-		$('#saveDB_form').submit(function(e){
-			e.preventDefault();
-			$.ajax({
-				type: "GET",
-				datatype: "json",
-				async: false,
-				url: "php/saveDataSet.php?name="+$('#saveDbName').val(),
-				success: function(response) {
-					response = JSON.parse(response);
-					if (response.hasOwnProperty('error'))
-						$('#saveDBerror').html(response.error);
-					else{
-						$('#saveDBerror').html('Dataset was successfully saved!');
-						$('#saveDB_form').html('<label class="flex-row label">url for access: <div class="flex-grow"><input type="text" class="form-control" value="'+response.url+'" readonly onClick="this.select();"></div>');
-					}
-					console.log(response);
-				}
-			});
-		});
-
-
 });
 
 // ToDo: change to BB handling
@@ -450,24 +378,26 @@ function loadSpectrum(rowdata){
 						</div>
 					</div>
 				</div>
-            </div>
-
-<!-- 			<div class="controls">
-				<span id="filterPlaceholder"></span>
-			</div> -->
-        </div><!-- MAIN -->
+			</div>
+		</div><!-- MAIN -->
 
 		<!-- Modal -->
-		<div id="saveModal" role="dialog" class="modal" style="background: #333; width:650px; text-align: center">
-			<div class="header" style="background: #750000; color:#fff"">
-				Save your dataset
-			</div>
+		<div id="saveModal" role="dialog" class="modal" style="background: #333; width:650px; text-align: center; z-index: 2147483648;">
+			<div class="header" style="background: #750000; color:#fff;">Save your dataset</div>
 			<div class="content" id="saveModal_content">
 				<div id="saveDBerror"></div>
 				<form id='saveDB_form'>
 					<label class="flex-row label">
 						Name: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbName" name="dbName" type="text" placeholder="Enter a name for your dataset"></div>
 					</label>
+					<label class="flex-row label" style="line-height: 1.5em; margin: 1.5em 0em;">
+						Public: <input id="publicDBchkBox" class="pointer" name="public" type="checkbox"> <span style="text-transform: initial; letter-spacing: initial; color: #ccc;">(checking this will allow anyone who knows the name of your data set to view it.)</span>
+					</label>
+					<label class="flex-row label" id="dbPassLabel">
+						Password: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbPass" name="dbPass" type="password" placeholder="Enter password"></div>
+						<div class="flex-grow"><input class="form-control" required length=30 id="saveDbPassControl" name="dbPass" type="password" placeholder="Retype password"></div>
+					</label>
+
 					<input type="submit" id="saveDataSet" class="btn btn-1 btn-1a" value="save">
 				</form>
 	<!-- 			<div id="shareLink" class="btn clearfix" style="font-size: 1.1em;margin:10px 5px;">
@@ -475,5 +405,6 @@ function loadSpectrum(rowdata){
 				</div> -->
 			</div>
 		</div>
-    </body>
+		<!-- End Modal -->
+	</body>
 </html>

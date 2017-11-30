@@ -14,7 +14,7 @@ $( document ).ready(function() {
 	$("#submitDataModal").easyModal();
 
 
-	$('#myCL').change(function(){ 
+	$('#myCL').change(function(){
 		var value = $(this).val();
 		if (value == "add")
 			$("#addCLModal").trigger('openModal');
@@ -144,14 +144,14 @@ $( document ).ready(function() {
 							var found = true;
 						}
 					}
-					if (!found){				
+					if (!found){
 						for (var i = 0; i < model.knownModifications['modifications'].length; i++) {
-							if(model.knownModifications['modifications'][i].id == row.id){						
+							if(model.knownModifications['modifications'][i].id == row.id){
 								data = data.split(",");
 								data = _.union(data, model.knownModifications['modifications'][i].aminoAcids);
 								data.sort();
 								data = data.join("");
-								
+
 							}
 						}
 					}
@@ -187,7 +187,7 @@ $( document ).ready(function() {
 				$('#mzml_checkbox').prop( "checked", false ).change();
 				$('#mzml_fileBox .fileName').html(data.files[0].name);
 				data.context = $('#mzml_fileBox .statusBox').html('<div class="loader"></div>');
-				data.submit();						
+				data.submit();
 			}
 
 			var that = this;
@@ -280,18 +280,18 @@ $( document ).ready(function() {
 					resp.errors.forEach(function (error){
 						console.log("error type: " + error.type + "\n message: "+ error.message);
 					})
-					
+
 				}
 			}
-		  });	 
-		  return false;					
-	});  
+		  });
+		  return false;
+	});
 
 	$('.accordionHead').click(function(){
 		$('.accordionContent').slideToggle();
 		$('.accordionSym').html("+");
 		$(this).children('.accordionSym').html("-");
-	}); 
+	});
 
 });
 
@@ -303,10 +303,9 @@ function doExample(){
 	pepInputView.contentChanged();
 	$("#myTolerance").val("20.0");
 	$("#myPrecursorZ").val("4");
-	$("#myPrecursorZ").change();	
+	$("#myPrecursorZ").change();
 	$("#myCL").val("138.06807961");
-	//$("#myFragmentation").val("HCD");
-	$("#myToleranceUnit").val("ppm");	
+	$("#myToleranceUnit").val("ppm");
 	$("#myCL").change();
 
 	//ions
@@ -319,13 +318,13 @@ function doExample(){
 
 function doClearForm(){
 	$("#myPeptide").val("");
-	$("#myPeaklist").val("");	
+	$("#myPeaklist").val("");
 	$("#myTolerance").val("");
 	$("#myPrecursorZ").val("");
 	$("#myCL").val("");
 	$('.ionSelectChkbox').prop('checked', false);
 	$('.ionSelectChkbox').change();
-	
+
 	window.peptide.clear();
 	pepInputView.contentChanged();
 };
@@ -335,13 +334,13 @@ function updateCL(selected){
 	if (cookie !== undefined){
 		$("option[class=customCL]").remove();
 		var selectValues = JSON.parse(Cookies.get('customCL')).data;
-		$.each(selectValues, function(key, value) {   
+		$.each(selectValues, function(key, value) {
 			var cl = JSON.parse(value);
 			$('#myCL')
 				.append($("<option></option>")
 				.attr("value", cl.clModMass)
 				.attr("class", "customCL")
-				.text(cl.clName+" ["+cl.clModMass+" Da]")); 
+				.text(cl.clName+" ["+cl.clModMass+" Da]"));
 		});
 		//select new cl
 		$('#myCL').val(selected);

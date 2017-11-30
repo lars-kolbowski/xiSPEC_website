@@ -3,16 +3,23 @@ session_start();
 $date = date('Y-m-d H:i:s');
 $ip = $_SERVER['REMOTE_ADDR'];
 
-
-$dbname = $_GET['name'];
+$dbname = $_POST['dbName'];
 if($dbname == "") die("no name specified!");
+
+if (isset($_POST['public']))
+  $passHash = 'public';
+else
+  $passHash = password_hash($_POST['dbPass'], PASSWORD_DEFAULT);
+
+
 
 $dir = 'sqlite:../dbs/xiSPEC.db';
 $dbh = new PDO($dir) or die("cannot open the database");
 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$stmt = $dbh->prepare("INSERT INTO databases ('name', 'ip', 'date') VALUES (:name, :ip, :dates)");
+$stmt = $dbh->prepare("INSERT INTO databases ('name', 'pass', 'ip', 'date') VALUES (:name, :pass, :ip, :dates)");
 $stmt->bindParam(':name', $dbname, PDO::PARAM_STR);
+$stmt->bindParam(':pass', $passHash, PDO::PARAM_STR);
 $stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
 $stmt->bindParam(':dates', $date, PDO::PARAM_STR);
 
