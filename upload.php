@@ -73,11 +73,11 @@
 							<section style="margin-bottom:2%;">
 							<div style="margin-bottom:30px;width:30%;min-width:300px;display:inline;min-width:300px;margin-right:2%;float:left;">
 								<input style="width:100%;margin-bottom:10px" class="form-control" id="myPeptide" title="peptide sequence" required type="text" placeholder="Peptide Sequence1[;Peptide Sequence2]" name="peps" autofocus>
-								<textarea class="form-control" style="padding-bottom:0px;" id="myPeaklist" title="peak list [m/z intensity]" required type="text" placeholder="Peak List [m/z intensity]" name="peaklist"></textarea>
+								<textarea class="form-control" style="padding-bottom:0px; line-height: 1.3em;" id="myPeaklist" title="peak list [m/z intensity]" required type="text" placeholder="Peak List [m/z intensity]" name="peaklist"></textarea>
 							</div>
 							<div style="width:68%;display:inline;">
 								<div style="padding-bottom:15px;"> Peptide Preview:</div>
-								<div style="height:210px;font-size:100%;overflow-y: hidden;position: relative;" id="peptideDiv" class="form-control" ></div>
+								<div style="height:210px; font-size:100%; overflow-y:hidden; position:relative; line-height:1.5em;" id="peptideDiv" class="form-control" ></div>
 							</div>
 							</section>
 							<section style="clear:left;text-align:center;margin-bottom:2%;">
