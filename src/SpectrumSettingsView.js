@@ -106,16 +106,6 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 		var rightDiv = dataFlexRow.append("div").attr("class", "settingsDataRight");
 
-		this.crossLinkerModMassWrapper = rightDiv.append("label").attr("class", "flex-row").text("Cross-linker mod mass: ");
-
-		this.crossLinkerModMass = this.crossLinkerModMassWrapper.append('div').attr('class', 'flex-grow')
-			.append("input").attr("placeholder", "CL mod mass").attr("autocomplete", "off").attr("name", "clModMass").attr("required", "").attr("type", "text")
-		;
-
-		this.precursorZ = rightDiv.append("label").attr("class", "flex-row").text("Precursor charge state: ").append('div').attr('class', 'flex-grow')
-			.append("input").attr("type", "number").attr("placeholder", "Charge").attr("autocomplete", "off").attr("name", "preCharge").attr("min", "1").attr("required", "")
-		;
-
 		var ionSelector = rightDiv.append("label").attr("class", "flex-row").text("Fragment Ions: ")
 			.append("div").attr("class", "mulitSelect_dropdown flex-grow")
 		;
@@ -144,7 +134,10 @@ var SpectrumSettingsView = Backbone.View.extend({
 				.attr("name", "ions[]")
 				.attr("id", function(d) { return d.text.replace(" ", ""); })
 				.attr("value", function(d) { return d.value; })
+		;
 
+		this.precursorZ = rightDiv.append("label").attr("class", "flex-row").text("Precursor charge state: ").append('div').attr('class', 'flex-grow')
+			.append("input").attr("type", "number").attr("placeholder", "Charge").attr("autocomplete", "off").attr("name", "preCharge").attr("min", "1").attr("required", "")
 		;
 
 		var toleranceWrapper = rightDiv.append("label").attr("class", "flex-row").text("MS2 tolerance: ");
@@ -166,6 +159,11 @@ var SpectrumSettingsView = Backbone.View.extend({
 		this.toleranceUnit.append("option").attr("value", "ppm").text("ppm");
 		this.toleranceUnit.append("option").attr("value", "Da").text("Da");
 
+		this.crossLinkerModMassWrapper = rightDiv.append("label").attr("class", "flex-row").text("Cross-linker mod mass: ");
+
+		this.crossLinkerModMass = this.crossLinkerModMassWrapper.append('div').attr('class', 'flex-grow')
+			.append("input").attr("placeholder", "CL mod mass").attr("autocomplete", "off").attr("name", "clModMass").attr("required", "").attr("type", "text")
+		;
 
 		//modTable
 		var modTableWrapper = dataForm.append("div").attr("class", "form-control dataTables_wrapper").attr("id", "modificationTable_wrapperOuter");

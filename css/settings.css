@@ -17,28 +17,28 @@
     border: 1px solid #333;
 }
 
-#settingsWrapper .form-control{
+#settings_main .form-control{
   display: inline-block;
   background-color: #fff;
   /* flex-grow: 1; */
 }
 
-#settingsWrapper .settings-tab{
+#settings_main .settings-tab{
   flex-grow: 1;
 }
 
-#settingsWrapper #settingsForm{
+#settings_main #settingsForm{
   flex-grow: 1;
 }
 
-#settingsWrapper .flex-column{
+#settings_main .flex-column{
    display: -webkit-flex;
    display: flex;
    -webkit-flex-direction: column;
    flex-direction: column;
 }
 
-#settingsWrapper .flex-row{
+#settings_main .flex-row{
    display: -webkit-flex;
    display: flex;
    -webkit-flex-direction: row;
@@ -47,12 +47,31 @@
    justify-content: flex-start;
 }
 
-#settingsWrapper .midDataDiv{
+#settings_main .flex-grow {
+    flex-grow: 1;
+    margin-left: 5px;
+}
+
+#settings_main .flex-grow input{
+    width: 100%;
+}
+
+#settings_main .midDataDiv{
   flex-grow: 1;
 }
 
-#settingsWrapper .settings-bottom{
-  /* margin-top:10px; */
+#settings_main .label {
+    font-size: 0.9em;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 300;
+    outline: 0;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+#settings_main .settings-bottom{
   margin-bottom: 20px;
   text-align: center;
   font-size: 1.5em;
@@ -94,7 +113,7 @@
   height: 2.5em;
 }
 
-#settingsWrapper #settingsPeaklist{
+#settings_main #settingsPeaklist{
   height:100%;
 }
 
@@ -174,7 +193,7 @@
 
 #settingsPeaklist{
   height: 170px;
-  min-height: 100px;
+  min-height: 140px;
   min-width: 220px;
   white-space: nowrap;
   line-height: 1.4em;
