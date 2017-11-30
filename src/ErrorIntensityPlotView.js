@@ -34,7 +34,7 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 		var self = this;
 
 		var defaultOptions = {
-
+			alwaysShow: false,
 		};
 		this.options = _.extend(defaultOptions, viewOptions);
 
@@ -288,7 +288,7 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 	},
 
 	showTooltip: function(x, y, data){
-		if (this.model.showSpectrum)
+		if (this.model.showSpectrum && !this.options.alwaysShow)
 			return
 
 		var contents = [["charge", data.charge], ["error", data.error.toFixed(3)], ["Int", data.intensity.toFixed(0)]];

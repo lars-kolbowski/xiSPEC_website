@@ -238,6 +238,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			el:"#errIntDiv",
 			margin: {top: 10, right: 60, bottom: 40, left: 65},
 			svg: "#errIntSVG",
+			alwaysShow: true,
 		});
 
 		window.SettingsView = new SpectrumSettingsView({model: SettingsSpectrumModel, el:"#settingsWrapper"});
