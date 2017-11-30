@@ -227,7 +227,19 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumPanel"});
 		window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
 		window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
-		window.ErrorIntensityPlot = new ErrorIntensityPlotView({model: SpectrumModel, el:"#spectrumPanel"});
+		// window.ErrorIntensityPlot = new ErrorIntensityPlotView({
+		// 	model: SpectrumModel,
+		// 	el:"#spectrumPanel",
+		// 	margin: {top: 110, right: 60, bottom: 50, left: 65}
+		// });
+
+		window.ErrorIntensityPlot = new ErrorIntensityPlotView({
+			model: SpectrumModel,
+			el:"#errIntDiv",
+			margin: {top: 10, right: 60, bottom: 40, left: 65},
+			svg: "#errIntSVG",
+		});
+
 		window.SettingsView = new SpectrumSettingsView({model: SettingsSpectrumModel, el:"#settingsWrapper"});
 
 		if(!dbView){
@@ -254,17 +266,17 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		//ToDo: bottomDiv specList-altList-Wrapper -> BBView?
 		$('.closeTable').click(function(){
 			$(this).closest('.tableDiv').hide();
-			window.Spectrum.resize();
+			window.trigger('resize')
 		});
 
 		$('#toggleSpecList').click(function(){
 			$('#bottomDiv').toggle();
-			window.Spectrum.resize();
+			window.trigger('resize')
 		});
 
 		$('#toggleAltList').click(function(){
 			$('#altDiv').toggle();
-			window.Spectrum.resize();
+			window.trigger('resize')
 		});
 
 		//ToDo: spectrumControls -> BBView?
@@ -385,7 +397,7 @@ function loadSpectrum(rowdata){
 		            			<button id="reset" title="Reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
 		            			<input id="lockZoom" type="checkbox" style="visibility: hidden;">
 		            		</form>
-		            		<button id="toggleView" title="Toggle between quality control/spectrum view" class="btn btn-1 btn-1a">QC</button>
+		            		<!-- <button id="toggleView" title="Toggle between quality control/spectrum view" class="btn btn-1 btn-1a">error/int</button> -->
 		    				<i id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav fa fa-cog" aria-hidden="true"></i>
 		    				<span id="dbControls">
 
@@ -394,41 +406,23 @@ function loadSpectrum(rowdata){
 								<i id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav fa fa-bars" aria-hidden="true"></i>
 								<!-- <i id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-right" aria-hidden="true"></i> -->
 							</span>
-		            	</div>
-	                    <div class="heightFill">
-	                        <svg id="spectrumSVG"></svg>
-	                        <div id="measureTooltip"></div>
-	                    </div>
-					</div>
-				</div><!-- end top div -->
-<!-- 				<div class="gutter gutter-vertical" style="height: 10px;"></div> -->
-<!-- 				<div id="altDiv" class="tableDiv">
-					<i class="fa fa-times-circle closeButton closeTable" id="altListClose"></i>
-					<div id="altListWrapper" class="listWrapper">
-						<div id="altList_main">
-							<span style="color: #fff;">Alternative Explanations for current spectrum:</span>
-							<table id="altListTable" width="100%" style="text-align:center;display:none;">
-								<thead>
-									<tr>
-									    <th>internal_id</th>
-									    <th>id</th>
-									    <th>rank</th>
-									    <th>peptide 1</th>
-									    <th>peptide 2</th>
-									    <th style="min-width: 50px">CL pos 1</th>
-									    <th style="min-width: 50px">CL pos 2</th>
-									    <th>charge</th>
-									    <th>isDecoy</th>
-										<th>score</th>
-										<th>protein</th>
-									    <th>passThreshold</th>
-									    <th>alt_count</th>
-									</tr>
-								</thead>
-							</table>
+						</div>
+						<div class="heightFill">
+						    <svg id="spectrumSVG"></svg>
+						    <div id="measureTooltip"></div>
+						</div>
+						<div id="errIntDiv">
+							<div class='subViewControls'>
+								<span>Error-Intensity plot</span>
+								<i class="fa fa-angle-double-up pointer" id="dockErrInt" aria-hidden="true" title="show error/intensity plot" style="display:none;"></i>
+								<i class="fa fa-angle-double-down pointer" id="minErrInt" aria-hidden="true" title="hide error/intensity plot"></i>
+							</div>
+							<div class="subViewContent">
+								<svg id="errIntSVG"></svg>
+							</div>
 						</div>
 					</div>
-				</div> -->
+				</div><!-- end top div -->
 				<div id="bottomDiv" class="tableDiv">
 				<i class="fa fa-times-circle closeButton closeTable" id="specListClose"></i>
 

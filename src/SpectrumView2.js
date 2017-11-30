@@ -21,7 +21,6 @@ var SpectrumView = Backbone.View.extend({
 		this.svg = d3.select(this.el.getElementsByTagName("svg")[0]);//d3.select(this.el)
 				//~ .append("svg").style("width", "100%").style("height", "100%");
 
-
 		//create graph
 		this.graph = new Graph (this.svg, this.model, {xlabel:"m/z", ylabelLeft:"Intensity", ylabelRight:"% of base Peak"});
 
@@ -114,7 +113,7 @@ var SpectrumView = Backbone.View.extend({
 			this.graph.hide();
 		}
 		else{
-			$('#toggleView')[0].innerHTML = "QC";
+			$('#toggleView')[0].innerHTML = "error/int";
 			$('#lock').css("cursor", "pointer");
 			$('#moveLabels').prop('disabled', false);
 			$('#measuringTool').prop('disabled', false);
@@ -168,16 +167,16 @@ var SpectrumView = Backbone.View.extend({
 
 	measuringTool: function(e){
 		var $target = $(e.target);
-        var selected = $target .is(':checked');
-        this.model.measureMode = selected;
+		var selected = $target .is(':checked');
+		this.model.measureMode = selected;
 		this.graph.measure(selected);
 	},
 
 	moveLabels: function(e){
 
 		var $target = $(e.target);
-        var selected = $target.is(':checked');
-        this.model.moveLabels = selected;
+		var selected = $target.is(':checked');
+		this.model.moveLabels = selected;
 
 		var peaks = this.graph.points;
 
@@ -201,47 +200,48 @@ var SpectrumView = Backbone.View.extend({
 		else{
 			for(p = 0; p < peaks.length; p++){
 				if(peaks[p].labels.length){
-						peaks[p].labels
-							.on(".drag", null)
-							//.style("cursor", "default");
+					peaks[p].labels
+						.on(".drag", null)
+						//.style("cursor", "default")
+					;
 				}
 			}
 		}
 
 	},
 	downloadSVG:function(){
-            var svgSel = d3.select(this.el).selectAll("svg");
-            var svgArr = [svgSel.node()];
-            var svgStrings = CLMSUI.svgUtils.capture (svgArr);
-            var svgXML = CLMSUI.svgUtils.makeXMLStr (new XMLSerializer(), svgStrings[0]);
+		var svgSel = d3.select(this.el).selectAll("svg");
+		var svgArr = [svgSel.node()];
+		var svgStrings = CLMSUI.svgUtils.capture (svgArr);
+		var svgXML = CLMSUI.svgUtils.makeXMLStr (new XMLSerializer(), svgStrings[0]);
 
-            var charge = this.model.JSONdata.annotation.precursorCharge;
-            var pepStrs = this.model.pepStrsMods;
-            var linkSites = Array(this.model.JSONdata.LinkSite.length);
+		var charge = this.model.JSONdata.annotation.precursorCharge;
+		var pepStrs = this.model.pepStrsMods;
+		var linkSites = Array(this.model.JSONdata.LinkSite.length);
 
-            this.model.JSONdata.LinkSite.forEach(function(ls){
-            	linkSites[ls.peptideId] = ls.linkSite;
-            });
+		this.model.JSONdata.LinkSite.forEach(function(ls){
+			linkSites[ls.peptideId] = ls.linkSite;
+		});
 
-            //insert CL sites with #
-            if (linkSites.length > 0){
+		//insert CL sites with #
+		if (linkSites.length > 0){
 
-	            var ins_pepStrs = Array();
-	            pepStrs.forEach(function(pepStr, index){
-					var positions = [];
-					for(var i=0; i<pepStr.length; i++){
-					    if(pepStr[i].match(/[A-Z]/) != null){
-					        positions.push(i);
-					    };
-					}
-					var clAA_index = positions[linkSites[index]]+1;
-	           		var ins_pepStr = pepStr.slice(0, clAA_index) + "#" + pepStr.slice(clAA_index, pepStr.length);
-	           		pepStrs[index] = ins_pepStr;
-	            })
-	        }
+			var ins_pepStrs = Array();
+			pepStrs.forEach(function(pepStr, index){
+				var positions = [];
+				for(var i=0; i<pepStr.length; i++){
+					if(pepStr[i].match(/[A-Z]/) != null){
+						positions.push(i);
+					};
+				}
+				var clAA_index = positions[linkSites[index]]+1;
+				var ins_pepStr = pepStr.slice(0, clAA_index) + "#" + pepStr.slice(clAA_index, pepStr.length);
+				pepStrs[index] = ins_pepStr;
+			})
+		}
 
-            var svg_name = pepStrs.join("-") + "_z=" + charge + ".svg";
+		var svg_name = pepStrs.join("-") + "_z=" + charge + ".svg";
 
-            download (svgXML, 'application/svg', svg_name);
-    },
+		download (svgXML, 'application/svg', svg_name);
+	},
 });

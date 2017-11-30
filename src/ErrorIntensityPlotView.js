@@ -1,6 +1,6 @@
 //		a spectrum viewer
 //
-//      Copyright  2015 Rappsilber Laboratory, Edinburgh University
+//	  Copyright  2015 Rappsilber Laboratory, Edinburgh University
 //
 // 		Licensed under the Apache License, Version 2.0 (the "License");
 // 		you may not use this file except in compliance with the License.
@@ -21,36 +21,48 @@
 var ErrorIntensityPlotView = Backbone.View.extend({
 
 	events : {
-		'click #toggleView' : 'toggleView',
+		// 'click #toggleView' : 'toggleView',
+		'click #minErrInt' : 'minView',
+		'click #dockErrInt' : 'dockView',
 	},
 
-	initialize: function() {
+	initialize: function(viewOptions) {
 
 		this.listenTo(CLMSUI.vent, 'QCabsErr', this.toggleAbsErr);
+		this.listenTo(window, 'resize', _.debounce(this.render));
 
 		var self = this;
 
+		var defaultOptions = {
+
+		};
+		this.options = _.extend(defaultOptions, viewOptions);
+
 		this.absolute = false;
 
-		this.svg = d3.select(this.el.getElementsByTagName("svg")[0]);
 
-		this.margin = {top: 110, right: 60, bottom: 50, left: 65};
+		this.contentDiv = this.el.getElementsByClassName("subViewContent")[0];
 
-		var width = 960 - this.margin.left - this.margin.right;
-		var height = 500 - this.margin.top - this.margin.bottom;
+		var svgId = this.options.svg || this.el.getElementsByTagName("svg")[0];
+		this.svg = d3.select(svgId);
+		// this.svg = this.get('targetSvg') | d3.select(this.el.getElementsByTagName("svg")[0]);
+		var margin = this.options.margin;
+
+		var width = 960 - margin.left - margin.right;
+		var height = 500 - margin.top - margin.bottom;
 
 		this.wrapper = this.svg
 			.append('g')
-			.attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')')
+			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 			.attr('width', width)
 			.attr('height', height)
 			.attr('class', 'wrapper')
-			.style("opacity", 0);
+			// .style("opacity", this.options.alwaysShow ? 1 : 0);
 
 		if (CLMSUI.compositeModelInst !== undefined)
 			this.tooltip = CLMSUI.compositeModelInst.get("tooltipModel");
 		else{
-			target = this.wrapper.node().parentNode.parentNode.parentNode; //this would get you #spectrumPanel
+			target = this.el; //this would get you #spectrumPanel
 			this.tooltip = d3.select(target).append("span")
 				.style("font-size", "small")
 				.style("padding", "0 5px")
@@ -68,6 +80,7 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 	},
 
 	toggleView: function(){
+
 		if (!this.model.showSpectrum){
 			this.render();
 			this.wrapper.style("opacity", 1);
@@ -77,6 +90,22 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 			this.wrapper.style("opacity", 0);
 			this.background.attr("height", 0);
 		}
+	},
+
+	minView: function(){
+		console.log('minView');
+		$('#minErrInt').hide();
+		$('#dockErrInt').show();
+		$(this.contentDiv).hide();
+		window.trigger('resize');
+	},
+
+	dockView: function(){
+		console.log('dockView');
+		$('#dockErrInt').hide();
+		$('#minErrInt').show();
+		$(this.contentDiv).show();
+		window.trigger('resize');
 	},
 
 	clear: function() {
@@ -99,8 +128,8 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 			var peptideId = fragment.peptideId;
 			var fragId = fragment.id;
 			var lossy = false;
-      		if (fragment.type.includes("Loss"))
-        		lossy = true;
+			if (fragment.type.includes("Loss"))
+				lossy = true;
 			fragment.clusterInfo.forEach(function(cluster){
 				var firstPeakId = self.model.JSONdata.clusters[cluster.Clusterid].firstPeakId;
 				var point = {
@@ -117,11 +146,15 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 			});
 		});
 
-		var cx = this.wrapper.node().parentNode.width.baseVal.value;
-		var cy = this.wrapper.node().parentNode.height.baseVal.value;
+		// var cx = this.wrapper.node().parentNode.width.baseVal.value;
+		// var cy = this.wrapper.node().parentNode.height.baseVal.value;
+		var cx = $(this.el).width();
+		var cy = $(this.el).height();
 
-		this.width = cx - self.margin.left - self.margin.right;
-		this.height = cy - self.margin.top - self.margin.bottom;
+		var margin_bottom = this.absolute ? self.options.margin.bottom + 20 : self.options.margin.bottom;
+
+		this.width = cx - self.options.margin.left - self.options.margin.right;
+		this.height = cy - self.options.margin.top - margin_bottom;
 
 		var xmax = d3.max(this.data, function(d) { return d['intensity']; });
 		// var ymax = d3.max(this.data, function(d) { return d['error']; });
@@ -130,13 +163,14 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 		var ymin = this.absolute ? 0 : 0 - ymax;
 
 		this.x = d3.scale.linear()
-		          .domain([ 0, xmax ])
-		          .range([ 0, this.width ]);
+				  .domain([ 0, xmax ])
+				  .range([ 0, this.width ]);
 
 
 		this.y = d3.scale.linear()
-			      .domain([ ymin, ymax ]).nice()
-			      .range([ this.height, 0 ]).nice();
+			.domain([ ymin, ymax ]).nice()
+			.range([ this.height, 0 ]).nice()
+		;
 
 		var yTicks = this.height / 40;
 		var xTicks = this.width / 100;
@@ -166,7 +200,7 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 			// remove every other xTickLabel
 			var ticks = d3.selectAll('.xAxis').selectAll(".tick text");
 			ticks.attr("class", function(d,i){
-			    if(i%2 != 0) d3.select(this).remove();
+				if(i%2 != 0) d3.select(this).remove();
 			});
 
 		this.xLabel = this.wrapper.append("text")
@@ -174,7 +208,8 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 			.text("Intensity")
 			.attr("dy","2.4em")
 			.style("text-anchor","middle").style("pointer-events","none");
-		this.xLabel.attr("x", this.width/2).attr("y", this.height);
+		var xLabelHeight = this.absolute ? this.height : this.height-20;
+		this.xLabel.attr("x", this.width/2).attr("y", xLabelHeight);
 
 		// draw the y axis
 		self.yAxis = d3.svg.axis().scale(this.y).ticks(yTicks).orient("left").tickFormat(d3.format("s"));
@@ -238,14 +273,14 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 			.attr("r", 3);
 
 		function getColor(d){
-		  if (d.lossy){
-		    if (d['peptideId'] == 0) return self.model.p1color_loss;
-		    else return self.model.p2color_loss;
-		  }
-		  else{
-		    if (d['peptideId'] == 0) return self.model.p1color;
-		    else return self.model.p2color;
-		  }
+			if (d.lossy){
+				if (d['peptideId'] == 0) return self.model.p1color_loss;
+				else return self.model.p2color_loss;
+			}
+			else{
+				if (d['peptideId'] == 0) return self.model.p1color;
+				else return self.model.p2color;
+			}
 		};
 
 		this.updateHighlights();
