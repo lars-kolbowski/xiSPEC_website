@@ -1,6 +1,6 @@
 <?php
 
-session_start();
+if (session_status() === PHP_SESSION_NONE){session_start();}
 unset($_SESSION['db']);
 
 $target_dir = "../../uploads/".session_id()."/";

@@ -1,5 +1,5 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE){session_start();}
 $date = date('Y-m-d H:i:s');
 $ip = $_SERVER['REMOTE_ADDR'];
 
