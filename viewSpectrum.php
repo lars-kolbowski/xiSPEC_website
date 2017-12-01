@@ -119,12 +119,6 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumPanel"});
 		window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
 		window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
-		// window.ErrorIntensityPlot = new ErrorIntensityPlotView({
-		// 	model: SpectrumModel,
-		// 	el:"#spectrumPanel",
-		// 	margin: {top: 110, right: 60, bottom: 50, left: 65}
-		// });
-
 		window.ErrorIntensityPlot = new ErrorIntensityPlotView({
 			model: SpectrumModel,
 			el:"#errIntDiv",
@@ -192,7 +186,6 @@ function loadSpectrum(rowdata){
 	});
 };
 
-
 		</script>
 		</head>
 
@@ -204,16 +197,16 @@ function loadSpectrum(rowdata){
 						<div class="overlay" id="topDiv-overlay"></div>
 						<div id="spectrumPanel">
 
-						<div class="dynDiv" id="settingsWrapper">
-							<div class="dynDiv_moveParentDiv">
-								<span class="dynTitle">Settings</span>
-								<i class="fa fa-times-circle closeButton settingsCancel" id="closeSettings"></i>
+							<div class="dynDiv" id="settingsWrapper">
+								<div class="dynDiv_moveParentDiv">
+									<span class="dynTitle">Settings</span>
+									<i class="fa fa-times-circle closeButton settingsCancel" id="closeSettings"></i>
+								</div>
+								<div class="dynDiv_resizeDiv_tl draggableCorner"></div>
+								<div class="dynDiv_resizeDiv_tr draggableCorner"></div>
+								<div class="dynDiv_resizeDiv_bl draggableCorner"></div>
+								<div class="dynDiv_resizeDiv_br draggableCorner"></div>
 							</div>
-							<div class="dynDiv_resizeDiv_tl draggableCorner"></div>
-							<div class="dynDiv_resizeDiv_tr draggableCorner"></div>
-							<div class="dynDiv_resizeDiv_bl draggableCorner"></div>
-							<div class="dynDiv_resizeDiv_br draggableCorner"></div>
-						</div>
 						<div id="spectrumControls">
 							<i class="btn btn-1a btn-topNav fa fa-home fa-xi" style='top: 0px;' onclick="window.location = 'index.php';" title="Home"></i>
 							<i class="btn btn-1a btn-topNav fa fa-github fa-xi" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>

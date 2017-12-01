@@ -12,22 +12,19 @@
 		<script type="text/javascript" src="./src/PrecursorInfoView.js"></script>
 		<script type="text/javascript" src="./src/model.js"></script>
 		<script type="text/javascript" src="./js/upload.js"></script>
-        <script type="text/javascript" src="./vendor/spin.js"></script>
-
+		<script type="text/javascript" src="./vendor/spin.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.ui.widget.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.iframe-transport.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.fileupload.js"></script>
 
-        <link rel="stylesheet" href="./css/dropdown.css" />
+		<link rel="stylesheet" href="./css/dropdown.css" />
 	</head>
 	<body>
 		<!-- Sidebar -->
 		<?php include("navigation.php");?>
-
-  	 	<!-- Main -->
-   	 	<div id="main">
-
-   	 	<!-- Intro -->
+			<!-- Main -->
+			<div id="main">
+			<!-- Intro -->
 			<section id="top" class="one">
 				<div class="container" id="jquery-fileupload">
 					<h1 class="page-header accordionHead"> <span class="accordionSym">-</span> Data Upload - Upload your data as mzIdentML + mzML pair</h1>
@@ -43,20 +40,20 @@
 						<div class="fileupload_info">
 						<table>
 							<tr id="mzid_fileBox">
-							  <td style="text-align: center;">mzIdentML file:</td>
-							  <td>
-							  	<span class="fileName">Select a mzIdentML file to upload</span>
-							  	<span class="statusBox" data-filetype="mzid"></span>
-							  	<input class="uploadCheckbox" type="checkbox" id="mzid_checkbox" style="visibility: hidden;">
-							  </td>
+								<td style="text-align: center;">mzIdentML file:</td>
+								<td>
+									<span class="fileName">Select a mzIdentML file to upload</span>
+									<span class="statusBox" data-filetype="mzid"></span>
+									<input class="uploadCheckbox" type="checkbox" id="mzid_checkbox" style="visibility: hidden;">
+								</td>
 							</tr>
 							<tr id="mzml_fileBox">
-							  <td style="text-align: center;">mzML file:</td>
-							  <td>
-							  	<span class="fileName">Select a mzML file to upload</span>
-							  	<span class="statusBox" data-filetype="mzml"></span>
-							  	<input class="uploadCheckbox" type="checkbox" id="mzml_checkbox" style="visibility: hidden;">
-							  </td>
+								<td style="text-align: center;">mzML file:</td>
+								<td>
+									<span class="fileName">Select a mzML file to upload</span>
+									<span class="statusBox" data-filetype="mzml"></span>
+									<input class="uploadCheckbox" type="checkbox" id="mzml_checkbox" style="visibility: hidden;">
+								</td>
 							</tr>
 						</table>
 						</div>
@@ -90,40 +87,31 @@
 
 								<div style="margin-right:2%;width:10%;display:inline;">
 									<span class="input-charge-plus">
-							  			<input class="form-control"   required id="myPrecursorZ" title="charge state" placeholder="z" name="preCharge" autocomplete="off">
-							  		</span>
-						  		</div>
+											<input class="form-control"   required id="myPrecursorZ" title="charge state" placeholder="z" name="preCharge" autocomplete="off">
+										</span>
+									</div>
 
 								<div class="mulitSelect_dropdown" style="margin-right:2%;">
 									<input type="text" class="form-control btn-drop" id="ionSelection" title="fragment ion types" value="Select ions..." readonly>
 									<div class="mulitSelect_dropdown-content mutliSelect">
 										<ul>
-							                <li>
-							                    <label><input type="checkbox" class="ionSelectChkbox" value="peptide" id="PeptideIon" name="ions[]" />Peptide ion</label></li>
-							                <li>
-							                    <label><input type="checkbox" class="ionSelectChkbox" value="a" id="AIon" name="ions[]" />A ion</label></li>
-							                <li>
-							                    <label><input type="checkbox" class="ionSelectChkbox" value="b" id="BIon" name="ions[]" />B ion</label></li>
-							                <li>
-							                    <label><input type="checkbox" class="ionSelectChkbox" value="c" id="CIon" name="ions[]" />C ion</label></li>
-							                <li>
-							                    <label><input type="checkbox" class="ionSelectChkbox" value="x" id="XIon" name="ions[]" />X ion</label></li>
-							                <li>
-							                    <label><input type="checkbox" class="ionSelectChkbox" value="y" id="YIon" name="ions[]" />Y ion</label></li>
-							                <li>
-							                    <label><input type="checkbox" class="ionSelectChkbox" value="z" id="ZIon" name="ions[]" />Z ion</label></li>
+											<li>
+												<label><input type="checkbox" class="ionSelectChkbox" value="peptide" id="PeptideIon" name="ions[]" />Peptide ion</label></li>
+											<li>
+												<label><input type="checkbox" class="ionSelectChkbox" value="a" id="AIon" name="ions[]" />A ion</label></li>
+											<li>
+												<label><input type="checkbox" class="ionSelectChkbox" value="b" id="BIon" name="ions[]" />B ion</label></li>
+											<li>
+												<label><input type="checkbox" class="ionSelectChkbox" value="c" id="CIon" name="ions[]" />C ion</label></li>
+											<li>
+												<label><input type="checkbox" class="ionSelectChkbox" value="x" id="XIon" name="ions[]" />X ion</label></li>
+											<li>
+												<label><input type="checkbox" class="ionSelectChkbox" value="y" id="YIon" name="ions[]" />Y ion</label></li>
+											<li>
+												<label><input type="checkbox" class="ionSelectChkbox" value="z" id="ZIon" name="ions[]" />Z ion</label></li>
 										</ul>
 									</div>
 								</div>
-
-
-	<!-- 							<select class="form-control" style="margin-right:2%;width:15%;display:inline;" id="myFragmentation" name="fragMethod">
-									<option value="HCD">HCD</option>
-									<option value="CID">CID</option>
-									<option value="ETD">ETD</option>
-									<option value="ETciD">ETciD</option>
-									<option value="EThcD">EThcD</option>
-								</select> -->
 
 								<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myTolerance" title="error tolerance" type="number" min="0" step="0.1" placeholder="Tolerance" name="ms2Tol" autocomplete="off">
 
@@ -137,10 +125,10 @@
 								<table id="modificationTable" class="display" width="100%" style="text-align:center;">
 									<thead>
 										<tr>
-										    <th>Mod-Input</th>
-										    <th>Modification</th>
-										    <th>Mass<span class="resetMod" title="reset modification parameters to default"></span></th>
-										    <th>Specificity</th>
+											<th>Mod-Input</th>
+											<th>Modification</th>
+											<th>Mass<span class="resetMod" title="reset modification parameters to default"></span></th>
+											<th>Specificity</th>
 										</tr>
 									</thead>
 								</table>
@@ -148,7 +136,7 @@
 							</section>
 							<div class="page-header center" style="background-color: #555;margin-top:30px;">
 								<input class="btn btn-1 btn-1a network-control" type="submit" value="View Spectrum" id="mybutton3">
-							    <input class="btn btn-1 btn-1a network-control" type="button" value="Example" onclick="doExample(); return false;" id="mybutton2">
+								<input class="btn btn-1 btn-1a network-control" type="button" value="Example" onclick="doExample(); return false;" id="mybutton2">
 								<input class="btn btn-1 btn-1a network-control" type="button" value="Reset" onclick="doClearForm();" id="mybutton1">
 							</div>
 						</form>
@@ -181,13 +169,13 @@
 		</div>
 		<div class="overlay" style="z-index: -1; visibility: hidden;"></div>
 
-        <script type="text/javascript">
-     	<?php echo "var example = ".($_GET['v'] == "example" ? "true;\r\n" : "false;\r\n");?>
-        	$( document ).ready(function() {
-        		if (example)
-        			doExample();
-        	});
-        </script>
+		<script type="text/javascript">
+		<?php echo "var example = ".($_GET['v'] == "example" ? "true;\r\n" : "false;\r\n");?>
+			$( document ).ready(function() {
+				if (example)
+					doExample();
+			});
+		</script>
 
 	</body>
 </html>
