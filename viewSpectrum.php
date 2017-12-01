@@ -1,13 +1,20 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 require("php/functions.php");
 
 if(isset($_GET['db']) && !empty($_GET['db'])){
-	require("php/checkAuth.php");
+	if (session_status() === PHP_SESSION_NONE){session_start();}
+	$_SESSION['db'] = $_GET['db'];
+
+	require("php/dbConn.php");
+	require("php/checkPublic.php");
+	if($_SESSION['access'] !== $_SESSION['db']){
+		header('Location: auth.php');
+	}
 	require("php/logAccess.php");
 }
 
@@ -25,7 +32,7 @@ else{
 	<head>
 		<title>xiSPEC</title>
 			<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-			<meta name="description" content="common platform for downstream analysis of CLMS data" />
+			<meta name="description" content="mass spectrometry data analysis and visualization tool" />
 			<meta name="viewport" content="width=device-width, initial-scale=1">
 			<meta name="apple-mobile-web-app-capable" content="yes">
 			<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -186,18 +193,16 @@ function loadSpectrum(rowdata){
 };
 
 
-    </script>
-    </head>
+		</script>
+		</head>
 
-    <body>
-        <!-- Main -->
-        <div id="mainView">
-
-            <div class="mainContent">
-
-            	 <div id="topDiv"><!--style="height: calc(60% - 5px);">-->
-            	 <div class="overlay" id="topDiv-overlay"></div>
-	                <div id="spectrumPanel">
+		<body>
+			<!-- Main -->
+			<div id="mainView">
+				<div class="mainContent">
+					<div id="topDiv"><!--style="height: calc(60% - 5px);">-->
+						<div class="overlay" id="topDiv-overlay"></div>
+						<div id="spectrumPanel">
 
 						<div class="dynDiv" id="settingsWrapper">
 							<div class="dynDiv_moveParentDiv">
@@ -209,37 +214,36 @@ function loadSpectrum(rowdata){
 							<div class="dynDiv_resizeDiv_bl draggableCorner"></div>
 							<div class="dynDiv_resizeDiv_br draggableCorner"></div>
 						</div>
-		            	<div id="spectrumControls">
-		            		<i class="btn btn-1a btn-topNav fa fa-home fa-xi" style='top: 0px;' onclick="window.location = 'index.php';" title="Home"></i>
-		            		<i class="btn btn-1a btn-topNav fa fa-github fa-xi" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>
-	            			<i class="btn btn-1a btn-topNav fa fa-download" aria-hidden="true" id="downloadSVG" title="download SVG" style="cursor: pointer;"></i>
+						<div id="spectrumControls">
+							<i class="btn btn-1a btn-topNav fa fa-home fa-xi" style='top: 0px;' onclick="window.location = 'index.php';" title="Home"></i>
+							<i class="btn btn-1a btn-topNav fa fa-github fa-xi" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>
+							<i class="btn btn-1a btn-topNav fa fa-download" aria-hidden="true" id="downloadSVG" title="download SVG" style="cursor: pointer;"></i>
 							<label class="btn" title="toggle moveable labels on/off">Move Labels<input id="moveLabels" type="checkbox"></label>
-		            		<button id="clearHighlights" class="btn btn-1 btn-1a">Clear Highlights</button>
-		            		<label class="btn" title="toggle measure mode on/off">Measure<input id="measuringTool" type="checkbox"></label>
-		            		<form id="setrange">
-		            			<label class="btn" title="m/z range" style="cursor: default;">m/z:</label>
+							<button id="clearHighlights" class="btn btn-1 btn-1a">Clear Highlights</button>
+							<label class="btn" title="toggle measure mode on/off">Measure<input id="measuringTool" type="checkbox"></label>
+							<form id="setrange">
+								<label class="btn" title="m/z range" style="cursor: default;">m/z:</label>
 								<label class="btn" for="lockZoom" title="Lock current zoom level" id="lock" class="btn">🔓</label>
-		            			<input type="text" id="xleft" size="7" title="m/z range from:">
-		            			<span>-</span>
-		            			<input type="text" id="xright" size="7" title="m/z range to:">
-		            			<input type="submit" id="rangeSubmit" value="Set" class="btn btn-1 btn-1a" style="display: none;">
-		            			<span id="range-error"></span>
-		            			<button id="reset" title="Reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
-		            			<input id="lockZoom" type="checkbox" style="visibility: hidden;">
-		            		</form>
-		            		<!-- <button id="toggleView" title="Toggle between quality control/spectrum view" class="btn btn-1 btn-1a">error/int</button> -->
-		    				<i id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav fa fa-cog" aria-hidden="true"></i>
-		    				<span id="dbControls">
-
-		    					<?php if(!isset($_SESSION['db'])) echo '<i id="saveDB" title="Save" class="btn btn-1a btn-topNav fa fa-floppy-o" aria-hidden="true"></i>';?>
+								<input type="text" id="xleft" size="7" title="m/z range from:">
+								<span>-</span>
+								<input type="text" id="xright" size="7" title="m/z range to:">
+								<input type="submit" id="rangeSubmit" value="Set" class="btn btn-1 btn-1a" style="display: none;">
+								<span id="range-error"></span>
+								<button id="reset" title="Reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
+								<input id="lockZoom" type="checkbox" style="visibility: hidden;">
+							</form>
+								<!-- <button id="toggleView" title="Toggle between quality control/spectrum view" class="btn btn-1 btn-1a">error/int</button> -->
+							<i id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav fa fa-cog" aria-hidden="true"></i>
+							<span id="dbControls">
+								<?php if(!isset($_SESSION['db'])) echo '<i id="saveDB" title="Save" class="btn btn-1a btn-topNav fa fa-floppy-o" aria-hidden="true"></i>';?>
 								<!-- <i id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-left" aria-hidden="true"></i> -->
 								<i id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav fa fa-bars" aria-hidden="true"></i>
 								<!-- <i id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-right" aria-hidden="true"></i> -->
 							</span>
 						</div>
 						<div class="heightFill">
-						    <svg id="spectrumSVG"></svg>
-						    <div id="measureTooltip"></div>
+							<svg id="spectrumSVG"></svg>
+							<div id="measureTooltip"></div>
 						</div>
 						<div id="errIntDiv">
 							<div class='subViewControls'>
