@@ -1,0 +1,15 @@
+.container{
+	/* text-align: center; */
+	margin: 2% 33%;
+	font-size: 1.2em;
+	line-height: 2em;
+}
+
+.btn-2{
+	border: 1px solid #888!important;
+	color: #000;
+}
+.btn-2:active, .btn-2:hover {
+    color: #fff;
+    background: #888!important;
+}
