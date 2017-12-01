@@ -258,7 +258,7 @@ $( document ).ready(function() {
 		formData.append("mzid_fn", $('#mzid_fileBox .fileName').html());
 
 		$.ajax({
-	        url: "php/parseData.php",
+			url: "php/parseData.php",
 			type: 'POST',
 			data: formData,
 			//async: false,

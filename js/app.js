@@ -62,7 +62,7 @@ $(function() {
 			datatype: "json",
 			async: false,
 			data: fd,
-			url: "php/saveDataSet.php?name="+$('#saveDbName').val(),
+			url: "php/saveDataSet.php",
 			success: function(response) {
 				response = JSON.parse(response);
 				if (response.hasOwnProperty('error'))
