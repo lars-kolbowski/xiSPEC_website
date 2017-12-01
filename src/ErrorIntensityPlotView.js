@@ -197,11 +197,14 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 			.attr('class', 'axis xAxis')
 			.call(this.xAxis);
 
+
+		var ticks = d3.selectAll('.xAxis').selectAll(".tick text");
+		ticks.attr("class", function(d,i){
+			// remove 0 for non-absolute
+			if(!this.absolute && i == 0) d3.select(this).remove();
 			// remove every other xTickLabel
-			var ticks = d3.selectAll('.xAxis').selectAll(".tick text");
-			ticks.attr("class", function(d,i){
-				if(i%2 != 0) d3.select(this).remove();
-			});
+			if(i%2 != 0) d3.select(this).remove();
+		});
 
 		this.xLabel = this.wrapper.append("text")
 			.attr("class", "xAxisLabel")
