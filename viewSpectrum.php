@@ -4,8 +4,6 @@
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
 
-require("php/functions.php");
-
 if(isset($_GET['db']) && !empty($_GET['db'])){
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 	$_SESSION['db'] = $_GET['db'];
@@ -143,48 +141,6 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		}
 
 });
-
-// ToDo: change to BB handling
-function loadSpectrum(rowdata){
-
-	console.log(rowdata['alt_count']);
-	var id = rowdata['id'];
-	var mzid = rowdata['mzid'];
-
-	$("#altListId").html("Alternatives for "+rowdata['mzid']);
-
-	if(rowdata['alt_count'] > 1){
-
-		$('#nav-altListTable').removeClass('disabled');
-		$('#altExpNum').text("(" + rowdata['alt_count'] + ")");
-		window.altListTable.DataTable.ajax.url( "php/getAltList.php?id=" + mzid).load();
-	}
-	else{
-		$('#altExpNum').text("(0)");
-		$('#nav-altListTable').addClass('disabled');
-	}
-
-	$.ajax({
-		url: 'php/getSpectrumReq.php?i='+id,
-		type: 'GET',
-		async: false,
-		cache: false,
-		contentType: false,
-		processData: false,
-		success: function (returndata) {
-			var json = JSON.parse(returndata);
-			window.SpectrumModel.requestId = id;
-			window.SpectrumModel.mzid = mzid;
-			//console.log(window.SpectrumModel.requestId);
-			window.SpectrumModel.request_annotation(json);
-			//var json_data_copy = jQuery.extend({}, window.SpectrumModel.JSONdata);
-			//var json_req = window.SpectrumModel.get('JSONrequest');
-			//window.SpectrumModel.settingsModel = SettingsSpectrumModel;
-			//window.SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req, realModel: SpectrumModel}); //JSONrequest necessary?
-
-		}
-	});
-};
 
 		</script>
 		</head>

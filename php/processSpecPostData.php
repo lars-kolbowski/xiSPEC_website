@@ -1,4 +1,7 @@
 <?php
+
+	require("functions.php");
+
 	$mods = [];
 	if(isset($_POST['mods'])){
 			$mods = $_POST['mods'];

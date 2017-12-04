@@ -8,12 +8,13 @@ import os
 import shutil
 import logging
 import ntpath
-
+import xmltodict
+sys.path.append(os.path.abspath("py"))
 
 dev = False
 
 if dev:
-    logFile = "log/parser.log"
+    logFile = "/home/lars/Xi/xiSPEC/log/parser.log"
 else:
     logFile = "../log/parser.log"
 
@@ -31,11 +32,11 @@ def path_leaf(path):
     return tail or ntpath.basename(head)
 
 
-def write_to_db(multiple_inj_list, cur):
+def write_to_db(inj_list, cur):
     cur.executemany("""
 INSERT INTO jsonReqs (
     'id',
-    'json',
+    'annotation',
     'mzid',
     'pep1',
     'pep2',
@@ -48,9 +49,10 @@ INSERT INTO jsonReqs (
     'isDecoy',
     'protein',
     'file',
-    'scanID'
+    'scanID',
+    'peakList_id'
 )
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", multiple_inj_list)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", inj_list)
     return
 
 
@@ -142,27 +144,28 @@ def mzid_to_json(item, mzidreader):
     targetDecoy = []
     for spectrumId_item in item:    # len = 1 for linear
         # crosslinkId = spectrumId_item["cross-link spectrum identification item"]    # id of both peptides has to match
-        JSON_dict["annotation"]["precursorCharge"] = spectrumId_item['chargeState']
-        pepId = spectrumId_item['peptide_ref']
-        peptide = mzidreader.get_by_id(pepId)
-        peptideEvidences = [mzidreader.get_by_id(s['peptideEvidence_ref']) for s in spectrumId_item['PeptideEvidenceRef']]
 
-        #ToDo: isDecoy might not be defined. How to handle? (could make use of pyteomics.mzid.is_decoy())
+        # Target-Decoy
+        peptideEvidences = [mzidreader.get_by_id(s['peptideEvidence_ref']) for s in spectrumId_item['PeptideEvidenceRef']]
+        # ToDo: isDecoy might not be defined. How to handle? (could make use of pyteomics.mzid.is_decoy())
         try:
             decoy = peptideEvidences[0]['isDecoy']
         except KeyError:
             decoy = None
         targetDecoy.append({"peptideId": pepIndex, 'isDecoy': decoy}) # TODO: multiple PeptideEvidenceRefs TD?
 
+        # proteins
         proteins = [mzidreader.get_by_id(p['dBSequence_ref']) for p in peptideEvidences]
         accessions = [p['accession'] for p in proteins]
+
         # convert pepsequence to dict
+        pepId = spectrumId_item['peptide_ref']
+        peptide = mzidreader.get_by_id(pepId)
         peptide_dict = {"sequence": []}
         for aa in peptide['PeptideSequence']:
             peptide_dict['sequence'].append({"Modification": "", "aminoAcid": aa})
 
         # add in modifications
-
         if 'Modification' in peptide.keys():
             for mod in peptide['Modification']:
                 link_index = 0  # TODO: multilink support
@@ -189,6 +192,7 @@ def mzid_to_json(item, mzidreader):
 
             pepIndex += 1
 
+        # other parameters
         JSON_dict['annotation']['precursorCharge'] = spectrumId_item['chargeState']
         JSON_dict['annotation']['isDecoy'] = targetDecoy
         JSON_dict['annotation']['proteins'] = accessions
@@ -218,27 +222,36 @@ if not dev:
 
 try:
     if dev:
-        con = sqlite3.connect('test.db')
+        con = sqlite3.connect('../test.db')
     else:
         con = sqlite3.connect(dbfolder + sys.argv[3] + '.db')
     cur = con.cursor()
     cur.execute("DROP TABLE IF EXISTS jsonReqs")
     cur.execute(
-        "CREATE TABLE jsonReqs(id INT PRIMARY KEY, "
-        "json TEXT, "
-        "mzid TEXT, "
-        "pep1 TEXT, "
-        "pep2 TEXT, "
-        "linkpos1 INT, "
-        "linkpos2 INT, "
-        "charge INT, "
-        "passThreshold INT, "
-        "rank INT, "
-        "scores TEXT, "
-        "isDecoy INT, "
-        "protein TEXT, "
-        "file TEXT, "
-        "scanID INT)")
+        "CREATE TABLE jsonReqs("
+            "id INT PRIMARY KEY, "
+            "annotation TEXT, "
+            "mzid TEXT, "
+            "pep1 TEXT, "
+            "pep2 TEXT, "
+            "linkpos1 INT, "
+            "linkpos2 INT, "
+            "charge INT, "
+            "passThreshold INT, "
+            "rank INT, "
+            "scores TEXT, "
+            "isDecoy INT, "
+            "protein TEXT, "
+            "file TEXT, "
+            "scanID INT, "
+            "peakList_id INT)"
+    )
+    cur.execute("DROP TABLE IF EXISTS peakLists")
+    cur.execute(
+        "CREATE TABLE peakLists("
+            "id INT PRIMARY KEY, "
+            "peakList TEXT)"
+    )
     # cur.execute("DROP TABLE IF EXISTS mzids")
     # cur.execute("CREATE TABLE mzids (id INT PRIMARY KEY, mzid TEXT)")
 
@@ -254,36 +267,63 @@ returnJSON = {
 
 try:
     if dev:
-        baseDir = "/data/rappstore/users/lkolbowski/xiSPEC/"
+        baseDir = "/home/lars/work/xiSPEC/"
         mzid_file = baseDir+"DSSO_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD_CID-only.mzid"
-        mzml_file = baseDir+"B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
+        peakList_file = baseDir + "centroid_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
 
-        # mzid_file = baseDir+"PD_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD-(2).mzid"
-        # mzml_file = baseDir+"B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
-        # mzid_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzid"
-        # mzml_file = "B160803_02_Lumos_LK_IN_190_PC_BS3_ETciD_DT_1.mzML"
     else:
         mzid_file = sys.argv[1]
-        mzml_file = sys.argv[2]
+        peakList_file = sys.argv[2]
         upload_folder = "../../uploads/" + sys.argv[3]
 
     mzid_reader = py_mzid.MzIdentML(mzid_file)
-    #premzml = mzml.PreIndexedMzML(mzml_file)
 
-    pymzmlReader = pymzml.run.Reader(mzml_file)
+    # extract and map spectrumIdentificationProtocol which includes annotaion data like FragmentTolerance
+    with open(mzid_file) as fd:
+        doc = xmltodict.parse(fd.read())
 
-    mz_index = 0
+    spectraData_ProtocolMap = {}
+
+    SpectrumIdentifications = doc['MzIdentML']['AnalysisCollection']['SpectrumIdentification']
+    if not type(SpectrumIdentifications) == list:
+        SpectrumIdentifications = [SpectrumIdentifications]
+
+    SpectrumIdentificationProtocols = doc['MzIdentML']['AnalysisProtocolCollection']['SpectrumIdentificationProtocol']
+    if not type(SpectrumIdentificationProtocols) == list:
+        SpectrumIdentificationProtocols = [SpectrumIdentificationProtocols]
+
+    SpectrumIdentificationProtocols_dict = {}
+    for SpectrumIdentificationProtocol in SpectrumIdentificationProtocols:
+        SpectrumIdentificationProtocols_dict[SpectrumIdentificationProtocol['@id']] = SpectrumIdentificationProtocol
+
+    for SpectrumIdentification in SpectrumIdentifications:
+        spectrumIdentificationProtocol_ref = SpectrumIdentification['@spectrumIdentificationProtocol_ref']
+        spectraData_ref = SpectrumIdentification['InputSpectra']['@spectraData_ref']
+        spectraData_ProtocolMap[spectraData_ref] = {
+            'protocol_ref': spectrumIdentificationProtocol_ref,
+            'fragmentTolerance': SpectrumIdentificationProtocols_dict[spectrumIdentificationProtocol_ref]['FragmentTolerance']['cvParam']
+        }
+
+    # peakList file
+    peakList_fileName = ntpath.basename(peakList_file).lower()
+
+    if peakList_fileName.endswith('.mzml'):
+        peakList_fileType = 'mzml'
+        # premzml = mzml.PreIndexedMzML(mzml_file)
+        pymzmlReader = pymzml.run.Reader(peakList_file)
+
+
+    mzidItem_index = 0
     specIdItem_index = 0
     multipleInjList_jsonReqs = []
+    multipleInjList_peakLists = []
 
-
+    # main loop
     # mzid_item = mzid_reader.next()
     for mzid_item in mzid_reader:
         # find pairs of cross-linked items
         CLSpecIdItemSet = set()
         linear_index = -1   # negative index values for linear peptides
-
-        info = {}
 
         for specIdItem in mzid_item['SpectrumIdentificationItem']:
             if 'cross-link spectrum identification item' in specIdItem.keys():
@@ -341,13 +381,40 @@ try:
         # peakList
         peaklist = get_peaklist_from_mzml(scan)
 
+        if peakList_fileType == 'mzml':
+            peakList = "\n".join(["%s %s" % (mz, i) for mz, i in scan.peaks if i > 0])
+
+        # ToDo: mgf
+        elif peakList_fileType == 'mgf':
+            peakList = ""
+
+        multipleInjList_peakLists.append([mzidItem_index, peakList])
+
+        spectrumIdentificationProtocolInfo = spectraData_ProtocolMap[mzid_item['spectraData_ref']]
+        try:
+            # ToDo check if forward and backward ppm error are the same
+            ms2Tolerance = spectrumIdentificationProtocolInfo['fragmentTolerance'][0]
+            ms2TolValue = re.search('([0-9.]+)', ms2Tolerance['@value']).groups()[0]
+            if ms2Tolerance['@unitAccession'] == 'UO:0000169':
+                ms2TolUnit = 'ppm'
+            elif ms2Tolerance['@unitAccession'] == 'UO:0000221':
+                ms2TolUnit = 'Da'
+            else:
+                ms2TolUnit = ms2Tolerance['@unitName']
+
+        except (KeyError, AttributeError):
+            ms2TolValue = '20.0'
+            ms2TolUnit = 'ppm'
+            returnJSON['errors'].append(
+                {"type": "mzidParseError", "message": "could not parse ms2tolerance. Falling back to default values."})
+
         for alt in alternatives:
             json_dict = alt['json_dict']
             json_dict['annotation']['mzid'] = mzid_item['id']
-            json_dict['peaks'] = peaklist
+            # json_dict['peaks'] = peaklist
+            json_dict['peaks'] = []
 
-            # ms2 tolerance ToDo: necessary? what to use as standard values?
-            json_dict['annotation']['fragmentTolerance'] = {"tolerance": 20, "unit": "ppm"}
+            json_dict['annotation']['fragmentTolerance'] = {"tolerance": ms2TolValue, "unit": ms2TolUnit}
 
             # fragmentation ions
             json_dict['annotation']['ions'] = [{"type": "PeptideIon"}]
@@ -356,7 +423,6 @@ try:
                 'beam-type collision-induced dissociation': ["BIon", "YIon"],
                 'collision-induced dissociation': ["BIon", "YIon"],
                 'electron transfer dissociation': ["CIon", "ZIon"],
-
             }
 
             # get fragMethod and translate that to Ion Types
@@ -417,8 +483,8 @@ try:
             #     specIdItem_index, json.dumps(json_dict), mzid, passThreshold, rank))
 
             multipleInjList_jsonReqs.append(
-                [specIdItem_index,
-                 json.dumps(json_dict),
+                 [specIdItem_index,
+                 json.dumps(json_dict['annotation']),
                  mzid,
                  pep1,
                  pep2,
@@ -431,15 +497,20 @@ try:
                  isDecoy,
                  accessions,
                  rawFileName,
-                 scanID]
+                 scanID,
+                 mzidItem_index]
             )
             specIdItem_index += 1
 
-        mz_index += 1
+        mzidItem_index += 1
 
         if specIdItem_index % 500 == 0:
             write_to_db(multipleInjList_jsonReqs, cur)
             multipleInjList_jsonReqs = []
+
+            cur.executemany("""INSERT INTO peakLists ('id', 'peaklist') VALUES (?, ?)""", multipleInjList_peakLists)
+            multipleInjList_peakLists = []
+
             con.commit()
             if dev:
                 break
@@ -448,6 +519,10 @@ try:
     if len(multipleInjList_jsonReqs) > 0:
         write_to_db(multipleInjList_jsonReqs, cur)
         multipleInjList_jsonReqs = []
+
+        cur.executemany("""INSERT INTO peakLists ('id', 'peaklist') VALUES (?, ?)""", multipleInjList_peakLists)
+        multipleInjList_peakLists = []
+
         con.commit()
 
     # delete uploaded files after they have been parsed
@@ -468,3 +543,5 @@ except Exception as e:
     logger.exception(e)
     returnJSON['errors'].append(
         {"type": "Error", "message": e})
+
+
