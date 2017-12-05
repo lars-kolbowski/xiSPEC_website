@@ -29,8 +29,9 @@
 				<div class="container" id="jquery-fileupload">
 					<h1 class="page-header accordionHead"> <span class="accordionSym">-</span> Data Upload - Upload your data as mzIdentML + mzML pair</h1>
 					<div class="accordionContent" <?php echo ($_GET['v'] == "example" ? 'style="display: none;"' : '');?>>
-						<div style="display:flex;">
-							<input id="fileupload" type="file" name="files[]" accept=".mzid,.mzml" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
+						<div style="margin-left: 1em; font-size: 0.6em;"> Note: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' for MSconvert)</div>
+						<div style="display:flex; margin-top: 0.5em;">
+							<input id="fileupload" type="file" name="files[]" accept=".mzid,.mzml,.mgf" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
 							<label for="fileupload"><span class="uploadbox"></span><span class="btn">Choose file(s)</span></label>
 							<div id="uploadProgress">
 								<div class="file_upload_bar" style="width: 0%;"><div class="file_upload_percent"></div></div>
@@ -40,7 +41,7 @@
 						<div class="fileupload_info">
 						<table>
 							<tr id="mzid_fileBox">
-								<td style="text-align: center;">mzIdentML file:</td>
+								<td style="text-align: center;">Identification file:</td>
 								<td>
 									<span class="fileName">Select a mzIdentML file to upload</span>
 									<span class="statusBox" data-filetype="mzid"></span>
@@ -48,9 +49,9 @@
 								</td>
 							</tr>
 							<tr id="mzml_fileBox">
-								<td style="text-align: center;">mzML file:</td>
+								<td style="text-align: center;">Peak list file:</td>
 								<td>
-									<span class="fileName">Select a mzML file to upload</span>
+									<span class="fileName">Select a mzML/mgf file to upload</span>
 									<span class="statusBox" data-filetype="mzml"></span>
 									<input class="uploadCheckbox" type="checkbox" id="mzml_checkbox" style="visibility: hidden;">
 								</td>
@@ -82,7 +83,9 @@
 									<option value="" disabled selected>Select cross-linker...</option>
 									<option value="add">add your own...</option>
 									<option value="0">none (linear peptide)</option>
-									<option value="138.06807961">BS3 [138.06807961 Da]</option>
+									<option value="138.068080">BS3 [138.068080 Da]</option>
+									<option value="82.041865">SDA [82.041865 Da]</option>
+									<!-- <option value="158.0038">DSSO [158.0038 Da]</option> -->
 								</select>
 
 								<div style="margin-right:2%;width:10%;display:inline;">
