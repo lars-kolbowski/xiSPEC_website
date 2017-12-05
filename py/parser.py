@@ -37,7 +37,8 @@ def path_leaf(path):
 
 
 def write_to_db(inj_list, cur):
-    cur.executemany("""
+    try:
+        cur.executemany("""
 INSERT INTO jsonReqs (
     'id',
     'annotation',
@@ -57,12 +58,16 @@ INSERT INTO jsonReqs (
     'peakList_id'
 )
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", inj_list)
-    return
+    except sqlite3.Error as err:
+        return err
+    return True
 
 
 def add_to_modlist(mod, modlist):
     if mod['name'] == "unknown_modification":
         mod['name'] = "({0:.2f})".format(mod['monoisotopicMassDelta'])
+
+    mod['monoisotopicMassDelta'] = round(float(mod['monoisotopicMassDelta']), 6)
 
     if mod['name'] in [m['name'] for m in modlist]:
         old_mod = modlist[[m['name'] for m in modlist].index(mod['name'])]
@@ -185,7 +190,10 @@ def mzid_to_json(item, mzid_reader):
                         mod['name'] = mod_aliases[mod['name']]
                     if 'cross-link donor' not in mod.keys():
                         mod['name'] = add_to_modlist(mod, all_mods)  # save to all mods list and get back new_name
-                        peptide_dict['sequence'][mod_location]['Modification'] = mod['name']  # TODO: abbreviations?
+                        if mod_location == -1:  # ToDo: N-terminal modification
+                            peptide_dict['sequence'][0]['Modification'] = mod['name']
+                        else:
+                            peptide_dict['sequence'][mod_location]['Modification'] = mod['name']
 
                         # add CL locations
                 if 'cross-link donor' in mod.keys() or 'cross-link acceptor' in mod.keys():
@@ -335,9 +343,9 @@ try:
     if dev:
         baseDir = "/home/lars/work/xiSPEC/"
         mzidFile = baseDir + "DSSO_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD_CID-only.mzid"
-        mzidFile = baseDir + 'PeptideShaker_mzid_1_2_example.mzid'
+        # mzidFile = baseDir + 'PeptideShaker_mzid_1_2_example.mzid'
         peakList_file = baseDir + "centroid_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
-        peakList_file = baseDir + "B170918_12_Lumos_LK_IN_90_HSA-DSSO-HCD_Rep1.mgf"
+        # peakList_file = baseDir + "B170918_12_Lumos_LK_IN_90_HSA-DSSO-HCD_Rep1.mgf"
 
     else:
         mzidFile = sys.argv[1]
