@@ -11,7 +11,7 @@ if(isset($_GET['db']) && !empty($_GET['db'])){
 	require("php/dbConn.php");
 	require("php/checkPublic.php");
 	if($_SESSION['access'] !== $_SESSION['db']){
-		header('Location: auth.php');
+		header('Location: auth.php?db='.$_GET['db']);
 	}
 	require("php/logAccess.php");
 }

@@ -23,7 +23,8 @@
 
 					<?php if(isset($_GET['e']) && $_GET['e'] == -1) echo 'wrong password!'; ?>
 					<form action='php/checkAuth.php' method='POST'>
-						The database <?php echo $_SESSION['db']; ?> is private and password protected!</br>
+						The database <?php echo $_GET['db']; ?> is private and password protected!</br>
+						<input style="display: none;" name="dbName" value="<?php echo $_GET['db']; ?>">
 						<label class="flex-row label">
 							Password: <div class="flex-grow"><input style="max-width: 20em;" class="form-control" required length=30 name="dbPass" type="password" placeholder="Enter password"></div>
 						</label>

@@ -7,10 +7,10 @@
 	}
 
 	if (password_verify($_POST['dbPass'], $_SESSION['pwHash'])){
-		$_SESSION['access'] = $_SESSION['db'];
-		header("Location: ../viewSpectrum.php?db=".$_SESSION['db']);
+		$_SESSION['access'] = $_POST['dbName'];
+		header("Location: ../viewSpectrum.php?db=".$_POST['dbName']);
 	}
 	else
-		header("Location: ../auth.php?e=-1");
+		header("Location: ../auth.php?db=".$_POST['dbName']."&e=-1");
 
 ?>

@@ -17,9 +17,7 @@
 	else{
 		if ($dbpass === 'public')
 			$_SESSION['access'] = $dbname;
-		else{
-			$_SESSION['pwHash'] = $dbpass;
-		}
+		$_SESSION['pwHash'] = $dbpass;
 	}
 
 ?>
