@@ -304,7 +304,7 @@ function doExample(){
 	$("#myTolerance").val("20.0");
 	$("#myPrecursorZ").val("4");
 	$("#myPrecursorZ").change();
-	$("#myCL").val("138.06807961");
+	$("#myCL").val("138.068080");
 	$("#myToleranceUnit").val("ppm");
 	$("#myCL").change();
 

@@ -83,9 +83,12 @@
 									<option value="" disabled selected>Select cross-linker...</option>
 									<option value="add">add your own...</option>
 									<option value="0">none (linear peptide)</option>
-									<option value="138.068080">BS3 [138.068080 Da]</option>
+									<option value="138.068080">BS3/DSS [138.068080 Da]</option>
+									<option value="142.093177">BS3/DSS-d4 [142.093177 Da]</option>
 									<option value="82.041865">SDA [82.041865 Da]</option>
-									<!-- <option value="158.0038">DSSO [158.0038 Da]</option> -->
+									<option value="158.003765">DSSO [158.003765 Da]</option>
+									<option value="-19.972072">Photo-Methionine [-19.972072 Da]</option>
+									<option value="-19.972072">Photo-Leucine [-16.0313 Da]</option>
 								</select>
 
 								<div style="margin-right:2%;width:10%;display:inline;">
