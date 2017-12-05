@@ -8,3 +8,5 @@ dbs/saved/*
 !dbs/saved/.gitkeep
 log/*
 !log/.gitkeep
+
+test\.db
