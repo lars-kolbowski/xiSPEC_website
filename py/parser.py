@@ -39,7 +39,7 @@ def path_leaf(path):
 def write_to_db(inj_list, cur):
     try:
         cur.executemany("""
-INSERT INTO jsonReqs (
+INSERT INTO identifications (
     'id',
     'annotation',
     'mzid',
@@ -300,9 +300,9 @@ try:
     else:
         con = sqlite3.connect(dbfolder + sys.argv[3] + '.db')
     cur = con.cursor()
-    cur.execute("DROP TABLE IF EXISTS jsonReqs")
+    cur.execute("DROP TABLE IF EXISTS identifications")
     cur.execute(
-        "CREATE TABLE jsonReqs("
+        "CREATE TABLE identifications("
             "id INT PRIMARY KEY, "
             "annotation TEXT, "
             "mzid TEXT, "
@@ -372,7 +372,7 @@ try:
 
     mzidItem_index = 0
     specIdItem_index = 0
-    multipleInjList_jsonReqs = []
+    multipleInjList_identifications = []
     multipleInjList_peakLists = []
 
     # main loop
@@ -534,7 +534,7 @@ try:
                 linkpos1 = -1
                 linkpos2 = -1
 
-            multipleInjList_jsonReqs.append(
+            multipleInjList_identifications.append(
                  [specIdItem_index,
                  json.dumps(json_dict['annotation']),
                  mzid,
@@ -557,8 +557,8 @@ try:
         mzidItem_index += 1
 
         if specIdItem_index % 500 == 0:
-            write_to_db(multipleInjList_jsonReqs, cur)
-            multipleInjList_jsonReqs = []
+            write_to_db(multipleInjList_identifications, cur)
+            multipleInjList_identifications = []
 
             cur.executemany("""INSERT INTO peakLists ('id', 'peaklist') VALUES (?, ?)""", multipleInjList_peakLists)
             multipleInjList_peakLists = []
@@ -568,9 +568,9 @@ try:
                 break
 
     # once its done submit the last reqs to DB
-    if len(multipleInjList_jsonReqs) > 0:
-        write_to_db(multipleInjList_jsonReqs, cur)
-        multipleInjList_jsonReqs = []
+    if len(multipleInjList_identifications) > 0:
+        write_to_db(multipleInjList_identifications, cur)
+        multipleInjList_identifications = []
 
         cur.executemany("""INSERT INTO peakLists ('id', 'peaklist') VALUES (?, ?)""", multipleInjList_peakLists)
         multipleInjList_peakLists = []
@@ -597,5 +597,3 @@ except Exception as e:
     logger.exception(e)
     returnJSON['errors'].append(
         {"type": "Error", "message": e})
-
-

@@ -15,12 +15,12 @@
 		$json['error'] = "Authentication error occured!";
 		die(json_encode($json));
 	}
-	
+
 	$dir = 'sqlite:../dbs/'.$dbname.'.db';
 	$dbh = new PDO($dir) or die("cannot open the database");
 	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-	$query = "SELECT * FROM jsonReqs as jr JOIN peakLists AS pl ON jr.peakList_id = pl.id WHERE jr.id ='".$_GET['id']."';";
+	$query = "SELECT * FROM identifications as i JOIN peakLists AS pl ON i.peakList_id = pl.id WHERE i.id ='".$_GET['id']."';";
 
 	foreach ($dbh->query($query) as $row)
 	{
