@@ -46,11 +46,11 @@ function getUserIP(){
 	$stmt->bindParam(':dates', $date, PDO::PARAM_STR);
 
 	try {
-			$stmt->execute();
+		$stmt->execute();
 
-			$db_path = "../dbs/";
-			$tmpDB = $db_path."tmp/".session_id().".db";
-			$newDB = $db_path."saved/".$dbname.".db";
+		$db_path = "../dbs/";
+		$tmpDB = $db_path."tmp/".session_id().".db";
+		$newDB = $db_path."saved/".$dbname.".db";
 		if (!copy($tmpDB, $newDB)) {
 				$json['error'] = "Error saving database!";
 		}

@@ -10,7 +10,10 @@ if (empty($_POST)){
 	$justSaved = 'false';
 	if(isset($_GET['sid']) || isset($_GET['db'])){
 		$tmpDB = false;
-		require("php/dbConn.php");
+
+		$dir = 'sqlite:dbs/xiSPEC.db';
+		$xiSPECdb = new PDO($dir) or die("cannot open the database");
+		$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		//share db link
 		if(!empty($_GET['sid'])){
