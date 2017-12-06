@@ -25,7 +25,7 @@ a:active, a:hover {
 
 a {
 	color: #fff;
-	text-decoration: none;
+	text-decoration: underline;
 }
 
 a:hover, a:focus {
@@ -101,6 +101,7 @@ a:focus {
 	/* background-color: #fff; */
 	border: 1px solid transparent;
 	border-radius: 4px 4px 0 0;
+	text-decoration: none;
 }
 
 .nav-tabs>li>a:hover {

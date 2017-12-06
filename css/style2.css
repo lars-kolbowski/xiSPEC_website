@@ -350,9 +350,29 @@ body, input, select, textarea {
     margin: 4px 0px;
 }
 
-#saveModal .content{
-    margin: 10px;
-    color: #fff;
+.modal{
+  background: #333;
+  width:650px; 
+  text-align: center;
+}
+
+.modal .content{
+  margin: 1em 1.5em;
+  color: #b1b1b1;
+  font-size: 1.2em;
+}
+
+.modal .content strong{
+  color: #ffffff;
+  font-weight: 400;
+}
+
+.modal .content .label{
+  margin-top: 1em;
+}
+
+.modal .header{
+  font-size: 1.3em;
 }
 
 #saveModal #saveDBerror{
