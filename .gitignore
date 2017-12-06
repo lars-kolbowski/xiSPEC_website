@@ -10,3 +10,5 @@ log/*
 !log/.gitkeep
 
 test\.db
+
+dbs/xiSPEC\.db
