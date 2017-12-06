@@ -47,7 +47,7 @@ var specListTableView = Backbone.View.extend({
 			//"lengthMenu": [ 3, 5, 10 ],
 			// "processing": true,
 			// "serverSide": true,
-			"ajax": "php/getSpecList.php",
+			"ajax": "php/getSpecList.php?db="+this.model.get('database'),
 			"columns": [
 				{ "title": "internal_id", "data": "id" },	//0
 				{ "title": "id", "data": "mzid" },	//1

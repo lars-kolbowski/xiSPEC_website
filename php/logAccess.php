@@ -3,9 +3,8 @@
 	if(!isset($xiSPECdb))
 		die('No database connection!');
 
-	$dbname = $_SESSION['db'];
 	$stmt = $xiSPECdb->prepare("SELECT id FROM databases WHERE name = :name;");
-	$stmt->bindParam(':name', $dbname, PDO::PARAM_STR);
+	$stmt->bindParam(':name', $dbName, PDO::PARAM_STR);
 	$stmt->execute();
 	$dbid = $stmt->fetchColumn();
 

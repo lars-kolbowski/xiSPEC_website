@@ -18,42 +18,26 @@ function loadSpectrum(rowdata){
 
 		$('#nav-altListTable').removeClass('disabled');
 		$('#altExpNum').text("(" + rowdata['alt_count'] + ")");
-		window.altListTable.DataTable.ajax.url( "php/getAltList.php?id=" + mzid).load();
+		window.altListTable.DataTable.ajax.url( "php/getAltList.php?id=" + mzid + "&db=" + window.SpectrumModel.get('database')).load();
 	}
 	else{
 		$('#altExpNum').text("(0)");
 		$('#nav-altListTable').addClass('disabled');
 	}
 
-	// var fd = new FormData();
-	// fd.append('peakList_id', peakList_id);
-	// fd.append('pep1', rowdata['pep1']);
-	// fd.append('pep2', rowdata['pep2']);
-	// fd.append('linkpos1', rowdata['linkpos1']);
-	// fd.append('linkpos2', rowdata['linkpos2']);
-	// fd.append('preCharge', rowdata['charge']);
-	// fd.append('', rowdata['']);
-
-
-
 	$.ajax({
-		url: 'php/createSpecReq.php?id='+id,
+		url: 'php/createSpecReq.php?id='+id + "&db=" + window.SpectrumModel.get('database'),
 		type: 'GET',
 		async: false,
 		cache: false,
 		contentType: false,
 		processData: false,
 		success: function (returndata) {
-			console.log('test');
+
 			var json = JSON.parse(returndata);
 			window.SpectrumModel.requestId = id;
 			window.SpectrumModel.mzid = mzid;
 			window.SpectrumModel.request_annotation(json);
-
-			//var json_data_copy = jQuery.extend({}, window.SpectrumModel.JSONdata);
-			//var json_req = window.SpectrumModel.get('JSONrequest');
-			//window.SpectrumModel.settingsModel = SettingsSpectrumModel;
-			//window.SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req, realModel: SpectrumModel}); //JSONrequest necessary?
 
 		}
 	});
@@ -90,9 +74,13 @@ $(function() {
 	});
 
 	$("#saveModal").easyModal();
-
 	$('#saveDB').click(function(){
 		$("#saveModal").trigger('openModal');
+	});
+
+	$("#shareModal").easyModal();
+	$('#shareDB').click(function(){
+		$("#shareModal").trigger('openModal');
 	});
 
 	$('#publicDBchkBox').click(function(){
@@ -130,5 +118,26 @@ $(function() {
 			}
 		});
 	});
+
+	$('#createShareLink').click(function(){
+		var dbName = $('#dbName').text();
+		$.ajax({
+			type: "GET",
+			async: false,
+			url: "php/generateShareUrl.php?db="+dbName,
+			success: function(response) {
+				response = JSON.parse(response);
+				if(response.error){
+					console.log(response.error);
+				}
+				else{
+					$('#shareLinkSpan').html(' - or share the link below');
+					$('#shareLink').val(response.url);
+					$('#shareLinkLabel').show();
+				}
+			}
+		});
+	});
+
 
 });

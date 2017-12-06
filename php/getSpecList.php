@@ -1,11 +1,18 @@
 <?php
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 
-	if (isset($_SESSION['db'])){
-		$dbname = "saved/".$_SESSION['db'];
-	}
-	else
+	if (isset($_SESSION['tmpDB'])){
 		$dbname = "tmp/".session_id();
+	}
+	else {
+		$dbname = "saved/".$_GET['db'];
+	}
+
+	if(!in_array($_GET['db'], $_SESSION['access'])){
+		$json['error'] = "Authentication error occured!";
+		die(json_encode($json));
+	}
+
 
 	$dir = 'sqlite:../dbs/'.$dbname.'.db';
 

@@ -4,31 +4,87 @@
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
 
-if(isset($_GET['db']) && !empty($_GET['db'])){
-	if (session_status() === PHP_SESSION_NONE){session_start();}
-	$_SESSION['db'] = $_GET['db'];
-
-	require("php/dbConn.php");
-	require("php/checkPublic.php");
-	if($_SESSION['access'] !== $_SESSION['db']){
-		header('Location: auth.php?db='.$_GET['db']);
-	}
-	require("php/logAccess.php");
-}
-
 if (empty($_POST)){
+	if (session_status() === PHP_SESSION_NONE){session_start();}
 	$dbView = TRUE;
+	if(isset($_GET['sid']) || isset($_GET['db'])){
+		$tmpDB = false;
+		require("php/dbConn.php");
+
+		if(!empty($_GET['sid'])){
+			$stmt = $xiSPECdb->prepare("SELECT name FROM databases WHERE share = :share;");
+			$stmt->bindParam(':share', $_GET['sid'], PDO::PARAM_STR);
+			$stmt->execute();
+			$dbName = $stmt->fetchColumn();
+
+			if(!$dbName)
+				header('Location: index.php');
+
+			if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
+			if(!in_array($dbName, $_SESSION['access'])){
+				$_SESSION['access'][] = $dbName;
+			}
+
+			$shareLink = "http://" . $_SERVER['SERVER_NAME'] . "/xiSPEC/viewSpectrum.php?sid=" . $_GET['sid'];
+		}
+		else if(!empty($_GET['db'])){
+			$stmt = $xiSPECdb->prepare("SELECT share, pass FROM databases WHERE name = :name;");
+			$stmt->bindParam(':name', $_GET['db'], PDO::PARAM_STR);
+			$stmt->execute();
+			$result = $stmt->fetch();
+
+			if (!$result) {
+				header("Location: index.php");
+				exit();
+			}
+
+			//public check
+			if ($result['pass'] === 'public'){
+				if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
+				if(!in_array($_GET['db'], $_SESSION['access'])){
+					$_SESSION['access'][] = $_GET['db'];
+				}
+				$public = true;
+			}
+
+			if($result['share'] != null)
+				$shareLink = (isset($_SERVER['HTTPS']) ? "https" : "http") . $_SERVER['SERVER_NAME'] . "/xiSPEC/viewSpectrum.php?sid=" . $result['share'];
+			else
+				$shareLink = false;
+
+			$dbName = $_GET['db'];
+		}
+		//check Authentication
+		if(!in_array($dbName, $_SESSION['access'])){
+			header('Location: auth.php?db='.$_GET['db']);
+		}
+		//log access
+		require("php/logAccess.php");
+	}
+	elseif(isset($_SESSION['tmpDB'])){
+		$dbName = $_SESSION['tmpDB'];
+		$tmpDB = true;
+		if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
+		if(!in_array($dbName, $_SESSION['access'])){
+			$_SESSION['access'][] = $dbName;
+		}
+	}
+	else{
+		header('Location: index.php');
+	}
+
 }
 else{
 	$dbView = FALSE;
 	require('php/processSpecPostData.php');
 }
+
 ?>
 
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>xiSPEC</title>
+		<title>xiSPEC<?php if(isset($dbName)) echo " - ".$dbName; ?></title>
 			<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 			<meta name="description" content="mass spectrometry data analysis and visualization tool" />
 			<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -77,7 +133,11 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 ?>
 			<script>
 
-		var model_vars = {baseDir: "", xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/"};
+		var model_vars = {
+			baseDir: "",
+			xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/",
+			<?php if(isset($dbName)) echo 'database: "'.$dbName.'"'; ?>
+		};
 
 		SpectrumModel = new AnnotatedSpectrumModel(model_vars);
 		SettingsSpectrumModel = new AnnotatedSpectrumModel(model_vars);
@@ -184,7 +244,12 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 								<!-- <button id="toggleView" title="Toggle between quality control/spectrum view" class="btn btn-1 btn-1a">error/int</button> -->
 							<i id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav fa fa-cog" aria-hidden="true"></i>
 							<span id="dbControls">
-								<?php if(!isset($_SESSION['db'])) echo '<i id="saveDB" title="Save" class="btn btn-1a btn-topNav fa fa-floppy-o" aria-hidden="true"></i>';?>
+								<?php
+								if($dbView){
+									if($tmpDB) echo '<i id="saveDB" title="Save" class="btn btn-1a btn-topNav fa fa-floppy-o" aria-hidden="true"></i>';
+									else echo '<i id="shareDB" title="Share" class="btn btn-1a btn-topNav fa fa-share-alt" aria-hidden="true"></i>';
+								}
+								?>
 								<!-- <i id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-left" aria-hidden="true"></i> -->
 								<i id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav fa fa-bars" aria-hidden="true"></i>
 								<!-- <i id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-right" aria-hidden="true"></i> -->
@@ -235,9 +300,9 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			</div>
 		</div><!-- MAIN -->
 
-		<!-- Modal -->
-		<div id="saveModal" role="dialog" class="modal" style="background: #333; width:650px; text-align: center; z-index: 2147483648;">
-			<div class="header" style="background: #750000; color:#fff;">Save your dataset</div>
+		<!-- Save Modal -->
+		<div id="saveModal" role="dialog" class="modal">
+			<div class="header" style="background: #750000; color:#fff;">Save your data set</div>
 			<div class="content" id="saveModal_content">
 				<div id="saveDBerror"></div>
 				<form id='saveDB_form'>
@@ -252,13 +317,34 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 						<div class="flex-grow"><input class="form-control" required length=30 id="saveDbPassControl" name="dbPass" type="password" placeholder="Retype password"></div>
 					</label>
 
-					<input type="submit" id="saveDataSet" class="btn btn-1 btn-1a" value="save">
+					<input type="submit" id="saveDataSet" class="btn btn-1 btn-1a" style="font-size: 1em;" value="save">
 				</form>
-	<!-- 			<div id="shareLink" class="btn clearfix" style="font-size: 1.1em;margin:10px 5px;">
-					<button id="requestShareLink" type="submit" class="btn btn-1a" >Click here to generate a link for later access or sharing</button>
-				</div> -->
 			</div>
 		</div>
-		<!-- End Modal -->
+		<!-- End Save Modal -->
+		<!-- Share Modal -->
+		<div id="shareModal" role="dialog" class="modal">
+			<div class="header" style="background: #750000; color:#fff;">Share your data set: <span id='dbName'><?php if (isset($_GET['db'])) echo $_GET['db']; ?></span></div>
+			<div class="content" id="shareModal_content">
+				<?php
+
+					$link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://". $_SERVER['SERVER_NAME'] . "/xiSPEC/viewSpectrum.php?db=" . $dbName;
+					if (isset($public)){
+						echo 'Your dataset is public - you can go ahead and share the link below</br><label class="flex-row label">url: <div class="flex-grow"><input type="text" class="form-control" value="'.$link.'" readonly onClick="this.select();"></div></label>';
+					}
+					else {
+						echo 'Your dataset is private - you can either share the password protected link:</br><label class="flex-row label">url (password protected): <div class="flex-grow"><input type="text" class="form-control" value="'.$link.'" readonly onClick="this.select();"></div></label></br>';
+						if(!$shareLink){
+							echo '<span id="shareLinkSpan">or <a id="createShareLink" class="pointer">generate a share link</a> - </span><strong>Anyone</strong> with the link will be able view this data set!';
+							echo '<label class="flex-row label" id="shareLinkLabel" style="display: none;">url: <div class="flex-grow"><input type="text" id="shareLink" class="form-control" value="" readonly onClick="this.select();"></div></label>';
+						}
+						else{
+							echo 'or share the link below - <strong>Anyone</strong> with the link will be able view this data set!';
+							echo '<label class="flex-row label" id="shareLinkLabel">url: <div class="flex-grow"><input type="text" id="shareLink" class="form-control" value="'.$shareLink.'" readonly onClick="this.select();"></div></label>';
+						}
+					}
+				 ?>
+						</div>
+		<!-- End Share Modal -->
 	</body>
 </html>

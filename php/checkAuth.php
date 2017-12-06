@@ -1,13 +1,25 @@
 <?php
+
+	require("dbConn.php");
+
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 
-	if (!isset($_SESSION['pwHash']) || !isset($_POST['dbPass']) || !isset($_SESSION['db'])) {
+	if (!isset($_POST['dbPass']) || !isset($_POST['dbName'])) {
 		header("Location: ../upload.php");
 		exit();
 	}
 
-	if (password_verify($_POST['dbPass'], $_SESSION['pwHash'])){
-		$_SESSION['access'] = $_POST['dbName'];
+	$stmt = $xiSPECdb->prepare("SELECT pass FROM databases WHERE name = :name;");
+	$stmt->bindParam(':name', $_POST['dbName'], PDO::PARAM_STR);
+	$stmt->execute();
+	$passHash = $stmt->fetchColumn();
+
+	if (password_verify($_POST['dbPass'], $passHash)){
+		if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
+
+		if(!in_array($_POST['dbName'], $_SESSION['access'])){
+			$_SESSION['access'][] = $_POST['dbName'];
+		}
 		header("Location: ../viewSpectrum.php?db=".$_POST['dbName']);
 	}
 	else

@@ -47,7 +47,7 @@ var altListTableView = Backbone.View.extend({
 			//"ordering": true,
 			"order": [[2, "desc"], [9, "desc"]],
 			//"info":     false,
-			"ajax": "php/getAltList.php?id=-1",
+			"ajax": "php/getAltList.php?id=-1&db="+this.model.get('database'),
 			"columns": [
 				{ "title": "internal_id", "data": "id" },		//0
 				{ "title": "id", "data": "mzid" }, 	//1
