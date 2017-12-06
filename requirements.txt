@@ -12,7 +12,6 @@ logging==0.4.9.6
 lxml==4.0.0
 nbformat==4.4.0
 numpy==1.13.3
-pkg-resources==0.0.0
 plotly==2.0.16
 pymzml==0.7.8
 pyteomics==3.4.2
