@@ -6,11 +6,13 @@
 
 if (empty($_POST)){
 	if (session_status() === PHP_SESSION_NONE){session_start();}
-	$dbView = TRUE;
+	$dbView = true;
+	$justSaved = 'false';
 	if(isset($_GET['sid']) || isset($_GET['db'])){
 		$tmpDB = false;
 		require("php/dbConn.php");
 
+		//share db link
 		if(!empty($_GET['sid'])){
 			$stmt = $xiSPECdb->prepare("SELECT name FROM databases WHERE share = :share;");
 			$stmt->bindParam(':share', $_GET['sid'], PDO::PARAM_STR);
@@ -27,7 +29,15 @@ if (empty($_POST)){
 
 			$shareLink = "http://" . $_SERVER['SERVER_NAME'] . "/xiSPEC/viewSpectrum.php?sid=" . $_GET['sid'];
 		}
+
+		//normal db link
 		else if(!empty($_GET['db'])){
+
+			if(isset($_SESSION[$_GET['db']])){
+				unset($_SESSION[$_GET['db']]);
+				$justSaved = 'true';
+			}
+
 			$stmt = $xiSPECdb->prepare("SELECT share, pass FROM databases WHERE name = :name;");
 			$stmt->bindParam(':name', $_GET['db'], PDO::PARAM_STR);
 			$stmt->execute();
@@ -84,7 +94,7 @@ else{
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>xiSPEC<?php if(isset($dbName)) echo " - ".$dbName; ?></title>
+		<title>xiSPEC<?php if(isset($dbName) && !$tmpDB) echo " - ".$dbName; ?></title>
 			<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 			<meta name="description" content="mass spectrometry data analysis and visualization tool" />
 			<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -144,11 +154,12 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 
 		SpectrumModel.otherModel = SettingsSpectrumModel;
 		SettingsSpectrumModel.otherModel = SpectrumModel;
-		$(function() {
 
 		<?php
+			//ToDo: php vars to js - find nicer way to handle this
 			if($dbView){
 				echo 'window.dbView = true;';
+				echo 'window.justSaved = '.$justSaved.';';
 			}
 			else{
 				echo 'window.dbView = false;';
@@ -156,6 +167,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 				echo 'var json_req = '.$postJSON.';';
 			}
 		?>
+		$(function() {
 
 		if(dbView){
 			window.SpectrumModel.requestId = "0";
@@ -302,7 +314,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 
 		<!-- Save Modal -->
 		<div id="saveModal" role="dialog" class="modal">
-			<div class="header" style="background: #750000; color:#fff;">Save your data set</div>
+			<div class="header" style="background: #750000; color:#fff;">Save your dataset</div>
 			<div class="content" id="saveModal_content">
 				<div id="saveDBerror"></div>
 				<form id='saveDB_form'>
@@ -310,7 +322,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 						Name: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbName" name="dbName" type="text" placeholder="Enter a name for your dataset"></div>
 					</label>
 					<label class="flex-row label" style="line-height: 1.5em; margin: 1.5em 0em;">
-						Public: <input id="publicDBchkBox" class="pointer" name="public" type="checkbox"> <span style="text-transform: initial; letter-spacing: initial; color: #ccc;">(checking this will allow anyone who knows the name of your data set to view it.)</span>
+						Public: <input id="publicDBchkBox" class="pointer" name="public" type="checkbox"> <span style="text-transform: initial; letter-spacing: initial; color: #ccc;">(checking this will allow anyone who knows the name of your dataset to view it.)</span>
 					</label>
 					<label class="flex-row label" id="dbPassLabel">
 						Password: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbPass" name="dbPass" type="password" placeholder="Enter password"></div>
@@ -324,8 +336,9 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		<!-- End Save Modal -->
 		<!-- Share Modal -->
 		<div id="shareModal" role="dialog" class="modal">
-			<div class="header" style="background: #750000; color:#fff;">Share your data set: <span id='dbName'><?php if (isset($_GET['db'])) echo $_GET['db']; ?></span></div>
+			<div class="header" style="background: #750000; color:#fff;">Share your dataset: <span id='dbName'><?php if (isset($_GET['db'])) echo $_GET['db']; ?></span></div>
 			<div class="content" id="shareModal_content">
+				<div id='justSavedMsg' style="line-height: 2em;"></div>
 				<?php
 
 					$link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://". $_SERVER['SERVER_NAME'] . "/xiSPEC/viewSpectrum.php?db=" . $dbName;
@@ -335,11 +348,11 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 					else {
 						echo 'Your dataset is private - you can either share the password protected link:</br><label class="flex-row label">url (password protected): <div class="flex-grow"><input type="text" class="form-control" value="'.$link.'" readonly onClick="this.select();"></div></label></br>';
 						if(!$shareLink){
-							echo '<span id="shareLinkSpan">or <a id="createShareLink" class="pointer">generate a share link</a> - </span><strong>Anyone</strong> with the link will be able view this data set!';
+							echo '<span id="shareLinkSpan">or <a id="createShareLink" class="pointer">generate a share link</a> - </span><strong>Anyone</strong> with the link will be able view this dataset!';
 							echo '<label class="flex-row label" id="shareLinkLabel" style="display: none;">url: <div class="flex-grow"><input type="text" id="shareLink" class="form-control" value="" readonly onClick="this.select();"></div></label>';
 						}
 						else{
-							echo 'or share the link below - <strong>Anyone</strong> with the link will be able view this data set!';
+							echo 'or share the link below - <strong>Anyone</strong> with the link will be able view this dataset!';
 							echo '<label class="flex-row label" id="shareLinkLabel">url: <div class="flex-grow"><input type="text" id="shareLink" class="form-control" value="'.$shareLink.'" readonly onClick="this.select();"></div></label>';
 						}
 					}

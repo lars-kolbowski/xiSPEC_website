@@ -79,12 +79,24 @@ $(function() {
 	});
 
 	$("#shareModal").easyModal();
+	if (window.justSaved){
+		$("#shareModal").trigger('openModal');
+		$("#shareModal").css('z-index', 2000000001);
+		$('#justSavedMsg').html("Your dataset was successfully saved!")
+	}
+
 	$('#shareDB').click(function(){
+		$('#justSavedMsg').html("")
 		$("#shareModal").trigger('openModal');
 	});
 
 	$('#publicDBchkBox').click(function(){
-		$('#dbPassLabel').toggle();
+		if(this.checked){
+			$('#dbPassLabel').hide();
+		}
+		else {
+			$('#dbPassLabel').show();
+		}
 		$('#saveDbPass').attr('required', !this.checked);
 		$('#saveDbPassControl').attr('required', !this.checked);
 	});
@@ -111,8 +123,9 @@ $(function() {
 				if (response.hasOwnProperty('error'))
 					$('#saveDBerror').html(response.error);
 				else{
-					$('#saveDBerror').html('Dataset was successfully saved!');
-					$('#saveDB_form').html('<label class="flex-row label">url for access: <div class="flex-grow"><input type="text" class="form-control" value="'+response.url+'" readonly onClick="this.select();"></div>');
+					window.location.href = 'viewSpectrum.php?db='+response.name;
+					// $('#saveDBerror').html('Dataset was successfully saved!');
+					// $('#saveDB_form').html('<label class="flex-row label">url for access: <div class="flex-grow"><input type="text" class="form-control" value="'+response.url+'" readonly onClick="this.select();"></div>');
 				}
 				console.log(response);
 			}
