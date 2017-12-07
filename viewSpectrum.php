@@ -242,15 +242,15 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 							<i class="btn btn-1a btn-topNav fa fa-home fa-xi" style='top: 0px;' onclick="window.location = 'index.php';" title="Home"></i>
 							<i class="btn btn-1a btn-topNav fa fa-github fa-xi" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>
 							<i class="btn btn-1a btn-topNav fa fa-download" aria-hidden="true" id="downloadSVG" title="download SVG" style="cursor: pointer;"></i>
-							<label class="btn" title="toggle moveable labels on/off">Move Labels<input id="moveLabels" type="checkbox"></label>
+							<label class="btn" title="toggle moveable labels on/off">Move Labels<input class="pointer" id="moveLabels" type="checkbox"></label>
 							<button id="clearHighlights" class="btn btn-1 btn-1a">Clear Highlights</button>
-							<label class="btn" title="toggle measure mode on/off">Measure<input id="measuringTool" type="checkbox"></label>
+							<label class="btn" title="toggle measure mode on/off">Measure<input class="pointer" id="measuringTool" type="checkbox"></label>
 							<form id="setrange">
 								<label class="btn" title="m/z range" style="cursor: default;">m/z:</label>
 								<label class="btn" for="lockZoom" title="Lock current zoom level" id="lock" class="btn">🔓</label>
-								<input type="text" id="xleft" size="7" title="m/z range from:">
+								<input type="text" id="xleft" size="5" title="m/z range from:">
 								<span>-</span>
-								<input type="text" id="xright" size="7" title="m/z range to:">
+								<input type="text" id="xright" size="5" title="m/z range to:">
 								<input type="submit" id="rangeSubmit" value="Set" class="btn btn-1 btn-1a" style="display: none;">
 								<span id="range-error"></span>
 								<button id="reset" title="Reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>

@@ -180,8 +180,8 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	setZoom: function(domain){
-		this.xmin = domain[0].toFixed(1);
-		this.xmax = domain[1].toFixed(1);
+		this.xmin = domain[0].toFixed(0);
+		this.xmax = domain[1].toFixed(0);
 		this.trigger("changed:Zoom");
 	},
 

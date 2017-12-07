@@ -151,7 +151,7 @@ var specListTableView = Backbone.View.extend({
 
 		var columnFilter = specListToolbar.append('div').attr('id', 'column-filter');
 		// $( "<div id='column-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );
-		$("#column-filter").html('<div class="mulitSelect_dropdown"><span class="btn btn-1a">Select columns</span><div class="mulitSelect_dropdown-content mutliSelect"><ul></ul></div></div>');
+		$("#column-filter").html('<div class="mulitSelect_dropdown"><span class="btn btn-1a">Select columns<i class="fa fa-chevron-down" aria-hidden="true"></i></span><div class="mulitSelect_dropdown-content mutliSelect"><ul></ul></div></div>');
 
 	 	this.DataTable.columns()[0].forEach(function(col){
 	 		if (!self.DataTable.columns().header()[col].classList.contains("invisible")){

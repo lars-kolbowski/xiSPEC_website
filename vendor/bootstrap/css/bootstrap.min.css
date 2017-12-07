@@ -25,7 +25,7 @@ a:active, a:hover {
 
 a {
 	color: #fff;
-	text-decoration: underline;
+	text-decoration: none;
 }
 
 a:hover, a:focus {
