@@ -38,13 +38,15 @@ var specListTableView = Backbone.View.extend({
 		this.wrapper = d3.select(this.el);
 
 		var tableVars = {
-			//"paging":   false,
 			//"ordering": false,
 			//"info":     false,
-		 	"dom": '<"specListToolbar">frtip',
+		 	"dom": '<"specListToolbar">frti<"bottom-lenMenu"l>p',
 			"searching": true,
-			"pageLength": 10,
-			//"lengthMenu": [ 3, 5, 10 ],
+			"pageLength": 8,
+			"lengthMenu": [ 4, 6, 8, 10, 12 ],
+			"language": {
+				"lengthMenu": "_MENU_ entries per page"
+			},
 			// "processing": true,
 			// "serverSide": true,
 			"ajax": "php/getSpecList.php?db="+this.model.get('database'),
@@ -160,7 +162,7 @@ var specListTableView = Backbone.View.extend({
 	 		}
 	 	});
 
-		$('div.dataTables_filter input').addClass('form-control');
+		// $('div.dataTables_filter input').addClass('form-control');
 	},
 
 	hideEmptyColumns: function(e) {

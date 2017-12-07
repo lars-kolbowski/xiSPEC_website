@@ -38,12 +38,11 @@ var altListTableView = Backbone.View.extend({
 		this.wrapper = d3.select(this.el);
 
 		var tableVars = {
-			"searching": false,
-			"paging":   true,
-			"pageLength": 10,
+			"dom": '<"altListToolbar">frti<"bottom-lenMenu"l>p',
 			"searching": true,
-			"bLengthChange": false,
-			"dom": '<"altListToolbar">frtip',
+			"pageLength": 8,
+			"lengthMenu": [ 4, 6, 8, 10, 12 ],
+			"paging":   true,
 			//"ordering": true,
 			"order": [[2, "desc"], [9, "desc"]],
 			//"info":     false,

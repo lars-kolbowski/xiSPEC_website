@@ -346,9 +346,10 @@ body, input, select, textarea {
     font-size: 1em;
 }
 
-.dataTables_filter input{
+.dataTables_wrapper .form-control{
     height: 2em;
-    margin: 4px 0px;
+    margin: 4px 2px;
+    padding: 0px 2px;
 }
 
 .modal{
@@ -449,6 +450,12 @@ body, input, select, textarea {
     overflow-x: auto;
 }
 
+.bottom-lenMenu{
+  padding-top: 0.2em;
+  padding-left: 10px;
+  display: inline-block;
+}
+
 #lock{
     margin-left: -11px;
     margin-right: -3px;
@@ -480,6 +487,10 @@ body, input, select, textarea {
 #altListTable tr {
     cursor: pointer;
 }
+#altListTable_wrapper .listToolbar {
+    margin-top: 0.5em;
+}
+
 .listToolbar{
     color: #fff;
     float: left;
@@ -512,18 +523,22 @@ body, input, select, textarea {
   color: #999;
 }
 .paginate_button:hover a{
-    color: #fff;
+  color: #fff;
 }
 .paginate_button.disabled a{
-    color: #fff;
+  color: #fff;
+  cursor: default;
+}
+.paginate_button.disabled a:hover{
+  text-decoration: none;
 }
 .paginate_button {
-    background-color: #fff;
+  background-color: #fff;
 }
 
 .dynDiv_moveParentDiv{
-    height:20px;
-    background:#091D42;
+  height:20px;
+  background:#091D42;
 }
 .dynDiv_resizeDiv_tl, .dynDiv_resizeDiv_tr, .dynDiv_resizeDiv_bl, .dynDiv_resizeDiv_br{
     width:20px;
