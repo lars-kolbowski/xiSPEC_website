@@ -551,6 +551,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	request_annotation: function(json_request){
 
+		this.trigger('request_annotation:pending');
 		console.log("annotation request:", json_request);
 		var self = this;
 		var response = $.ajax({
@@ -574,6 +575,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 					self.otherModel.set({"JSONdata": json_data_copy, "JSONrequest": json_request});
 					self.otherModel.trigger("change:JSONdata");
 				}
+				self.trigger('request_annotation:done');
 			}
 		});
 
