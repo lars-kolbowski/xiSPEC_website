@@ -7,7 +7,7 @@ _.extend (CLMSUI.vent, Backbone.Events);
 // ToDo: change to BB handling
 function loadSpectrum(rowdata){
 
-	console.log(rowdata['alt_count']);
+	console.log('alt_count: '+rowdata['alt_count']);
 	var id = rowdata['id'];
 	// var peakList_id = rowdata['peakList_id'];
 	var mzid = rowdata['mzid'];
@@ -33,7 +33,6 @@ function loadSpectrum(rowdata){
 		contentType: false,
 		processData: false,
 		success: function (returndata) {
-
 			var json = JSON.parse(returndata);
 			window.SpectrumModel.requestId = id;
 			window.SpectrumModel.mzid = mzid;

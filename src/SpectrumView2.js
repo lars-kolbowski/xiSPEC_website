@@ -17,7 +17,7 @@ var SpectrumView = Backbone.View.extend({
 	  },
 
 	initialize: function() {
-
+		this.spinner = new Spinner({scale: 5});
 		this.svg = d3.select(this.el.getElementsByTagName("svg")[0]);//d3.select(this.el)
 				//~ .append("svg").style("width", "100%").style("height", "100%");
 
@@ -32,7 +32,7 @@ var SpectrumView = Backbone.View.extend({
 		this.listenTo(this.model, 'changed:Highlights', this.updateHighlights);
 		this.listenTo(this.model, 'changed:lossyShown', this.showLossy);
 		this.listenTo(this.model, 'request_annotation:pending', this.showSpinner);
-		// this.listenTo(this.model, 'request_annotation:done', this.hideSpinner);
+		this.listenTo(this.model, 'request_annotation:done', this.hideSpinner);
 		//this.listenTo(this.model, 'destroy', this.remove);
 	},
 
@@ -41,7 +41,7 @@ var SpectrumView = Backbone.View.extend({
 		this.lockZoom();
 		if (this.model.JSONdata)
 			this.graph.setData();
-		this.hideSpinner();
+		// this.hideSpinner();
 	},
 
 	resetZoom: function(){
@@ -248,10 +248,13 @@ var SpectrumView = Backbone.View.extend({
 	},
 
 	showSpinner: function(){
-		this.spinner = new Spinner({scale: 5}).spin (d3.select(this.el).node());
+		this.graph.clear();
+		this.spinner.spin(d3.select(this.el).node());
+		console.log('show');
 	},
 
 	hideSpinner: function(){
+		console.log('hide');
 		this.spinner.stop();
 	},
 });

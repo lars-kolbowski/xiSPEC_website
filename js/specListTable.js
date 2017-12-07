@@ -115,8 +115,8 @@ var specListTableView = Backbone.View.extend({
 				}
 				window.initSpinner.stop();
 				$("#topDiv-overlay").css("z-index", -1);
-			    self.DataTable.columns( 10 ).search( "1" ).draw();
-			 	loadSpectrum(self.DataTable.rows( { filter : 'applied'} ).data()[0]);
+				self.DataTable.columns( 10 ).search( "1" ).draw();
+				loadSpectrum(self.DataTable.rows( { filter : 'applied'} ).data()[0]);
 				firstRow = $('#specListWrapper tr:first-child');
 				$(firstRow).addClass('selected');
 				// self.initiateTable();
@@ -136,6 +136,7 @@ var specListTableView = Backbone.View.extend({
 
 		// ToDo: move to BB event handling?
 		this.DataTable.on('click', 'tbody tr', function(e) {
+			console.log('click');
 			self.DataTable.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
 			loadSpectrum(self.DataTable.row(this).data());
