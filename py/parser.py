@@ -178,7 +178,17 @@ def mzid_to_json(item, mzid_reader):
         if 'Modification' in peptide.keys():
             for mod in peptide['Modification']:
                 link_index = 0  # TODO: multilink support
+
+                if mod['location'] == 0:
+                    mod_location = 0
+                    n_terminal_mod = True
+                elif mod['location'] == len(peptide['PeptideSequence']) + 1:
+                    mod_location = mod['location'] - 2
+                    c_terminal_mod = True
+                else:
                 mod_location = mod['location'] - 1
+                    n_terminal_mod = False
+                    c_terminal_mod = False
                 if 'residues' not in mod:
                     mod['residues'] = peptide['PeptideSequence'][mod_location]
 
@@ -188,12 +198,22 @@ def mzid_to_json(item, mzid_reader):
                     mod['name'] = mod['name'].replace(" ", "_")
                     if mod['name'] in mod_aliases.keys():
                         mod['name'] = mod_aliases[mod['name']]
-                    if 'cross-link donor' not in mod.keys():
+                    if 'cross-link donor' not in mod.keys() and 'cross-link acceptor' not in mod.keys():
                         mod['name'] = add_to_modlist(mod, all_mods)  # save to all mods list and get back new_name
-                        if mod_location == -1:  # ToDo: N-terminal modification
-                            peptide_dict['sequence'][0]['Modification'] = mod['name']
-                        else:
+                        
+                        if peptide_dict['sequence'][mod_location]['Modification'] == '':
                             peptide_dict['sequence'][mod_location]['Modification'] = mod['name']
+                        else:
+                            logger.error('double modification on aa')
+                            logger.error(mod)
+                            logger.error(peptide_dict['sequence'][mod_location])
+
+                # error handling for mod without name
+                else:
+                    # cross-link acceptor doesn't have a name
+                    if 'cross-link acceptor' not in mod.keys():
+                        logger.error('modification without name!')
+                        logger.error(mod)
 
                         # add CL locations
                 if 'cross-link donor' in mod.keys() or 'cross-link acceptor' in mod.keys():
