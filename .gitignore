@@ -1,6 +1,6 @@
 
-python_env/
-!python_env/lib/python2.7/site-packages/pyteomics
+python_env/*
+!python_env/lib/python2\.7/site\-packages/pyteomics/*\.py
 \.idea/
 dbs/\.directory
 dbs/tmp/*
