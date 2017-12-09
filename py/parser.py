@@ -125,11 +125,12 @@ def add_to_modlist(mod, modlist):
 
 def mzid_to_json(item, mzid_reader):
     """
-    Function to convert a mzidentml item into xiAnnotator JSON format dict
+    Converts mzidentml item into xiAnnotator JSON format dict
 
     Parameters:
     ------------------------
-    item: mzidentml item
+    item: mzidentml item,
+    mzid_reader: pyteomics mzid_reader
     """
     JSON_dict = {
         "Peptides": [],
@@ -246,37 +247,54 @@ def mzid_to_json(item, mzid_reader):
 
 
 def map_spectra_data_to_protocol(mzid_reader):
-    # extract and map spectrumIdentificationProtocol which includes annotation data like fragment tolerance
+    """
+    extract and map spectrumIdentificationProtocol which includes annotation data like fragment tolerance
+    only fragment tolerance is extracted for now
     # ToDo: improve error handling
+    #       extract modifications, cl mod mass, ...
 
-    spectra_data_protocol_map = {}
+    Parameters:
+    ------------------------
+    mzid_reader: pyteomics mzid_reader
+    """
+
+    spectra_data_protocol_map = {
+        'errors': [],
+    }
 
     for analysisCollection in mzid_reader.iterfind('AnalysisCollection'):
         for spectrumIdentification in analysisCollection['SpectrumIdentification']:
-            sidProtocol_ref = spectrumIdentification['spectrumIdentificationProtocol_ref']
-            sidProtocol = mzidReader.get_by_id(sidProtocol_ref)
-            fragTol = sidProtocol['FragmentTolerance']
-
-            fragTolGroups = re.search('([0-9.]+)\s*([A-Za-z]+)', fragTol['search tolerance plus value']).groups()
+            sid_protocol_ref = spectrumIdentification['spectrumIdentificationProtocol_ref']
+            sid_protocol = mzidReader.get_by_id(sid_protocol_ref)
+            frag_tol = sid_protocol['FragmentTolerance']
             try:
-                fragmentTolerance = {'tolerance': fragTolGroups[0], 'unit': fragTolGroups[1]}
-            except IndexError:
-                fragmentTolerance = {'tolerance': "20.0", 'unit': "ppm"}
-                returnJSON['errors'].append(
+                frag_tol_plus = frag_tol['search tolerance plus value']
+                frag_tol_value = re.sub('[^0-9,.]', '', str(frag_tol_plus['value']))
+                if frag_tol_plus['unit'].lower() == 'parts per million':
+                    frag_tol_unit = 'ppm'
+                elif frag_tol_plus['unit'].lower() == 'dalton':
+                    frag_tol_unit = 'Da'
+                else:
+                    frag_tol_unit = frag_tol_plus['unit']
+
+            except KeyError:
+                frag_tol_value = '10'
+                frag_tol_unit = 'ppm'
+                spectra_data_protocol_map['errors'].append(
                     {"type": "mzidParseError",
                      "message": "could not parse ms2tolerance. Falling back to default values."})
 
-            if not fragTol['search tolerance plus value'] == fragTol['search tolerance minus value']:
-                returnJSON['errors'].append(
+            if not frag_tol['search tolerance plus value'] == frag_tol['search tolerance minus value']:
+                spectra_data_protocol_map['errors'].append(
                     {"type": "mzidParseError",
                      "message": "search tolerance plus value doesn't match minus value. Using plus value!"})
 
             for inputSpectra in spectrumIdentification['InputSpectra']:
-                spectraData_ref = inputSpectra['spectraData_ref']
+                spectra_data_ref = inputSpectra['spectraData_ref']
 
-                spectra_data_protocol_map[spectraData_ref] = {
-                    'protocol_ref': sidProtocol_ref,
-                    'fragmentTolerance': fragmentTolerance
+                spectra_data_protocol_map[spectra_data_ref] = {
+                    'protocol_ref': sid_protocol_ref,
+                    'fragmentTolerance': {'tolerance': frag_tol_value, 'unit': frag_tol_unit}
                 }
 
     mzid_reader.reset()
@@ -339,8 +357,8 @@ returnJSON = {
 try:
     if dev:
         baseDir = "/home/lars/work/xiSPEC/"
-        mzidFile = baseDir + "DSSO_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD_CID-only.mzid"
-        # mzidFile = baseDir + 'PeptideShaker_mzid_1_2_example.mzid'
+        # mzidFile = baseDir + "DSSO_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD_CID-only.mzid"
+        mzidFile = baseDir + 'OpenxQuest_example_added_annotations.mzid'
         peakList_file = baseDir + "centroid_B170808_08_Lumos_LK_IN_90_HSA-DSSO-Sample_Xlink-CID-EThcD.mzML"
         # peakList_file = baseDir + "B170918_12_Lumos_LK_IN_90_HSA-DSSO-HCD_Rep1.mgf"
 
@@ -357,6 +375,7 @@ try:
 
     logger.info('generating spectraData_ProtocolMap - start')
     spectraData_ProtocolMap = map_spectra_data_to_protocol(mzidReader)
+    returnJSON['errors'].append(spectraData_ProtocolMap['errors'])
     # ToDo: save FragmentTolerance to annotationsTable
     logger.info('generating spectraData_ProtocolMap - done')
 
@@ -576,7 +595,7 @@ try:
             #     break
 
     # once its done submit the last reqs to DB
-    logger.info('writing remaining entries to DB - start')
+    logger.info('writing remaining entries to DB')
     if len(multipleInjList_identifications) > 0:
 
         write_to_db(multipleInjList_identifications, cur)
@@ -586,7 +605,6 @@ try:
         multipleInjList_peakLists = []
 
         con.commit()
-        logger.info('writing remaining entries to DB - done')
 
     # delete uploaded files after they have been parsed
     if not dev:
@@ -598,7 +616,7 @@ try:
         for e in returnJSON['errors']:
             logger.error(e)
     else:
-        returnJSON['response'] = "No errors! Smooth sailing."
+        returnJSON['response'] = "No errors, smooth sailing!"
 
     print json.dumps(returnJSON)
     if con:
