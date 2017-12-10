@@ -1,6 +1,7 @@
 
 python_env/*
 !python_env/lib/python2\.7/site\-packages/pyteomics/*\.py
+python3_env/
 \.idea/
 dbs/\.directory
 dbs/tmp/*
@@ -15,3 +16,5 @@ test\.db
 dbs/xiSPEC\.db
 
 py/test\.py
+
+py/parser\.py3

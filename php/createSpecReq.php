@@ -34,7 +34,6 @@
 		array_push($peptides, pep_to_array($result['pep2']));
 	}
 
-	// $preCharge = intval($result['charge']);
 
 	$linkSites = array();
 	if ($result['linkpos1'] != -1){
@@ -55,31 +54,32 @@
 							array_push($peaks, array('mz' => floatval($parts[0]), 'intensity' => floatval($parts[1])));
 			}
 	}
+
+
 	//annotation block
-	// $tol = array("tolerance" => $ms2Tol, "unit" => $tolUnit);
-	// $modifications = array();
-	// $i = 0;
-	// //var_dump(str_split($modSpecificities[$i]))
-	// //var_dump(implode(",", str_split($modSpecificities[$i]));
-	// //die();
-	// foreach ($mods as $mod) {
-	// 		array_push($modifications, array('aminoAcids' => str_split($modSpecificities[$i]), 'id' => $mod, 'mass' => $modMasses[$i]));
-	// 		$i++;
-	// }
-	//
-	// $ions = array();
-	// foreach ($_POST['ions'] as $iontype) {
-	// 	$iontype = ucfirst($iontype)."Ion";
-	// 	array_push($ions, array('type' => $iontype));
-	// }
-	//
-	// $cl = array('modMass' => $clModMass);
-	//
-	// $annotation = array('fragmentTolerance' => $tol, 'modifications' => $modifications, 'ions' => $ions, 'cross-linker' => $cl, 'precursorCharge' => $preCharge, 'custom' => "LOWRESOLUTION:false"); //ToDo: LOWRESOLUTION: true setting
+	$fragTol = explode(' ', $result['fragTolerance'], 2);
+	$tol = array("tolerance" => $fragTol[0], "unit" => $fragTol[1]);
+	$cl = array('modMass' => $result['crosslinker_modMass']);
+	$preCharge = intval($result['charge']);
 
-	$annotation = json_decode($result['annotation']);
+	$ions = array();
+	$ionTypes = explode(';', $result['ionTypes']);
+	foreach ($ionTypes as $ion) {
+		array_push($ions, array('type' => strtoupper($ion).'Ion'));
+	}
+	//ToDo: get DB modifications only once from DB and save in model
+	$query =  "SELECT * FROM modifications ;";
+	$modifications = array();
+	foreach ($dbh->query($query) as $row)
+	{
+		array_push($modifications, array('aminoAcids' => str_split($row['residues']), 'id' => $row['name'], 'mass' => $row['mass']));
 
-	$annotation->custom = "LOWRESOLUTION:false";
+	}
+
+
+	$annotation = array('fragmentTolerance' => $tol, 'modifications' => $modifications, 'ions' => $ions, 'cross-linker' => $cl, 'precursorCharge' => $preCharge, 'custom' => "LOWRESOLUTION:false"); //ToDo: LOWRESOLUTION: true setting
+
+	// $annotation = json_decode($result['annotation']);
 
 	//final array
 	$postData = array('Peptides' => $peptides, 'LinkSite' => $linkSites, 'peaks' => $peaks, 'annotation' => $annotation);
