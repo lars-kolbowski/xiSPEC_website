@@ -345,7 +345,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 				<div id='justSavedMsg' style="line-height: 2em;"></div>
 				<?php
 
-					$link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://". $_SERVER['SERVER_NAME'] . "/xiSPEC/viewSpectrum.php?db=" . $dbName;
+					$link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://". $_SERVER['SERVER_NAME'] . "/viewSpectrum.php?db=" . $dbName;
 					if (isset($public)){
 						echo 'Your dataset is public - you can go ahead and share the link below</br><label class="flex-row label">url: <div class="flex-grow"><input type="text" class="form-control" value="'.$link.'" readonly onClick="this.select();"></div></label>';
 					}
