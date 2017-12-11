@@ -65,7 +65,7 @@
 	$ions = array();
 	$ionTypes = explode(';', $result['ionTypes']);
 	foreach ($ionTypes as $ion) {
-		array_push($ions, array('type' => strtoupper($ion).'Ion'));
+		array_push($ions, array('type' => ucfirst($ion).'Ion'));
 	}
 	//ToDo: get DB modifications only once from DB and save in model
 	$query =  "SELECT * FROM modifications ;";
