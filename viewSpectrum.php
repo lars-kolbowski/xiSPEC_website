@@ -31,7 +31,7 @@ if (empty($_POST)){
 				$_SESSION['access'][] = $dbName;
 			}
 
-			$shareLink = "http://" . $_SERVER['SERVER_NAME'] . "/xiSPEC/viewSpectrum.php?sid=" . $_GET['sid'];
+			$shareLink = "http://" . $_SERVER['SERVER_NAME'] . "/viewSpectrum.php?sid=" . $_GET['sid'];
 		}
 
 		//normal db link

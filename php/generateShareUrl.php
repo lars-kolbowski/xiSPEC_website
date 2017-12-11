@@ -27,7 +27,7 @@
 
 		$stmt->execute();
 		$shareStr = $stmt->fetchColumn();
-		$json['url'] = "http://" . $_SERVER['SERVER_NAME'] . "/xiSPEC/viewSpectrum.php?sid=" . $shareStr;
+		$json['url'] = "http://" . $_SERVER['SERVER_NAME'] . "/viewSpectrum.php?sid=" . $shareStr;
 
 		echo json_encode($json);
 	} catch (PDOException $e) {
