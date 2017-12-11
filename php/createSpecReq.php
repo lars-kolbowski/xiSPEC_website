@@ -15,8 +15,8 @@
 		$json['error'] = "Authentication error occured!";
 		die(json_encode($json));
 	}
-
-	$dir = 'sqlite:../dbs/'.$dbname.'.db';
+	$xiSPEC_ms_parser_dir = '../../xiSPEC_ms_parser/';
+	$dir = 'sqlite:'.$xiSPEC_ms_parser_dir.'/dbs/'.$dbname.'.db';
 	$dbh = new PDO($dir) or die("cannot open the database");
 	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
