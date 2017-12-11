@@ -654,6 +654,12 @@ try:
             for mod in pep_info['annotation']['modifications']:
                 if mod['id'] not in [m['id'] for m in modifications]:
                     modifications.append(mod)
+                else:
+                    old_mod = modifications[[m['id'] for m in modifications].index(mod['id'])]
+                    # check if modname with different mass exists already
+                    for res in mod['aminoAcids']:
+                        if res not in old_mod['aminoAcids']:
+                            old_mod['aminoAcids'].append(res)
 
             specIdItem_index += 1
 
