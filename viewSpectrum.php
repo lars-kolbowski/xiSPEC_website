@@ -62,7 +62,7 @@ if (empty($_POST)){
 			}
 
 			if($result['share'] != null)
-				$shareLink = (isset($_SERVER['HTTPS']) ? "https" : "http") . $_SERVER['SERVER_NAME'] . "/xiSPEC/viewSpectrum.php?sid=" . $result['share'];
+				$shareLink = (isset($_SERVER['HTTPS']) ? "https" : "http") . $_SERVER['SERVER_NAME'] . "/viewSpectrum.php?sid=" . $result['share'];
 			else
 				$shareLink = false;
 
