@@ -42,8 +42,11 @@
 				<p>xiSPEC is an open source project on <a href="https://github.com/Rappsilber-Laboratory/xiSPEC" >GitHub</a>.</p>
 				<div style="text-align: center;">
 					<div class="sliderWrapper">
-					<img class="sliderImg" alt="zoom spectrum" src="images/slider/zoom.png">
-					<img class="sliderImg" alt="highlight spectrum" src="images/slider/highlight.png" style="display:none;">
+					<img class="sliderImg" alt="database view" src="images/slider/dbView.png">
+					<img class="sliderImg" alt="measuring tool" src="images/slider/measuringTool.png" style="display:none;">
+					<img class="sliderImg" alt="settings view" src="images/slider/settingsView.png" style="display:none;">
+					<img class="sliderImg" alt="zoom spectrum" src="images/slider/zoom.png" style="display:none;">
+					<!-- <img class="sliderImg" alt="highlight spectrum" src="images/slider/5.png" style="display:none;"> -->
 					<button class="sliderBtn slider-left" onclick="showDiv(-1)">&#10094;</button>
 					<button class="sliderBtn slider-right" onclick="showDiv(1)">&#10095;</button>
 					</div>
