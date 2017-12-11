@@ -34,8 +34,8 @@ function getUserIP(){
 		$passHash = password_hash($_POST['dbPass'], PASSWORD_DEFAULT);
 
 
-
-	$dir = 'sqlite:../dbs/xiSPEC.db';
+	$xiSPEC_ms_parser_dir = '../../xiSPEC_ms_parser/';
+	$dir = 'sqlite:'.$xiSPEC_ms_parser_dir.'dbs/xiSPEC.db';
 	$dbh = new PDO($dir) or die("cannot open the database");
 	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -48,7 +48,7 @@ function getUserIP(){
 	try {
 		$stmt->execute();
 
-		$db_path = "../dbs/";
+		$db_path = 	$xiSPEC_ms_parser_dir.'/dbs/';
 		$tmpDB = $db_path."tmp/".session_id().".db";
 		$newDB = $db_path."saved/".$dbname.".db";
 		if (!copy($tmpDB, $newDB)) {

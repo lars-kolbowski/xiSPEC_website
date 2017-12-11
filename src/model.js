@@ -556,7 +556,6 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		var self = this;
 		var response = $.ajax({
 			type: "POST",
-			datatype: "jsonp",
 			headers: {
 			    'Accept': 'application/json',
 			    'Content-Type': 'application/json'

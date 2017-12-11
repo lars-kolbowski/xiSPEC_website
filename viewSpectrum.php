@@ -11,7 +11,8 @@ if (empty($_POST)){
 	if(isset($_GET['sid']) || isset($_GET['db'])){
 		$tmpDB = false;
 
-		$dir = 'sqlite:dbs/xiSPEC.db';
+		$xiSPEC_ms_parser_dir = '../xiSPEC_ms_parser/';
+		$dir = 'sqlite:'.$xiSPEC_ms_parser_dir.'dbs/xiSPEC.db';
 		$xiSPECdb = new PDO($dir) or die("cannot open the database");
 		$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
