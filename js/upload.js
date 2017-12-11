@@ -11,7 +11,10 @@ $( document ).ready(function() {
 			$('#myCL').val('');
 		}
 	});
-	$("#submitDataModal").easyModal();
+	$("#submitDataModal").easyModal({
+		overlayClose: false,
+		closeOnEscape: false
+	});
 
 
 	$('#myCL').change(function(){
@@ -249,10 +252,14 @@ $( document ).ready(function() {
 	    }
 	});
 
+	$("#continueToDB").click(function(){
+		window.location.href = "viewSpectrum.php";
+	});
+
 	$("#startParsing").click(function(e){
 		e.preventDefault();
 		var spinner = new Spinner({scale: 5}).spin();
-		var target = d3.select("#submitDataModal > .spinnerWrapper").node();
+		var target = d3.select("#processDataInfo > .spinnerWrapper").node();
 		var formData = new FormData();
 		formData.append("mzml_fn", $('#mzml_fileBox .fileName').html());
 		formData.append("mzid_fn", $('#mzid_fileBox .fileName').html());
@@ -276,9 +283,12 @@ $( document ).ready(function() {
 				if (resp.errors.length == 0)
 					window.location.href = "viewSpectrum.php";
 				else{
-					alert("There were errors parsing your data. See the console for more information");
+					$('#submitDataInfo').show();
+					$('#processDataInfo').hide();
+					$('#processText').html("");
+					$('#errorMsg').html("There were errors parsing your data. See the log for more information:");
 					resp.errors.forEach(function (error){
-						console.log("error type: " + error.type + "\n message: "+ error.message);
+						$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message+'\nid: ' + error.id + '\n\n');
 					})
 
 				}

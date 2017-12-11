@@ -167,10 +167,21 @@
 			</form>
 		</div>
 		<div id="submitDataModal" role="dialog" class="modal">
-			<div class="spinnerWrapper" style="position: relative; margin-top: 130px;"></div>
-			<div style="text-align: center; padding-top: 140px; margin:10px;">
-				<p>Your data is being processed. Please wait...</p>
-				<p>Depending on the size of your data this process may take up to several minutes.</p>
+			<div id=submitDataInfo>
+				<div id="errorMsg"></div>
+				<textarea class="form-control" id="errorLog"></textarea>
+				<div>
+					<a href='https://github.com/lars-kolbowski/xiSPEC/issues'>Create an issue on GitHub</a>
+					<a id="continueToDB" class="btn btn-1a">Continue anyway</a>
+				</div>
+
+			</div>
+			<div id="processDataInfo">
+				<div class="spinnerWrapper"></div>
+				<div id="processText" style="text-align: center; padding-top: 140px; margin:10px;">
+					<p>Your data is being processed. Please wait...</p>
+					<p>Depending on the size of your data this process may take up to several minutes.</p>
+				</div>
 			</div>
 		</div>
 		<div class="overlay" style="z-index: -1; visibility: hidden;"></div>
