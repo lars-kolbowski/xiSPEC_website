@@ -35,7 +35,7 @@ if dev:
 else:
     logFile = "../log/" + sys.argv[3] + ".log"
     if not os.path.exists(logFile):
-        open('file', 'w').close()
+        open(logFile, 'w').close()
 
 if not os.path.isfile(logFile):
     os.fdopen(os.open(logFile, os.O_WRONLY | os.O_CREAT, 0o777), 'w').close()
@@ -584,8 +584,9 @@ try:
             pep_info['ions'] = list(set(pep_info['ions']))
 
             if len(pep_info['ions']) == 0:
+                pep_info['ions'] = ['peptide', 'b', 'y']
                 returnJSON['errors'].append(
-                    {"type": "IonParsing", "message": "could not parse fragment ions", 'id': mzidItem['id']})
+                    {"type": "IonParsing", "message": "could not parse fragment ions assuming precursor-, b- and y-ion", 'id': mzidItem['id']})
 
             pep_info['ions'] = ';'.join(pep_info['ions'])
 
