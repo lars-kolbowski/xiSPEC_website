@@ -11,14 +11,15 @@ if (empty($_POST)){
 	if(isset($_GET['sid']) || isset($_GET['db'])){
 		$tmpDB = false;
 
-		$xiSPEC_ms_parser_dir = '../xiSPEC_ms_parser/';
-		$dir = 'sqlite:'.$xiSPEC_ms_parser_dir.'dbs/xiSPEC.db';
-		$xiSPECdb = new PDO($dir) or die("cannot open the database");
+		#this includes a connection string to the sql database
+		require('../xiSPEC_sql_conn.php');
+
+		$xiSPECdb = new PDO("mysql:host=localhost;dbname=".$DBname, $DBuser, $DBpass) or die("cannot open the database");
 		$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		//share db link
 		if(!empty($_GET['sid'])){
-			$stmt = $xiSPECdb->prepare("SELECT name FROM databases WHERE share = :share;");
+			$stmt = $xiSPECdb->prepare("SELECT name FROM dbs WHERE share = :share;");
 			$stmt->bindParam(':share', $_GET['sid'], PDO::PARAM_STR);
 			$stmt->execute();
 			$dbName = $stmt->fetchColumn();
@@ -42,7 +43,7 @@ if (empty($_POST)){
 				$justSaved = 'true';
 			}
 
-			$stmt = $xiSPECdb->prepare("SELECT share, pass FROM databases WHERE name = :name;");
+			$stmt = $xiSPECdb->prepare("SELECT share, pass FROM dbs WHERE name = :name;");
 			$stmt->bindParam(':name', $_GET['db'], PDO::PARAM_STR);
 			$stmt->execute();
 			$result = $stmt->fetch();
@@ -62,7 +63,7 @@ if (empty($_POST)){
 			}
 
 			if($result['share'] != null)
-				$shareLink = (isset($_SERVER['HTTPS']) ? "https" : "http") . $_SERVER['SERVER_NAME'] . "/viewSpectrum.php?sid=" . $result['share'];
+				$shareLink = (isset($_SERVER['HTTPS']) ? "https://" : "http://") . $_SERVER['SERVER_NAME'] . "/viewSpectrum.php?sid=" . $result['share'];
 			else
 				$shareLink = false;
 

@@ -143,7 +143,7 @@ $(function() {
 					console.log(response.error);
 				}
 				else{
-					$('#shareLinkSpan').html(' - or share the link below');
+					$('#shareLinkSpan').html('or share the link below - ');
 					$('#shareLink').val(response.url);
 					$('#shareLinkLabel').show();
 				}

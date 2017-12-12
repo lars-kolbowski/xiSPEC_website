@@ -8,11 +8,13 @@
 		die(json_encode($json));
 	}
 	$xiSPEC_ms_parser_dir = '../../xiSPEC_ms_parser/';
-	$dir = 'sqlite:'.$xiSPEC_ms_parser_dir.'dbs/xiSPEC.db';
-	$dbh = new PDO($dir) or die("cannot open the database");
-	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-	$stmt = $dbh->prepare("UPDATE databases SET share = lower(hex(randomblob(16))) WHERE name = :name AND share IS null");
+	#this includes a connection string to the sql database
+	require('../../xiSPEC_sql_conn.php');
+	$xiSPECdb = new PDO("mysql:host=localhost;dbname=".$DBname, $DBuser, $DBpass) or die("cannot open the database");
+	$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+	$stmt = $xiSPECdb->prepare("UPDATE `dbs` SET share = lower(hex(randomBlob((16))) WHERE `name` = :name AND `share` IS NULL");
 	$stmt->bindParam(':name', $dbname, PDO::PARAM_STR);
 	try {
 		$stmt->execute();

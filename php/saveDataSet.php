@@ -1,29 +1,32 @@
 <?php
+	error_reporting(E_ERROR | E_PARSE);
 
-function getUserIP(){
-	$client  = @$_SERVER['HTTP_CLIENT_IP'];
-	$forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
-	$remote  = $_SERVER['REMOTE_ADDR'];
+	function getUserIP(){
+		$client  = @$_SERVER['HTTP_CLIENT_IP'];
+		$forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+		$remote  = $_SERVER['REMOTE_ADDR'];
 
-	if(filter_var($client, FILTER_VALIDATE_IP))
-	{
-		$ip = $client;
-	}
-	elseif(filter_var($forward, FILTER_VALIDATE_IP))
-	{
-		$ip = $forward;
-	}
-	else
-	{
-		$ip = $remote;
-	}
+		if(filter_var($client, FILTER_VALIDATE_IP))
+		{
+			$ip = $client;
+		}
+		elseif(filter_var($forward, FILTER_VALIDATE_IP))
+		{
+			$ip = $forward;
+		}
+		else
+		{
+			$ip = $remote;
+		}
 
-	return $ip;
-}
+		return $ip;
+	}
 
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 	$date = date('Y-m-d H:i:s');
 	$ip = getUserIP();
+
+	$country = trim(file_get_contents("https://ipinfo.io/{$ip}/country"));
 
 	$dbname = $_POST['dbName'];
 	if($dbname == "") die("no name specified!");
@@ -33,16 +36,17 @@ function getUserIP(){
 	else
 		$passHash = password_hash($_POST['dbPass'], PASSWORD_DEFAULT);
 
-
 	$xiSPEC_ms_parser_dir = '../../xiSPEC_ms_parser/';
-	$dir = 'sqlite:'.$xiSPEC_ms_parser_dir.'dbs/xiSPEC.db';
-	$dbh = new PDO($dir) or die("cannot open the database");
-	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-	$stmt = $dbh->prepare("INSERT INTO databases ('name', 'pass', 'ip', 'date') VALUES (:name, :pass, :ip, :dates)");
+	#this includes a connection string to the sql database
+	require('../../xiSPEC_sql_conn.php');
+	$xiSPECdb = new PDO("mysql:host=localhost;dbname=".$DBname, $DBuser, $DBpass) or die("cannot open the database");
+	$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$stmt = $xiSPECdb->prepare("INSERT INTO `dbs`(`name`, `pass`, `ip`, `country`, `date`) VALUES (:name, :pass, :ip, :country, :dates)");
 	$stmt->bindParam(':name', $dbname, PDO::PARAM_STR);
 	$stmt->bindParam(':pass', $passHash, PDO::PARAM_STR);
 	$stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
+	$stmt->bindParam(':country', $country, PDO::PARAM_STR);
 	$stmt->bindParam(':dates', $date, PDO::PARAM_STR);
 
 	try {
