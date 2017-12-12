@@ -305,8 +305,8 @@ $( document ).ready(function() {
 
 });
 
-function doExample(){
-	$.get("example/peaklist.txt",function(data){
+function doExampleCL(){
+	$.get("example/cl-peaklist.txt",function(data){
 		$("#myPeaklist").val(data);
 	});
 	$("#myPeptide").val("QNCcmELFEQLGEYK#FQNALLVR;K#QTALVELVK");
@@ -315,6 +315,27 @@ function doExample(){
 	$("#myPrecursorZ").val("4");
 	$("#myPrecursorZ").change();
 	$("#myCL").val("138.068080");
+	$("#myToleranceUnit").val("ppm");
+	$("#myCL").change();
+
+	//ions
+	$('.ionSelectChkbox').prop('checked', false);
+	$('#PeptideIon').prop('checked', true);
+	$('#BIon').prop('checked', true);
+	$('#YIon').prop('checked', true).change();
+
+};
+
+function doExampleLinear(){
+	$.get("example/linear-peaklist.txt",function(data){
+		$("#myPeaklist").val(data);
+	});
+	$("#myPeptide").val("VHTECcmCcmHGDLLECcmADDRADLAK");
+	pepInputView.contentChanged();
+	$("#myTolerance").val("20.0");
+	$("#myPrecursorZ").val("3");
+	$("#myPrecursorZ").change();
+	$("#myCL").val("0");
 	$("#myToleranceUnit").val("ppm");
 	$("#myCL").change();
 

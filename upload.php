@@ -28,7 +28,7 @@
 			<section id="top" class="one">
 				<div class="container" id="jquery-fileupload">
 					<h1 class="page-header accordionHead"> <span class="accordionSym">-</span> Data Upload - Upload your data as mzIdentML + mzML pair</h1>
-					<div class="accordionContent" <?php echo ($_GET['v'] == "example" ? 'style="display: none;"' : '');?>>
+					<div class="accordionContent" <?php echo (isset($_GET['ex']) ? 'style="display: none;"' : '');?>>
 						<div style="margin-left: 1em; font-size: 0.6em;"> Note: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' for MSconvert)</div>
 						<div style="display:flex; margin-top: 0.5em;">
 							<input id="fileupload" type="file" name="files[]" accept=".mzid,.mzml,.mgf" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
@@ -65,7 +65,7 @@
 <!-- <span class="glyphicon glyphicon-upload"></span> -->
 				<div class="container">
 					<h1 class="page-header accordionHead"> <span class="accordionSym">+</span> Data Input - Manually input your spectrum data</h1>
-					<div class="accordionContent" <?php echo ($_GET['v'] == "example" ? '' : 'style="display: none;"');?> >
+					<div class="accordionContent" <?php echo (isset($_GET['ex']) ? '' : 'style="display: none;"');?> >
 						<form id="manUpPepForm" action="viewSpectrum.php" method="post" target="_blank">
 						<!-- <form id="xisv_entryform"  action="http://spectrumviewer.org/xisv/index.php" method="post" target="_blank" onsubmit="doPreSubmission();"> -->
 							<section style="margin-bottom:2%;">
@@ -141,9 +141,10 @@
 								</div>
 							</section>
 							<div class="page-header center" style="background-color: #555;margin-top:30px;">
-								<input class="btn btn-1 btn-1a network-control" type="submit" value="View Spectrum" id="mybutton3">
-								<input class="btn btn-1 btn-1a network-control" type="button" value="Example" onclick="doExample(); return false;" id="mybutton2">
-								<input class="btn btn-1 btn-1a network-control" type="button" value="Reset" onclick="doClearForm();" id="mybutton1">
+								<input class="btn btn-1 btn-1a network-control" type="submit" value="View Spectrum">
+								<input class="btn btn-1 btn-1a network-control" type="button" value="cross-link example" onclick="doExampleCL(); return false;">
+								<input class="btn btn-1 btn-1a network-control" type="button" value="linear example" onclick="doExampleLinear(); return false;">
+								<input class="btn btn-1 btn-1a network-control" type="button" value="Reset" onclick="doClearForm();">
 							</div>
 						</form>
 					</div>
@@ -171,7 +172,7 @@
 				<div id="errorMsg"></div>
 				<textarea class="form-control" id="errorLog"></textarea>
 				<div>
-					<a href='https://github.com/lars-kolbowski/xiSPEC/issues'>Create an issue on GitHub</a>
+					<a href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'>Create an issue on GitHub</a>
 					<a id="continueToDB" class="btn btn-1a">Continue anyway</a>
 				</div>
 
@@ -187,10 +188,12 @@
 		<div class="overlay" style="z-index: -1; visibility: hidden;"></div>
 
 		<script type="text/javascript">
-		<?php echo "var example = ".($_GET['v'] == "example" ? "true;\r\n" : "false;\r\n");?>
+		<?php echo "var example = '".(isset($_GET['ex']) ? $_GET['ex'] : false)."';\r\n";?>
 			$( document ).ready(function() {
-				if (example)
-					doExample();
+				if (example == 'cl')
+					doExampleCL();
+				else if (example == 'lin')
+					doExampleLinear();
 			});
 		</script>
 
