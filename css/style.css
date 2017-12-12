@@ -206,7 +206,7 @@ nav a:focus, nav a:hover {
     background: -o-linear-gradient(-45deg, rgba(255, 255, 255, .2)0, rgba(9, 29, 66, 0)100%);
     background: -ms-linear-gradient(-45deg, rgba(255, 255, 255, .2)0, rgba(9, 29, 66, 0)100%);
     background: linear-gradient(180deg, rgba(255, 255, 255, .2)0, rgba(9, 29, 66, 0)100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#33ffffff',  endColorstr='#00750000',  GradientType=1);    
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#33ffffff',  endColorstr='#00750000',  GradientType=1);
 }
 .menu-top nav{
     top: 0px;
@@ -214,15 +214,27 @@ nav a:focus, nav a:hover {
     padding-right: 50px;
     text-align: center;
 }
+
 .sliderWrapper{
     width: 1092px;
     margin-top: 20px;
     position: relative;
     display: inline-block;
 }
+
+#sliderInfo{
+    padding: 4px 21px;
+    color: #eee;
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    background: rgba(127, 127, 127, 0.7);
+    transform: translate(-50%, -50%);
+}
+
 .sliderBtn{
     color: #fff!important;
-    background-color: #000!important;
+    background: rgba(127, 127, 127, 0.7)!important;
     border: none;
     display: inline-block;
     outline: 0;
@@ -235,7 +247,6 @@ nav a:focus, nav a:hover {
     text-align: center;
     cursor: pointer;
     white-space: nowrap;
-    opacity: 0.5;
 }
 .sliderBtn:hover{color: #000!important;background-color: #ccc!important;}
 .slider-right{
@@ -446,7 +457,7 @@ article, section {
 }
 .box2 p {
     margin-top: 20px;
-    
+
 }
 .box3 p {
     margin-top: 20px;
@@ -1089,18 +1100,18 @@ section#top.one .fp-home {
     border-radius: 30px;
     background-color: #fff;
     -webkit-box-shadow: 0 0 5px 1px rgba(000, 000, 000, .3);
-    box-shadow: 0 0 5px 1px rgba(000, 000, 000, .3);                         
-    cursor: all-scroll;                                                      
-    left: 0;                                                                            
-    position: relative;                                                                 
-}                                                                                       
-.controlGroup p {                                                                       
-    margin-bottom: 0;                                                                   
-    margin-top: 10px;                                                                   
-    margin-left: 10px;                                                                  
-    margin-right: 10px;                                                                 
-}                                                                                 
-.controlGroup {                                                              
+    box-shadow: 0 0 5px 1px rgba(000, 000, 000, .3);
+    cursor: all-scroll;
+    left: 0;
+    position: relative;
+}
+.controlGroup p {
+    margin-bottom: 0;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.controlGroup {
     background-color: #eee;
     height: 100px;
     display: inline-block;
@@ -1291,7 +1302,7 @@ div.file_upload {
     .form-control.flat:focus {
       border-color: #750000;
   }
-.form-control::-moz-selection { 
+.form-control::-moz-selection {
     background-color: #091d42;
     color: #fff;
 }
@@ -1852,10 +1863,10 @@ textarea {
     text-decoration: none;
 }
 .residue-level {
-    
+
 }
 .simplify-networks {
-    
+
 }
 .ambiguous-linkage {
      width: 400px;
@@ -1926,11 +1937,11 @@ section.two.contact-section2 {
     #footer, #main {
         margin-left: 20%
     }
-    
+
     .controlsexamplespage {
         top: 130px;
     }
-    
+
     #networkFrontPage {
         position: fixed;
         z-index: 1;

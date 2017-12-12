@@ -21,6 +21,7 @@
 			else
 				slideIndex += n;
 			$('.sliderImg').eq(oldSlide).fadeOut(300, function(){ $('.sliderImg').eq(slideIndex).fadeIn(300); });
+			$('#sliderInfo').text($('.sliderImg').eq(slideIndex).attr('alt'));
 		}
 
 		var myTimer = setInterval(function () {showDiv(slideIndex+1)}, 4000);
@@ -54,13 +55,14 @@
 				<p>xiSPEC is an open source project on <a href="https://github.com/Rappsilber-Laboratory/xiSPEC" >GitHub</a>. You can report issues and request features  <a href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues">here</a></p>
 				<div style="text-align: center;">
 					<div class="sliderWrapper">
-					<img class="sliderImg" alt="database view" src="images/slider/dbView.png">
-					<img class="sliderImg" alt="measuring tool" src="images/slider/measuringTool.png" style="display:none;">
-					<img class="sliderImg" alt="settings view" src="images/slider/settingsView.png" style="display:none;">
-					<img class="sliderImg" alt="zoom spectrum" src="images/slider/zoom.png" style="display:none;">
+					<img class="sliderImg" alt="Interactive highlighting between all views" src="images/slider/dbView.png">
+					<img class="sliderImg" alt="Measure distances between peaks" src="images/slider/measuringTool.png" style="display:none;">
+					<img class="sliderImg" alt="Change spectrum annotation parameters" src="images/slider/settingsView.png" style="display:none;">
+					<img class="sliderImg" alt="Zoom into spectra" src="images/slider/zoom.png" style="display:none;">
 					<!-- <img class="sliderImg" alt="highlight spectrum" src="images/slider/5.png" style="display:none;"> -->
 					<button class="sliderBtn slider-left">&#10094;</button>
 					<button class="sliderBtn slider-right">&#10095;</button>
+					<div id="sliderInfo">Interactive highlighting between all views</div>
 					</div>
 				</div>
 			</div> <!-- CONTAINER -->
