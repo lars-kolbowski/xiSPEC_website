@@ -1,44 +1,81 @@
 <?php
-session_start();
-$date = date('Y-m-d H:i:s');
-$ip = $_SERVER['REMOTE_ADDR'];
 
+function getUserIP(){
+	$client  = @$_SERVER['HTTP_CLIENT_IP'];
+	$forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+	$remote  = $_SERVER['REMOTE_ADDR'];
 
-$dbname = $_GET['name'];
-if($dbname == "") die("no name specified!");
-
-$dir = 'sqlite:../../dbs/xiSPEC.db';
-$dbh = new PDO($dir) or die("cannot open the database");
-$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-$stmt = $dbh->prepare("INSERT INTO databases ('name', 'ip', 'date') VALUES (:name, :ip, :dates)");
-$stmt->bindParam(':name', $dbname, PDO::PARAM_STR);
-$stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
-$stmt->bindParam(':dates', $date, PDO::PARAM_STR);
-
-try {
-    $stmt->execute();
-
-    $db_path = "../../dbs/";
-    $tmpDB = $db_path."/tmp/".session_id().".db";
-    $newDB = $db_path.$dbname.".db";
-	if (!copy($tmpDB, $newDB)) {
-	    $json['error'] = "Error saving database!";
+	if(filter_var($client, FILTER_VALIDATE_IP))
+	{
+		$ip = $client;
 	}
-    //delete tmpDBs with cronjob
-	//if (file_exists($tmpDB))
-	//	unlink($tmpDB);
-    $json['url'] = "http://" . $_SERVER['SERVER_NAME'] . "/xiSPEC/viewSpectrum.php?db=" . $dbname;
+	elseif(filter_var($forward, FILTER_VALIDATE_IP))
+	{
+		$ip = $forward;
+	}
+	else
+	{
+		$ip = $remote;
+	}
 
-} catch (PDOException $e) {
-    if ($e->getCode() == 23000) {
-        $json['error'] = "Database name already taken. Please chose another one and try again!";
-    } else {
-        throw $e;
-    }
+	return $ip;
 }
 
+	if (session_status() === PHP_SESSION_NONE){session_start();}
+	$date = date('Y-m-d H:i:s');
+	$ip = getUserIP();
 
-echo json_encode($json);
+	$dbname = $_POST['dbName'];
+	if($dbname == "") die("no name specified!");
+
+	if (isset($_POST['public']))
+		$passHash = 'public';
+	else
+		$passHash = password_hash($_POST['dbPass'], PASSWORD_DEFAULT);
+
+
+	$xiSPEC_ms_parser_dir = '../../xiSPEC_ms_parser/';
+	$dir = 'sqlite:'.$xiSPEC_ms_parser_dir.'dbs/xiSPEC.db';
+	$dbh = new PDO($dir) or die("cannot open the database");
+	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+	$stmt = $dbh->prepare("INSERT INTO databases ('name', 'pass', 'ip', 'date') VALUES (:name, :pass, :ip, :dates)");
+	$stmt->bindParam(':name', $dbname, PDO::PARAM_STR);
+	$stmt->bindParam(':pass', $passHash, PDO::PARAM_STR);
+	$stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
+	$stmt->bindParam(':dates', $date, PDO::PARAM_STR);
+
+	try {
+		$stmt->execute();
+
+		$db_path = 	$xiSPEC_ms_parser_dir.'/dbs/';
+		$tmpDB = $db_path."tmp/".session_id().".db";
+		$newDB = $db_path."saved/".$dbname.".db";
+		if (!copy($tmpDB, $newDB)) {
+				$json['error'] = "Error saving database!";
+		}
+		if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
+		if(!in_array($dbname, $_SESSION['access'])){
+			$_SESSION['access'][] = $dbname;
+		}
+		$_SESSION[$dbname] = 'saved';
+		$json['name'] = $dbname;
+		// "http://" . $_SERVER['SERVER_NAME'] . "/xiSPEC/viewSpectrum.php?db=" . $dbname;
+
+			//delete tmpDBs with cronjob
+		// if (file_exists($tmpDB))
+		// 	unlink($tmpDB);
+
+
+	} catch (PDOException $e) {
+			if ($e->getCode() == 23000) {
+					$json['error'] = "Database name already taken. Please chose another one and try again!";
+			} else {
+					throw $e;
+			}
+	}
+
+
+	echo json_encode($json);
 
 ?>

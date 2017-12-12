@@ -11,10 +11,13 @@ $( document ).ready(function() {
 			$('#myCL').val('');
 		}
 	});
-	$("#submitDataModal").easyModal();
+	$("#submitDataModal").easyModal({
+		overlayClose: false,
+		closeOnEscape: false
+	});
 
 
-	$('#myCL').change(function(){ 
+	$('#myCL').change(function(){
 		var value = $(this).val();
 		if (value == "add")
 			$("#addCLModal").trigger('openModal');
@@ -144,14 +147,14 @@ $( document ).ready(function() {
 							var found = true;
 						}
 					}
-					if (!found){				
+					if (!found){
 						for (var i = 0; i < model.knownModifications['modifications'].length; i++) {
-							if(model.knownModifications['modifications'][i].id == row.id){						
+							if(model.knownModifications['modifications'][i].id == row.id){
 								data = data.split(",");
 								data = _.union(data, model.knownModifications['modifications'][i].aminoAcids);
 								data.sort();
 								data = data.join("");
-								
+
 							}
 						}
 					}
@@ -164,7 +167,7 @@ $( document ).ready(function() {
 
     $('#fileupload').fileupload({
         dataType: 'json',
-        fileTypes: "mzid|mzml",
+        fileTypes: "mzid|mzml|mgf",
 		maxChunkSize: 100000000,	//100MB
 		progressall: function (e, data) {
 		    var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -176,18 +179,18 @@ $( document ).ready(function() {
 		},
 		add: function (e, data) {
 
-			if(new RegExp("(.mzid)$", 'i').test(data.files[0].name)){
+			if(new RegExp("\.(mzid)$", 'i').test(data.files[0].name)){
 				$('#mzid_checkbox').prop( "checked", false ).change();
 				$('#mzid_fileBox .fileName').html(data.files[0].name);
 				data.context = $('#mzid_fileBox .statusBox').html('<div class="loader"></div>');
 				data.submit();
 			}
 
-			if(new RegExp("(.mzml)$", 'i').test(data.files[0].name)){
+			if(new RegExp("\.(mzml|mgf)$", 'i').test(data.files[0].name)){
 				$('#mzml_checkbox').prop( "checked", false ).change();
 				$('#mzml_fileBox .fileName').html(data.files[0].name);
 				data.context = $('#mzml_fileBox .statusBox').html('<div class="loader"></div>');
-				data.submit();						
+				data.submit();
 			}
 
 			var that = this;
@@ -232,7 +235,7 @@ $( document ).ready(function() {
 		},
 
 		done: function (e, data) {
-			if(data.context[0].dataset['filetype'] == 'mzml')
+			if(data.context[0].dataset['filetype'] == 'mzml' || data.context[0].dataset['filetype'] == 'mgf')
 				$('#mzml_checkbox').prop( "checked", true ).change();
 			if(data.context[0].dataset['filetype'] == 'mzid')
 				$('#mzid_checkbox').prop( "checked", true ).change();
@@ -249,16 +252,20 @@ $( document ).ready(function() {
 	    }
 	});
 
+	$("#continueToDB").click(function(){
+		window.location.href = "viewSpectrum.php";
+	});
+
 	$("#startParsing").click(function(e){
 		e.preventDefault();
 		var spinner = new Spinner({scale: 5}).spin();
-		var target = d3.select("#submitDataModal > .spinnerWrapper").node();
+		var target = d3.select("#processDataInfo > .spinnerWrapper").node();
 		var formData = new FormData();
 		formData.append("mzml_fn", $('#mzml_fileBox .fileName').html());
 		formData.append("mzid_fn", $('#mzid_fileBox .fileName').html());
 
 		$.ajax({
-	        url: "php/parseData.php",
+			url: "php/parseData.php",
 			type: 'POST',
 			data: formData,
 			//async: false,
@@ -276,22 +283,25 @@ $( document ).ready(function() {
 				if (resp.errors.length == 0)
 					window.location.href = "viewSpectrum.php";
 				else{
-					alert("There were errors parsing your data. See the console for more information");
+					$('#submitDataInfo').show();
+					$('#processDataInfo').hide();
+					$('#processText').html("");
+					$('#errorMsg').html("There were errors parsing your data. See the log for more information:");
 					resp.errors.forEach(function (error){
-						console.log("error type: " + error.type + "\n message: "+ error.message);
+						$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message+'\nid: ' + error.id + '\n\n');
 					})
-					
+
 				}
 			}
-		  });	 
-		  return false;					
-	});  
+		  });
+		  return false;
+	});
 
 	$('.accordionHead').click(function(){
 		$('.accordionContent').slideToggle();
 		$('.accordionSym').html("+");
 		$(this).children('.accordionSym').html("-");
-	}); 
+	});
 
 });
 
@@ -303,10 +313,9 @@ function doExample(){
 	pepInputView.contentChanged();
 	$("#myTolerance").val("20.0");
 	$("#myPrecursorZ").val("4");
-	$("#myPrecursorZ").change();	
-	$("#myCL").val("138.06807961");
-	//$("#myFragmentation").val("HCD");
-	$("#myToleranceUnit").val("ppm");	
+	$("#myPrecursorZ").change();
+	$("#myCL").val("138.068080");
+	$("#myToleranceUnit").val("ppm");
 	$("#myCL").change();
 
 	//ions
@@ -319,13 +328,13 @@ function doExample(){
 
 function doClearForm(){
 	$("#myPeptide").val("");
-	$("#myPeaklist").val("");	
+	$("#myPeaklist").val("");
 	$("#myTolerance").val("");
 	$("#myPrecursorZ").val("");
 	$("#myCL").val("");
 	$('.ionSelectChkbox').prop('checked', false);
 	$('.ionSelectChkbox').change();
-	
+
 	window.peptide.clear();
 	pepInputView.contentChanged();
 };
@@ -335,13 +344,13 @@ function updateCL(selected){
 	if (cookie !== undefined){
 		$("option[class=customCL]").remove();
 		var selectValues = JSON.parse(Cookies.get('customCL')).data;
-		$.each(selectValues, function(key, value) {   
+		$.each(selectValues, function(key, value) {
 			var cl = JSON.parse(value);
 			$('#myCL')
 				.append($("<option></option>")
 				.attr("value", cl.clModMass)
 				.attr("class", "customCL")
-				.text(cl.clName+" ["+cl.clModMass+" Da]")); 
+				.text(cl.clName+" ["+cl.clModMass+" Da]"));
 		});
 		//select new cl
 		$('#myCL').val(selected);

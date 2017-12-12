@@ -145,6 +145,7 @@ nav a:focus, nav a:hover {
     outline: 0;
 }
 
+
 #fileupload {
     width: 0.1px;
     height: 0.1px;
@@ -934,6 +935,21 @@ code {
     margin-top: 10px;
     font-size: 0.8em;
 }
+.spinnerWrapper {
+ position: relative;
+ margin-top: 130px;
+}
+
+#submitDataInfo {
+    margin: 1em;
+    text-align: center;
+    display: none;
+}
+
+#errorLog {
+    width: 100%;
+    height: 25em;
+}
 
 .annotation-csv-file, .cross-link-csv, .fasta-file {
     position: relative;
@@ -1239,7 +1255,7 @@ div.file_upload {
       font-family: "Lato-Regular", Helvetica, Arial, sans-serif;
       font-size: 10pt;
       text-shadow: 0px;
-      line-height: 1.467;
+      /* line-height: 1.467; */
       padding: 8px 12px;
       height: 42px;
       -webkit-appearance: none;
@@ -1261,7 +1277,7 @@ div.file_upload {
     fieldset[disabled] .form-control {
       background-color: #f4f6f6;
       /* border-color: #d5dbdb; */
-      color: #d5dbdb;
+      color: #333;
       cursor: default;
       /* opacity: 0.7; */
       filter: alpha(opacity=70);

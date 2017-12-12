@@ -1,29 +1,44 @@
 <?php
 
-	$dbname = $_GET['db'];
-	$dir = 'sqlite:../dbs/xiSPEC.db';
-	$dbh = new PDO($dir) or die("cannot open the database");
-	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+function getUserIP(){
+	$client  = @$_SERVER['HTTP_CLIENT_IP'];
+	$forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+	$remote  = $_SERVER['REMOTE_ADDR'];
 
-	$stmt = $dbh->prepare("SELECT id FROM databases WHERE name = :name;");
-	$stmt->bindParam(':name', $dbname, PDO::PARAM_STR);
+	if(filter_var($client, FILTER_VALIDATE_IP))
+	{
+		$ip = $client;
+	}
+	elseif(filter_var($forward, FILTER_VALIDATE_IP))
+	{
+		$ip = $forward;
+	}
+	else
+	{
+		$ip = $remote;
+	}
 
+	return $ip;
+}
 
+	if (session_status() === PHP_SESSION_NONE){session_start();}
+	if(!isset($xiSPECdb))
+		die('No database connection!');
+
+	$stmt = $xiSPECdb->prepare("SELECT id FROM databases WHERE name = :name;");
+	$stmt->bindParam(':name', $dbName, PDO::PARAM_STR);
 	$stmt->execute();
+	$dbid = $stmt->fetchColumn();
 
-	if (!$stmt->fetchColumn()) {
+	if (!$dbid) {
 		header("Location: upload.php");
 		exit();
 	}
 	else{
-		$dbid = $stmt->fetchColumn();
-		$ip = $_SERVER['REMOTE_ADDR'];
+		$ip = getUserIP();
 		$date = date('Y-m-d H:i:s');
 
-		session_start();
-		$_SESSION['db'] = $dbname;
-
-		$stmt = $dbh->prepare("INSERT INTO access_log ('db_id', 'ip', 'date') VALUES (:dbid, :ip, :dates)");
+		$stmt = $xiSPECdb->prepare("INSERT INTO access_log ('db_id', 'ip', 'date') VALUES (:dbid, :ip, :dates)");
 		$stmt->bindParam(':dbid', $dbid, PDO::PARAM_INT);
 		$stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
 		$stmt->bindParam(':dates', $date, PDO::PARAM_STR);

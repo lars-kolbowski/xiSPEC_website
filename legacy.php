@@ -15,17 +15,16 @@
    	 	<!-- Main -->
    	 	<div id="main">
 
-			<div class="container">
-   	 					
-				<h1 class="page-header">Legacy xiSPEC</h1>
-				<a href="#">Click here to access the old version of xiSPEC</a>
-				<img class="sliderImg" alt="zoom spectrum" src="images/legacy_xiSPEC.png">
-				<a href="http://sourceforge.net/projects/spectrumviewer/">The source can be found here</a>
-				
+			<div class="container" style="text-align: center;">
 
- 			</div> <!-- CONTAINER -->
+				<h1 class="page-header">Legacy xiSPEC</h1>
+				<a href="http://legacy.spectrumviewer.org">Click here to access the old version of xiSPEC</a></br>
+				<a href="http://legacy.spectrumviewer.org"><img class="sliderImg" alt="zoom spectrum" src="images/legacy_xiSPEC.png"></a></br>
+				<!-- <a href="http://sourceforge.net/projects/spectrumviewer/">The source can be found here</a> -->
+
+			</div> <!-- CONTAINER -->
 		</div> <!-- MAIN -->
-  	 				
-   	 				
+
+
 	</body>
 </html>

@@ -31,30 +31,28 @@
 	</head>
 
 	<body>
-   	 	<!-- Sidebar -->
-   	 	<?php include("navigation.php");?>
-
-   	 	<!-- Main -->
-   	 	<div id="main">
-			
-   	 				<div class="container">
-   	 					<h1 class="page-header">Visualizing (cross-link) mass spectrometry spectra.</h1>
-
-   	 					<p>A tool for visualizing and analyzing your mass spectrometry data. XiSPEC features automated spectra annotation with intuitive tools for data analysis and hypothesis testing.</p>
-   	 					<p>xiSPEC allows you to upload whole MS datasets (<a href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> & <a href="http://www.psidev.info/mzml" target="blank">mzML</a> pair) and save them for later access (share with colleagues / online access for publication).</p>
-   	 					<p>xiSPEC is an open source project on <a href="https://github.com/Rappsilber-Laboratory/xiSPEC" >GitHub</a>.</p>
-   	 					<div style="text-align: center;">
-							<div class="sliderWrapper">
-	 							<img class="sliderImg" alt="zoom spectrum" src="images/slider/zoom.png">
-	 							<img class="sliderImg" alt="highlight spectrum" src="images/slider/highlight.png" style="display:none;">
-								<button class="sliderBtn slider-left" onclick="showDiv(-1)">&#10094;</button>
-								<button class="sliderBtn slider-right" onclick="showDiv(1)">&#10095;</button>
-	 						</div>
- 						</div>
-							
-			 			</div> <!-- CONTAINER -->
+		<!-- Sidebar -->
+		<?php include("navigation.php");?>
+		<!-- Main -->
+		<div id="main">
+			<div class="container">
+				<h1 class="page-header">Visualizing mass spectrometry data.</h1>
+				<p>xiSPEC is an interactive tool for visualizing and analyzing mass spectrometry data. It features automated spectra annotation with intuitive tools for data analysis and hypothesis testing.</p>
+				<p>xiSPEC allows you to upload whole MS datasets (<a href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> & <a href="http://www.psidev.info/mzml" target="blank">mzML</a>/mgf pair) and save them for later access (share with colleagues / online access for publication). Additionally it also allows downloading high quality vector graphics (.svg format) of your spectra for use in publications.</p>
+				<p>xiSPEC is an open source project on <a href="https://github.com/Rappsilber-Laboratory/xiSPEC" >GitHub</a>.</p>
+				<div style="text-align: center;">
+					<div class="sliderWrapper">
+					<img class="sliderImg" alt="database view" src="images/slider/dbView.png">
+					<img class="sliderImg" alt="measuring tool" src="images/slider/measuringTool.png" style="display:none;">
+					<img class="sliderImg" alt="settings view" src="images/slider/settingsView.png" style="display:none;">
+					<img class="sliderImg" alt="zoom spectrum" src="images/slider/zoom.png" style="display:none;">
+					<!-- <img class="sliderImg" alt="highlight spectrum" src="images/slider/5.png" style="display:none;"> -->
+					<button class="sliderBtn slider-left" onclick="showDiv(-1)">&#10094;</button>
+					<button class="sliderBtn slider-right" onclick="showDiv(1)">&#10095;</button>
+					</div>
+				</div>
+			</div> <!-- CONTAINER -->
 		</div> <!-- MAIN -->
-  	 				
-   	 				
+
 	</body>
 </html>

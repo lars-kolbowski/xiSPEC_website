@@ -69,12 +69,12 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.match = this.get("match");
 		this.randId = this.get("randId");
 		//console.log(this.JSONdata);
-		this.annotationData = this.JSONdata.annotation;
+		this.annotationData = this.JSONdata.annotation || {};
 
 		//overwrite xiKnownModifications with data from input
 		this.updateKnownModifications();
 
-		if (this.annotationData !== undefined){
+		if (this.annotationData.fragementTolerance !== undefined){
 			this.MSnTolerance = {
 				"value": parseFloat(this.annotationData.fragementTolerance.split(" ")[0]),
 				"unit": this.annotationData.fragementTolerance.split(" ")[1]
@@ -117,7 +117,8 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 		this.calcPrecursorMass();
 
-		//change this to SettignsView related call
+
+		//ToDo: change this to SettignsView related call -> done but still necessary for upload page
 		if (window.modTable !== undefined)
 			modTable.ajax.url( this.baseDir + "php/convertModsToJSON.php?peps="+encodeURIComponent(this.pepStrsMods.join(";"))).load();
 		this.trigger("changed:data");
@@ -179,8 +180,8 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	setZoom: function(domain){
-		this.xmin = domain[0].toFixed(1);
-		this.xmax = domain[1].toFixed(1);
+		this.xmin = domain[0].toFixed(0);
+		this.xmax = domain[1].toFixed(0);
 		this.trigger("changed:Zoom");
 	},
 
@@ -453,7 +454,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 		if(this.get("clModMass") !== undefined)
 			var clModMass = parseInt(this.get("clModMass"));
-		else if (this.annotationData !== undefined)
+		else if (this.annotationData['cross-linker'] !== undefined)
 			var clModMass = this.annotationData['cross-linker'].modMass;
 
 
@@ -550,11 +551,11 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	request_annotation: function(json_request){
 
+		this.trigger('request_annotation:pending');
 		console.log("annotation request:", json_request);
 		var self = this;
 		var response = $.ajax({
 			type: "POST",
-			datatype: "jsonp",
 			headers: {
 			    'Accept': 'application/json',
 			    'Content-Type': 'application/json'
@@ -573,6 +574,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 					self.otherModel.set({"JSONdata": json_data_copy, "JSONrequest": json_request});
 					self.otherModel.trigger("change:JSONdata");
 				}
+				self.trigger('request_annotation:done');
 			}
 		});
 

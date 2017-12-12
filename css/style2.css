@@ -51,8 +51,8 @@
     color: #fff;
 }
 .btn-1a:active, .btn-1a:hover {
-    color: #091D42;
-    background: #fff;
+    color: #000;
+    background: #fff!important;
 }
 
 /*tables*/
@@ -242,6 +242,7 @@ body, input, select, textarea {
 }
 
 .btn-topNav{
+    top: 3px;
     font-size: 1.2em;
     padding: 3px 4px;
     margin: 2px 2px 0px 2px;
@@ -321,6 +322,19 @@ body, input, select, textarea {
 
 .brush .extent {
 }
+.subViewControls{
+  color: #ffffff;
+  padding-left: 0.5em;
+  border-top: 1px solid black;
+  border-bottom: 1px solid white;
+  background: rgba(117, 0, 0, 1);
+}
+
+.subViewControls .fa{
+  position: absolute;
+  right: 5px;
+  margin-top: 2px;
+}
 
 #bottomDiv {
     position: relative; /* will overlay previous absolute divs i.e. distance slider */
@@ -332,13 +346,76 @@ body, input, select, textarea {
     font-size: 1em;
 }
 
-.dataTables_filter input{
+.dataTables_wrapper .form-control{
     height: 2em;
-    margin: 4px 0px;
+    margin: 4px 2px;
+    padding: 0px 2px;
 }
 
-#saveModal .content{
-    margin-top: 20px;
+.modal{
+  background: #333;
+  width:650px; 
+  text-align: center;
+}
+
+.modal .content{
+  margin: 1em 1.5em;
+  color: #b1b1b1;
+  font-size: 1.2em;
+}
+
+.modal .content strong{
+  color: #ffffff;
+  font-weight: 400;
+}
+
+.modal .content .label{
+  margin-top: 1em;
+}
+
+.modal .header{
+  font-size: 1.3em;
+}
+
+#saveModal #saveDBerror{
+  margin-bottom: 5px;
+}
+
+.peaks .label{
+  text-transform: initial;
+}
+
+.label{
+    font-size: 0.9em;
+    line-height: 3.5em;
+    cursor: pointer;
+    /* padding: 5px 15px; */
+    /* margin: 10px 0px; */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 300;
+    outline: 0;
+    display: block;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.flex-grow{
+    flex-grow: 1;
+    margin-left: 5px;
+}
+
+.flex-row{
+   display: -webkit-flex;
+   display: flex;
+   -webkit-flex-direction: row;
+   flex-direction: row;
+   -webkit-justify-content: flex-start;
+   justify-content: flex-start;
+}
+
+.flex-grow input{
+    width: 100%;
 }
 
 .closeTable{
@@ -368,9 +445,15 @@ body, input, select, textarea {
 }
 
 .listWrapper{
-    padding: 3px 10px;
+    padding: 1px 10px;
     color: #000;
     overflow-x: auto;
+}
+
+.bottom-lenMenu{
+  padding-top: 0.2em;
+  padding-left: 10px;
+  display: inline-block;
 }
 
 #lock{
@@ -392,6 +475,11 @@ body, input, select, textarea {
     border: 1px solid white;
     border-radius: 5px;
 }
+
+#specListTable {
+  width: 100%;
+  text-align:center;
+}
 #specListTable tr {
     cursor: pointer;
     white-space: nowrap;
@@ -399,12 +487,20 @@ body, input, select, textarea {
 #altListTable tr {
     cursor: pointer;
 }
+#altListTable_wrapper .listToolbar {
+    margin-top: 0.5em;
+}
+
 .listToolbar{
     color: #fff;
     float: left;
     display: flex;
     font-size: 1.2em;
     margin-left: 5px;
+}
+.listToolbar input{
+    vertical-align: middle;
+    margin-bottom: 5px;
 }
 .specListToolbar .btn{
     border-right: 1px solid white;
@@ -427,18 +523,22 @@ body, input, select, textarea {
   color: #999;
 }
 .paginate_button:hover a{
-    color: #fff;
+  color: #fff;
 }
 .paginate_button.disabled a{
-    color: #fff;
+  color: #fff;
+  cursor: default;
+}
+.paginate_button.disabled a:hover{
+  text-decoration: none;
 }
 .paginate_button {
-    background-color: #fff;
+  background-color: #fff;
 }
 
 .dynDiv_moveParentDiv{
-    height:20px;
-    background:#091D42;
+  height:20px;
+  background:#091D42;
 }
 .dynDiv_resizeDiv_tl, .dynDiv_resizeDiv_tr, .dynDiv_resizeDiv_bl, .dynDiv_resizeDiv_br{
     width:20px;
@@ -581,11 +681,10 @@ body, input, select, textarea {
 .dynTitle {
     position: relative;
     left: 30px;
-    top: -2px;
+    top: 2px;
     letter-spacing: 0.5px;
     font-size: 0.9em;
     color: white;
-
 }
 
 #alignPanel{
