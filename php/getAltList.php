@@ -32,7 +32,7 @@
 
 	$JSON = array();
 
-	$stmt = $dbh->prepare("SELECT id, mzid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, scores, protein, passThreshold, rank FROM identifications WHERE mzid=:mzid ORDER BY id,rank;");
+	$stmt = $dbh->prepare("SELECT id, mzid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, scores, protein1, protein2, passThreshold, rank FROM identifications WHERE mzid=:mzid ORDER BY id,rank;");
 	$stmt->bindParam(':mzid', $mzid);
 	if ($stmt->execute()) {
 

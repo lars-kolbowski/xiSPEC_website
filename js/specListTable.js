@@ -60,11 +60,12 @@ var specListTableView = Backbone.View.extend({
 				{ "title": "charge", "data": "charge", "className": "dt-center" },		//6
 				{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center" },	//7
 				{ "title": "score", "data": "scores", "className": "dt-center" },		//8
-				{ "title": "protein", "data": "protein", "className": "dt-center" },	//9
-				{ "title": "passThreshold", "data": "passThreshold" },	//10
-				{ "title": "alt_count", "data": "alt_count" },		//11
-				{ "title": "dataRef", "data": "file" },				//12
-				{ "title": "scanID", "data": "scanID", "className": "dt-center" },		//13
+				{ "title": "protein 1", "data": "protein1", "className": "dt-center" },	//9
+				{ "title": "protein 2", "data": "protein2", "className": "dt-center" },	//10
+				{ "title": "passThreshold", "data": "passThreshold" },	//11
+				{ "title": "alt_count", "data": "alt_count" },		//12
+				{ "title": "dataRef", "data": "file" },				//13
+				{ "title": "scanID", "data": "scanID", "className": "dt-center" },		//14
 			],
 
 			"createdRow": function( row, data, dataIndex ) {
@@ -76,7 +77,7 @@ var specListTableView = Backbone.View.extend({
 			 	"columnDefs": [
 				{
 					"class": "invisible",
-					"targets": [ 0, 10, 11 ],
+					"targets": [ 0, 11, 12 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
@@ -103,7 +104,7 @@ var specListTableView = Backbone.View.extend({
 						if (data == -1)
 							return '';
 						else
-							return data;
+							return parseInt(data)+1;
 					},
 					"searchable": false,
 					"targets": [ 4, 5 ]
@@ -117,7 +118,7 @@ var specListTableView = Backbone.View.extend({
 				}
 				window.initSpinner.stop();
 				$("#topDiv-overlay").css("z-index", -1);
-				self.DataTable.columns( 10 ).search( "1" ).draw();
+				self.DataTable.columns( 11 ).search( "1" ).draw();
 				loadSpectrum(self.DataTable.rows( { filter : 'applied'} ).data()[0]);
 				firstRow = $('#specListWrapper tr:first-child');
 				$(firstRow).addClass('selected');
