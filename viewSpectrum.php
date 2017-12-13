@@ -271,6 +271,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 								<i id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav fa fa-bars" aria-hidden="true"></i>
 								<!-- <i id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-right" aria-hidden="true"></i> -->
 							</span>
+							<a href="help.php" target="_blank"><i title="Help" class="btn btn-1a btn-topNav fa fa-question" aria-hidden="true"></i></a>
 						</div>
 						<div class="heightFill">
 							<svg id="spectrumSVG"></svg>
