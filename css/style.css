@@ -395,11 +395,11 @@ nav a:focus, nav a:hover {
     transform: translateX(0px);
 }
 ::-moz-selection {
-    background-color: #333333;
+    background-color: #666;
     color: #fff;
 }
 ::selection {
-    background-color: #e5e5e5;
+    background-color: #801515;
     color: #fff;
 }
 article, section {
@@ -652,7 +652,12 @@ table.default tfoot {
     padding: 20px;
     margin-bottom: 20px;
     margin-top: 20px;
+    font-size: 15pt;
 }
+.hidden{
+    display: none;
+}
+
 .bottom a:hover {
     opacity: .5;
 }
