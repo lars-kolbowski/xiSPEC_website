@@ -1749,6 +1749,10 @@ p#scoreLabel2.scoreLabel {
     display: none;
 }
 
+.container ul{
+   margin-left: 2em;
+}
+
 .userModified{
     background-color: #a0bbde !important;
     font-weight: bold !important;
@@ -1779,12 +1783,12 @@ p#scoreLabel2.scoreLabel {
     color: white;
 }
 
-#csvTable{
+.myTable{
   text-align: left;
-  font-size: 0.8em;
+  font-size: 12pt;
 }
 
-#csvTable thead{
+.myTable thead{
   border-bottom: 1px solid #666;
 }
 

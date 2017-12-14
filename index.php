@@ -55,7 +55,7 @@
 			<div class="container">
 				<h1 class="page-header">Visualizing mass spectrometry data.</h1>
 				xiSPEC is an interactive tool for visualizing and analyzing mass spectrometry data.
-				<ul style="margin-left: 2em;">
+				<ul>
 					<li>Analyse mass spectra intuitively and test hypotheses</li>
 					<li>Upload and share whole MS datasets</li>
 					<li>Download annotated spectra in publication quality (vector graphic).</li>

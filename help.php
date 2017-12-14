@@ -14,18 +14,19 @@
 
    	 	<!-- Main -->
    	 	<div id="main">
-			
+
 			<div class="container">
-   	 					
 				<h1 class="page-header">Input data format</h1>
- 					<ul style="font-size: 0.8em;">
+ 					<ul>
    	 					<li><h5>Peptide Sequence</h5></li>
-						<table >
-							<tr>
-								<th>What?</th>
-								<th>How?</th>
-								<th>Example</th>
-							</tr>
+						<table class="myTable" style="max-width: 500px;">
+							<thead>
+								<tr>
+									<th>What?</th>
+									<th>How?</th>
+									<th>Example</th>
+								</tr>
+							</thead>
 							<tr>
 								<td>amino acids</td>
 								<td>upper case one letter code</td>
@@ -39,13 +40,13 @@
 							<tr>
 								<td>peptide delimiter</td>
 								<td>;</td>
-								<td rowspan="2" style="vertical-align: middle">K#LM;DAHK#SEVR</td>								
+								<td rowspan="2" style="vertical-align: middle">K#LM;DAHK#SEVR</td>
 							</tr>
 							<tr>
 								<td>cross-linked amino acid</td>
 								<td>#</td>
 							</tr>
-						</table>  	 						
+						</table>
    	 					</p>
    	 					<br/>
    	 					<li><h5>Peaklist</h5></li>
@@ -60,7 +61,7 @@
 					</ul>
 
 					<h1 class="page-header">Features</h1>
-					<ul style="font-size: 0.8em;">
+					<ul >
 						<li>
 							<h5>Change cross-linker position</h5>
 						</li>
@@ -96,13 +97,13 @@
 								<li>Hover over fragments in the spectrum to highlight the corresponding fragment in the Sequence and vice versa.</li>
 								<li>Click on a fragment to make the highlight permanent.</li>
 								<li>Ctrl+Click to add additional fragments to selection.</li>
-								<li>Click on the background to reset highlighting.</li> 
+								<li>Click on the background to reset highlighting.</li>
 							</ul>
 						</p>
 					</ul>
  			</div> <!-- CONTAINER -->
 		</div> <!-- MAIN -->
-  	 				
-   	 				
+
+
 	</body>
 </html>

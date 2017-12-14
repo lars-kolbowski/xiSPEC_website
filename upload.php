@@ -34,7 +34,7 @@
 							csv: <a id="showCsvHeader" href="#">Show column headings</a> for identification csv file (<a href="example/example.csv">download example file</a>)
 						</div>
 						<div style="display:flex; margin-top: 0.5em;">
-							<input id="fileupload" type="file" name="files[]" accept=".mzid,.csv,.mzml,.mgf" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
+							<input id="fileupload" type="file" name="files[]" accept=".mzid,.csv,.mzml,.mgf,.zip" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
 							<label for="fileupload"><span class="uploadbox"></span><span class="btn">Choose file(s)</span></label>
 							<div id="uploadProgress">
 								<div class="file_upload_bar" style="width: 0%;"><div class="file_upload_percent"></div></div>
@@ -54,7 +54,7 @@
 							<tr id="mzml_fileBox">
 								<td style="text-align: center;">Peak list file:</td>
 								<td>
-									<span class="fileName">Select a mzML or mgf file to upload</span>
+									<span class="fileName">Select a mzML, mgf or zip file to upload.</span>
 									<span class="statusBox" data-filetype="mzml"></span>
 									<input class="uploadCheckbox" type="checkbox" id="mzml_checkbox" style="visibility: hidden;">
 								</td>
@@ -160,7 +160,7 @@
 				<h1>Peptide identification csv column headings</h1>
 			</div>
 			<div style="margin: 1em;">
-				<table id="csvTable">
+				<table class="myTable" id="csvTable">
 					<thead>
 						<tr><th>column</th><th>required</th><th>default</th><th>example(s)</th></tr>
 					</thead>

@@ -324,10 +324,17 @@ $( document ).ready(function() {
 		  return false;
 	});
 
+
 	$('.accordionHead').click(function(){
-		$('.accordionContent').slideToggle();
-		$('.accordionSym').html("+");
-		$(this).children('.accordionSym').html("-");
+		if($(this).next('.accordionContent').is(":visible")){
+			$(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
+		}
+		else{
+			$(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
+		}
+		$(this).next('.accordionContent').slideToggle();
+
+
 	});
 
 });
