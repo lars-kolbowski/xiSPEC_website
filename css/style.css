@@ -171,6 +171,8 @@ nav a:focus, nav a:hover {
     border: 1px solid #666;
     color: #666;
     padding-left: 15px;
+    /* font-size: 1.3em; */
+    margin-left: 0.6em;
 }
 
 #fileupload:focus + label,
@@ -184,6 +186,7 @@ nav a:focus, nav a:hover {
 }
 #startParsing{
     border: 1px solid #666;
+    /* font-size: 1.0em; */
 }
 #startParsing:disabled{
     border: 1px solid #eee;
@@ -282,7 +285,7 @@ nav a:focus, nav a:hover {
     top: 0;
     content:"+";
     right: 10px;
-    top: -3px;
+    top: -8px;
 }
 .file_upload_bar {
     height: 30px;
@@ -949,7 +952,6 @@ code {
 }
 .fileupload_info{
     margin-top: 10px;
-    font-size: 0.8em;
 }
 .spinnerWrapper {
  position: relative;
@@ -1330,6 +1332,11 @@ div.file_upload input {
     display: inline;
     cursor: pointer;
     opacity: 0;
+}
+#fileUploadWrapper{
+    display: flex;
+    margin-top: 0.9em;
+    font-size: 1.3em;
 }
 .btn {
     border: none;
@@ -1793,11 +1800,11 @@ p#scoreLabel2.scoreLabel {
 }
 
 #csvTable td{
-  padding: 0px 10px;
+  padding: 0px 15px;
 }
 
 #csvTable th{
-  padding: 1px 5px;
+  padding: 1px 15px;
 }
 
 .tooltip {

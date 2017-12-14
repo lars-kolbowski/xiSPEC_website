@@ -18,7 +18,7 @@ $( document ).ready(function() {
 	});
 
 	$("#csvHeaderModal").easyModal();
-	$('#showCsvHeader').click(function(){
+	$('.showCsvHeader').click(function(){
 		$("#csvHeaderModal").trigger('openModal');
 	});
 

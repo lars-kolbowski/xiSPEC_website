@@ -29,11 +29,13 @@
 				<div class="container" id="jquery-fileupload">
 					<h1 class="page-header accordionHead"><i <?php echo (isset($_GET['ex']) ? 'class="fa fa-plus-square"' : 'class="fa fa-minus-square"');?> aria-hidden="true"></i> Data Upload - Upload your data (identification & peak list file pair)</h1>
 					<div class="accordionContent" <?php echo (isset($_GET['ex']) ? 'style="display: none;"' : '');?>>
-						<div style="margin-left: 1em; font-size: 0.6em; line-height: 1.7em;">
-							mzml: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' for MSconvert)</br>
-							csv: <a id="showCsvHeader" href="#">Show column headings</a> for identification csv file (<a href="example/example.csv">download example file</a>)
+						<div style="margin-left: 1em; font-size: 0.8em; line-height: 1.7em;">
+							<strong>Tips</strong></br>
+							mzML: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' in <a href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
+							mzML: Make sure to use centroided MS2 data! (e.g. 'Peak picking' in <a href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
+							csv: <a class="showCsvHeader" href="#">Show column headings</a> for identification csv file (<a href="example/example.csv">download example .csv</a>)
 						</div>
-						<div style="display:flex; margin-top: 0.5em;">
+						<div id="fileUploadWrapper">
 							<input id="fileupload" type="file" name="files[]" accept=".mzid,.csv,.mzml,.mgf,.zip" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
 							<label for="fileupload"><span class="uploadbox"></span><span class="btn">Choose file(s)</span></label>
 							<div id="uploadProgress">
@@ -46,7 +48,7 @@
 							<tr id="mzid_fileBox">
 								<td style="text-align: center;">Identification file:</td>
 								<td>
-									<span class="fileName">Select a mzIdentML or csv file to upload</span>
+									<span class="fileName">Select a <a href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> or  <a class="showCsvHeader" href="#">csv</a> file to upload</span>
 									<span class="statusBox" data-filetype="mzid"></span>
 									<input class="uploadCheckbox" type="checkbox" id="mzid_checkbox" style="visibility: hidden;">
 								</td>
@@ -54,7 +56,7 @@
 							<tr id="mzml_fileBox">
 								<td style="text-align: center;">Peak list file:</td>
 								<td>
-									<span class="fileName">Select a mzML, mgf or zip file to upload.</span>
+									<span class="fileName">Select a <a href="http://www.psidev.info/mzml" target="blank">mzML</a>, <a href="http://www.matrixscience.com/help/data_file_help.html#GEN">mgf</a> or zip file to upload.</span>
 									<span class="statusBox" data-filetype="mzml"></span>
 									<input class="uploadCheckbox" type="checkbox" id="mzml_checkbox" style="visibility: hidden;">
 								</td>

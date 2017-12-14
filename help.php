@@ -19,7 +19,7 @@
 				<h1 class="page-header">Input data format</h1>
  					<ul>
    	 					<li><h5>Peptide Sequence</h5></li>
-						<table class="myTable" style="max-width: 500px;">
+						<table class="myTable" style="max-width: 700px;">
 							<thead>
 								<tr>
 									<th>What?</th>
