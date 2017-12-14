@@ -26,16 +26,20 @@
 
 		var myTimer = setInterval(function () {showDiv(slideIndex+1)}, 4000);
 
+		$('.sliderImg').click(function(){
+			clearInterval(myTimer);
+		})
+
 		$('.slider-left').click(function(){
 			showDiv(-1);
 			clearInterval(myTimer);
-			myTimer = setInterval(function () {showDiv(slideIndex+1)}, 4000);
+			// myTimer = setInterval(function () {showDiv(slideIndex+1)}, 4000);
 		})
 
 		$('.slider-right').click(function(){
 			showDiv(1);
 			clearInterval(myTimer);
-			myTimer = setInterval(function () {showDiv(slideIndex+1)}, 4000);
+			// myTimer = setInterval(function () {showDiv(slideIndex+1)}, 4000);
 		})
 
 	});
@@ -50,9 +54,13 @@
 		<div id="main">
 			<div class="container">
 				<h1 class="page-header">Visualizing mass spectrometry data.</h1>
-				<p>xiSPEC is an interactive tool for visualizing and analyzing mass spectrometry data. It features automated spectra annotation with intuitive tools for data analysis and hypothesis testing.</p>
-				<p>xiSPEC allows you to upload whole MS datasets (<a href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> & <a href="http://www.psidev.info/mzml" target="blank">mzML</a>/mgf pair) and save them for later access (share with colleagues / online access for publication). Additionally it also allows downloading high quality vector graphics (.svg format) of your spectra for use in publications.</p>
-				<p>xiSPEC is an open source project on <a href="https://github.com/Rappsilber-Laboratory/xiSPEC" >GitHub</a>. You can report issues and request features  <a href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues">here</a></p>
+				xiSPEC is an interactive tool for visualizing and analyzing mass spectrometry data.
+				<ul style="margin-left: 2em;">
+					<li>Analyse mass spectra intuitively and test hypotheses</li>
+					<li>Upload and share whole MS datasets</li>
+					<li>Download annotated spectra in publication quality (vector graphic).</li>
+			 </ul>
+				<p>xiSPEC is an open source project on <a href="https://github.com/Rappsilber-Laboratory/xiSPEC" >GitHub</a>. Report issues and request features <a href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues">here</a></p>
 				<div style="text-align: center;">
 					<div class="sliderWrapper">
 					<img class="sliderImg" alt="Interactive highlighting between all views" src="images/slider/dbView.png">
