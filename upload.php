@@ -12,6 +12,7 @@
 		<script type="text/javascript" src="./src/PrecursorInfoView.js"></script>
 		<script type="text/javascript" src="./src/model.js"></script>
 		<script type="text/javascript" src="./js/upload.js"></script>
+		<script type="text/javascript" src="./js/accordion.js"></script>
 		<script type="text/javascript" src="./vendor/spin.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.ui.widget.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.iframe-transport.js"></script>
@@ -218,7 +219,8 @@
 					</form>
 				</div>
 				<div>
-					<a id="gitHubIssue" style="display:none;" href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'>Create an issue on GitHub</a>
+					<a id="cancelUpload" class="btn btn-1a">Cancel</a>
+					<a id="gitHubIssue" class="btn btn-1a" style="display:none;" href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'><i class="fa fa-github" aria-hidden="true"></i>Create issue</a>
 					<a id="continueToDB" class="btn btn-1a">Continue</a>
 				</div>
 			</div>

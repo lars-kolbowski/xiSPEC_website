@@ -16,6 +16,9 @@ $( document ).ready(function() {
 		overlayClose: false,
 		closeOnEscape: false
 	});
+	$('#cancelUpload').click(function(){
+		$("#submitDataModal").trigger('closeModal');
+	})
 
 	$("#csvHeaderModal").easyModal();
 	$('.showCsvHeader').click(function(){
@@ -322,19 +325,6 @@ $( document ).ready(function() {
 			}
 		  });
 		  return false;
-	});
-
-
-	$('.accordionHead').click(function(){
-		if($(this).next('.accordionContent').is(":visible")){
-			$(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
-		}
-		else{
-			$(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
-		}
-		$(this).next('.accordionContent').slideToggle();
-
-
 	});
 
 });
