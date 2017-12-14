@@ -17,7 +17,7 @@ $( document ).ready(function() {
 		closeOnEscape: false
 	});
 	$('#cancelUpload').click(function(){
-		$("#submitDataModal").trigger('closeModal');
+		window.location.href = 'upload.php';
 	})
 
 	$("#csvHeaderModal").easyModal();
@@ -307,7 +307,7 @@ $( document ).ready(function() {
 					if (resp.errors.length > 0){
 						$('#errorInfo').show();
 						$('#gitHubIssue').show();
-						$('#errorMsg').html("There were " + resp.errors.length + " error(s) parsing your data. See the log for more information:");
+						$('#errorMsg').html(resp.errors.length + " error(s) occured parsing your data. See the log for more information:");
 						resp.errors.forEach(function (error){
 							$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message+'\nid: ' + error.id + '\n\n');
 						})
@@ -317,7 +317,7 @@ $( document ).ready(function() {
 						$('#modificationsMsg').html("Please provide the masses for the following " + resp.modifications.length + " modification(s):");
 						resp.modifications.forEach(function (mod){
 							var modNameInput = '<input class="form-control" name="mods[]" readonly type="text" value='+mod+'>';
-							var modMassInput = '<input class="form-control" name="modMasses[]" type="number" min=0 step=0.000001 required autocomplete=off>';
+							var modMassInput = '<input class="form-control" name="modMasses[]" type="number" min=0 step=0.000001 value="0" required autocomplete=off>';
 							$('#csvModificationsForm').append(modNameInput + modMassInput + '\n\n');
 						})
 					}

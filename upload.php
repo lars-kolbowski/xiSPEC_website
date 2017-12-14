@@ -219,9 +219,9 @@
 					</form>
 				</div>
 				<div>
-					<a id="cancelUpload" class="btn btn-1a">Cancel</a>
+					<a id="cancelUpload" class="btn btn-1a" href="#">Cancel</a>
 					<a id="gitHubIssue" class="btn btn-1a" style="display:none;" href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'><i class="fa fa-github" aria-hidden="true"></i>Create issue</a>
-					<a id="continueToDB" class="btn btn-1a">Continue</a>
+					<a id="continueToDB" class="btn btn-1a" href="#">Continue</a>
 				</div>
 			</div>
 			<div id="processDataInfo">
