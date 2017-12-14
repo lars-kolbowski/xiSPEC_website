@@ -10,16 +10,16 @@ body {
 
 }*/
 .container {
-/*
+    /*
     width: 1200px;
 	padding: 36px;
 */
-	
     margin-top: 20px;
     margin-bottom: 20px;
     margin-left: 80px;
     margin-right: 80px;
-}
+    font-size: 12pt;
+    }
 /*
 .container.small {
     width: 900px;

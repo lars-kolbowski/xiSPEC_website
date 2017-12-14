@@ -11,9 +11,15 @@ $( document ).ready(function() {
 			$('#myCL').val('');
 		}
 	});
+
 	$("#submitDataModal").easyModal({
 		overlayClose: false,
 		closeOnEscape: false
+	});
+
+	$("#csvHeaderModal").easyModal();
+	$('.showCsvHeader').click(function(){
+		$("#csvHeaderModal").trigger('openModal');
 	});
 
 
@@ -86,23 +92,23 @@ $( document ).ready(function() {
 			$('#ionSelection').val(ionSelectionArr.join(", "));
 	});
 
-    window.modTable = $('#modificationTable').DataTable( {
-    	"paging":   false,
-        "ordering": false,
-        "info":     false,
-        "searching":false,
-        "processing": true,
-        "serverSide": true,
-        "ajax": "php/convertModsToJSON.php?peps=",
-        "columns": [
-            { "data": "id" },
-        	{},
-            {},
-            { "data": "aminoAcid" },
-            ],
+	window.modTable = $('#modificationTable').DataTable( {
+		"paging":   false,
+		"ordering": false,
+		"info":	 false,
+		"searching":false,
+		"processing": true,
+		"serverSide": true,
+		"ajax": "php/convertModsToJSON.php?peps=",
+		"columns": [
+			{ "data": "id" },
+			{},
+			{},
+			{ "data": "aminoAcid" },
+			],
 
-        "columnDefs": [
-        	{
+		"columnDefs": [
+			{
 				"render": function ( data, type, row, meta ) {
 					return '<input class="form-control" id="modName_'+meta.row+'" name="mods[]" readonly type="text" value='+data+'>';
 				},
@@ -162,31 +168,31 @@ $( document ).ready(function() {
 				},
 				"targets": 3,
 			}
-            ]
-    });
+		]
+	});
 
-    $('#fileupload').fileupload({
-        dataType: 'json',
-        fileTypes: "mzid|mzml|mgf",
+	$('#fileupload').fileupload({
+		dataType: 'json',
+		fileTypes: "mzid|mzml|mgf|csv",
 		maxChunkSize: 100000000,	//100MB
 		progressall: function (e, data) {
-		    var progress = parseInt(data.loaded / data.total * 100, 10);
-		    $('#uploadProgress .file_upload_bar').css(
-		        'width',
-		        progress + '%'
-		    );
-		    $('#uploadProgress .file_upload_percent').html(progress + '%');
+			var progress = parseInt(data.loaded / data.total * 100, 10);
+			$('#uploadProgress .file_upload_bar').css(
+				'width',
+				progress + '%'
+			);
+			$('#uploadProgress .file_upload_percent').html(progress + '%');
 		},
 		add: function (e, data) {
 
-			if(new RegExp("\.(mzid)$", 'i').test(data.files[0].name)){
+			if(new RegExp("\.(mzid|csv)$", 'i').test(data.files[0].name)){
 				$('#mzid_checkbox').prop( "checked", false ).change();
 				$('#mzid_fileBox .fileName').html(data.files[0].name);
 				data.context = $('#mzid_fileBox .statusBox').html('<div class="loader"></div>');
 				data.submit();
 			}
 
-			if(new RegExp("\.(mzml|mgf)$", 'i').test(data.files[0].name)){
+			if(new RegExp("\.(mzml|mgf|zip)$", 'i').test(data.files[0].name)){
 				$('#mzml_checkbox').prop( "checked", false ).change();
 				$('#mzml_fileBox .fileName').html(data.files[0].name);
 				data.context = $('#mzml_fileBox .statusBox').html('<div class="loader"></div>');
@@ -195,43 +201,43 @@ $( document ).ready(function() {
 
 			var that = this;
 			$.getJSON('vendor/jQueryFileUploadMin/fileUpload.php', {file: data.files[0].name}, function (result) {
-			    var file = result.file;
-			    data.uploadedBytes = file && file.size;
-			    $.blueimp.fileupload.prototype
-			        .options.add.call(that, e, data);
+				var file = result.file;
+				data.uploadedBytes = file && file.size;
+				$.blueimp.fileupload.prototype
+					.options.add.call(that, e, data);
 			});
 
 		},
 		maxRetries: 100,
 		retryTimeout: 500,
 		fail: function (e, data) {
-		    // jQuery Widget Factory uses "namespace-widgetname" since version 1.10.0:
-		    var fu = $(this).data('blueimp-fileupload') || $(this).data('fileupload'),
-		        retries = data.context.data('retries') || 0,
-		        retry = function () {
-		            $.getJSON('vendor/jQueryFileUploadMin/fileUpload.php', {file: data.files[0].name})
-		                .done(function (result) {
-		                    var file = result.file;
-		                    data.uploadedBytes = file && file.size;
-		                    // clear the previous data:
-		                    data.data = null;
-		                    data.submit();
-		                })
-		                .fail(function () {
-		                    fu._trigger('fail', e, data);
-		                });
-		        };
-		    if (data.errorThrown !== 'abort' &&
-		            data.uploadedBytes < data.files[0].size &&
-		            retries < fu.options.maxRetries) {
-		        retries += 1;
-		        data.context.data('retries', retries);
-		        window.setTimeout(retry, retries * fu.options.retryTimeout);
-		        return;
-		    }
-		    data.context.removeData('retries');
-		    $.blueimp.fileupload.prototype
-		        .options.fail.call(this, e, data);
+			// jQuery Widget Factory uses "namespace-widgetname" since version 1.10.0:
+			var fu = $(this).data('blueimp-fileupload') || $(this).data('fileupload'),
+				retries = data.context.data('retries') || 0,
+				retry = function () {
+					$.getJSON('vendor/jQueryFileUploadMin/fileUpload.php', {file: data.files[0].name})
+						.done(function (result) {
+							var file = result.file;
+							data.uploadedBytes = file && file.size;
+							// clear the previous data:
+							data.data = null;
+							data.submit();
+						})
+						.fail(function () {
+							fu._trigger('fail', e, data);
+						});
+				};
+			if (data.errorThrown !== 'abort' &&
+					data.uploadedBytes < data.files[0].size &&
+					retries < fu.options.maxRetries) {
+				retries += 1;
+				data.context.data('retries', retries);
+				window.setTimeout(retry, retries * fu.options.retryTimeout);
+				return;
+			}
+			data.context.removeData('retries');
+			$.blueimp.fileupload.prototype
+				.options.fail.call(this, e, data);
 		},
 
 		done: function (e, data) {
@@ -239,21 +245,30 @@ $( document ).ready(function() {
 				$('#mzml_checkbox').prop( "checked", true ).change();
 			if(data.context[0].dataset['filetype'] == 'mzid')
 				$('#mzid_checkbox').prop( "checked", true ).change();
-		    data.context.html('<span class="checkmark"><div class="checkmark_stem"></div><div class="checkmark_kick"></div></span>');
+			data.context.html('<span class="checkmark"><div class="checkmark_stem"></div><div class="checkmark_kick"></div></span>');
 		}
-    });
-
-	$(".uploadCheckbox").change(function(){
-	    if ($('.uploadCheckbox:checked').length == $('.uploadCheckbox').length) {
-	       $('#startParsing').prop('disabled', false);
-	    }
-	    else{
-	    	$('#startParsing').prop('disabled', true);
-	    }
 	});
 
-	$("#continueToDB").click(function(){
-		window.location.href = "viewSpectrum.php";
+	$(".uploadCheckbox").change(function(){
+		if ($('.uploadCheckbox:checked').length == $('.uploadCheckbox').length) {
+		   $('#startParsing').prop('disabled', false);
+		}
+		else{
+			$('#startParsing').prop('disabled', true);
+		}
+	});
+
+// 	$("#continueToDB").click(function(){
+// 		window.location.href = "viewSpectrum.php";
+// 	});
+
+	$('#continueToDB').click(function(){
+		if($('#csvModificationsForm input').length > 0)
+			$('#csvModificationsForm').submit();
+		else
+			window.location.href = "viewSpectrum.php";
+		// var fd = new FormData($('#csvModificationsForm')[0]);
+
 	});
 
 	$("#startParsing").click(function(e){
@@ -280,33 +295,52 @@ $( document ).ready(function() {
 			success: function (data) {
 				spinner.stop();
 				resp = JSON.parse(data);
-				if (resp.errors.length == 0)
+				if (resp.errors.length == 0 && resp.modifications.length == 0)
 					window.location.href = "viewSpectrum.php";
 				else{
 					$('#submitDataInfo').show();
 					$('#processDataInfo').hide();
 					$('#processText').html("");
-					$('#errorMsg').html("There were errors parsing your data. See the log for more information:");
-					resp.errors.forEach(function (error){
-						$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message+'\nid: ' + error.id + '\n\n');
-					})
-
+					if (resp.errors.length > 0){
+						$('#errorInfo').show();
+						$('#gitHubIssue').show();
+						$('#errorMsg').html("There were " + resp.errors.length + " error(s) parsing your data. See the log for more information:");
+						resp.errors.forEach(function (error){
+							$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message+'\nid: ' + error.id + '\n\n');
+						})
+					}
+					if (resp.modifications.length > 0){
+						$('#modificationsInfo').show();
+						$('#modificationsMsg').html("Please provide the masses for the following " + resp.modifications.length + " modification(s):");
+						resp.modifications.forEach(function (mod){
+							var modNameInput = '<input class="form-control" name="mods[]" readonly type="text" value='+mod+'>';
+							var modMassInput = '<input class="form-control" name="modMasses[]" type="number" min=0 step=0.000001 required autocomplete=off>';
+							$('#csvModificationsForm').append(modNameInput + modMassInput + '\n\n');
+						})
+					}
 				}
 			}
 		  });
 		  return false;
 	});
 
+
 	$('.accordionHead').click(function(){
-		$('.accordionContent').slideToggle();
-		$('.accordionSym').html("+");
-		$(this).children('.accordionSym').html("-");
+		if($(this).next('.accordionContent').is(":visible")){
+			$(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
+		}
+		else{
+			$(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
+		}
+		$(this).next('.accordionContent').slideToggle();
+
+
 	});
 
 });
 
-function doExample(){
-	$.get("example/peaklist.txt",function(data){
+function doExampleCL(){
+	$.get("example/cl-peaklist.txt",function(data){
 		$("#myPeaklist").val(data);
 	});
 	$("#myPeptide").val("QNCcmELFEQLGEYK#FQNALLVR;K#QTALVELVK");
@@ -315,6 +349,27 @@ function doExample(){
 	$("#myPrecursorZ").val("4");
 	$("#myPrecursorZ").change();
 	$("#myCL").val("138.068080");
+	$("#myToleranceUnit").val("ppm");
+	$("#myCL").change();
+
+	//ions
+	$('.ionSelectChkbox').prop('checked', false);
+	$('#PeptideIon').prop('checked', true);
+	$('#BIon').prop('checked', true);
+	$('#YIon').prop('checked', true).change();
+
+};
+
+function doExampleLinear(){
+	$.get("example/linear-peaklist.txt",function(data){
+		$("#myPeaklist").val(data);
+	});
+	$("#myPeptide").val("VHTECcmCcmHGDLLECcmADDRADLAK");
+	pepInputView.contentChanged();
+	$("#myTolerance").val("20.0");
+	$("#myPrecursorZ").val("3");
+	$("#myPrecursorZ").change();
+	$("#myCL").val("0");
 	$("#myToleranceUnit").val("ppm");
 	$("#myCL").change();
 

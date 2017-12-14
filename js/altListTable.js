@@ -58,9 +58,10 @@ var altListTableView = Backbone.View.extend({
 				{ "title": "charge", "data": "charge", "className": "dt-center" },		//7
 				{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center" },	//8
 				{ "title": "score", "data": "scores", "className": "dt-center" },		//9
-				{ "title": "protein", "data": "protein", "className": "dt-center" },	//10
-				{ "title": "passThreshold", "data": "passThreshold" },	//11
-				{ "title": "alt_count", "data": "alt_count" },		//12
+				{ "title": "protein1", "data": "protein1", "className": "dt-center" },	//10
+				{ "title": "protein2", "data": "protein2", "className": "dt-center" },	//11
+				{ "title": "passThreshold", "data": "passThreshold" },	//12
+				{ "title": "alt_count", "data": "alt_count" },		//13
 			],
 			"createdRow": function( row, data, dataIndex ) {
 				if ( data[6] == "0" )
@@ -71,7 +72,7 @@ var altListTableView = Backbone.View.extend({
 		    "columnDefs": [
 		    	{
 					"class": "invisible",
-					"targets": [ 0, 1, 11, 12 ],
+					"targets": [ 0, 1, 12, 13 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {

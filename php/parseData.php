@@ -4,6 +4,7 @@
 	// unset($_SESSION['db']);
 	$_SESSION['tmpDB'] = session_id();
 	$target_dir = "../uploads/".session_id()."/";
+
 	$mzid_file = $target_dir . $_POST['mzid_fn'];
 	$mzml_file = $target_dir . $_POST['mzml_fn'];
 	$xiSPEC_ms_parser_dir = '../../xiSPEC_ms_parser/';

@@ -1,7 +1,12 @@
 <?php
 
-	$dir = 'sqlite:../dbs/xiSPEC.db';
-	$xiSPECdb = new PDO($dir) or die("cannot open the database");
+	#this includes a connection string to the sql database
+	require('../../xiSPEC_sql_conn.php');
+
+
+	#this includes a connection string to the sql database
+	require('../../xiSPEC_sql_conn.php');
+	$xiSPECdb = new PDO("mysql:host=localhost;dbname=".$DBname, $DBuser, $DBpass) or die("cannot open the database");
 	$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 	if (session_status() === PHP_SESSION_NONE){session_start();}
@@ -11,7 +16,7 @@
 		exit();
 	}
 
-	$stmt = $xiSPECdb->prepare("SELECT pass FROM databases WHERE name = :name;");
+	$stmt = $xiSPECdb->prepare("SELECT pass FROM dbs WHERE name = :name;");
 	$stmt->bindParam(':name', $_POST['dbName'], PDO::PARAM_STR);
 	$stmt->execute();
 	$passHash = $stmt->fetchColumn();

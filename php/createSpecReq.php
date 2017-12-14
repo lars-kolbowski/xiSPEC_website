@@ -37,8 +37,8 @@
 
 	$linkSites = array();
 	if ($result['linkpos1'] != -1){
-		array_push($linkSites, array('id' => 0, 'peptideId' => 0, 'linkSite' => (intval($result['linkpos1']) - 1) ));
-		array_push($linkSites, array('id' => 0, 'peptideId' => 1, 'linkSite' => (intval($result['linkpos2']) - 1) ));
+		array_push($linkSites, array('id' => 0, 'peptideId' => 0, 'linkSite' => (intval($result['linkpos1'])) ));
+		array_push($linkSites, array('id' => 0, 'peptideId' => 1, 'linkSite' => (intval($result['linkpos2'])) ));
 	}
 
 
