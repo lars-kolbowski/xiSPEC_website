@@ -47,6 +47,7 @@ var specListTableView = Backbone.View.extend({
 			"language": {
 				"lengthMenu": "_MENU_ entries per page"
 			},
+			"order": [[ 8, "desc" ]],
 			// "processing": true,
 			// "serverSide": true,
 			"ajax": "php/getSpecList.php?db="+this.model.get('database'),
@@ -119,6 +120,7 @@ var specListTableView = Backbone.View.extend({
 				window.initSpinner.stop();
 				$("#topDiv-overlay").css("z-index", -1);
 				self.DataTable.columns( 11 ).search( "1" ).draw();
+				self.DataTable.columns( 7 ).search( "False" ).draw();
 				loadSpectrum(self.DataTable.rows( { filter : 'applied'} ).data()[0]);
 				firstRow = $('#specListWrapper tr:first-child');
 				$(firstRow).addClass('selected');
@@ -150,8 +152,9 @@ var specListTableView = Backbone.View.extend({
 		var dataFilter = specListToolbar.append('div').attr('id', 'data-filter');
 		// $( "<div id='data-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );
 
-		$("#data-filter").html('Filter: <label class="btn btn-1a"><input id="passThreshold" type="checkbox" checked>passing threshold</label><label class="btn btn-1a"><input id="hideLinear" type="checkbox">hide linear</label><label class="btn btn-1a"><input id="hideDecoy" type="checkbox">hide decoys</label>');
+		var data_filterHTML = 'Filter: <label class="btn btn-1a"><input id="passThreshold" type="checkbox" checked>passing threshold</label><label class="btn btn-1a"><input id="hideLinear" type="checkbox">hide linear</label><label class="btn btn-1a"><input id="hideDecoy" type="checkbox" checked>hide decoys</label>';
 
+		$("#data-filter").html(data_filterHTML);
 		var columnFilter = specListToolbar.append('div').attr('id', 'column-filter');
 		// $( "<div id='column-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );
 		$("#column-filter").html('<div class="mulitSelect_dropdown"><span class="btn btn-1a">Select columns<i class="fa fa-chevron-down" aria-hidden="true"></i></span><div class="mulitSelect_dropdown-content mutliSelect"><ul></ul></div></div>');
