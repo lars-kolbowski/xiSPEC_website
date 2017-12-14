@@ -30,7 +30,6 @@
 					<h1 class="page-header accordionHead"><i <?php echo (isset($_GET['ex']) ? 'class="fa fa-plus-square"' : 'class="fa fa-minus-square"');?> aria-hidden="true"></i> Data Upload - Upload your data (identification & peak list file pair)</h1>
 					<div class="accordionContent" <?php echo (isset($_GET['ex']) ? 'style="display: none;"' : '');?>>
 						<div style="margin-left: 1em; font-size: 0.8em; line-height: 1.7em;">
-							<strong>Tips</strong></br>
 							mzML: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' in <a href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
 							mzML: Make sure to use centroided MS2 data! (e.g. 'Peak picking' in <a href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
 							csv: <a class="showCsvHeader" href="#">Show column headings</a> for identification csv file (<a href="example/example.csv">download example .csv</a>)
