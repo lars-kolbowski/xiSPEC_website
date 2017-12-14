@@ -4,6 +4,14 @@
 	// unset($_SESSION['db']);
 	$_SESSION['tmpDB'] = session_id();
 	$target_dir = "../uploads/".session_id()."/";
+
+	//delete all files in tmp upload folder
+	$files = glob($target_dir.'*');
+	foreach($files as $file){
+	  if(is_file($file))
+	    unlink($file);
+	}
+
 	$mzid_file = $target_dir . $_POST['mzid_fn'];
 	$mzml_file = $target_dir . $_POST['mzml_fn'];
 	$xiSPEC_ms_parser_dir = '../../xiSPEC_ms_parser/';
