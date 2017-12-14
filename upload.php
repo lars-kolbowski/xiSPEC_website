@@ -27,7 +27,7 @@
 			<!-- Intro -->
 			<section id="top" class="one">
 				<div class="container" id="jquery-fileupload">
-					<h1 class="page-header accordionHead"> <span class="accordionSym">-</span> Data Upload - Upload your data (identification & peak list file pair)</h1>
+					<h1 class="page-header accordionHead"><i <?php echo (isset($_GET['ex']) ? 'class="fa fa-plus-square"' : 'class="fa fa-minus-square"');?> aria-hidden="true"></i> Data Upload - Upload your data (identification & peak list file pair)</h1>
 					<div class="accordionContent" <?php echo (isset($_GET['ex']) ? 'style="display: none;"' : '');?>>
 						<div style="margin-left: 1em; font-size: 0.6em; line-height: 1.7em;">
 							mzml: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' for MSconvert)</br>
@@ -67,7 +67,7 @@
 			<section id="bottom" class="one">
 <!-- <span class="glyphicon glyphicon-upload"></span> -->
 				<div class="container">
-					<h1 class="page-header accordionHead"> <span class="accordionSym">+</span> Data Input - Manually input your spectrum data</h1>
+					<h1 class="page-header accordionHead"><i <?php echo (isset($_GET['ex']) ? 'class="fa fa-minus-square"' : 'class="fa fa-plus-square"');?> aria-hidden="true"></i> Data Input - Manually input your spectrum data</h1>
 					<div class="accordionContent" <?php echo (isset($_GET['ex']) ? '' : 'style="display: none;"');?> >
 						<form id="manUpPepForm" action="viewSpectrum.php" method="post" target="_blank">
 						<!-- <form id="xisv_entryform"  action="http://spectrumviewer.org/xisv/index.php" method="post" target="_blank" onsubmit="doPreSubmission();"> -->

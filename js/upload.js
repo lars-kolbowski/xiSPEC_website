@@ -192,7 +192,7 @@ $( document ).ready(function() {
 				data.submit();
 			}
 
-			if(new RegExp("\.(mzml|mgf)$", 'i').test(data.files[0].name)){
+			if(new RegExp("\.(mzml|mgf|zip)$", 'i').test(data.files[0].name)){
 				$('#mzml_checkbox').prop( "checked", false ).change();
 				$('#mzml_fileBox .fileName').html(data.files[0].name);
 				data.context = $('#mzml_fileBox .statusBox').html('<div class="loader"></div>');
