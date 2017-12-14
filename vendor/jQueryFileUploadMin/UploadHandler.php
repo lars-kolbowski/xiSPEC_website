@@ -529,6 +529,9 @@ class UploadHandler
             $index, $content_range) {
         $name = $this->trim_file_name($file_path, $name, $size, $type, $error,
             $index, $content_range);
+        //LK edit to overwrite files
+        return $this->trim_file_name($file_path, $name, $size, $type, $error, $index, $content_range);
+        //LK edit end
         return $this->get_unique_filename(
             $file_path,
             $this->fix_file_extension($file_path, $name, $size, $type, $error,

@@ -1765,9 +1765,30 @@ p#scoreLabel2.scoreLabel {
 }
 
 .modal .header {
-    background: #DDD;
-    border-bottom: 1px solid #CCCCCC;
+    background: #821818;
+    border-bottom: 1px solid #333333;
     padding: 18px 18px 14px;
+}
+
+.modal .header h1 {
+    color: white;
+}
+
+#csvTable{
+  text-align: left;
+  font-size: 0.8em;
+}
+
+#csvTable thead{
+  border-bottom: 1px solid #666;
+}
+
+#csvTable td{
+  padding: 0px 10px;
+}
+
+#csvTable th{
+  padding: 1px 5px;
 }
 
 .tooltip {

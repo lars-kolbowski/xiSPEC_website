@@ -209,13 +209,13 @@ var specListTableView = Backbone.View.extend({
 	toggleThreshold: function(e){
 		if (e.target.checked){
 		    this.DataTable
-		        .columns( 10 )
+		        .columns( 11 )
 		        .search( "1" )
 		        .draw();
 		}
 		else{
 		    this.DataTable
-		        .columns( 10 )
+		        .columns( 11 )
 		        .search( "" )
 		        .draw();
 		}

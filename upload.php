@@ -27,11 +27,14 @@
 			<!-- Intro -->
 			<section id="top" class="one">
 				<div class="container" id="jquery-fileupload">
-					<h1 class="page-header accordionHead"> <span class="accordionSym">-</span> Data Upload - Upload your data as mzIdentML + mzML pair</h1>
+					<h1 class="page-header accordionHead"> <span class="accordionSym">-</span> Data Upload - Upload your data (identification & peak list file pair)</h1>
 					<div class="accordionContent" <?php echo (isset($_GET['ex']) ? 'style="display: none;"' : '');?>>
-						<div style="margin-left: 1em; font-size: 0.6em;"> Note: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' for MSconvert)</div>
+						<div style="margin-left: 1em; font-size: 0.6em; line-height: 1.7em;">
+							mzml: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' for MSconvert)</br>
+							csv: <a id="showCsvHeader" href="#">Show column headings</a> for identification csv file (<a href="example/example.csv">download example file</a>)
+						</div>
 						<div style="display:flex; margin-top: 0.5em;">
-							<input id="fileupload" type="file" name="files[]" accept=".mzid,.mzml,.mgf" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
+							<input id="fileupload" type="file" name="files[]" accept=".mzid,.csv,.mzml,.mgf" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
 							<label for="fileupload"><span class="uploadbox"></span><span class="btn">Choose file(s)</span></label>
 							<div id="uploadProgress">
 								<div class="file_upload_bar" style="width: 0%;"><div class="file_upload_percent"></div></div>
@@ -43,7 +46,7 @@
 							<tr id="mzid_fileBox">
 								<td style="text-align: center;">Identification file:</td>
 								<td>
-									<span class="fileName">Select a mzIdentML file to upload</span>
+									<span class="fileName">Select a mzIdentML or csv file to upload</span>
 									<span class="statusBox" data-filetype="mzid"></span>
 									<input class="uploadCheckbox" type="checkbox" id="mzid_checkbox" style="visibility: hidden;">
 								</td>
@@ -51,7 +54,7 @@
 							<tr id="mzml_fileBox">
 								<td style="text-align: center;">Peak list file:</td>
 								<td>
-									<span class="fileName">Select a mzML/mgf file to upload</span>
+									<span class="fileName">Select a mzML or mgf file to upload</span>
 									<span class="statusBox" data-filetype="mzml"></span>
 									<input class="uploadCheckbox" type="checkbox" id="mzml_checkbox" style="visibility: hidden;">
 								</td>
@@ -151,7 +154,42 @@
 				</div>
 			</section>
 		</div> <!-- MAIN -->
-		<!-- Modal -->
+		<!-- Modals -->
+		<div id="csvHeaderModal" role="dialog" class="modal" style="display: none;">
+			<div class="header">
+				<h1>Peptide identification csv column headings</h1>
+			</div>
+			<div style="margin: 1em;">
+				<table id="csvTable">
+					<thead>
+						<tr><th>column</th><th>required</th><th>default</th><th>example(s)</th></tr>
+					</thead>
+					<tbody>
+						<tr><td>Id</td><td>Yes</td><td></td><td>SIR_1</td></tr>
+						<tr><td>Rank</td><td>No*</td><td>1</td><td>1</td></tr>
+						<tr><td>ScanNumber</td><td>Yes</td><td></td><td>2256</td></tr>
+						<tr><td>Charge</td><td>Yes</td><td></td><td>3</td></tr>
+						<tr><td>FragmentTolerance</td><td>No</td><td>10 ppm</td><td>10 ppm | 0.2 Da</td></tr>
+						<tr><td>IonTypes</td><td>No</td><td>peptide;b;y</td><td>peptide;c;z</td></tr>
+						<tr><td>PepSeq 1</td><td>Yes</td><td></td><td>LKECcmCcmEKPLLEK</td></tr>
+						<tr><td>PepSeq 2</td><td>No**</td><td></td><td>HPYFYAPELLFFAKR</td></tr>
+						<tr><td>LinkPos 1</td><td>No**</td><td></td><td>2</td></tr>
+						<tr><td>LinkPos 2</td><td>No**</td><td></td><td>14</td></tr>
+						<tr><td>CrossLinkerModMass</td><td>No**</td><td></td><td>138.06808</td></tr>
+						<tr><td>PassThreshold</td><td>No</td><td>TRUE</td><td>TRUE | FALSE</td></tr>
+						<tr><td>Score</td><td>No</td><td></td><td>10.5641</td></tr>
+						<tr><td>IsDecoy</td><td>No</td><td>FALSE</td><td>TRUE | FALSE</td></tr>
+						<tr><td>Protein 1</td><td>Yes</td><td></td><td>HSA</td></tr>
+						<tr><td>Protein 2</td><td>No</td><td></td><td>HSA</td></tr>
+						<tr><td>RunName</td><td>No</td><td></td><td>example_file</td></tr>
+					</tbody>
+				</table>
+				<p style="font-size: small;line-height: 1.5em;">
+					*required if there are multiple alternative explanations for the same spectrum/id</br>
+					**required for cross-linked peptide
+				</p>
+			</div>
+		</div>
 		<div id="addCLModal" role="dialog" class="modal" style="display: none;">
 			<div class="header">
 				<h1>Add custom cross-linker</h1>
@@ -167,15 +205,21 @@
 				</div>
 			</form>
 		</div>
-		<div id="submitDataModal" role="dialog" class="modal">
+		<div id="submitDataModal" role="dialog" class="modal" style="display: none;">
 			<div id=submitDataInfo>
-				<div id="errorMsg"></div>
-				<textarea class="form-control" id="errorLog"></textarea>
-				<div>
-					<a href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'>Create an issue on GitHub</a>
-					<a id="continueToDB" class="btn btn-1a">Continue anyway</a>
+				<div id="errorInfo" style="display: none;">
+					<div id="errorMsg"></div>
+					<textarea class="form-control" id="errorLog"></textarea>
 				</div>
-
+				<div id="modificationsInfo"  style="display: none;">
+					<div id="modificationsMsg"></div>
+					<form id="csvModificationsForm" method="post" action="php/submitModDataForCSV.php">
+					</form>
+				</div>
+				<div>
+					<a id="gitHubIssue" style="display:none;" href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'>Create an issue on GitHub</a>
+					<a id="continueToDB" class="btn btn-1a">Continue</a>
+				</div>
 			</div>
 			<div id="processDataInfo">
 				<div class="spinnerWrapper"></div>
