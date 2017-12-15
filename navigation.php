@@ -2,7 +2,7 @@
 	<div class="header-bg">
 		<div class="top">
 			<div class="logogroup">
-				<a style="text-decoration:none;" href="index.php"><h1 class="logo">xiSPEC 2</h1></a>
+				<a style="text-decoration:none;" href="index.php"><h1 class="logo">xiSPEC v2</h1></a>
 				<h4 class="logo-subtitle">Spectrum Viewer</h4>
 			</div>
 			<nav class="hover-effect">
