@@ -207,6 +207,18 @@ var PeptideView = Backbone.View.extend({
 				.attr("stroke-width", 10)
 				.attr("opacity", 0)
 				.style("cursor", "pointer");
+
+			//line for changing
+			this.changeCLline = this.g.append("line")
+				.attr("x1", this.xStep * (CLpos - 1))
+				.attr("y1", 25)
+				.attr("x2", this.xStep * (CLpos - 1))
+				.attr("y2", 55)
+				.attr("stroke", "black")
+				.attr("stroke-width", 1.5)
+				.attr("opacity", 0)
+				.style("cursor", "pointer");
+
 			// the the link line
 			this.CLline = this.CL.append("line")
 				.attr("x1", this.xStep * (CLpos - 1))
@@ -229,16 +241,6 @@ var PeptideView = Backbone.View.extend({
 					}
 				}
 			});
-			//line for changing
-			this.changeCLline = this.g.append("line")
-				.attr("x1", this.xStep * (CLpos - 1))
-				.attr("y1", 25)
-				.attr("x2", this.xStep * (CLpos - 1))
-				.attr("y2", 55)
-				.attr("stroke", "black")
-				.attr("stroke-width", 1.5)
-				.attr("opacity", 0)
-				.style("cursor", "pointer");
 
 		}
 
