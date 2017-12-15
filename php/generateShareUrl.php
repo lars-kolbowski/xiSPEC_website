@@ -23,7 +23,7 @@
 			die(json_encode($json));
 		}
 
-		$stmt = $dbh->prepare("SELECT `share` FROM `dbs` WHERE `name` = :name");
+		$stmt = $xiSPECdb->prepare("SELECT `share` FROM `dbs` WHERE `name` = :name");
 		$stmt->bindParam(':name', $dbname, PDO::PARAM_STR);
 
 		$stmt->execute();
