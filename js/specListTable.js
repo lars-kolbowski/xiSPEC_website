@@ -52,21 +52,21 @@ var specListTableView = Backbone.View.extend({
 			// "serverSide": true,
 			"ajax": "php/getSpecList.php?db="+this.model.get('database'),
 			"columns": [
-				{ "title": "internal_id", "data": "id" },	//0
-				{ "title": "id", "data": "mzid" },	//1
-				{ "title": "peptide 1", "data": "pep1" },	//2
-				{ "title": "peptide 2", "data": "pep2" },	//3
-				{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center" },	//4
-				{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center" },	//5
-				{ "title": "charge", "data": "charge", "className": "dt-center" },		//6
-				{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center" },	//7
-				{ "title": "score", "data": "scores", "className": "dt-center" },		//8
-				{ "title": "protein 1", "data": "protein1", "className": "dt-center" },	//9
-				{ "title": "protein 2", "data": "protein2", "className": "dt-center" },	//10
-				{ "title": "passThreshold", "data": "passThreshold" },	//11
-				{ "title": "alt_count", "data": "alt_count" },		//12
-				{ "title": "dataRef", "data": "file" },				//13
-				{ "title": "scanID", "data": "scanID", "className": "dt-center" },		//14
+				{ "title": "internal_id", "data": "id", "name": "internal_id" },	//0
+				{ "title": "id", "data": "mzid", "name": "mzid" },	//1
+				{ "title": "peptide 1", "data": "pep1", "name": "pep1" },	//2
+				{ "title": "peptide 2", "data": "pep2", "name": "pep2" },	//3
+				{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center", "name": "linkpos1" },	//4
+				{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center", "name": "linkpos2" },	//5
+				{ "title": "charge", "data": "charge", "className": "dt-center", "name": "charge" },		//6
+				{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center", "name": "isDecoy" },	//7
+				{ "title": "score", "data": "scores", "className": "dt-center", "name": "scores" },		//8
+				{ "title": "protein 1", "data": "protein1", "className": "dt-center", "name": "protein1" },	//9
+				{ "title": "protein 2", "data": "protein2", "className": "dt-center", "name": "protein2" },	//10
+				{ "title": "passThreshold", "data": "passThreshold", "name": "passThreshold" },	//11
+				{ "title": "alt_count", "data": "alt_count", "name": "alt_count" },		//12
+				{ "title": "dataRef", "data": "file", "name": "dataRef" },				//13
+				{ "title": "scanID", "data": "scanID", "className": "dt-center", "name": "scanID" },		//14
 			],
 
 			"createdRow": function( row, data, dataIndex ) {
@@ -102,7 +102,7 @@ var specListTableView = Backbone.View.extend({
 				},
 				{
 					"render": function ( data, type, row, meta ) {
-						if (data == -1)
+						if (data == '-1')
 							return '';
 						else
 							return parseInt(data)+1;
@@ -119,11 +119,30 @@ var specListTableView = Backbone.View.extend({
 				}
 				window.initSpinner.stop();
 				$("#topDiv-overlay").css("z-index", -1);
-				self.DataTable.columns( 11 ).search( "1" ).draw();
-				self.DataTable.columns( 7 ).search( "False" ).draw();
+				self.DataTable.columns( 'passThreshold:name' ).search( "1" ).draw();
+				self.DataTable.columns( 'isDecoy:name' ).search( "False" ).draw();
+				// is cl dataset?
+				if(self.isEmpty(self.DataTable.columns('pep2:name').data()[0])){
+					var column = self.DataTable.columns('pep2:name');
+					self.DataTable.columns('pep2:name').visible( false );
+					self.DataTable.columns('linkpos1:name').visible( false );
+					self.DataTable.columns('linkpos2:name').visible( false );
+					self.DataTable.columns('protein2:name').visible( false );
+					$('#hideLinear').hide();
+				}
+				else{
+					self.DataTable.columns( 'pep2:name' ).search( ".+", true, false ).draw();
+					$('#hideLinear').find('input:checkbox:first').attr('checked', 'checked');
+				}
+
 				loadSpectrum(self.DataTable.rows( { filter : 'applied'} ).data()[0]);
 				firstRow = $('#specListWrapper tr:first-child');
 				$(firstRow).addClass('selected');
+
+				if(self.isEmpty(self.DataTable.columns('dataRef:name').data()[0])){
+					var column = self.DataTable.columns('dataRef:name');
+					column.visible( false );
+				}
 				// self.initiateTable();
 			},
 			"drawCallback": function( settings ) {
@@ -152,13 +171,14 @@ var specListTableView = Backbone.View.extend({
 		var dataFilter = specListToolbar.append('div').attr('id', 'data-filter');
 		// $( "<div id='data-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );
 
-		var data_filterHTML = 'Filter: <label class="btn btn-1a"><input id="passThreshold" type="checkbox" checked>passing threshold</label><label class="btn btn-1a"><input id="hideLinear" type="checkbox">hide linear</label><label class="btn btn-1a"><input id="hideDecoy" type="checkbox" checked>hide decoys</label>';
+		var data_filterHTML = 'Filter: <label class="btn btn-1a" id="passThreshold"><input type="checkbox" checked>passing threshold</label><label class="btn btn-1a" id="hideLinear"><input type="checkbox">hide linear</label><label class="btn btn-1a" id="hideDecoy"><input type="checkbox" checked>hide decoys</label>';
 
 		$("#data-filter").html(data_filterHTML);
 		var columnFilter = specListToolbar.append('div').attr('id', 'column-filter');
 		// $( "<div id='column-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );
 		$("#column-filter").html('<div class="mulitSelect_dropdown"><span class="btn btn-1a">Select columns<i class="fa fa-chevron-down" aria-hidden="true"></i></span><div class="mulitSelect_dropdown-content mutliSelect"><ul></ul></div></div>');
 
+		// columnToggleSelector
 	 	this.DataTable.columns()[0].forEach(function(col){
 	 		if (!self.DataTable.columns().header()[col].classList.contains("invisible")){
 		 		var colname =  self.DataTable.columns().header()[col].innerHTML;
@@ -212,13 +232,13 @@ var specListTableView = Backbone.View.extend({
 	toggleThreshold: function(e){
 		if (e.target.checked){
 		    this.DataTable
-		        .columns( 11 )
+		        .columns( 'passThreshold:name' )
 		        .search( "1" )
 		        .draw();
 		}
 		else{
 		    this.DataTable
-		        .columns( 11 )
+		        .columns( 'passThreshold:name' )
 		        .search( "" )
 		        .draw();
 		}
@@ -227,29 +247,29 @@ var specListTableView = Backbone.View.extend({
 	toggleLinear: function(e){
 		if (e.target.checked){
 		    this.DataTable
-		        .columns( 3 )
+		        .columns( 'pep2:name' )
 		        .search( ".+", true, false )
 		        .draw();
 		}
 		else{
 		    this.DataTable
-		        .columns( 3 )
+		        .columns( 'pep2:name' )
 		        .search( "" )
 		        .draw();
 		}
 	},
 
 	toggleDecoy: function(e){
-		var column = this.DataTable.column( 7 );
+		var column = this.DataTable.column( 'isDecoy:name' );
 		if (e.target.checked){
 			//column.visible( false );
 			//$(".toggle-vis[data-column='7']").attr("checked", "");
-		    this.DataTable.columns( 7 ).search( "False" ).draw();
+		    this.DataTable.columns( 'isDecoy:name' ).search( "False" ).draw();
 		}
 		else{
 			//column.visible( true );
 			//$(".toggle-vis[data-column='7']").attr("checked", "checked");
-		    this.DataTable.columns( 7 ).search( "" ).draw();
+		    this.DataTable.columns( 'isDecoy:name').search( "" ).draw();
 		}
 	},
 
@@ -310,6 +330,14 @@ var specListTableView = Backbone.View.extend({
 		this.DataTable.row(newIndex).nodes().to$().addClass("selected");
 
 	},
+
+	isEmpty: function(arr, emptyVal) {
+		for(var i=0; i<arr.length; i++) {
+			if(arr[i] !== emptyVal) return false;
+		}
+		return true;
+	}
+
 
 });
 	// 	//filters TODO: adjust pagination to show current selected one if it is in list
