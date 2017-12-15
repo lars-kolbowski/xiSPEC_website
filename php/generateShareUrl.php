@@ -13,7 +13,7 @@
 	require('../../xiSPEC_sql_conn.php');
 	$xiSPECdb = new PDO("mysql:host=localhost;dbname=".$DBname, $DBuser, $DBpass) or die("cannot open the database");
 	$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$stmt = $xiSPECdb->prepare("UPDATE `dbs` SET `share` = sha2(rand(), 256) WHERE `name` = :name AND `share` IS NULL");
+	$stmt = $xiSPECdb->prepare("UPDATE `dbs` SET `share` = left(sha2(rand(), 256), 42) WHERE `name` = :name AND `share` IS NULL");
 	$stmt->bindParam(':name', $dbname, PDO::PARAM_STR);
 	try {
 		$stmt->execute();
