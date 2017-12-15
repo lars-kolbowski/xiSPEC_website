@@ -150,7 +150,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 
 		var model_vars = {
 			baseDir: "",
-			xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/",
+			xiAnnotatorBaseURL: "https://xi3.bio.ed.ac.uk/xiAnnotator/",
 			<?php if(isset($dbName)) echo 'database: "'.$dbName.'"'; ?>
 		};
 
