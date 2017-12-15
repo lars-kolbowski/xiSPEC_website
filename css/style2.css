@@ -491,6 +491,11 @@ body, input, select, textarea {
     margin-top: 0.5em;
 }
 
+#specListColSelect input{
+  /* line-height: 0.4em; */
+  margin: 2px!important;
+}
+
 .listToolbar{
     color: #fff;
     float: left;
