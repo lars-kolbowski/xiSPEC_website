@@ -331,9 +331,9 @@ var specListTableView = Backbone.View.extend({
 
 	},
 
-	isEmpty: function(arr, emptyVal) {
+	isEmpty: function(arr) {
 		for(var i=0; i<arr.length; i++) {
-			if(arr[i] !== emptyVal) return false;
+			if(arr[i] !== "") return false;
 		}
 		return true;
 	}
