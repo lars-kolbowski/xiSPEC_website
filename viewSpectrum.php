@@ -320,15 +320,15 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 
 		<!-- Save Modal -->
 		<div id="saveModal" role="dialog" class="modal">
-			<div class="header" style="background: #750000; color:#fff;">Save your dataset</div>
+			<div class="header" style="background: #750000; color:#fff;">Save dataset</div>
 			<div class="content" id="saveModal_content">
 				<div id="saveDBerror"></div>
 				<form id='saveDB_form'>
 					<label class="flex-row label">
-						Name: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbName" name="dbName" type="text" placeholder="Enter a name for your dataset"></div>
+						Name: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbName" name="dbName" type="text" placeholder="Enter a name for the dataset"></div>
 					</label>
 					<label class="flex-row label" style="line-height: 1.5em; margin: 1.5em 0em;">
-						Public: <input id="publicDBchkBox" class="pointer" name="public" type="checkbox"> <span style="text-transform: initial; letter-spacing: initial; color: #ccc;">(checking this will allow anyone who knows the name of your dataset to view it.)</span>
+						Public: <input id="publicDBchkBox" class="pointer" name="public" type="checkbox"> <span style="text-transform: initial; letter-spacing: initial; color: #ccc;">(checking this will allow anyone who knows the name of the dataset to view it.)</span>
 					</label>
 					<label class="flex-row label" id="dbPassLabel">
 						Password: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbPass" name="dbPass" type="password" placeholder="Enter password"></div>
@@ -342,17 +342,17 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		<!-- End Save Modal -->
 		<!-- Share Modal -->
 		<div id="shareModal" role="dialog" class="modal">
-			<div class="header" style="background: #750000; color:#fff;">Share your dataset: <span id='dbName'><?php if (isset($_GET['db'])) echo $_GET['db']; ?></span></div>
+			<div class="header" style="background: #750000; color:#fff;">Share dataset: <span id='dbName'><?php if (isset($_GET['db'])) echo $_GET['db']; ?></span></div>
 			<div class="content" id="shareModal_content">
 				<div id='justSavedMsg' style="line-height: 2em;"></div>
 				<?php
 
 					$link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://". $_SERVER['SERVER_NAME'] . "/viewSpectrum.php?db=" . $dbName;
 					if (isset($public)){
-						echo 'Your dataset is public - you can go ahead and share the link below</br><label class="flex-row label">url: <div class="flex-grow"><input type="text" class="form-control" value="'.$link.'" readonly onClick="this.select();"></div></label>';
+						echo 'This dataset is public - you can go ahead and share the link below</br><label class="flex-row label">url: <div class="flex-grow"><input type="text" class="form-control" value="'.$link.'" readonly onClick="this.select();"></div></label>';
 					}
 					else {
-						echo 'Your dataset is private - you can either share the password protected link:</br><label class="flex-row label">url (password protected): <div class="flex-grow"><input type="text" class="form-control" value="'.$link.'" readonly onClick="this.select();"></div></label></br>';
+						echo 'This dataset is private - you can either share the password protected link:</br><label class="flex-row label">url (password protected): <div class="flex-grow"><input type="text" class="form-control" value="'.$link.'" readonly onClick="this.select();"></div></label></br>';
 						if(!$shareLink){
 							echo '<span id="shareLinkSpan">or <a id="createShareLink" class="pointer">generate a share link</a> - </span><strong>Anyone</strong> with the link will be able view this dataset!';
 							echo '<label class="flex-row label" id="shareLinkLabel" style="display: none;">url: <div class="flex-grow"><input type="text" id="shareLink" class="form-control" value="" readonly onClick="this.select();"></div></label>';
