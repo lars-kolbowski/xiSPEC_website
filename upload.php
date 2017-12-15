@@ -56,7 +56,7 @@
 								</td>
 							</tr>
 							<tr id="mzml_fileBox">
-								<td style="text-align: center;">Peak list file:</td>
+								<td style="text-align: center;">Peak list file(s):</td>
 								<td>
 									<span class="fileName">Select a mzML, mgf or zip file to upload.</span>
 									<span class="statusBox" data-filetype="mzml"></span>
