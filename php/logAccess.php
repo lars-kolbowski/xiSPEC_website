@@ -37,17 +37,24 @@
 	}
 	else{
 		$ip = getUserIP();
-
-		$country = trim(file_get_contents("https://ipinfo.io/{$ip}/country"));
+		$ipInfo = json_decode(file_get_contents("https://ipinfo.io/{$ip}/"));
+		$hostname = (property_exists($ipInfo, 'hostname')) ? $ipInfo->hostname : '' ;
+		$country = (property_exists($ipInfo, 'country')) ? $ipInfo->country : '' ;
+		$region = (property_exists($ipInfo, 'region')) ? $ipInfo->region : '' ;
+		$city = (property_exists($ipInfo, 'city')) ? $ipInfo->city : '' ;
+		$org = (property_exists($ipInfo, 'org')) ? $ipInfo->org : '' ;
 
 		$date = date('Y-m-d H:i:s');
-
-		$stmt = $xiSPECdb->prepare("INSERT INTO `access_log` (`db_id`, `ip`, `country`, `date`) VALUES (:dbid, :ip, :country, :dates)");
-		$stmt->bindParam(':dbid', $dbid, PDO::PARAM_INT);
+		$stmt = $xiSPECdb->prepare("INSERT INTO `access_log`(`ip`, `hostname`, `country`, `region`, `city`, `org`, `date`, `db_id`)
+																VALUES (:ip, :hostname, :country, :region, :city, :org, :dates, :dbid);");
 		$stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
-		$stmt->bindParam(':country', $country, PDO::PARAM_STR);
+		$stmt->bindParam(':hostname', $ipInfo->hostname, PDO::PARAM_STR);
+		$stmt->bindParam(':country', $ipInfo->country, PDO::PARAM_STR);
+		$stmt->bindParam(':region', $ipInfo->region, PDO::PARAM_STR);
+		$stmt->bindParam(':city', $ipInfo->city, PDO::PARAM_STR);
+		$stmt->bindParam(':org', $ipInfo->org, PDO::PARAM_STR);
 		$stmt->bindParam(':dates', $date, PDO::PARAM_STR);
-
+		$stmt->bindParam(':dbid', $dbid, PDO::PARAM_INT);
 		$stmt->execute();
 	}
 ?>

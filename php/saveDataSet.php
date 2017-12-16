@@ -25,8 +25,12 @@
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 	$date = date('Y-m-d H:i:s');
 	$ip = getUserIP();
-
-	$country = trim(file_get_contents("https://ipinfo.io/{$ip}/country"));
+	$ipInfo = json_decode(file_get_contents("https://ipinfo.io/{$ip}/"));
+	$hostname = (property_exists($ipInfo, 'hostname')) ? $ipInfo->hostname : '' ;
+	$country = (property_exists($ipInfo, 'country')) ? $ipInfo->country : '' ;
+	$region = (property_exists($ipInfo, 'region')) ? $ipInfo->region : '' ;
+	$city = (property_exists($ipInfo, 'city')) ? $ipInfo->city : '' ;
+	$org = (property_exists($ipInfo, 'org')) ? $ipInfo->org : '' ;
 
 	$dbname = $_POST['dbName'];
 	if($dbname == "") die("no name specified!");
@@ -42,11 +46,17 @@
 	require('../../xiSPEC_sql_conn.php');
 	$xiSPECdb = new PDO("mysql:host=localhost;dbname=".$DBname, $DBuser, $DBpass) or die("cannot open the database");
 	$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$stmt = $xiSPECdb->prepare("INSERT INTO `dbs`(`name`, `pass`, `ip`, `country`, `date`) VALUES (:name, :pass, :ip, :country, :dates)");
+
+	$stmt = $xiSPECdb->prepare("INSERT INTO `dbs`(`name`, `pass`, `ip`, `hostname`, `country`, `region`, `city`, `org`, `date`)
+															VALUES (:name, :pass, :ip, :hostname, :country, :region, :city, :org, :dates);");
 	$stmt->bindParam(':name', $dbname, PDO::PARAM_STR);
 	$stmt->bindParam(':pass', $passHash, PDO::PARAM_STR);
 	$stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
-	$stmt->bindParam(':country', $country, PDO::PARAM_STR);
+	$stmt->bindParam(':hostname', $ipInfo->hostname, PDO::PARAM_STR);
+	$stmt->bindParam(':country', $ipInfo->country, PDO::PARAM_STR);
+	$stmt->bindParam(':region', $ipInfo->region, PDO::PARAM_STR);
+	$stmt->bindParam(':city', $ipInfo->city, PDO::PARAM_STR);
+	$stmt->bindParam(':org', $ipInfo->org, PDO::PARAM_STR);
 	$stmt->bindParam(':dates', $date, PDO::PARAM_STR);
 
 	try {
