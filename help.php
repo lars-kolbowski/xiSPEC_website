@@ -29,7 +29,7 @@
 						<p>
 							<img src="images/gifs/changeCL.gif" />
 							<ul style="margin-left:30px;">
-								<li>Click on the cross-link line</li>
+								<li>Click on the cross-link line.</li>
 								<li>Move the mouse over the desired cross-linked amino acids.</li>
 								<li>Click on the amino acid to confirm the position(s).</li>
 								⇨ XiSPEC updates the annotated spectrum!
@@ -42,7 +42,7 @@
 						<p>
 							<img src="images/gifs/changeMod.gif" />
 							<ul style="margin-left:30px;">
-								<li>Click on the modification</li>
+								<li>Click on the modification.</li>
 								<li>Move the mouse over the desired modified amino acids.</li>
 								<li>Click on the amino acid to confirm the position.</li>
 								⇨ XiSPEC updates the annotated spectrum!
@@ -88,13 +88,13 @@
 							<tr><td>Score</td><td>No</td><td></td><td>10.5641</td></tr>
 							<tr><td>IsDecoy</td><td>No</td><td>FALSE</td><td>TRUE | FALSE</td></tr>
 							<tr><td>Protein 1</td><td>Yes</td><td></td><td>HSA</td></tr>
-							<tr><td>Protein 2</td><td>No</td><td></td><td>HSA</td></tr>
+							<tr><td>Protein 2</td><td>No**</td><td></td><td>HSA</td></tr>
 							<tr><td>RunName</td><td>No</td><td></td><td>example_file</td></tr>
 						</tbody>
 					</table>
 					<p style="font-size: small;line-height: 1.5em;">
-						*required if there are multiple alternative explanations for the same spectrum/id</br>
-						**required for cross-linked peptide
+						*required if there are multiple alternative explanations for the same spectrum/id.</br>
+						**required for cross-linked peptides.
 					</p>
 				</div>
 

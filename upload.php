@@ -184,13 +184,13 @@
 						<tr><td>Score</td><td>No</td><td></td><td>10.5641</td></tr>
 						<tr><td>IsDecoy</td><td>No</td><td>FALSE</td><td>TRUE | FALSE</td></tr>
 						<tr><td>Protein 1</td><td>Yes</td><td></td><td>HSA</td></tr>
-						<tr><td>Protein 2</td><td>No</td><td></td><td>HSA</td></tr>
+						<tr><td>Protein 2</td><td>No**</td><td></td><td>HSA</td></tr>
 						<tr><td>RunName</td><td>No</td><td></td><td>example_file</td></tr>
 					</tbody>
 				</table>
 				<p style="font-size: small;line-height: 1.5em;">
-					*required if there are multiple alternative explanations for the same spectrum/id</br>
-					**required for cross-linked peptide
+					*required if there are multiple alternative explanations for the same spectrum/id.</br>
+					**required for cross-linked peptides.
 				</p>
 			</div>
 		</div>
