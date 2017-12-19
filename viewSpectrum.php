@@ -110,6 +110,7 @@ else{
 			<link rel="stylesheet" href="./css/style2.css" />
 			<link rel="stylesheet" href="./css/settings.css" />
 			<link rel="stylesheet" href="./css/tooltip.css">
+			<link rel="stylesheet" href="./css/xiSPEC_tooltip.css">
 			<link rel="stylesheet" href="./css/spectrumViewWrapper.css">
 			<link rel="stylesheet" href="./css/validationPage.css">
 			<link rel="stylesheet" href="./css/dropdown.css">
@@ -263,7 +264,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 							<span id="dbControls">
 								<?php
 								if($dbView){
-									if($tmpDB) echo '<i id="saveDB" title="Save" class="btn btn-1a btn-topNav fa fa-floppy-o" aria-hidden="true"></i>';
+									if($tmpDB) echo '<div class="xispec_tooltip_wrapper"><span class="xispec_tooltip_tr" id="saveTooltip">Your dataset is temporary click here if you want to save it for later access!<i class="fa fa-times-circle closeButton"></i></span><i id="saveDB" title="Save" class="btn btn-1a btn-topNav fa fa-floppy-o" aria-hidden="true"></i></div>';
 									else echo '<i id="shareDB" title="Share" class="btn btn-1a btn-topNav fa fa-share-alt" aria-hidden="true"></i>';
 								}
 								?>
