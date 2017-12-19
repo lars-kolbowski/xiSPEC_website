@@ -507,13 +507,17 @@ body, input, select, textarea {
     vertical-align: middle;
     margin-bottom: 5px;
 }
-.specListToolbar .btn{
+.listToolbar .btn{
+    padding: 4px 8px;
+    margin: 2px 3px;
+}
+/* .specListToolbar .btn{
     border-right: 1px solid white;
     margin: 0px;
     padding: 8px 15px;
     cursor: pointer;
     display: inline-block;
-}
+} */
 
 .ellipsis{
     color: #fff;
