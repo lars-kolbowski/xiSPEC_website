@@ -48,25 +48,44 @@ var specListTableView = Backbone.View.extend({
 				"lengthMenu": "_MENU_ entries per page"
 			},
 			"order": [[ 8, "desc" ]],
-			// "processing": true,
-			// "serverSide": true,
-			"ajax": "php/getSpecList.php?db="+this.model.get('database'),
+			"processing": true,
+			"serverSide": true,
+			"ajax": "php/specListSSprocessing.php?db="+this.model.get('database'),
+			"searchCols": [
+				null, //internal_id
+				null, //id
+				null, //pep1
+				null, //pep2
+				null, //linkpos1
+				null, //linkpos2
+				null, //charge
+				{ "search": "0" }, //isDecoy
+				null, //score
+				null, //allScores
+				null, //protein1
+				null, //protein2
+				{ "search": "1" }, //passThreshold
+				null, //alt_count
+				null, //dataRef
+				null  //scanID
+			],
 			"columns": [
-				{ "title": "internal_id", "data": "id", "name": "internal_id" },	//0
+				{ "title": "internal_id", "data": "id", "name": "internal_id", "searchable": false },	//0
 				{ "title": "id", "data": "mzid", "name": "mzid" },	//1
 				{ "title": "peptide 1", "data": "pep1", "name": "pep1" },	//2
 				{ "title": "peptide 2", "data": "pep2", "name": "pep2" },	//3
-				{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center", "name": "linkpos1" },	//4
-				{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center", "name": "linkpos2" },	//5
+				{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center", "name": "linkpos1", "searchable": false },	//4
+				{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center", "name": "linkpos2", "searchable": false },	//5
 				{ "title": "charge", "data": "charge", "className": "dt-center", "name": "charge" },		//6
 				{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center", "name": "isDecoy" },	//7
-				{ "title": "score", "data": "scores", "className": "dt-center", "name": "scores" },		//8
-				{ "title": "protein 1", "data": "protein1", "className": "dt-center", "name": "protein1" },	//9
-				{ "title": "protein 2", "data": "protein2", "className": "dt-center", "name": "protein2" },	//10
-				{ "title": "passThreshold", "data": "passThreshold", "name": "passThreshold" },	//11
-				{ "title": "alt_count", "data": "alt_count", "name": "alt_count" },		//12
-				{ "title": "dataRef", "data": "file", "name": "dataRef" },				//13
-				{ "title": "scanID", "data": "scanID", "className": "dt-center", "name": "scanID" },		//14
+				{ "title": "score", "data": "score", "className": "dt-center", "name": "score" },		//8
+				{ "title": "allScores", "data": "allScores", "name": "allScores" },		//9
+				{ "title": "protein 1", "data": "protein1", "className": "dt-center", "name": "protein1" },	//10
+				{ "title": "protein 2", "data": "protein2", "className": "dt-center", "name": "protein2" },	//11
+				{ "title": "passThreshold", "data": "passThreshold", "name": "passThreshold" },	//12
+				{ "title": "alt_count", "data": "alt_count", "name": "alt_count", "searchable": false },		//13
+				{ "title": "dataRef", "data": "file", "name": "dataRef" },				//14
+				{ "title": "scanID", "data": "scanID", "className": "dt-center", "name": "scanID" },		//15
 			],
 
 			"createdRow": function( row, data, dataIndex ) {
@@ -78,7 +97,7 @@ var specListTableView = Backbone.View.extend({
 			 	"columnDefs": [
 				{
 					"class": "invisible",
-					"targets": [ 0, 11, 12 ],
+					"targets": [ 0, 9, 12, 13 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
@@ -91,12 +110,12 @@ var specListTableView = Backbone.View.extend({
 				},
 				{
 					"render": function ( data, type, row, meta ) {
-						var json = JSON.parse(data);
+						var json = JSON.parse(row.allScores);
 						var result = new Array();
 						for (key in json) {
-							result.push('<span title="'+key+'='+json[key]+'">'+json[key].toFixed(2)+'</span>');
+							result.push(key+'='+json[key]);
 						}
-						return result.join("; ");
+						return '<span title="'+result.join("; ")+'">'+parseFloat(data).toFixed(2)+'</span>'
 					},
 					"targets": [ 8 ],
 				},
@@ -109,6 +128,7 @@ var specListTableView = Backbone.View.extend({
 					},
 					"searchable": false,
 					"targets": [ 4, 5 ]
+					// "targets": [ 0, 4, 5, 6, 7, 8, 11, 12]
 				},
 
 	        ],
@@ -119,21 +139,22 @@ var specListTableView = Backbone.View.extend({
 				}
 				window.initSpinner.stop();
 				$("#topDiv-overlay").css("z-index", -1);
-				self.DataTable.columns( 'passThreshold:name' ).search( "1" ).draw();
-				self.DataTable.columns( 'isDecoy:name' ).search( "False" ).draw();
 				// is cl dataset?
-				if(self.isEmpty(self.DataTable.columns('pep2:name').data()[0])){
-					var column = self.DataTable.columns('pep2:name');
-					self.DataTable.columns('pep2:name').visible( false );
-					self.DataTable.columns('linkpos1:name').visible( false );
-					self.DataTable.columns('linkpos2:name').visible( false );
-					self.DataTable.columns('protein2:name').visible( false );
-					$('#hideLinear').hide();
-				}
-				else{
-					self.DataTable.columns( 'pep2:name' ).search( ".+", true, false ).draw();
-					$('#hideLinear').find('input:checkbox:first').attr('checked', 'checked');
-				}
+				// if(self.isEmpty(self.DataTable.columns('pep2:name').data()[0])){
+				// 	var column = self.DataTable.columns('pep2:name');
+				// 	self.DataTable.columns('pep2:name').visible( false );
+				// 	self.DataTable.columns('linkpos1:name').visible( false );
+				// 	self.DataTable.columns('linkpos2:name').visible( false );
+				// 	self.DataTable.columns('protein2:name').visible( false );
+				// 	$('#hideLinear').hide();
+				// }
+				// else{
+				// 	// $( "#hideLinear" ).trigger( "click" );
+				// 	self.DataTable.columns( 'pep2:name' ).search( ".+", true, false ).draw();
+				// 	//$('#hideLinear').find('input:checkbox:first').attr('checked', 'checked');
+				//
+				// 	//self.toggleLinear();
+				// }
 
 				loadSpectrum(self.DataTable.rows( { filter : 'applied'} ).data()[0]);
 				firstRow = $('#specListWrapper tr:first-child');
@@ -146,6 +167,18 @@ var specListTableView = Backbone.View.extend({
 				// self.initiateTable();
 			},
 			"drawCallback": function( settings ) {
+				if(self.isEmpty(self.DataTable.columns('pep2:name').data()[0])){
+					self.DataTable.columns('pep2:name').visible( false );
+					self.DataTable.columns('linkpos1:name').visible( false );
+					self.DataTable.columns('linkpos2:name').visible( false );
+					self.DataTable.columns('protein2:name').visible( false );
+				}
+				else{
+					self.DataTable.columns('pep2:name').visible( true);
+					self.DataTable.columns('linkpos1:name').visible( true );
+					self.DataTable.columns('linkpos2:name').visible( true );
+					self.DataTable.columns('protein2:name').visible( true );
+				}
 				// self.hideEmptyColumns();	//hideEmptyColumns very slow
 				//ToDo : change window to SpectrumView ref
 				if (window.Spectrum !== undefined)
@@ -264,7 +297,7 @@ var specListTableView = Backbone.View.extend({
 		if (e.target.checked){
 			//column.visible( false );
 			//$(".toggle-vis[data-column='7']").attr("checked", "");
-		    this.DataTable.columns( 'isDecoy:name' ).search( "False" ).draw();
+		    this.DataTable.columns( 'isDecoy:name' ).search( "0" ).draw();
 		}
 		else{
 			//column.visible( true );
