@@ -176,7 +176,7 @@ $( document ).ready(function() {
 
 	$('#fileupload').fileupload({
 		dataType: 'json',
-		fileTypes: "mzid|mzml|mgf|csv",
+		fileTypes: "mzid|mzml|mgf|csv|zip",
 		maxChunkSize: 100000000,	//100MB
 		progressall: function (e, data) {
 			var progress = parseInt(data.loaded / data.total * 100, 10);
