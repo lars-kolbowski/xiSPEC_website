@@ -104,12 +104,12 @@ var FragmentationKeyView = Backbone.View.extend({
 			.style("font-size", "small")
 			//.style("height", "20px")
 			.style("padding", "0 5px")
-			.style("border-radius", "6px")		
+			.style("border-radius", "6px")
 			.attr("class", "tooltip")
 			.style("background-color", "black")
 			.style("color", "#ccc")
 			.style("pointer-events", "none")
-			.style("position", "absolute")				
+			.style("position", "absolute")
 			.style("opacity", 0);
 
 
@@ -137,6 +137,7 @@ var FragmentationKeyView = Backbone.View.extend({
 			var CLpos = this.linkPos[0].linkSite+1;
 			if (this.linkPos[1].linkSite > this.linkPos[0].linkSite)
 				CLpos = this.linkPos[1].linkSite+1;
+
 			this.CL = this.g.append("g");
 			//highlight
 			this.CLlineHighlight = this.CL.append("line")
@@ -158,24 +159,35 @@ var FragmentationKeyView = Backbone.View.extend({
 				.attr("stroke-width", 1.5)
 				.style("cursor", "pointer");
 
+      //line for changing
+			this.changeCLline = this.CL.append("line")
+				.attr("x1", this.xStep * (CLpos - 1))
+				.attr("y1", 25)
+				.attr("x2", this.xStep * (CLpos - 1))
+				.attr("y2", 55)
+				.attr("stroke", "black")
+				.attr("stroke-width", 1.5)
+				.attr("opacity", 0)
+				.style("cursor", "pointer");
+
 			this.CL.on("mouseover", function() {
 				if (!self.changeMod  && !self.changeCL){
 					self.CLlineHighlight.attr("opacity", 0.8);
 					self.tooltip.text("Click to change cross-link position");
-					self.tooltip.transition()		
-					    .duration(200)		
-					    .style("opacity", .9);		
-					self.tooltip.style("left", (d3.event.layerX + 15) + "px")		
-					    .style("top", (d3.event.layerY) + "px");	
+					self.tooltip.transition()
+					    .duration(200)
+					    .style("opacity", .9);
+					self.tooltip.style("left", (d3.event.layerX + 15) + "px")
+					    .style("top", (d3.event.layerY) + "px");
 				}
 			});
 
 			this.CL.on("mouseout", function() {
 				if (!self.changeMod  && !self.changeCL){
 					self.CLlineHighlight.attr("opacity", 0);
-					self.tooltip.transition()		
-						.duration(500)		
-						.style("opacity", 0);	
+					self.tooltip.transition()
+						.duration(500)
+						.style("opacity", 0);
 					}
 			});
 
@@ -192,16 +204,6 @@ var FragmentationKeyView = Backbone.View.extend({
 					};
 				}
 			});
-			//line for changing
-			this.changeCLline = this.g.append("line")
-				.attr("x1", this.xStep * (CLpos - 1))
-				.attr("y1", 25)
-				.attr("x2", this.xStep * (CLpos - 1))
-				.attr("y2", 55)
-				.attr("stroke", "black")
-				.attr("stroke-width", 1.5)
-				.attr("opacity", 0)
-				.style("cursor", "pointer");
 
 		}
 
@@ -235,13 +237,13 @@ var FragmentationKeyView = Backbone.View.extend({
 			console.log(this.annotations);
 
 		    this.drawFragmentationEvents(0);
-			if(this.peptides[1])	
-				this.drawFragmentationEvents(1);	
+			if(this.peptides[1])
+				this.drawFragmentationEvents(1);
 		}
 
 	    this.drawFragmentationEvents(0);
-		if(this.peptides[1])	
-			this.drawFragmentationEvents(1);	
+		if(this.peptides[1])
+			this.drawFragmentationEvents(1);
 
 		//changeInfo
 		//ToDo: make cleaner
@@ -277,21 +279,21 @@ var FragmentationKeyView = Backbone.View.extend({
 				this.origCL.on("mouseover", function(){
 					self.origCLHighlight.attr("opacity", 1);
 					self.tooltip.text("Revert to original cross-link position");
-					self.tooltip.transition()		
-					    .duration(200)		
-					    .style("opacity", .9);		
-					self.tooltip.style("left", (d3.event.layerX + 15) + "px")		
+					self.tooltip.transition()
+					    .duration(200)
+					    .style("opacity", .9);
+					self.tooltip.style("left", (d3.event.layerX + 15) + "px")
 					    .style("top", (d3.event.layerY) + "px");
 				});
 				this.origCL.on("mouseout", function(){
 					self.origCLHighlight.attr("opacity", 0);
-					self.tooltip.transition()		
-						.duration(500)		
+					self.tooltip.transition()
+						.duration(500)
 						.style("opacity", 0);
 				});
 				this.origCL.on("click", function(){
-					self.tooltip.transition()		
-							.duration(500)		
+					self.tooltip.transition()
+							.duration(500)
 							.style("opacity", 0);
 					self.model.changeLinkPos([self.model.match.oldLinkPos[0], self.model.match.oldLinkPos[1]]);
 				});
@@ -366,7 +368,7 @@ var FragmentationKeyView = Backbone.View.extend({
 
 		var pepIndex = 0;
 		peptides.forEach(function(pep){
-			
+
 			var pep_data = []
 			var pos = 0;
 			for (var i = 0; i < pep.sequence.length; i++) {
@@ -385,7 +387,7 @@ var FragmentationKeyView = Backbone.View.extend({
 						changeCrossLink(d);
 					}
 					//change the mod if changeMod is active and it's a valid modification for this aa
-					//if(self.changeMod !== false && self.validModChange){	
+					//if(self.changeMod !== false && self.validModChange){
 					if(self.changeMod !== false){
 						changeMod(d);
 					}
@@ -397,7 +399,7 @@ var FragmentationKeyView = Backbone.View.extend({
 
 					if(self.changeCL != false){
 						changeCLHighlight(this, d);
-					}		
+					}
 				})
 				.on("mouseout", function(d) {
 					// if(self.changeMod !== false){	//if changeMod is active
@@ -407,7 +409,7 @@ var FragmentationKeyView = Backbone.View.extend({
 			;
 
 			pepLetterG.append("text")
-				.attr("x", function(d, i){ 
+				.attr("x", function(d, i){
 					return self.xStep * i;
 				})
 				.attr("y", pep.y[0])
@@ -422,10 +424,10 @@ var FragmentationKeyView = Backbone.View.extend({
 					if (d.aminoAcid != "#")
 						return d.aminoAcid;
 				})
-			;	
+			;
 
 			pepLetterG.append("text")
-				.attr("x", function(d, i){ 
+				.attr("x", function(d, i){
 					return self.xStep * i;
 				})
 				.attr("y", pep.y[0])
@@ -450,7 +452,7 @@ var FragmentationKeyView = Backbone.View.extend({
 				var newPos = d.pos;
 				if (oldPos == newPos && self.changeMod.pepIndex == d.pepIndex)
 					self.render();
-				else 
+				else
 					self.model.changeMod(oldPos, newPos, self.changeMod.pepIndex, d.pepIndex);
 			};
 
@@ -466,7 +468,7 @@ var FragmentationKeyView = Backbone.View.extend({
 				var offset = self.pepoffset[self.changeMod.pepIndex];
 				var highlight = self.modLetterHighlights[self.changeMod.pepIndex][0][self.changeMod.pos-offset];
 				var oldModLetters = self.modLetters[self.changeMod.pepIndex][0][self.changeMod.pos-offset];
-				
+
 				var x = parseInt(pepLetterHighlight[0][0].getAttribute("x"));
 				if (pepLetterData.pepIndex == 0)
 					var y = 5;
@@ -525,13 +527,13 @@ var FragmentationKeyView = Backbone.View.extend({
 				var pepLetterHighlight = pepLetterG.childNodes[0];
 				var pepLetter = pepLetterG.childNodes[1];
 				clearHighlights();
-					
+
 				self.CLline.attr("stroke", "grey");
 				// update changeCL to the currently highlighted ones
 				for (var i = 0; i < self.changeCL.length; i++) {
 					if(self.changeCL[i].peptideId == pepLetterData.pepIndex)
 						self.changeCL[i].linkSite = pepLetterData.pos;
-				}						
+				}
 				if (pepLetterData.pepIndex == 0){		//pep1
 					self.changeCLline
 						.attr("x1", pepLetterHighlight.getAttribute("x"))
@@ -556,10 +558,10 @@ var FragmentationKeyView = Backbone.View.extend({
 						break;
 				}
 				mod_data.push({
-					fullMod: self.pepModsArray[pepIndex][i], 
+					fullMod: self.pepModsArray[pepIndex][i],
 					shortMod: short_modname(self.pepModsArray[pepIndex][i]),
-					pepIndex: pepIndex, 
-					pos: shift+i, 
+					pepIndex: pepIndex,
+					pos: shift+i,
 				})
 			}
 
@@ -572,7 +574,7 @@ var FragmentationKeyView = Backbone.View.extend({
 			};
 
 			var modLettersG = pep.group.selectAll("g.modLetterG").data (mod_data);
-			
+
 			var modLetterG = modLettersG.enter()
 				.append('g')
 				.attr('class', "modLetterG")
@@ -587,10 +589,10 @@ var FragmentationKeyView = Backbone.View.extend({
 						d3.select(this).select("text.modLetterHighlight").style("opacity", 1); //highlight modLetter
 						d3.select(this).moveToFront();
 						self.tooltip.text("Click to change the position");
-						self.tooltip.transition()		
-							.duration(200)		
-							.style("opacity", .9);		
-						self.tooltip.style("left", (d3.event.layerX + 15) + "px")		
+						self.tooltip.transition()
+							.duration(200)
+							.style("opacity", .9);
+						self.tooltip.style("left", (d3.event.layerX + 15) + "px")
 							.style("top", (d3.event.layerY) + "px");
 						d3.select(this).selectAll("text")
 							.text(function(d){return d.fullMod});
@@ -601,9 +603,9 @@ var FragmentationKeyView = Backbone.View.extend({
 						d3.selectAll("text.pepLetterHighlight").style("opacity", 0);
 						if (!_.isUndefined(self.CLlineHighlight))
 							self.CLlineHighlight.attr("opacity", 0);
-						self.tooltip.transition()		
-							.duration(500)		
-							.style("opacity", 0);	
+						self.tooltip.transition()
+							.duration(500)
+							.style("opacity", 0);
 					}
 
 					d3.selectAll("text.modLetterHighlight").style("opacity", 0);
@@ -616,15 +618,15 @@ var FragmentationKeyView = Backbone.View.extend({
 					d3.selectAll("g.modLetterG").style("cursor", "default");
 					if (!self.changeMod  && !self.changeCL){
 
-						self.tooltip.transition()		
-							.duration(500)		
+						self.tooltip.transition()
+							.duration(500)
 							.style("opacity", 0);
-						
+
 						if (!_.isUndefined(self.CLline))
 							self.CLline.style("cursor", "not-allowed");
 						if (!_.isUndefined(self.CLlineHighlight))
 							self.CLlineHighlight.style("cursor", "not-allowed");
-						
+
 
 						var highlight = d3.select(this).select(".modLetterHighlight");
 						highlight.style("font-size","0.7em").style("cursor","default");
@@ -653,7 +655,7 @@ var FragmentationKeyView = Backbone.View.extend({
 				.text(function(d){ return d.shortMod;})
 				.attr("stroke-width", "2px")
 				.attr("opacity", 0)
-			;				
+			;
 			modLetterG.append("text")
 				.attr("x", function(d){ return self.xStep * d.pos; })
 				.attr("class", "modLetter")
@@ -696,7 +698,7 @@ var FragmentationKeyView = Backbone.View.extend({
 			this.colorLetters(this.model.highlights);
 		}
 
-		else{	
+		else{
 			var color = true;
 			for(i = 1; i < this.model.highlights.length; i++){
 				if(JSON.stringify(this.model.highlights[i].range) !== JSON.stringify(this.model.highlights[i-1].range))
@@ -734,7 +736,7 @@ var FragmentationKeyView = Backbone.View.extend({
 				this.greyLetters();
 				this.colorLetters(this.model.highlights);
 			}
-		}	
+		}
 	},
 
 	greyLetters: function(){
@@ -749,7 +751,7 @@ var FragmentationKeyView = Backbone.View.extend({
 		if (fragments == "all"){
 			color(0, this.model.p1color, 0, this.pepLetters[0][0].length);
 			if(this.peptides[1])
-				color(1, this.model.p2color, 0, this.pepLetters[1][0].length);			
+				color(1, this.model.p2color, 0, this.pepLetters[1][0].length);
 		}
 		else{
 			for (var f = 0; f < fragments.length; f++) {
@@ -760,7 +762,7 @@ var FragmentationKeyView = Backbone.View.extend({
 						color(1, this.model.p2color, fragments[f].range[i].from, fragments[f].range[i].to+1);
 				};
 			};
-		}	
+		}
 
 		function color(pep, pepColor, start, end){
 			start += self.pepoffset[pep];
@@ -771,7 +773,7 @@ var FragmentationKeyView = Backbone.View.extend({
 					self.pepLetters[pep][0][i].setAttribute("fill", pepColor)
 				if (self.modLetters[pep][0][i-self.pepoffset[pep]])
 					self.modLetters[pep][0][i-self.pepoffset[pep]].setAttribute("fill", pepColor);
-			}	
+			}
 		}
 	},
 
@@ -793,7 +795,7 @@ var FragmentationKeyView = Backbone.View.extend({
 	updateHighlightColors: function(){
 
 		for (var i = 0; i < this.fraglines.length; i++) {
-			
+
 			if (this.fraglines[i].bHighlight !== undefined)
 				this.fraglines[i].bHighlight.attr("stroke", this.model.highlightColour);
 			if (this.fraglines[i].yHighlight !== undefined)
@@ -824,6 +826,6 @@ var FragmentationKeyView = Backbone.View.extend({
 		this.linkPos = [];
 		this.g.selectAll("*").remove();
 		//this.highlights.selectAll("*").remove();
-	}	
+	}
 
 });

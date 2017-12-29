@@ -16,6 +16,9 @@ $( document ).ready(function() {
 		overlayClose: false,
 		closeOnEscape: false
 	});
+	$('#cancelUpload').click(function(){
+		window.location.href = 'upload.php';
+	})
 
 	$("#csvHeaderModal").easyModal();
 	$('.showCsvHeader').click(function(){
@@ -173,7 +176,7 @@ $( document ).ready(function() {
 
 	$('#fileupload').fileupload({
 		dataType: 'json',
-		fileTypes: "mzid|mzml|mgf|csv",
+		fileTypes: "mzid|mzml|mgf|csv|zip",
 		maxChunkSize: 100000000,	//100MB
 		progressall: function (e, data) {
 			var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -304,7 +307,7 @@ $( document ).ready(function() {
 					if (resp.errors.length > 0){
 						$('#errorInfo').show();
 						$('#gitHubIssue').show();
-						$('#errorMsg').html("There were " + resp.errors.length + " error(s) parsing your data. See the log for more information:");
+						$('#errorMsg').html(resp.errors.length + " error(s) occured parsing your data. See the log for more information:");
 						resp.errors.forEach(function (error){
 							$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message+'\nid: ' + error.id + '\n\n');
 						})
@@ -314,7 +317,7 @@ $( document ).ready(function() {
 						$('#modificationsMsg').html("Please provide the masses for the following " + resp.modifications.length + " modification(s):");
 						resp.modifications.forEach(function (mod){
 							var modNameInput = '<input class="form-control" name="mods[]" readonly type="text" value='+mod+'>';
-							var modMassInput = '<input class="form-control" name="modMasses[]" type="number" min=0 step=0.000001 required autocomplete=off>';
+							var modMassInput = '<input class="form-control" name="modMasses[]" type="number" min=0 step=0.000001 value="0" required autocomplete=off>';
 							$('#csvModificationsForm').append(modNameInput + modMassInput + '\n\n');
 						})
 					}
@@ -322,19 +325,6 @@ $( document ).ready(function() {
 			}
 		  });
 		  return false;
-	});
-
-
-	$('.accordionHead').click(function(){
-		if($(this).next('.accordionContent').is(":visible")){
-			$(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
-		}
-		else{
-			$(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
-		}
-		$(this).next('.accordionContent').slideToggle();
-
-
 	});
 
 });

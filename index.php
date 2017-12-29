@@ -56,11 +56,11 @@
 				<h1 class="page-header">Visualizing mass spectrometry data.</h1>
 				xiSPEC is an interactive tool for visualizing and analyzing mass spectrometry data.
 				<ul>
-					<li>Analyse mass spectra intuitively and test hypotheses</li>
-					<li>Upload and share whole MS datasets</li>
+					<li>Analyse mass spectra intuitively and test hypotheses.</li>
+					<li>Upload and share whole MS datasets.</li>
 					<li>Download annotated spectra in publication quality (vector graphic).</li>
 			 </ul>
-				<p>xiSPEC is an open source project on <a href="https://github.com/Rappsilber-Laboratory/xiSPEC" >GitHub</a>. Report issues and request features <a href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues">here</a></p>
+				<p>xiSPEC is an open source project on <a href="https://github.com/Rappsilber-Laboratory/xiSPEC" >GitHub</a>. Report issues and request features <a href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues">here</a>.</p>
 				<div style="text-align: center;">
 					<div class="sliderWrapper">
 					<img class="sliderImg" alt="Interactive highlighting between all views" src="images/slider/dbView.png">

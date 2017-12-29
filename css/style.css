@@ -24,7 +24,7 @@ body, input, select, textarea {
     font-size: 16pt;
     font-weight: inherit;
     line-height: 1.75em;
-    color: #888;
+    color: #666;
     -webkit-text-stroke: .15px;
 }
 h1, h2, h3, h4, h5, h6 {
@@ -1264,6 +1264,7 @@ div.file_upload {
     .form-control.placeholder {
       color: #b2bcc5;
     }
+
     .form-control {
       border: 1px solid #bdc3c7;
       color: #333;
@@ -1317,6 +1318,10 @@ div.file_upload {
     background-color: #091d42;
     color: #fff;
 }
+#csvModificationsForm .form-control{
+    margin: 0em 2em;
+}
+
 div.file_upload:before {
     content: 'UPLOAD';
     position: absolute;

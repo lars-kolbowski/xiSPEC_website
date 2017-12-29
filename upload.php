@@ -12,6 +12,7 @@
 		<script type="text/javascript" src="./src/PrecursorInfoView.js"></script>
 		<script type="text/javascript" src="./src/model.js"></script>
 		<script type="text/javascript" src="./js/upload.js"></script>
+		<script type="text/javascript" src="./js/accordion.js"></script>
 		<script type="text/javascript" src="./vendor/spin.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.ui.widget.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.iframe-transport.js"></script>
@@ -30,9 +31,11 @@
 					<h1 class="page-header accordionHead"><i <?php echo (isset($_GET['ex']) ? 'class="fa fa-plus-square"' : 'class="fa fa-minus-square"');?> aria-hidden="true"></i> Data Upload - Upload your data (identification & peak list file pair)</h1>
 					<div class="accordionContent" <?php echo (isset($_GET['ex']) ? 'style="display: none;"' : '');?>>
 						<div style="margin-left: 1em; font-size: 0.8em; line-height: 1.7em;">
-							mzML: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' in <a href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
-							mzML: Make sure to use centroided MS2 data! (e.g. 'Peak picking' in <a href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
-							csv: <a class="showCsvHeader" href="#">Show column headings</a> for identification csv file (<a href="example/example.csv">download example .csv</a>)
+							Supported identification file formats: <a title="HUPO Proteomics: mzidentML" href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> and <a title="Show column headings" class="showCsvHeader" href="#">csv</a>.</br>
+							Supported peak list file formats: <a title="HUPO Proteomics: mzML" href="http://www.psidev.info/mzml" target="blank">mzML</a> and <a title="Mascot Generic Format" href="http://www.matrixscience.com/help/data_file_help.html#GEN">mgf</a> (+ zip archives of mzML/mgf).</br>
+							mzML: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
+							mzML: Make sure to use centroided MS2 data! (e.g. use 'Peak picking' for profile data in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
+							csv: <a href="example/example.csv">download example .csv</a>
 						</div>
 						<div id="fileUploadWrapper">
 							<input id="fileupload" type="file" name="files[]" accept=".mzid,.csv,.mzml,.mgf,.zip" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
@@ -47,15 +50,15 @@
 							<tr id="mzid_fileBox">
 								<td style="text-align: center;">Identification file:</td>
 								<td>
-									<span class="fileName">Select a <a href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> or  <a class="showCsvHeader" href="#">csv</a> file to upload</span>
+									<span class="fileName">Select a mzIdentML or csv file to upload</span>
 									<span class="statusBox" data-filetype="mzid"></span>
 									<input class="uploadCheckbox" type="checkbox" id="mzid_checkbox" style="visibility: hidden;">
 								</td>
 							</tr>
 							<tr id="mzml_fileBox">
-								<td style="text-align: center;">Peak list file:</td>
+								<td style="text-align: center;">Peak list file(s):</td>
 								<td>
-									<span class="fileName">Select a <a href="http://www.psidev.info/mzml" target="blank">mzML</a>, <a href="http://www.matrixscience.com/help/data_file_help.html#GEN">mgf</a> or zip file to upload.</span>
+									<span class="fileName">Select a mzML, mgf or zip file to upload.</span>
 									<span class="statusBox" data-filetype="mzml"></span>
 									<input class="uploadCheckbox" type="checkbox" id="mzml_checkbox" style="visibility: hidden;">
 								</td>
@@ -181,13 +184,13 @@
 						<tr><td>Score</td><td>No</td><td></td><td>10.5641</td></tr>
 						<tr><td>IsDecoy</td><td>No</td><td>FALSE</td><td>TRUE | FALSE</td></tr>
 						<tr><td>Protein 1</td><td>Yes</td><td></td><td>HSA</td></tr>
-						<tr><td>Protein 2</td><td>No</td><td></td><td>HSA</td></tr>
+						<tr><td>Protein 2</td><td>No**</td><td></td><td>HSA</td></tr>
 						<tr><td>RunName</td><td>No</td><td></td><td>example_file</td></tr>
 					</tbody>
 				</table>
 				<p style="font-size: small;line-height: 1.5em;">
-					*required if there are multiple alternative explanations for the same spectrum/id</br>
-					**required for cross-linked peptide
+					*required if there are multiple alternative explanations for the same spectrum/id.</br>
+					**required for cross-linked peptides.
 				</p>
 			</div>
 		</div>
@@ -218,8 +221,9 @@
 					</form>
 				</div>
 				<div>
-					<a id="gitHubIssue" style="display:none;" href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'>Create an issue on GitHub</a>
-					<a id="continueToDB" class="btn btn-1a">Continue</a>
+					<a id="cancelUpload" class="btn btn-1a" href="#">Cancel</a>
+					<a id="gitHubIssue" class="btn btn-1a" style="display:none;" href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'><i class="fa fa-github" aria-hidden="true"></i>Create issue</a>
+					<a id="continueToDB" class="btn btn-1a" href="#">Continue</a>
 				</div>
 			</div>
 			<div id="processDataInfo">

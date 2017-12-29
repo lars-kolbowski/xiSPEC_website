@@ -13,8 +13,7 @@
 	require('../../xiSPEC_sql_conn.php');
 	$xiSPECdb = new PDO("mysql:host=localhost;dbname=".$DBname, $DBuser, $DBpass) or die("cannot open the database");
 	$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-	$stmt = $xiSPECdb->prepare("UPDATE `dbs` SET share = lower(hex(randomBlob((16))) WHERE `name` = :name AND `share` IS NULL");
+	$stmt = $xiSPECdb->prepare("UPDATE `dbs` SET `share` = left(sha2(rand(), 256), 42) WHERE `name` = :name AND `share` IS NULL");
 	$stmt->bindParam(':name', $dbname, PDO::PARAM_STR);
 	try {
 		$stmt->execute();
@@ -24,12 +23,12 @@
 			die(json_encode($json));
 		}
 
-		$stmt = $dbh->prepare("SELECT share FROM databases WHERE name = :name");
+		$stmt = $xiSPECdb->prepare("SELECT `share` FROM `dbs` WHERE `name` = :name");
 		$stmt->bindParam(':name', $dbname, PDO::PARAM_STR);
 
 		$stmt->execute();
 		$shareStr = $stmt->fetchColumn();
-		$json['url'] = "http://" . $_SERVER['SERVER_NAME'] . "/viewSpectrum.php?sid=" . $shareStr;
+		$json['url'] = "https://" . $_SERVER['HTTP_HOST'] . "/viewSpectrum.php?sid=" . $shareStr;
 
 		echo json_encode($json);
 	} catch (PDOException $e) {

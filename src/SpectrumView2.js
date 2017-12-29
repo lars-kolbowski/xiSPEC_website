@@ -254,7 +254,7 @@ var SpectrumView = Backbone.View.extend({
 	},
 
 	hideSpinner: function(){
-		console.log('hide');
+// 		console.log('hide');
 		this.spinner.stop();
 	},
 });

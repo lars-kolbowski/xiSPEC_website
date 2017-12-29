@@ -53,8 +53,12 @@ $(function() {
 
 	//ToDo: bottomDiv specList-altList-Wrapper -> BBView?
 	$('.closeTable').click(function(){
-		$(this).closest('.tableDiv').hide();
+		// $(this).closest('.tableDiv').hide();
 		window.trigger('resize')
+	});
+
+	$('.closeButton').click(function(){
+		$(this).parent().hide();
 	});
 
 	$('#toggleSpecList').click(function(){
@@ -75,6 +79,7 @@ $(function() {
 	$("#saveModal").easyModal();
 	$('#saveDB').click(function(){
 		$("#saveModal").trigger('openModal');
+		$('#saveTooltip').hide();
 	});
 
 	$("#shareModal").easyModal();

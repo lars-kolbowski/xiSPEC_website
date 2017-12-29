@@ -57,11 +57,12 @@ var altListTableView = Backbone.View.extend({
 				{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center" },	//6
 				{ "title": "charge", "data": "charge", "className": "dt-center" },		//7
 				{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center" },	//8
-				{ "title": "score", "data": "scores", "className": "dt-center" },		//9
-				{ "title": "protein1", "data": "protein1", "className": "dt-center" },	//10
-				{ "title": "protein2", "data": "protein2", "className": "dt-center" },	//11
-				{ "title": "passThreshold", "data": "passThreshold" },	//12
-				{ "title": "alt_count", "data": "alt_count" },		//13
+				{ "title": "score", "data": "score", "className": "dt-center" },		//9
+				{ "title": "allScores", "data": "allScores" },		//10
+				{ "title": "protein1", "data": "protein1", "className": "dt-center" },	//11
+				{ "title": "protein2", "data": "protein2", "className": "dt-center" },	//12
+				{ "title": "passThreshold", "data": "passThreshold" },	//13
+				{ "title": "alt_count", "data": "alt_count" },		//14
 			],
 			"createdRow": function( row, data, dataIndex ) {
 				if ( data[6] == "0" )
@@ -72,7 +73,7 @@ var altListTableView = Backbone.View.extend({
 		    "columnDefs": [
 		    	{
 					"class": "invisible",
-					"targets": [ 0, 1, 12, 13 ],
+					"targets": [ 0, 1, 10, 12, 13 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
@@ -95,12 +96,12 @@ var altListTableView = Backbone.View.extend({
 				},
 				{
 					"render": function ( data, type, row, meta ) {
-						var json = JSON.parse(data);
+						var json = JSON.parse(row.allScores);
 						var result = new Array();
 						for (key in json) {
-							result.push('<span title="'+key+'='+json[key]+'">'+json[key].toFixed(2)+'</span>');
+							result.push(key+'='+json[key]);
 						}
-						return result.join(";");
+						return '<span title="'+result.join("; ")+'">'+parseFloat(data).toFixed(2)+'</span>'
 					},
 					"targets": [ 9 ],
 				},
