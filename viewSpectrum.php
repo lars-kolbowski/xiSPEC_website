@@ -250,7 +250,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 							<label class="btn" title="toggle measure mode on/off">Measure<input class="pointer" id="measuringTool" type="checkbox"></label>
 							<form id="setrange">
 								<label class="btn" title="m/z range" style="cursor: default;">m/z:</label>
-								<label class="btn" for="lockZoom" title="Lock current zoom level" id="lock" class="btn"><input id="lockZoom" type="checkbox" style="display: none;">🔓</label>
+								<label class="btn" for="lockZoom" title="Lock current zoom level" id="lock" class="btn">🔓</label><input id="lockZoom" type="checkbox" style="display: none;">
 								<input type="text" id="xleft" size="5" title="m/z range from:">
 								<span>-</span>
 								<input type="text" id="xright" size="5" title="m/z range to:">
