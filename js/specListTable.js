@@ -133,10 +133,10 @@ var specListTableView = Backbone.View.extend({
 
 	        ],
 			"initComplete": function(settings, json) {
-				if (json.data.length == 0){
-					console.log("db could not be found. Redirecting...");
-					window.location.href = "upload.php";
-				}
+// 				if (json.data.length == 0){
+// 					console.log("db could not be found. Redirecting...");
+// 					window.location.href = "upload.php";
+// 				}
 				window.initSpinner.stop();
 				$("#topDiv-overlay").css("z-index", -1);
 				// is cl dataset?

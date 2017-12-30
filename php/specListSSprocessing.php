@@ -42,11 +42,15 @@
 
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 
-	if (isset($_SESSION['tmpDB'])){
+
+	if (isset($_GET['db'])){
+		$dbname = "saved/".$_GET['db'];
+	}
+	elseif (isset($_SESSION['tmpDB'])){
 		$dbname = "tmp/".session_id();
 	}
 	else {
-		$dbname = "saved/".$_GET['db'];
+		die();
 	}
 
 	if(!in_array($_GET['db'], $_SESSION['access'])){
