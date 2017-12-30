@@ -50,7 +50,7 @@ var specListTableView = Backbone.View.extend({
 			"order": [[ 8, "desc" ]],
 			"processing": true,
 			"serverSide": true,
-			"ajax": "php/specListSSprocessing.php?db="+this.model.get('database'),
+			"ajax": "php/specListSSprocessing.php?db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB'),
 			"searchCols": [
 				null, //internal_id
 				null, //id

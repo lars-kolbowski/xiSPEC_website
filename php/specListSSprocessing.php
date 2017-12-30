@@ -43,11 +43,11 @@
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 
 
-	if (isset($_GET['db'])){
-		$dbname = "saved/".$_GET['db'];
+	if ($_GET['tmp'] == '1'){
+		$dbname = "tmp/".$_GET['db'];
 	}
-	elseif (isset($_SESSION['tmpDB'])){
-		$dbname = "tmp/".session_id();
+	elseif (isset($_GET['db'])){
+		$dbname = "saved/".$_GET['db'];
 	}
 	else {
 		die();

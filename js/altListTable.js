@@ -58,7 +58,7 @@ var altListTableView = Backbone.View.extend({
 				{ "title": "charge", "data": "charge", "className": "dt-center" },		//7
 				{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center" },	//8
 				{ "title": "score", "data": "score", "className": "dt-center" },		//9
-				{ "title": "allScores", "data": "allScores" },		//10
+				{ "title": "allScores", "data": "allScores", "name": "allScores" },		//10
 				{ "title": "protein1", "data": "protein1", "className": "dt-center" },	//11
 				{ "title": "protein2", "data": "protein2", "className": "dt-center" },	//12
 				{ "title": "passThreshold", "data": "passThreshold" },	//13

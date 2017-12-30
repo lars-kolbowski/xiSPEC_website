@@ -26,7 +26,7 @@ function loadSpectrum(rowdata){
 	}
 
 	$.ajax({
-		url: 'php/createSpecReq.php?id='+id + "&db=" + window.SpectrumModel.get('database'),
+		url: 'php/createSpecReq.php?id='+id + "&db=" + window.SpectrumModel.get('database')+ "&tmp=" + window.SpectrumModel.get('tmpDB'),
 		type: 'GET',
 		async: false,
 		cache: false,

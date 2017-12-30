@@ -152,7 +152,8 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		var model_vars = {
 			baseDir: "",
 			xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/",
-			<?php if(isset($dbName)) echo 'database: "'.$dbName.'"'; ?>
+			<?php if(isset($dbName)) echo 'database: "'.$dbName.'",'; ?>
+			<?php echo 'tmpDB: "'.$tmpDB.'",'; ?>
 		};
 
 		SpectrumModel = new AnnotatedSpectrumModel(model_vars);
