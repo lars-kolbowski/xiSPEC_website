@@ -150,6 +150,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 			.attr("min", "0")
 			.attr("step", "1")
 			.attr("required", "")
+			.attr("class", "stepInput")
 		;
 		this.toleranceUnit = toleranceWrapper.append('div').append("select")
 			.attr("name", "tolUnit")
