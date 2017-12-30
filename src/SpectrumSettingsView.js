@@ -118,7 +118,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 		;
 		var ionSelectorDropdown = ionSelector.append("div").attr("class", "mulitSelect_dropdown-content mutliSelect").append("ul").attr("id", 'ionList');
 		var ionOptions = [
-			{value: "peptide", text: "Peptide ion"},
+			{value: "peptide", text: "Peptide Ion"},
 			{value: "a", text: "A Ion"},
 			{value: "b", text: "B Ion"},
 			{value: "c", text: "C Ion"},
