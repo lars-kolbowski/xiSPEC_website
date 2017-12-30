@@ -43,7 +43,7 @@
 							<div id="uploadProgress">
 								<div class="file_upload_bar" style="width: 0%;"><div class="file_upload_percent"></div></div>
 							</div>
-							<button id="startParsing" disabled="true" class="btn btn-1a">Submit Data</button>
+							<button id="startParsing" disabled="true" class="btn btn-1a btn-2">Submit Data</button>
 						</div>
 						<div class="fileupload_info">
 						<table>
@@ -213,17 +213,45 @@
 			<div id=submitDataInfo>
 				<div id="errorInfo" style="display: none;">
 					<div id="errorMsg"></div>
-					<textarea class="form-control" id="errorLog"></textarea>
+					<textarea class="form-control" id="errorLog" readonly></textarea>
+				</div>
+				<div id="ionsInfo"  style="display: none;">
+					<div id="ionsMsg"></div>
+					<form id="ionsForm" method="post" action="php/updateIons.php">
+						<div class="mulitSelect_dropdown" style="margin-right:2%;">
+							<input type="text" class="form-control btn-drop" id="ionSelectionSubmit" title="fragment ion types" value="peptide, b, y" readonly>
+							<div class="mulitSelect_dropdown-content mutliSelect">
+								<ul>
+									<li>
+										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="peptide" checked id="PeptideIonSubmit" name="ions[]" />Peptide ion</label></li>
+									<li>
+										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="a" id="AIonSubmit" name="ions[]" />A ion</label></li>
+									<li>
+										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="b" checked id="BIonSubmit" name="ions[]" />B ion</label></li>
+									<li>
+										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="c" id="CIonSubmit" name="ions[]" />C ion</label></li>
+									<li>
+										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="x" id="XIonSubmit" name="ions[]" />X ion</label></li>
+									<li>
+										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="y" checked id="YIonSubmit" name="ions[]" />Y ion</label></li>
+									<li>
+										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="z" id="ZIonSubmit" name="ions[]" />Z ion</label></li>
+								</ul>
+							</div>
+						</div>
+						<button type="submit" id="ionsFormSubmit" class="btn btn-1a btn-2">update ions</button>
+					</form>
 				</div>
 				<div id="modificationsInfo"  style="display: none;">
 					<div id="modificationsMsg"></div>
-					<form id="csvModificationsForm" method="post" action="php/submitModDataForCSV.php">
-					</form>
+					<form id="csvModificationsForm" method="post" action="php/submitModDataForCSV.php"></form>
 				</div>
-				<div>
-					<a id="cancelUpload" class="btn btn-1a" href="#">Cancel</a>
-					<a id="gitHubIssue" class="btn btn-1a" style="display:none;" href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'><i class="fa fa-github" aria-hidden="true"></i>Create issue</a>
-					<a id="continueToDB" class="btn btn-1a" href="#">Continue</a>
+				<div style="margin-top: 0.6em;">
+					<button id="cancelUpload" class="btn btn-1a btn-2" href="#">Cancel</button>
+					<a id="gitHubIssue" class="btn btn-1a" style="display:none;" href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'>
+						<i class="fa fa-github" aria-hidden="true"></i>Create issue
+					</a>
+					<button id="continueToDB" class="btn btn-1a btn-2" href="#">Continue</button>
 				</div>
 			</div>
 			<div id="processDataInfo">

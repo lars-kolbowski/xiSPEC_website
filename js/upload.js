@@ -16,6 +16,7 @@ $( document ).ready(function() {
 		overlayClose: false,
 		closeOnEscape: false
 	});
+
 	$('#cancelUpload').click(function(){
 		window.location.href = 'upload.php';
 	})
@@ -24,7 +25,6 @@ $( document ).ready(function() {
 	$('.showCsvHeader').click(function(){
 		$("#csvHeaderModal").trigger('openModal');
 	});
-
 
 	$('#myCL').change(function(){
 		var value = $(this).val();
@@ -57,9 +57,7 @@ $( document ).ready(function() {
 		window.peptide.set("charge", this.value);
 	});
 
-
 	$('#modificationTable').on('input', 'input', function() {
-
 		var row = this.getAttribute("row");
 		var modName = $('#modName_'+row).val();
 		var modMass = parseFloat($('#modMass_'+row).val());
@@ -69,8 +67,6 @@ $( document ).ready(function() {
 
 		window.peptide.updateUserModifications(mod);
 		displayModified($(this).closest("tr"));
-
-
 	 });
 
 	var displayModified = function (row){
@@ -93,6 +89,17 @@ $( document ).ready(function() {
 			$('#ionSelection').val("Select ions...");
 		else
 			$('#ionSelection').val(ionSelectionArr.join(", "));
+	});
+
+	$('.ionSelectChkboxSubmit').change(function(){
+		var ionSelectionArr = new Array();
+		$('.ionSelectChkboxSubmit:checkbox:checked').each(function(){
+			ionSelectionArr.push($(this).val());
+		});
+		if (ionSelectionArr.length == 0)
+			$('#ionSelectionSubmit').val("Select ions...");
+		else
+			$('#ionSelectionSubmit').val(ionSelectionArr.join(", "));
 	});
 
 	window.modTable = $('#modificationTable').DataTable( {
@@ -163,7 +170,6 @@ $( document ).ready(function() {
 								data = _.union(data, model.knownModifications['modifications'][i].aminoAcids);
 								data.sort();
 								data = data.join("");
-
 							}
 						}
 					}
@@ -254,24 +260,52 @@ $( document ).ready(function() {
 
 	$(".uploadCheckbox").change(function(){
 		if ($('.uploadCheckbox:checked').length == $('.uploadCheckbox').length) {
-		   $('#startParsing').prop('disabled', false);
+			$('#startParsing').prop('disabled', false);
 		}
 		else{
 			$('#startParsing').prop('disabled', true);
 		}
 	});
 
-// 	$("#continueToDB").click(function(){
-// 		window.location.href = "viewSpectrum.php";
-// 	});
+	$('#csvModificationsForm').submit(function(e){
+		e.preventDefault();
+		var fd = $(this).serialize();
+		$.ajax({
+			url: "php/submitModDataForCSV.php",
+			type: 'POST',
+			data: fd,
+			success: function (data) {
+				$('#continueToDB').prop("disabled", false);
+			}
+		});
+	});
+
+	$('#ionsForm').submit(function(e){
+		e.preventDefault();
+		var fd = $(this).serialize();
+		var spinner = new Spinner({scale: 0.3}).spin();
+		var target = d3.select('#ionsFormSubmit').node();
+		$.ajax({
+			url: "php/updateIons.php",
+			type: 'POST',
+			data: fd,
+			beforeSend: function(){
+				$('#ionsFormSubmit').prop("disabled", true);
+				target.appendChild(spinner.el);
+			},
+			success: function (data) {
+				spinner.stop();
+				$('#ionsFormSubmit').prop("disabled", false);
+			}
+		});
+	});
 
 	$('#continueToDB').click(function(){
-		if($('#csvModificationsForm input').length > 0)
-			$('#csvModificationsForm').submit();
-		else
-			window.location.href = "viewSpectrum.php";
-		// var fd = new FormData($('#csvModificationsForm')[0]);
-
+		// if($('#csvModificationsForm input').length > 0)
+		// 	$('#csvModificationsForm').submit();
+		// if($('#ionsInfo').is(':visible'))
+		// 	$('#ionsForm').submit();
+		window.location.href = "viewSpectrum.php";
 	});
 
 	$("#startParsing").click(function(e){
@@ -293,7 +327,6 @@ $( document ).ready(function() {
 				$(".overlay").css("visibility", "visible").css("z-index", 1);
 				target.appendChild(spinner.el);
 				$("#submitDataModal").trigger('openModal');
-
 			},
 			success: function (data) {
 				spinner.stop();
@@ -304,22 +337,31 @@ $( document ).ready(function() {
 					$('#submitDataInfo').show();
 					$('#processDataInfo').hide();
 					$('#processText').html("");
+
 					if (resp.errors.length > 0){
 						$('#errorInfo').show();
 						$('#gitHubIssue').show();
 						$('#errorMsg').html(resp.errors.length + " error(s) occured parsing your data. See the log for more information:");
 						resp.errors.forEach(function (error){
-							$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message+'\nid: ' + error.id + '\n\n');
+							if (error.type == 'IonParsingError'){
+								$('#ionsInfo').show();
+								$('#ionsMsg').html('Fragment ion detection failed.\nSet ion types:');
+							}
+							$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message + '\nid: ' + error.id + '\n\n');
+
 						})
 					}
+
 					if (resp.modifications.length > 0){
+						$('#continueToDB').prop('disabled', true);
 						$('#modificationsInfo').show();
-						$('#modificationsMsg').html("Please provide the masses for the following " + resp.modifications.length + " modification(s):");
+						$('#modificationsMsg').html("Please provide the mass(es) for the following " + resp.modifications.length + " modification(s):");
 						resp.modifications.forEach(function (mod){
 							var modNameInput = '<input class="form-control" name="mods[]" readonly type="text" value='+mod+'>';
 							var modMassInput = '<input class="form-control" name="modMasses[]" type="number" min=0 step=0.000001 value="0" required autocomplete=off>';
-							$('#csvModificationsForm').append(modNameInput + modMassInput + '\n\n');
+							$('#csvModificationsForm').append('<div style="margin-bottom: 5px;">' + modNameInput + modMassInput + '</div>');
 						})
+						$('#csvModificationsForm').append('<input type="submit" value="update modifications" class="btn btn-1a btn-2" id="updateModsSubmit">');
 					}
 				}
 			}

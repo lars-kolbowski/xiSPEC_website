@@ -184,15 +184,7 @@ nav a:focus, nav a:hover {
     flex-grow: 1;
     margin: 10px;
 }
-#startParsing{
-    border: 1px solid #666;
-    /* font-size: 1.0em; */
-}
-#startParsing:disabled{
-    border: 1px solid #eee;
-    cursor: not-allowed;
-    color: #eee;
-}
+
 .menu-top{
     display: none;
 }
@@ -1378,6 +1370,16 @@ form table td {
     border: 1px solid #fff;
     color: #fff;
 }
+.btn-2 {
+    border: 1px solid #666;
+    color: #666;
+}
+.btn-2:disabled{
+    border: 1px solid #999;
+    cursor: not-allowed;
+    color: #eee!important;
+}
+
 .btn-1a:active, .btn-1a:hover {
     color: #333333;
     background: #fff;
