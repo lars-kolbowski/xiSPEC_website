@@ -35,6 +35,11 @@
 	$dbname = $_POST['dbName'];
 	if($dbname == "") die("no name specified!");
 
+	if(preg_match('/[^A-Za-z0-9_\-()]/', $dbname)){
+		$json['error'] = "name contains invalid chars! Valid chars are: A-Z a-z 0-9 _ - ( )";
+		die(json_encode($json));
+	}
+
 	if (isset($_POST['public']))
 		$passHash = 'public';
 	else
