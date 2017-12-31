@@ -342,6 +342,7 @@ $( document ).ready(function() {
 						$('#errorInfo').show();
 						$('#gitHubIssue').show();
 						$('#errorMsg').html(resp.errors.length + " error(s) occured parsing your data. See the log for more information:");
+						$('#errorLog').append('log id: ' + resp.log + ' (include this in the github issue)\n');
 						resp.errors.forEach(function (error){
 							if (error.type == 'IonParsingError'){
 								$('#ionsInfo').show();
