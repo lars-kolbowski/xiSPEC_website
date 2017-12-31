@@ -30,12 +30,15 @@
 				<div class="container" id="jquery-fileupload">
 					<h1 class="page-header accordionHead"><i <?php echo (isset($_GET['ex']) ? 'class="fa fa-plus-square"' : 'class="fa fa-minus-square"');?> aria-hidden="true"></i> Data Upload - Upload your data (identification & peak list file pair)</h1>
 					<div class="accordionContent" <?php echo (isset($_GET['ex']) ? 'style="display: none;"' : '');?>>
-						<div style="margin-left: 1em; font-size: 0.8em; line-height: 1.7em;">
+						<div style="margin-left: 1em; line-height: 1.7em;">
 							Supported identification file formats: <a title="HUPO Proteomics: mzidentML" href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> and <a title="Show column headings" class="showCsvHeader" href="#">csv</a>.</br>
 							Supported peak list file formats: <a title="HUPO Proteomics: mzML" href="http://www.psidev.info/mzml" target="blank">mzML</a> and <a title="Mascot Generic Format" href="http://www.matrixscience.com/help/data_file_help.html#GEN">mgf</a> (+ zip archives of mzML/mgf).</br>
-							mzML: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
-							mzML: Make sure to use centroided MS2 data! (e.g. use 'Peak picking' for profile data in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
-							csv: <a href="example/example.csv">download example .csv</a>
+							<div style="font-size: 0.8em; line-height: 1.7em; margin-top:0.5em;">
+								mzML: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
+								<!-- mzML: Make sure to use centroided MS2 data! (e.g. use 'Peak picking' for profile data in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br> -->
+								mgf: If the file does not contain ALL scans it must either contain the scan number directly in the header (SCANS=XX) or in the title (check TPP compatibility in MSconvert)!<br>
+								csv: <a href="example/example.csv">download example .csv</a>
+							</div>
 						</div>
 						<div id="fileUploadWrapper">
 							<input id="fileupload" type="file" name="files[]" accept=".mzid,.csv,.mzml,.mgf,.zip" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
