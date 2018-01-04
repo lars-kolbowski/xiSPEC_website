@@ -1375,9 +1375,9 @@ form table td {
     color: #666;
 }
 .btn-2:disabled{
-    border: 1px solid #999;
+    border: 1px solid #ccc;
     cursor: not-allowed;
-    color: #eee!important;
+    color: #ccc!important;
 }
 
 .btn-1a:active, .btn-1a:hover {

@@ -114,13 +114,13 @@
 							</thead>
 							<tr>
 								<td>amino acids</td>
-								<td>upper case one letter code</td>
+								<td>uppercase one letter code</td>
 								<td>ARNDCEQGHILKMFPSTWYV</td>
 							</tr>
 							<tr>
 								<td>modifications</td>
-								<td>lower case characters</td>
-								<td>ox</td>
+								<td>lowercase and numbers</td>
+								<td>ox | bs3nh2</td>
 							</tr>
 							<tr>
 								<td>peptide delimiter</td>
