@@ -24,6 +24,18 @@
 				<div class="accordionContent" style="display: none;">
 					<ul>
 						<li>
+							<h5>Zooming</h5>
+						</li>
+						<p>
+							<img src="images/gifs/zoom.gif" />
+							<ul style="margin-left:30px;">
+								<li>Click and drag the cursor below the x-axis to zoom into a specific area of the spectrum.</li>
+								<li>Alternatively you can zoom in/out using the mouse wheel.</li>
+								⇨ XiSPEC updates the annotated spectrum!
+							</ul>
+						</p>
+						<br/>
+						<li>
 							<h5>Change cross-linker position</h5>
 						</li>
 						<p>
