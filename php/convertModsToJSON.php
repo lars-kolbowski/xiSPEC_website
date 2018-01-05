@@ -2,7 +2,7 @@
 $pepsStr = urldecode($_GET["peps"]);
 
 $pepsStr_noCL = preg_replace( '/#[0-9]?/' , '' , $pepsStr);
-preg_match_all('/[^A-Z]+/', $pepsStr_noCL, $matches, PREG_OFFSET_CAPTURE);
+preg_match_all('/[^A-Z;]+/', $pepsStr_noCL, $matches, PREG_OFFSET_CAPTURE);
 
 $modifications = array();
 $aminoAcids = array();
