@@ -4,16 +4,15 @@ var SpectrumView = Backbone.View.extend({
 
 	events : {
 		'click #reset' : 'resetZoom',
-// 		'click #lossyChkBx': 'showLossy',
 		'submit #setrange' : 'setrange',
 		'click #lockZoom' : 'lockZoom',
 		'click #clearHighlights' : 'clearHighlights',
-// 		'change #colorSelector': 'changeColorScheme',
 		'click #measuringTool': 'measuringTool',
 		'click #moveLabels': 'moveLabels',
 		'click #downloadSVG': 'downloadSVG',
 		'click #toggleView' : 'toggleView',
-		'click #toggleSettings' : 'toggleSettings'
+		'click #toggleSettings' : 'toggleSettings',
+		'click #revertAnnotation' : 'revertAnnotation'
 	  },
 
 	initialize: function() {
@@ -33,10 +32,12 @@ var SpectrumView = Backbone.View.extend({
 		this.listenTo(this.model, 'changed:lossyShown', this.showLossy);
 		this.listenTo(this.model, 'request_annotation:pending', this.showSpinner);
 		this.listenTo(this.model, 'request_annotation:done', this.hideSpinner);
+		this.listenTo(this.model, 'changed:annotation', this.enableRevertAnnotation);
 		//this.listenTo(this.model, 'destroy', this.remove);
 	},
 
 	render: function() {
+		$(this.el).css('background-color', '#fff');
 		this.graph.clear();
 		this.lockZoom();
 		if (this.model.JSONdata)
@@ -257,4 +258,19 @@ var SpectrumView = Backbone.View.extend({
 // 		console.log('hide');
 		this.spinner.stop();
 	},
+
+	revertAnnotation: function(){
+		if(this.model.changedAnnotation){
+			$(this.el).css('background-color', '#fff');
+			this.model.revert_annotation();
+			$('#revertAnnotation').removeClass('btn-1a');
+			$('#revertAnnotation').addClass('disabled');
+		};
+	},
+
+	enableRevertAnnotation: function(){
+		$(this.el).css('background-color', 'rgb(210, 224, 255)');
+		$('#revertAnnotation').addClass('btn-1a');
+		$('#revertAnnotation').removeClass('disabled');		
+	}
 });

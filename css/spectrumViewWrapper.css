@@ -20,7 +20,7 @@
     line-height: normal;
     text-align: center;
 }
-     
+
 #spectrumControls form {
     display: inline-block;
     border-left: 1px solid white;
@@ -37,7 +37,6 @@
 .heightFill {
     display: flex;
     flex-flow: column;
-    background: #fff;
     min-height: 200px;
     flex-grow: 2;
 }

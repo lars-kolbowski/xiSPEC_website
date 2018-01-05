@@ -248,6 +248,15 @@ body, input, select, textarea {
     margin: 2px 2px 0px 2px;
 }
 
+#revertAnnotation{
+  color: rgb(154, 186, 255);
+}
+
+.disabled{
+  color: #999!important;
+  cursor: default;
+}
+
 #dbcontrols .btn-topNav{
     margin-left: 0px;
 }

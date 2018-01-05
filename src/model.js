@@ -55,7 +55,8 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	setData: function(){
-
+		this.changedAnnotation = false;
+		this.userModified = false;
 		if (this.get("JSONdata") == null){
 			this.trigger("changed:data");
 			return
@@ -262,7 +263,6 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	changeLinkPos: function(newLinkSites){
-
 		if(this.get("JSONrequest") !== undefined){
 			json_req = this.get("JSONrequest");
 			for (var i = 0; i < newLinkSites.length; i++) {
@@ -293,11 +293,12 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			this.setData();
 		}
 
+		this.trigger("changed:annotation");
+		this.changedAnnotation = true;
 	},
 
 
 	changeMod: function(oldPos, newPos, oldPepIndex, newPepIndex){
-
 		if(this.get("JSONrequest") !== undefined){
 			json_req = this.get("JSONrequest");
 			//standalone
@@ -345,7 +346,8 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			this.setData();
 		}
 
-
+		this.trigger("changed:annotation");
+		this.changedAnnotation = true;
 	},
 
 	matchMassToAA: function(delta, peak) {
@@ -577,6 +579,24 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 				self.trigger('request_annotation:done');
 			}
 		});
+	},
 
+	revert_annotation: function(){
+		if(!this.changedAnnotation)
+			return
+		var self = this;
+		$.ajax({
+			url: 'php/createSpecReq.php?id='+this.requestId + "&db=" +this.get('database')+ "&tmp=" + this.get('tmpDB'),
+			type: 'GET',
+			async: false,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function (returndata) {
+				var json = JSON.parse(returndata);
+				self.request_annotation(json);
+			}
+		});
 	}
+
 });

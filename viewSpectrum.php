@@ -99,7 +99,7 @@ else{
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>xiSPEC<?php if(isset($dbName) && !$tmpDB) echo " - ".$dbName; ?></title>
+		<title>xiSPEC<?php if(isset($dbName) && !$tmpDB) echo " | ".$dbName; ?></title>
 			<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 			<meta name="description" content="mass spectrometry data analysis and visualization tool" />
 			<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -274,6 +274,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 								<!-- <i id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-right" aria-hidden="true"></i> -->
 							</span>
 							<a href="help.php" target="_blank"><i title="Help" class="btn btn-1a btn-topNav fa fa-question" aria-hidden="true"></i></a>
+							<i id="revertAnnotation" title="revert to original annotation" class="btn btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>
 						</div>
 						<div class="heightFill">
 							<svg id="spectrumSVG"></svg>

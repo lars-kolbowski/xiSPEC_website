@@ -266,6 +266,8 @@ var SpectrumSettingsView = Backbone.View.extend({
 		json['annotation']['custom'] += $("#settingsCustomCfg-input").val().split("\n");
 
 		this.model.otherModel.request_annotation(json);
+		this.model.otherModel.changedAnnotation = true;
+		this.model.otherModel.trigger("changed:annotation");
 	},
 
 	toggleView: function(){
@@ -298,6 +300,8 @@ var SpectrumSettingsView = Backbone.View.extend({
 				var json = JSON.parse(response);
 				json['annotation']['custom'] = "LOWRESOLUTION:false\n";	//ToDo: temp fix until new xiAnnotator version is released
 				self.model.otherModel.request_annotation(json);
+				self.model.otherModel.changedAnnotation = true;
+				self.model.otherModel.trigger("changed:annotation");
 				spinner.stop();
 				$('#settingsForm').show();
 			}
