@@ -67,10 +67,10 @@
 						<p>
 							<img src="images/gifs/highlighting.gif" />
 							<ul style="margin-left:30px;">
-								<li>Hover over fragments in the spectrum to highlight the corresponding fragment in the Sequence and vice versa.</li>
+								<li>Hover over fragments in any view to highlight the corresponding fragment all views.</li>
 								<li>Click on a fragment to make the highlight permanent.</li>
-								<li>Ctrl+Click to add additional fragments to selection.</li>
-								<li>Click on the background to reset highlighting.</li>
+								<li>Ctrl+Click to add additional fragments to permanent selection.</li>
+								<li>Click on the spectrum background to reset highlighting.</li>
 							</ul>
 						</p>
 					</ul>
