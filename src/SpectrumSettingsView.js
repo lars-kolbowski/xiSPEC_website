@@ -116,7 +116,8 @@ var SpectrumSettingsView = Backbone.View.extend({
 			.attr("id", "ionSelection")
 			.attr("readonly", "")
 		;
-		var ionSelectorDropdown = ionSelector.append("div").attr("class", "mulitSelect_dropdown-content mutliSelect").append("ul").attr("id", 'ionList');
+		var ionSelectorDropdown = ionSelector.append("div").attr("class", "mulitSelect_dropdown-content mutliSelect");
+		var ionSelectorList = ionSelectorDropdown.append("ul").attr("id", 'ionList');
 		var ionOptions = [
 			{value: "peptide", text: "Peptide Ion"},
 			{value: "a", text: "A Ion"},
@@ -126,15 +127,19 @@ var SpectrumSettingsView = Backbone.View.extend({
 			{value: "y", text: "Y Ion"},
 			{value: "z", text: "Z Ion"},
 		];
-		d3.select("#ionList").selectAll("li").data(ionOptions)
+		ionSelectorList.selectAll("li").data(ionOptions)
 			.enter()
-			.append("li").append("label").text(function(d) { return d.text; })
+			.append("li").append("label")
 			.append("input")
 				.attr("class", "ionSelectChkbox")
 				.attr("type", "checkbox")
 				.attr("name", "ions[]")
 				.attr("id", function(d) { return d.text.replace(" ", ""); })
 				.attr("value", function(d) { return d.value; })
+		;
+		ionSelectorList.selectAll("label").data(ionOptions)
+			.append('span')
+			.text(function(d) { return d.text; })
 		;
 
 		this.precursorZ = rightDiv.append("label").attr("class", "flex-row").text("Precursor charge state: ").append('div').attr('class', 'flex-grow')

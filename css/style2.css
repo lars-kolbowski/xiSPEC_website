@@ -339,7 +339,11 @@ body, input, select, textarea {
   background: rgba(117, 0, 0, 1);
 }
 
-.subViewControls .fa{
+.subViewControls .btn{
+  padding: 0px 6px;
+}
+
+.subViewControls .fa-right{
   position: absolute;
   right: 5px;
   margin-top: 2px;
@@ -363,7 +367,7 @@ body, input, select, textarea {
 
 .modal{
   background: #333;
-  width:650px; 
+  width:650px;
   text-align: center;
 }
 
@@ -501,7 +505,6 @@ body, input, select, textarea {
 }
 
 #specListColSelect input{
-  /* line-height: 0.4em; */
   margin: 2px!important;
 }
 
@@ -517,8 +520,8 @@ body, input, select, textarea {
     margin-bottom: 5px;
 }
 .listToolbar .btn{
-    padding: 4px 8px;
-    margin: 2px 3px;
+    padding: 2px 8px;
+    margin: 5px 0px 2px 3px;
 }
 /* .specListToolbar .btn{
     border-right: 1px solid white;

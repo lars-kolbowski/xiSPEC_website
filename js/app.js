@@ -54,7 +54,7 @@ $(function() {
 	//ToDo: bottomDiv specList-altList-Wrapper -> BBView?
 	$('.closeTable').click(function(){
 		// $(this).closest('.tableDiv').hide();
-		window.trigger('resize')
+		window.trigger('resize');
 	});
 
 	$('.closeButton').click(function(){
@@ -63,12 +63,12 @@ $(function() {
 
 	$('#toggleSpecList').click(function(){
 		$('#bottomDiv').toggle();
-		window.trigger('resize')
+		window.trigger('resize');
 	});
 
 	$('#toggleAltList').click(function(){
 		$('#altDiv').toggle();
-		window.trigger('resize')
+		window.trigger('resize');
 	});
 
 	//ToDo: spectrumControls -> BBView?
@@ -155,6 +155,5 @@ $(function() {
 			}
 		});
 	});
-
 
 });

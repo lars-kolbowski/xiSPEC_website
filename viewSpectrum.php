@@ -138,7 +138,8 @@ else{
 			<script type="text/javascript" src="./src/SpectrumSettingsView.js"></script>
 			<script type="text/javascript" src="./js/PeptideView.js"></script>
 			<script type="text/javascript" src="./src/PepInputView.js"></script>
-			<script type="text/javascript" src="./src/ErrorIntensityPlotView.js"></script>
+			<script type="text/javascript" src="./src/QCwrapperView.js"></script>
+			<script type="text/javascript" src="./src/ErrorPlotView.js"></script>
 			<script type="text/javascript" src="./src/FragKey/KeyFragment.js"></script>
 			<script type="text/javascript" src="./src/graph/Graph.js"></script>
 			<script type="text/javascript" src="./src/graph/Peak.js"></script>
@@ -196,11 +197,21 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumPanel"});
 		window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
 		window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
-		window.ErrorIntensityPlot = new ErrorIntensityPlotView({
+		window.QCwrapper = new QCwrapperView({el: '#QCdiv'});
+		window.ErrorIntensityPlot = new ErrorPlotView({
 			model: SpectrumModel,
-			el:"#errIntDiv",
-			margin: {top: 10, right: 60, bottom: 40, left: 65},
+			el:"#subViewContent-left",
+			xData: 'Intensity',
+			margin: {top: 10, right: 60, bottom: 20, left: 65},
 			svg: "#errIntSVG",
+			alwaysShow: true,
+		});
+		window.ErrorMzPlot = new ErrorPlotView({
+			model: SpectrumModel,
+			el:"#subViewContent-right",
+			xData: 'm/z',
+			margin: {top: 10, right: 60, bottom: 20, left: 65},
+			svg: "#errMzSVG",
 			alwaysShow: true,
 		});
 
@@ -280,14 +291,17 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 							<svg id="spectrumSVG"></svg>
 							<div id="measureTooltip"></div>
 						</div>
-						<div id="errIntDiv">
-							<div class='subViewControls'>
-								<span>Error-Intensity plot</span>
-								<i class="fa fa-angle-double-up pointer" id="dockErrInt" aria-hidden="true" title="show error/intensity plot" style="display:none;"></i>
-								<i class="fa fa-angle-double-down pointer" id="minErrInt" aria-hidden="true" title="hide error/intensity plot"></i>
-							</div>
+						<div id="QCdiv">
+							<div class="subViewControls"></div>
 							<div class="subViewContent">
-								<svg id="errIntSVG"></svg>
+								<div id="subViewContent-left">
+									<!-- <i class="fa fa-times closeButton" aria-hidden="true"></i> -->
+									<svg id="errIntSVG" class="errSVG"></svg>
+								</div>
+								<div id="subViewContent-right">
+									<!-- <i class="fa fa-times closeButton" aria-hidden="true"></i> -->
+									<svg id="errMzSVG" class="errSVG"></svg>
+								</div>
 							</div>
 						</div>
 					</div>

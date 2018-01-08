@@ -17,18 +17,17 @@
 //		authors: Lars Kolbowski
 //
 //
-//		ErrorIntensityPlotView.js
-var ErrorIntensityPlotView = Backbone.View.extend({
+//		ErrorPlotView.js
+var ErrorPlotView = Backbone.View.extend({
 
 	events : {
 		// 'click #toggleView' : 'toggleView',
-		'click #minErrInt' : 'minView',
-		'click #dockErrInt' : 'dockView',
 	},
 
 	initialize: function(viewOptions) {
 
 		this.listenTo(CLMSUI.vent, 'QCabsErr', this.toggleAbsErr);
+		this.listenTo(CLMSUI.vent, 'QCPlotToggle', this.toggleView);
 		this.listenTo(window, 'resize', _.debounce(this.render));
 
 		var self = this;
@@ -39,9 +38,6 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 		this.options = _.extend(defaultOptions, viewOptions);
 
 		this.absolute = false;
-
-
-		this.contentDiv = this.el.getElementsByClassName("subViewContent")[0];
 
 		var svgId = this.options.svg || this.el.getElementsByTagName("svg")[0];
 		this.svg = d3.select(svgId);
@@ -79,33 +75,9 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 		this.listenTo(this.model, 'changed:Highlights', this.updateHighlights);
 	},
 
-	toggleView: function(){
-
-		if (!this.model.showSpectrum){
-			this.render();
-			this.wrapper.style("opacity", 1);
-			this.background.attr("height", this.height);
-		}
-		else{
-			this.wrapper.style("opacity", 0);
-			this.background.attr("height", 0);
-		}
-	},
-
-	minView: function(){
-		console.log('minView');
-		$('#minErrInt').hide();
-		$('#dockErrInt').show();
-		$(this.contentDiv).hide();
-		window.trigger('resize');
-	},
-
-	dockView: function(){
-		console.log('dockView');
-		$('#dockErrInt').hide();
-		$('#minErrInt').show();
-		$(this.contentDiv).show();
-		window.trigger('resize');
+	toggleView: function(id){
+		if (id == this.options.xData)
+			$(this.el).toggle();
 	},
 
 	clear: function() {
@@ -136,7 +108,7 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 					fragId: fragId,
 					peptideId: peptideId,
 					lossy: lossy,
-					intensity: self.model.JSONdata.peaks[firstPeakId].intensity,
+					x: self.options.xData == 'Intensity' ? self.model.JSONdata.peaks[firstPeakId].intensity : self.model.JSONdata.peaks[firstPeakId].mz,
 					error: cluster.error,
 					y: self.absolute ? Math.abs(cluster.error) : cluster.error,
 					charge: self.model.JSONdata.clusters[cluster.Clusterid].charge,
@@ -156,7 +128,7 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 		this.width = cx - self.options.margin.left - self.options.margin.right;
 		this.height = cy - self.options.margin.top - margin_bottom;
 
-		var xmax = d3.max(this.data, function(d) { return d['intensity']; });
+		var xmax = d3.max(this.data, function(d) { return d['x']; });
 		// var ymax = d3.max(this.data, function(d) { return d['error']; });
 		var ymax = this.model.MSnTolerance.value;
 
@@ -198,7 +170,7 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 			.call(this.xAxis);
 
 
-		var ticks = d3.selectAll('.xAxis').selectAll(".tick text");
+		var ticks = this.xAxisSVG.selectAll(".tick text");
 		ticks.attr("class", function(d,i){
 			// remove 0 for non-absolute
 			if(!this.absolute && i == 0) d3.select(this).remove();
@@ -208,7 +180,7 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 
 		this.xLabel = this.wrapper.append("text")
 			.attr("class", "xAxisLabel")
-			.text("Intensity")
+			.text(self.options.xData)
 			.attr("dy","2.4em")
 			.style("text-anchor","middle").style("pointer-events","none");
 		var xLabelHeight = this.absolute ? this.height : this.height-20;
@@ -241,7 +213,7 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 		this.highlights = this.g.selectAll('scatter-dot-highlights')
 			.data(this.data)
 			.enter().append('circle')
-			.attr("cx", function (d) { return self.x(d['intensity']); } )
+			.attr("cx", function (d) { return self.x(d['x']); } )
 		 	.attr("cy", function (d) { return self.y(d['y']); } )
 			.style('fill', this.model.highlightColour)
 			.style('opacity', 0)
@@ -252,7 +224,7 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 		this.datapoints = this.g.selectAll('scatter-dots')
 			.data(this.data)
 			.enter().append('circle')
-			.attr("cx", function (d) { return self.x(d['intensity']); } )
+			.attr("cx", function (d) { return self.x(d['x']); } )
 			.attr("cy", function (d) { return self.y(d['y']); } )
 			.attr('id', function (d) { return d.fragId })
 			.style("cursor", "pointer")
@@ -294,7 +266,7 @@ var ErrorIntensityPlotView = Backbone.View.extend({
 		if (this.model.showSpectrum && !this.options.alwaysShow)
 			return
 
-		var contents = [["charge", data.charge], ["error", data.error.toFixed(3)], ["Int", data.intensity.toFixed(0)]];
+		var contents = [["charge", data.charge], ["error", data.error.toFixed(3)], [this.options.xData, data.x.toFixed(this.model.showDecimals)]];
 
 		var fragId = data.fragId;
 		var fragments = this.model.fragments.filter(function(d) { return d.id == fragId; });
