@@ -68,13 +68,13 @@
 #subViewContent-left {
     flex-grow:  1;
     /* border-right: 1px solid; */
-    position: relative;
+    /* position: relative; */
     display:  flex;
 }
 
 #subViewContent-right {
     flex-grow:  1;
-    position: relative;
+    /* position: relative; */
     display:  flex;
 }
 

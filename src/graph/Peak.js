@@ -163,6 +163,13 @@ function Peak (id, graph){
 			self.graph.tooltip.transition()
 				.duration(200)
 				.style("opacity", .9);
+
+			//if cursor is too close to left window edge change tooltip to other side
+			if (window.innerWidth - x < 250){
+				var x = x - 250;
+				var y = y + 20;
+			}
+
 			self.graph.tooltip.style("left", (x + 15) + "px")
 				.style("top", y + "px");
 		}

@@ -67,7 +67,8 @@ var ErrorPlotView = Backbone.View.extend({
 				.style("background-color", "black")
 				.style("pointer-events", "none")
 				.style("position", "absolute")
-				.style("opacity", 0);
+				.style("opacity", 0)
+				.style("z-index", 100);
 		}
 
 		this.listenTo(this.model, 'change', this.render);
@@ -288,6 +289,12 @@ var ErrorPlotView = Backbone.View.extend({
 			this.tooltip.transition()
 				.duration(200)
 				.style("opacity", .9);
+
+			//if cursor is too close to left window edge change tooltip to other side
+			if (window.innerWidth - x < 100){
+				var x = x - 100;
+				var y = y + 20;
+			}
 			this.tooltip.style("left", (x + 15) + "px")
 				.style("top", y + "px");
 		}
