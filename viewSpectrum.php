@@ -202,17 +202,19 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			model: SpectrumModel,
 			el:"#subViewContent-left",
 			xData: 'Intensity',
-			margin: {top: 10, right: 60, bottom: 20, left: 65},
+			margin: {top: 10, right: 30, bottom: 20, left: 65},
 			svg: "#errIntSVG",
 			alwaysShow: true,
+			wrapper: window.QCwrapper,
 		});
 		window.ErrorMzPlot = new ErrorPlotView({
 			model: SpectrumModel,
 			el:"#subViewContent-right",
 			xData: 'm/z',
-			margin: {top: 10, right: 60, bottom: 20, left: 65},
+			margin: {top: 10, right: 30, bottom: 20, left: 65},
 			svg: "#errMzSVG",
 			alwaysShow: true,
+			wrapper: window.QCwrapper,
 		});
 
 		window.SettingsView = new SpectrumSettingsView({model: SettingsSpectrumModel, el:"#settingsWrapper"});
@@ -239,7 +241,6 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			<!-- Main -->
 			<div id="mainView">
 				<div class="mainContent">
-					<div id="topDiv"><!--style="height: calc(60% - 5px);">-->
 						<div class="overlay" id="topDiv-overlay"></div>
 						<div id="spectrumPanel">
 
@@ -287,25 +288,26 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 							<a href="help.php" target="_blank"><i title="Help" class="btn btn-1a btn-topNav fa fa-question" aria-hidden="true"></i></a>
 							<i id="revertAnnotation" title="revert to original annotation" class="btn btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>
 						</div>
-						<div class="heightFill">
-							<svg id="spectrumSVG"></svg>
-							<div id="measureTooltip"></div>
-						</div>
-						<div id="QCdiv">
-							<div class="subViewControls"></div>
-							<div class="subViewContent">
-								<div id="subViewContent-left">
-									<!-- <i class="fa fa-times closeButton" aria-hidden="true"></i> -->
-									<svg id="errIntSVG" class="errSVG"></svg>
-								</div>
-								<div id="subViewContent-right">
-									<!-- <i class="fa fa-times closeButton" aria-hidden="true"></i> -->
-									<svg id="errMzSVG" class="errSVG"></svg>
+						<div class="plotsDiv">
+							<div class="mainPlotDiv">
+								<svg id="spectrumSVG"></svg>
+								<div id="measureTooltip"></div>
+							</div>
+							<div id="QCdiv">
+								<div class="subViewHeader"></div>
+								<div class="subViewContent">
+									<div class="subViewContent-plot" id="subViewContent-left">
+										<!-- <i class="fa fa-times closeButton" aria-hidden="true"></i> -->
+										<svg id="errIntSVG" class="errSVG"></svg>
+									</div>
+									<div class="subViewContent-plot" id="subViewContent-right">
+										<!-- <i class="fa fa-times closeButton" aria-hidden="true"></i> -->
+										<svg id="errMzSVG" class="errSVG"></svg>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div><!-- end top div -->
 				<div id="bottomDiv" class="tableDiv">
 				<i class="fa fa-times-circle closeButton closeTable" id="specListClose"></i>
 
@@ -314,7 +316,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 							<a data-toggle="tab" href="#tab-specListTable">Spectra List</a>
 						</li>
 						<li id="nav-altListTable">
-							<a data-toggle="tab" href="#tab-altListTable">Alternative Explanations <span id="altExpNum"></span></a>
+							<a data-toggle="tab" href="#tab-altListTable">Alternative Explanations<span id="altExpNum"></span></a>
 						</li>
 					</ul>
 

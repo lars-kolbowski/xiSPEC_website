@@ -37,6 +37,7 @@ var ErrorPlotView = Backbone.View.extend({
 		};
 		this.options = _.extend(defaultOptions, viewOptions);
 
+		this.wrapper = this.options.wrapper;
 		this.absolute = false;
 
 		var svgId = this.options.svg || this.el.getElementsByTagName("svg")[0];
@@ -47,7 +48,7 @@ var ErrorPlotView = Backbone.View.extend({
 		var width = 960 - margin.left - margin.right;
 		var height = 500 - margin.top - margin.bottom;
 
-		this.wrapper = this.svg
+		this.svgWrapper = this.svg
 			.append('g')
 			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 			.attr('width', width)
@@ -82,12 +83,12 @@ var ErrorPlotView = Backbone.View.extend({
 	},
 
 	clear: function() {
-		this.wrapper.selectAll("*").remove();
+		this.svgWrapper.selectAll("*").remove();
 	},
 
 	render: function() {
 
-		if (this.model.JSONdata === undefined || this.model.JSONdata === null)
+		if (this.model.JSONdata === undefined || this.model.JSONdata === null || !this.wrapper.isVisible)
 			return;
 
 		this.clear();
@@ -148,10 +149,10 @@ var ErrorPlotView = Backbone.View.extend({
 		var yTicks = this.height / 40;
 		var xTicks = this.width / 100;
 
-		this.wrapper.selectAll('.axis line, .axis path')
+		this.svgWrapper.selectAll('.axis line, .axis path')
 				.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '1.2px'});
 
-		this.background = this.wrapper.append("rect")
+		this.background = this.svgWrapper.append("rect")
 			.style("fill", "white")
 			// .style("z-index", -1)
 			.attr("width", this.width)
@@ -165,7 +166,7 @@ var ErrorPlotView = Backbone.View.extend({
 		// draw the x axis
 		this.xAxis = d3.svg.axis().scale(self.x).ticks(xTicks).orient("bottom").tickFormat(d3.format("s"));
 
-		this.xAxisSVG = this.wrapper.append('g')
+		this.xAxisSVG = this.svgWrapper.append('g')
 			.attr('transform', 'translate(0,' + this.y(0) + ')')
 			.attr('class', 'axis xAxis')
 			.call(this.xAxis);
@@ -179,7 +180,7 @@ var ErrorPlotView = Backbone.View.extend({
 			if(i%2 != 0) d3.select(this).remove();
 		});
 
-		this.xLabel = this.wrapper.append("text")
+		this.xLabel = this.svgWrapper.append("text")
 			.attr("class", "xAxisLabel")
 			.text(self.options.xData)
 			.attr("dy","2.4em")
@@ -190,7 +191,7 @@ var ErrorPlotView = Backbone.View.extend({
 		// draw the y axis
 		self.yAxis = d3.svg.axis().scale(this.y).ticks(yTicks).orient("left").tickFormat(d3.format("s"));
 
-		this.yAxisSVG = this.wrapper.append('g')
+		this.yAxisSVG = this.svgWrapper.append('g')
 			.attr('transform', 'translate(0,0)')
 			.attr('class', 'axis')
 			.call(this.yAxis)
@@ -198,7 +199,7 @@ var ErrorPlotView = Backbone.View.extend({
 
 		var yLabelText = self.absolute ? "absolute " : "";
 		yLabelText += "error (" + this.model.MSnTolerance.unit + ")";
-		this.yLabel = this.wrapper.append("g").append("text")
+		this.yLabel = this.svgWrapper.append("g").append("text")
 			.attr("class", "axis")
 			.text( yLabelText)
 			.style("text-anchor","middle").style("pointer-events","none")
@@ -209,7 +210,7 @@ var ErrorPlotView = Backbone.View.extend({
 		var p1color = this.model.p1color;
 		var p2color = this.model.p2color;
 
-		this.g = this.wrapper.append('g');
+		this.g = this.svgWrapper.append('g');
 
 		this.highlights = this.g.selectAll('scatter-dot-highlights')
 			.data(this.data)

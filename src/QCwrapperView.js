@@ -22,15 +22,27 @@
 var QCwrapperView = Backbone.View.extend({
 
 	events : {
-		'click .fa-right' : 'toggleView',
+		'click .toggle' : 'toggleView',
+		'click #minQC' : 'minView',
+		'click #dockQC' : 'showView',
+		'click .dockLeft' : 'dockLeft',
+		'click .dockRight' : 'dockRight',
+		'click .dockBottom' : 'dockBottom',
 		'change .plotSelectChkbox': 'updatePlots',
 	},
 
 	initialize: function() {
-		this.controlsDiv = d3.select(this.el.getElementsByClassName("subViewControls")[0]);
+		this.dock = 'bottom';
+		this.isVisible = true;
+
+		this.headerDiv = d3.select(this.el.getElementsByClassName("subViewHeader")[0]);
 		this.contentDiv = d3.select(this.el.getElementsByClassName("subViewContent")[0]);
 
-		var title = this.controlsDiv.append("span").text('Quality control plots');
+		this.title = this.headerDiv.append("span")
+			.text('Quality control plots')
+		;
+
+		this.controlsDiv = this.headerDiv.append("span");
 
 		var plotSelector = this.controlsDiv.append("div").attr("class", "mulitSelect_dropdown")
 		;
@@ -60,24 +72,96 @@ var QCwrapperView = Backbone.View.extend({
 			.text(function(d) { return d.text; })
 		;
 
-		this.dockQCbtn = this.controlsDiv.append('i')
-			.attr('class', 'fa fa-angle-double-up pointer fa-right')
+		var rightControls = this.controlsDiv.append('div')
+			.attr('class', 'rightControls')
+		;
+
+		this.dockLeftBtn = rightControls.append('i')
+			.attr('class', 'fa fa-window-maximize pointer dockLeft')
+			.attr('aria-hidden', 'true')
+			.attr('title', 'dock to left')
+		;
+		this.dockBottomBtn = rightControls.append('i')
+			.attr('class', 'fa fa-window-maximize pointer dockBottom')
+			.attr('aria-hidden', 'true')
+			.attr('title', 'dock to bottom')
+		;
+		this.dockRightBtn = rightControls.append('i')
+			.attr('class', 'fa fa-window-maximize pointer dockRight')
+			.attr('aria-hidden', 'true')
+			.attr('title', 'dock to right')
+		;
+
+		// <i class="fa fa-window-maximize" aria-hidden="true"></i>
+
+		this.dockQCbtn = this.headerDiv.append('i')
+			.attr('class', 'fa fa-angle-double-up pointer minMax')
+			.attr('id', 'dockQC')
 			.attr('aria-hidden', 'true')
 			.attr('title', 'show QC plots')
 			.attr('style', 'display: none;')
 		;
-		this.minQCbtn = this.controlsDiv.append('i')
-			.attr('class', 'fa fa-angle-double-down pointer fa-right')
+		this.minQCbtn = this.headerDiv.append('i')
+			.attr('class', 'fa fa-angle-double-down pointer minMax')
+			.attr('id', 'minQC')
 			.attr('aria-hidden', 'true')
 			.attr('title', 'hide QC plots')
 		;
-
 	},
 
-	toggleView: function(){
-		$(this.dockQCbtn[0]).toggle();
-		$(this.minQCbtn[0]).toggle();
-		$(this.contentDiv[0]).toggle()
+	showView: function(){
+		this.isVisible = true;
+		$(this.controlsDiv[0]).show();
+		$(this.dockQCbtn[0]).hide();
+		$(this.minQCbtn[0]).show();
+		$(this.contentDiv[0]).show()
+		if (this.dock == 'left'){
+			this.dockLeft();
+		}
+		else if (this.dock == 'right')
+			this.dockRight();
+		window.trigger('resize');
+	},
+
+	minView: function(){
+		this.isVisible = false;
+		if(this.dock == 'left' || this.dock == 'right'){
+			$(this.el).parent().css('flex-direction', 'column');
+			$(this.el).removeClass('right');
+			$(this.el).removeClass('left');
+			$(this.contentDiv[0]).css('flex-direction', 'row');
+		}
+		$(this.controlsDiv[0]).hide();
+		$(this.dockQCbtn[0]).show();
+		$(this.minQCbtn[0]).hide();
+		$(this.contentDiv[0]).hide()
+		window.trigger('resize');
+	},
+
+	dockLeft: function(){
+		this.dock = 'left';
+		$(this.el).parent().css('flex-direction', 'row');
+		$(this.el).addClass('left');
+		$(this.el).removeClass('right');
+		$(this.contentDiv[0]).css('flex-direction', 'column');
+		window.trigger('resize');
+	},
+
+	dockRight: function(){
+		this.dock = 'right';
+		$(this.el).parent().css('flex-direction', 'row');
+		$(this.el).addClass('right');
+		$(this.el).removeClass('left');
+		$(this.contentDiv[0]).css('flex-direction', 'column');
+		window.trigger('resize');
+	},
+
+	dockBottom: function(){
+		this.dock = 'bottom';
+		$(this.el).parent().css('flex-direction', 'column');
+		$(this.el).removeClass('left');
+		$(this.el).removeClass('right');
+		$(this.contentDiv[0]).css('flex-direction', 'row');
 		window.trigger('resize');
 	},
 
