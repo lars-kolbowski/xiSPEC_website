@@ -194,8 +194,6 @@ var QCwrapperView = Backbone.View.extend({
 // 	},
 
 	dockRight: function(){
-		if (this.dock === 'right')
-			return;
 		this.dock = 'right';
 		this.dockSide();
 		$(this.el).addClass('right');
@@ -204,8 +202,6 @@ var QCwrapperView = Backbone.View.extend({
 	},
 
 	dockBottom: function(){
-		if (this.dock === 'bottom')
-			return;
 		this.title.text("Quality control plots");
 		this.dock = 'bottom';
 		$(this.el).parent().css('flex-direction', 'column');
