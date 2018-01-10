@@ -35,15 +35,18 @@ var specListTableView = Backbone.View.extend({
 	initialize: function() {
 		var self = this;
 
+		this.listenTo(window, 'resize', this.resize);
+
 		this.wrapper = d3.select(this.el);
+		this.userPageLen = 8;
 
 		var tableVars = {
 			//"ordering": false,
 			//"info":     false,
 		 	"dom": '<"specListToolbar">frti<"bottom-lenMenu"l>p',
 			"searching": true,
-			"pageLength": 8,
-			"lengthMenu": [ 4, 6, 8, 10, 12 ],
+			"pageLength": this.userPageLen,
+			"lengthMenu": [ 4, 6, 8, 10, 12, 14, 16, 18, 20 ],
 			"language": {
 				"lengthMenu": "_MENU_ entries per page"
 			},
@@ -179,10 +182,7 @@ var specListTableView = Backbone.View.extend({
 					self.DataTable.columns('linkpos2:name').visible( true );
 					self.DataTable.columns('protein2:name').visible( true );
 				}
-				// self.hideEmptyColumns();	//hideEmptyColumns very slow
-				//ToDo : change window to SpectrumView ref
-				if (window.Spectrum !== undefined)
-					window.Spectrum.resize();
+				window.trigger('resize');
 			}
 		}
 
@@ -255,6 +255,16 @@ var specListTableView = Backbone.View.extend({
 				self.DataTable.column(i).visible(true);
 // 			self.DataTable.column(columnsToHide[i]).visible(false);
 		}
+	},
+
+	resize: function() {
+
+		// if ($(document).height() < 700){
+		// 	this.userPageLen = this.DataTable.page.len();
+		// 	this.DataTable.page.len( 4 ).draw();
+		// }
+		// else if (this.DataTable.page.len() != this.userPageLen)
+		// 	this.DataTable.page.len( this.userPageLen ).draw();
 	},
 
 	initiateTable: function() {

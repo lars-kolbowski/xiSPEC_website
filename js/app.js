@@ -44,6 +44,14 @@ function loadSpectrum(rowdata){
 
 $(function() {
 
+	CLMSUI.plotSplit = Split(['#mainPlotDiv', '#QCdiv'], {
+		sizes: [75, 25],
+		minSize: [250, 150],
+		gutterSize: 5,
+		direction: 'vertical',
+		onDragEnd: function(){ window.trigger('resize'); }
+	});
+
 	$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
 		if ($(this).parent().hasClass("disabled")) {
 			e.preventDefault();

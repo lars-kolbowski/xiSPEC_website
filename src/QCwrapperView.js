@@ -25,7 +25,7 @@ var QCwrapperView = Backbone.View.extend({
 		'click .toggle' : 'toggleView',
 		'click #minQC' : 'minView',
 		'click #dockQC' : 'showView',
-		'click .dockLeft' : 'dockLeft',
+		// 'click .dockLeft' : 'dockLeft',
 		'click .dockRight' : 'dockRight',
 		'click .dockBottom' : 'dockBottom',
 		'change .plotSelectChkbox': 'updatePlots',
@@ -76,11 +76,11 @@ var QCwrapperView = Backbone.View.extend({
 			.attr('class', 'rightControls')
 		;
 
-		this.dockLeftBtn = rightControls.append('i')
-			.attr('class', 'fa fa-window-maximize pointer dockLeft')
-			.attr('aria-hidden', 'true')
-			.attr('title', 'dock to left')
-		;
+		// this.dockLeftBtn = rightControls.append('i')
+		// 	.attr('class', 'fa fa-window-maximize pointer dockLeft')
+		// 	.attr('aria-hidden', 'true')
+		// 	.attr('title', 'dock to left')
+		// ;
 		this.dockBottomBtn = rightControls.append('i')
 			.attr('class', 'fa fa-window-maximize pointer dockBottom')
 			.attr('aria-hidden', 'true')
@@ -109,17 +109,50 @@ var QCwrapperView = Backbone.View.extend({
 		;
 	},
 
+	splitHorizontal: function(){
+		try{
+			CLMSUI.plotSplit.destroy();
+		}
+		catch(err){}
+		CLMSUI.plotSplit = Split(['#mainPlotDiv', '#QCdiv'], {
+			sizes: [75, 25],
+			minSize: [500, 220],
+			gutterSize: 4,
+			direction: 'horizontal',
+			onDragEnd: function(){ window.trigger('resize'); }
+		});
+	},
+
+	splitVertical: function(){
+		try{
+			CLMSUI.plotSplit.destroy();
+		}
+		catch(err){}
+		CLMSUI.plotSplit = Split(['#mainPlotDiv', '#QCdiv'], {
+			sizes: [75, 25],
+			minSize: [250, 200],
+			gutterSize: 4,
+			direction: 'vertical',
+			onDragEnd: function(){ window.trigger('resize'); }
+		});
+	},
+
 	showView: function(){
 		this.isVisible = true;
 		$(this.controlsDiv[0]).show();
 		$(this.dockQCbtn[0]).hide();
 		$(this.minQCbtn[0]).show();
-		$(this.contentDiv[0]).show()
-		if (this.dock == 'left'){
-			this.dockLeft();
+		$(this.contentDiv[0]).show();
+		if (this.dock == 'left' || this.dock == 'right'){
+			this.splitHorizontal();
+			if (this.dock == 'left')
+				this.dockLeft();
+			else if (this.dock == 'right')
+				this.dockRight();
 		}
-		else if (this.dock == 'right')
-			this.dockRight();
+		else{
+			this.splitVertical();
+		}
 		window.trigger('resize');
 	},
 
@@ -134,34 +167,52 @@ var QCwrapperView = Backbone.View.extend({
 		$(this.controlsDiv[0]).hide();
 		$(this.dockQCbtn[0]).show();
 		$(this.minQCbtn[0]).hide();
-		$(this.contentDiv[0]).hide()
+		$(this.contentDiv[0]).hide();
+		CLMSUI.plotSplit.destroy();
 		window.trigger('resize');
 	},
 
-	dockLeft: function(){
-		this.dock = 'left';
+	dockSide: function(){
+		this.title.text("QC");
 		$(this.el).parent().css('flex-direction', 'row');
-		$(this.el).addClass('left');
-		$(this.el).removeClass('right');
 		$(this.contentDiv[0]).css('flex-direction', 'column');
+		this.splitHorizontal();
 		window.trigger('resize');
 	},
+
+// dockLeft breaks splitting
+// 	dockLeft: function(){
+// 		if (this.dock === 'left')
+// 			return;
+// 		this.dock = 'left';
+// 		this.dockSide();
+// 		$(this.el).addClass('left');
+// 		$(this.el).removeClass('right');
+// // 		$('#mainPlotDiv').css('order', 5);
+//
+//  		$('.gutter-horizontal').css('order', -1);
+// 	},
 
 	dockRight: function(){
+		if (this.dock === 'right')
+			return;
 		this.dock = 'right';
-		$(this.el).parent().css('flex-direction', 'row');
+		this.dockSide();
 		$(this.el).addClass('right');
 		$(this.el).removeClass('left');
-		$(this.contentDiv[0]).css('flex-direction', 'column');
-		window.trigger('resize');
+// 		$('.gutter-horizontal').css('order', 0);
 	},
 
 	dockBottom: function(){
+		if (this.dock === 'bottom')
+			return;
+		this.title.text("Quality control plots");
 		this.dock = 'bottom';
 		$(this.el).parent().css('flex-direction', 'column');
 		$(this.el).removeClass('left');
 		$(this.el).removeClass('right');
 		$(this.contentDiv[0]).css('flex-direction', 'row');
+		this.splitVertical();
 		window.trigger('resize');
 	},
 

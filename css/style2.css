@@ -336,6 +336,9 @@ body, input, select, textarea {
     display: flex;
     flex-direction: column;
     flex-grow:  1;
+    flex-shrink:  0;
+    height: calc(100% - 35px);
+    position: relative;
 }
 
 .subViewHeader{
@@ -356,11 +359,13 @@ body, input, select, textarea {
 }
 
 .right .subViewContent-plot{
-  margin-top: 1em;
+  /* margin-top: 1em; */
+  flex-grow: 1;
+  display: flex;
 }
 
 .left{
-  order: -1;
+  order: -2;
   border-right: 1px solid;
 }
 
@@ -370,6 +375,9 @@ body, input, select, textarea {
 
 #QCdiv{
   position: relative;
+  /* flex-grow:  1; */
+  /* display: flex; */
+  /* flex-flow:  column; */
 }
 
 .rightControls{
@@ -414,7 +422,7 @@ body, input, select, textarea {
 
 #bottomDiv {
     position: relative; /* will overlay previous absolute divs i.e. distance slider */
-    padding-top: 2px;
+    padding-top: 1px;
 }
 
 #modificationTable .form-control{
@@ -833,7 +841,7 @@ A.btn {
 /* For use with Split.js */
 
 .gutter {
-  background-color: #eee;
+  background-color: #333;
   background-repeat: no-repeat;
   background-position: 50%;
   position: relative; /* will overlay previous absolute divs i.e. distance slider */

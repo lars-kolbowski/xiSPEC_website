@@ -120,7 +120,7 @@ else{
 
 			<script type="text/javascript" src="./vendor/jscolor.min.js"></script>
 			<script type="text/javascript" src="./vendor/c3.js"></script>
-			<script type="text/javascript" src="./vendor/split.js"></script>
+			<script type="text/javascript" src="./vendor/split.min.js"></script>
 			<script type="text/javascript" src="./vendor/svgexp.js"></script>
 			<script type="text/javascript" src="./vendor/spin.js"></script>
 			<script type="text/javascript" src="./vendor/byrei-dyndiv_1.0rc1.js"></script>
@@ -289,7 +289,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 							<i id="revertAnnotation" title="revert to original annotation" class="btn btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>
 						</div>
 						<div class="plotsDiv">
-							<div class="mainPlotDiv">
+							<div id="mainPlotDiv">
 								<svg id="spectrumSVG"></svg>
 								<div id="measureTooltip"></div>
 							</div>

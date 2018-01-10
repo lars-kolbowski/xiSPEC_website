@@ -33,11 +33,11 @@
     vertical-align: middle;
 }
 
-/* Important, let's the div with this class take up the remaining height inside a div declared with display:table */
-.mainPlotDiv {
+#mainPlotDiv {
     display: flex;
     flex-flow: column;
-    flex-grow: 2;
+    flex-grow: 1;
+    min-height: 150px;
 }
 
 .validationControls {
@@ -62,6 +62,8 @@
 .subViewContent {
 	flex-direction: row;
 	display:  flex;
+	height: calc(100% - 20px);
+	width: 100%;
 }
 
 #subViewContent-left {
