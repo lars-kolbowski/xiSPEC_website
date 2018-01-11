@@ -170,6 +170,10 @@ var specListTableView = Backbone.View.extend({
 				// self.initiateTable();
 			},
 			"drawCallback": function( settings ) {
+				//check if currently displayed spectra is in the table page and highlight it
+				if (self.DataTable.columns('mzid:name').data()[0].indexOf(self.model.mzid) != -1)
+					$(self.DataTable.row(self.DataTable.columns('mzid:name').data()[0].indexOf(self.model.mzid)).node()).addClass('selected');
+				
 				if(self.isEmpty(self.DataTable.columns('pep2:name').data()[0])){
 					self.DataTable.columns('pep2:name').visible( false );
 					self.DataTable.columns('linkpos1:name').visible( false );
