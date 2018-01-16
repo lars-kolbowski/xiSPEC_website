@@ -1,5 +1,7 @@
 <?php
 
+	error_reporting(E_ERROR | E_PARSE);
+
 	function getUserIP(){
 		$client  = @$_SERVER['HTTP_CLIENT_IP'];
 		$forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
