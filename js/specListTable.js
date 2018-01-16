@@ -105,7 +105,7 @@ var specListTableView = DataTableView.extend({
 			 	"columnDefs": [
 				{
 					"class": "invisible",
-					"targets": [ 0, 9, 12],
+					"targets": [ 0, 9, 12, 13 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
