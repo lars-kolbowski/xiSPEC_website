@@ -9,6 +9,9 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
   },
 
 	initialize: function(){
+		//ToDo: change to model change event instead of CLSUI.vent?
+		this.listenTo(CLMSUI.vent, 'loadSpectrum', this.loadSpectrum);
+
 		var self = this;
 		this.xiAnnotatorBaseURL = this.get('xiAnnotatorBaseURL');
 		this.baseDir = this.get('baseDir');
@@ -470,7 +473,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		else{
 			this.mass = massArr;
 		}
-		console.log(this.mass);
+// 		console.log(this.mass);
 		this.trigger("changed:mass");
 	},
 
@@ -581,12 +584,24 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		});
 	},
 
+	loadSpectrum: function(rowdata){
+		var id = rowdata['id'];
+		this.mzid = rowdata['mzid'];
+		this.create_annotation_request(id);
+	},
+
 	revert_annotation: function(){
 		if(!this.changedAnnotation)
 			return
+		else {
+			this.create_annotation_request(this.requestId);
+		}
+	},
+
+	create_annotation_request: function(id){
 		var self = this;
 		$.ajax({
-			url: 'php/createSpecReq.php?id='+this.requestId + "&db=" +this.get('database')+ "&tmp=" + this.get('tmpDB'),
+			url: 'php/createSpecReq.php?id='+id + "&db=" + this.get('database')+"&tmp=" + this.get('tmpDB'),
 			type: 'GET',
 			async: false,
 			cache: false,
@@ -594,9 +609,11 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			processData: false,
 			success: function (returndata) {
 				var json = JSON.parse(returndata);
+				self.requestId = id;
+// 				self.mzid = mzid;
 				self.request_annotation(json);
 			}
 		});
-	}
+	},
 
 });

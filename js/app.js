@@ -4,44 +4,6 @@ var CLMSUI = CLMSUI || {};
 CLMSUI.vent = {};
 _.extend (CLMSUI.vent, Backbone.Events);
 
-// ToDo: change to BB handling
-function loadSpectrum(rowdata){
-
-	console.log('alt_count: '+rowdata['alt_count']);
-	var id = rowdata['id'];
-	// var peakList_id = rowdata['peakList_id'];
-	var mzid = rowdata['mzid'];
-
-	$("#altListId").html("Alternatives for "+rowdata['mzid']);
-
-	if(rowdata['alt_count'] > 1){
-
-		$('#nav-altListTable').removeClass('disabled');
-		$('#altExpNum').text("(" + rowdata['alt_count'] + ")");
-		window.TableWrapper.altListTable.DataTable.ajax.url( "php/getAltList.php?id=" + mzid + "&db=" + window.SpectrumModel.get('database')+"&tmp=" + window.SpectrumModel.get('tmpDB')).load();
-	}
-	else{
-		$('#altExpNum').text("(0)");
-		$('#nav-altListTable').addClass('disabled');
-	}
-
-	$.ajax({
-		url: 'php/createSpecReq.php?id='+id + "&db=" + window.SpectrumModel.get('database')+"&tmp=" + window.SpectrumModel.get('tmpDB'),
-		type: 'GET',
-		async: false,
-		cache: false,
-		contentType: false,
-		processData: false,
-		success: function (returndata) {
-			var json = JSON.parse(returndata);
-			window.SpectrumModel.requestId = id;
-			window.SpectrumModel.mzid = mzid;
-			window.SpectrumModel.request_annotation(json);
-
-		}
-	});
-};
-
 $(function() {
 
 	CLMSUI.plotSplit = Split(['#mainPlotDiv', '#QCdiv'], {

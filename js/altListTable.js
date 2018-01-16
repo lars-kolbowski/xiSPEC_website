@@ -28,7 +28,7 @@ var altListTableView = DataTableView.extend({
 	initialize: function() {
 
 		this.listenTo(CLMSUI.vent, 'scoreChange', this.changeDisplayScore);
-		// this.listenTo(CLMSUI.vent, 'loadSpectrum', this.loadSpectrum);
+		this.listenTo(CLMSUI.vent, 'loadSpectrum', this.updateTitle);
 
 		var self = this;
 
@@ -42,8 +42,6 @@ var altListTableView = DataTableView.extend({
 		    } );
 		}
 
-		this.ajaxUrl = "php/getAltList.php?id=-1&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
-
 		var tableVars = {
 			"dom": '<"altListToolbar">frti<"bottom-lenMenu"l>p',
 			"searching": true,
@@ -53,7 +51,7 @@ var altListTableView = DataTableView.extend({
 			//"ordering": true,
 			"order": [[2, "desc"], [9, "desc"]],
 			//"info":     false,
-			"ajax": this.ajaxUrl,
+			"ajax": "php/getAltList.php?id=-1&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB'),
 			"columns": [
 				{ "title": "internal_id", "data": "id" },		//0
 				{ "title": "id", "data": "mzid" }, 	//1
@@ -127,27 +125,28 @@ var altListTableView = DataTableView.extend({
 		this.DataTable.on('click', 'tbody tr', function(e) {
 			self.DataTable.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
-			// CLMSUI.vent.trigger('loadSpectrum', self.DataTable.row(this).data());
-			loadSpectrum(self.DataTable.row(this).data());
+			CLMSUI.vent.trigger('loadSpectrum', self.DataTable.row(this).data());
 		});
 
 		this.altListToolbar = d3.selectAll('.altListToolbar').attr('class', 'listToolbar').attr('id', 'altListId');
 
 	},
 
-	// render: function(){
-	// 	this.DataTable.draw();
-	// },
+	render: function(){
+		var url = "php/getAltList.php?id="+this.model.mzid+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
+		this.DataTable.ajax.url( url ).load();
+	},
 
 	changeDisplayScore: function(scoreName){
 		console.log('altListTable - changeDisplayScore: '+scoreName);
-		this.DataTable.ajax.url(this.ajaxUrl + '&scol=' + scoreName).load();
+		var url = "php/getAltList.php?id="+this.model.mzid+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB')+'&scol='+scoreName;
+		this.DataTable.ajax.url( url ).load();
 	},
 
-	// loadSpectrum: function(rowdata){
-	// 	var mzid = rowdata['mzid'];
-	// 	this.altListToolbar.text("Alternatives for "+rowdata['mzid']);
-	// },
+	updateTitle: function(rowdata){
+		var mzid = rowdata['mzid'];
+		this.altListToolbar.text("Alternatives for "+rowdata['mzid']);
+	},
 	//
 	// userScoreChange: function(e){
 	// 	CLMSUI.vent.trigger('scoreChange', parseInt($(e.target).attr('data-score')));

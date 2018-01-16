@@ -24,14 +24,11 @@ var TableWrapperView = Backbone.View.extend({
 	events : {
 		'click .closeTable' : 'hideView',
 		'click .nav-tabs a[data-toggle=tab]' : 'changeTab',
-		// 'click #dockQC' : 'showView',
-		// // 'click .dockLeft' : 'dockLeft',
-		// 'click .dockRight' : 'dockRight',
-		// 'click .dockBottom' : 'dockBottom',
-		// 'change .plotSelectChkbox': 'updatePlots',
 	},
 
 	initialize: function() {
+
+		this.listenTo(CLMSUI.vent, 'loadSpectrum', this.updateNav);
 
 		var d3el = d3.select(this.el);
 
@@ -96,10 +93,28 @@ var TableWrapperView = Backbone.View.extend({
 			e.preventDefault();
 			return false;
 		}
+		
+		var target_href = e.target.getAttribute('href');
+
+		if(target_href == '#tab-altListTable'){
+			this.altListTable.render();
+		}
 		$('.tab-pane').hide();
-		$(e.target.getAttribute('href')).show();
+		$(target_href).show();
 		window.trigger('resize');
 	},
 
+	updateNav: function(rowdata){
+		if(rowdata['alt_count'] > 1){
+
+			$('#nav-altListTable').removeClass('disabled');
+			$('#altExpNum').text("(" + rowdata['alt_count'] + ")");
+			// window.TableWrapper.altListTable.DataTable.ajax.url( "php/getAltList.php?id=" + mzid + "&db=" + window.SpectrumModel.get('database')+"&tmp=" + window.SpectrumModel.get('tmpDB')).load();
+		}
+		else{
+			$('#altExpNum').text("(0)");
+			$('#nav-altListTable').addClass('disabled');
+		}
+	}
 
 });

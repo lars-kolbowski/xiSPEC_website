@@ -151,8 +151,8 @@ var specListTableView = DataTableView.extend({
 				//scoreSelector
 				self.createScoreSelector();
 
-				// CLMSUI.vent.trigger('loadSpectrum', self.DataTable.rows( { filter : 'applied'} ).data()[0]);
-				loadSpectrum(self.DataTable.rows( { filter : 'applied'} ).data()[0]);
+				CLMSUI.vent.trigger('loadSpectrum', self.DataTable.rows( { filter : 'applied'} ).data()[0]);
+
 				firstRow = $('#specListWrapper tr:first-child');
 				$(firstRow).addClass('selected');
 
@@ -164,8 +164,8 @@ var specListTableView = DataTableView.extend({
 			},
 			"drawCallback": function( settings ) {
 				//check if currently displayed spectra is in the table page and highlight it
-				if (self.DataTable.columns('mzid:name').data()[0].indexOf(self.model.mzid) != -1)
-					$(self.DataTable.row(self.DataTable.columns('mzid:name').data()[0].indexOf(self.model.mzid)).node()).addClass('selected');
+				if (self.DataTable.columns('internal_id:name').data()[0].indexOf(self.model.requestId) != -1)
+					$(self.DataTable.row(self.DataTable.columns('internal_id:name').data()[0].indexOf(self.model.requestId)).node()).addClass('selected');
 
 				self.hideEmptyColumns();
 
@@ -184,8 +184,8 @@ var specListTableView = DataTableView.extend({
 			self.DataTable.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
 
-			// CLMSUI.vent.trigger('loadSpectrum', self.DataTable.row(this).data());
-			loadSpectrum(self.DataTable.row(this).data());
+			CLMSUI.vent.trigger('loadSpectrum', self.DataTable.row(this).data());
+
 		});
 
 		var specListToolbar = d3.selectAll('.specListToolbar').attr('class', 'listToolbar');
@@ -342,12 +342,10 @@ var specListTableView = DataTableView.extend({
 		});
 
 		if (curIndex == -1){
-			// CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[0]);
-			loadSpectrum(this.DataTable.rows( { filter : 'applied'} ).data()[0]);
+			CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[0]);
 		}
 		else if (curIndex - 1 >= 0){
-			// CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[curIndex-1]);
-			loadSpectrum(this.DataTable.rows( { filter : 'applied'} ).data()[curIndex-1]);
+			CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[curIndex-1]);
 
 			//change pagination to show cur selected spectrum
 			if (!(this.DataTable.page.info().start < (curIndex-1) &&  (curIndex-1) < this.DataTable.page.info().end)){
@@ -370,12 +368,10 @@ var specListTableView = DataTableView.extend({
 		});
 
 		if (curIndex == -1){
-			// CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[0]);
-			loadSpectrum(this.DataTable.rows( { filter : 'applied'} ).data()[0]);
+			CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[0]);
 		}
 		else if (curIndex + 1 < this.DataTable.rows( { filter : 'applied'} ).data().length){
-			// CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[curIndex+1]);
-			loadSpectrum(this.DataTable.rows( { filter : 'applied'} ).data()[curIndex+1]);
+			CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[curIndex+1]);
 
 			//change pagination to show cur selected spectrum
 			if (!(this.DataTable.page.info().start < (curIndex+1) &&  (curIndex+1) < this.DataTable.page.info().end)){
