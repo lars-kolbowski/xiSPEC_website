@@ -145,7 +145,9 @@ else{
 			<script type="text/javascript" src="./src/graph/Peak.js"></script>
 			<script type="text/javascript" src="./src/graph/Fragment.js"></script>
 <?php if($dbView)
-echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
+echo 	'<script type="text/javascript" src="./src/TableWrapperView.js"></script>
+		<script type="text/javascript" src="./src/DataTableView.js"></script>
+		<script type="text/javascript" src="./js/specListTable.js"></script>
 		<script type="text/javascript" src="./js/altListTable.js"></script>';
 ?>
 			<script>
@@ -228,8 +230,9 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			//window.SettingsView.render();
 		}
 		else {
-			window.specListTable = new specListTableView({model: SpectrumModel, el:"#specListWrapper"});
-			window.altListTable = new altListTableView({model: SpectrumModel, el:"#altListWrapper"});
+			window.TableWrapper = new TableWrapperView({model: SpectrumModel, el:"#bottomDiv"})
+			// window.specListTable = new specListTableView({model: SpectrumModel, el:"#specListWrapper"});
+			// window.altListTable = new altListTableView({model: SpectrumModel, el:"#altListWrapper"});
 		}
 
 });
@@ -308,32 +311,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 							</div>
 						</div>
 					</div>
-				<div id="bottomDiv" class="tableDiv">
-				<i class="fa fa-times-circle closeButton closeTable" id="specListClose"></i>
-
-					<ul class="nav nav-tabs">
-						<li class="active">
-							<a data-toggle="tab" href="#tab-specListTable">Spectra List</a>
-						</li>
-						<li id="nav-altListTable">
-							<a data-toggle="tab" href="#tab-altListTable">Alternative Explanations<span id="altExpNum"></span></a>
-						</li>
-					</ul>
-
-					<div class="tab-content">
-						<div id="tab-specListTable" class="tab-pane fade in active">
-							<div id="specListWrapper" class="listWrapper">
-							</div>
-						</div>
-						<div id="tab-altListTable" class="tab-pane fade">
-							<div id="altListWrapper" class="listWrapper">
-								<!-- <div id="altList_main">
-									<table id="altListTable" width="100%" style="text-align:center;"></table>
-								</div> -->
-							</div>
-						</div>
-					</div>
-				</div>
+				<div id="bottomDiv" class="tableDiv"></div>
 			</div>
 		</div><!-- MAIN -->
 

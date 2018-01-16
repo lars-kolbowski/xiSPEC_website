@@ -18,7 +18,7 @@ function loadSpectrum(rowdata){
 
 		$('#nav-altListTable').removeClass('disabled');
 		$('#altExpNum').text("(" + rowdata['alt_count'] + ")");
-		window.altListTable.DataTable.ajax.url( "php/getAltList.php?id=" + mzid + "&db=" + window.SpectrumModel.get('database')).load();
+		window.TableWrapper.altListTable.DataTable.ajax.url( "php/getAltList.php?id=" + mzid + "&db=" + window.SpectrumModel.get('database')+"&tmp=" + window.SpectrumModel.get('tmpDB')).load();
 	}
 	else{
 		$('#altExpNum').text("(0)");
@@ -26,7 +26,7 @@ function loadSpectrum(rowdata){
 	}
 
 	$.ajax({
-		url: 'php/createSpecReq.php?id='+id + "&db=" + window.SpectrumModel.get('database')+ "&tmp=" + window.SpectrumModel.get('tmpDB'),
+		url: 'php/createSpecReq.php?id='+id + "&db=" + window.SpectrumModel.get('database')+"&tmp=" + window.SpectrumModel.get('tmpDB'),
 		type: 'GET',
 		async: false,
 		cache: false,
@@ -50,33 +50,6 @@ $(function() {
 		gutterSize: 5,
 		direction: 'vertical',
 		onDragEnd: function(){ window.trigger('resize'); }
-	});
-
-	$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
-		if ($(this).parent().hasClass("disabled")) {
-			e.preventDefault();
-			return false;
-		}
-	});
-
-	//ToDo: bottomDiv specList-altList-Wrapper -> BBView?
-	$('.closeTable').click(function(){
-		// $(this).closest('.tableDiv').hide();
-		window.trigger('resize');
-	});
-
-	$('.closeButton').click(function(){
-		$(this).parent().hide();
-	});
-
-	$('#toggleSpecList').click(function(){
-		$('#bottomDiv').toggle();
-		window.trigger('resize');
-	});
-
-	$('#toggleAltList').click(function(){
-		$('#altDiv').toggle();
-		window.trigger('resize');
 	});
 
 	//ToDo: spectrumControls -> BBView?

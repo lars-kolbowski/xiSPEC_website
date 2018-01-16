@@ -19,23 +19,30 @@
 //
 //		altListTable.js
 
-var altListTableView = Backbone.View.extend({
+var altListTableView = DataTableView.extend({
 
 	events : {
-		// 'click .tabs': 'initiateTable',
-		// 'click #passThreshold': 'toggleThreshold',
-		// 'click #hideLinear': 'toggleLinear',
-		// 'click #hideDecoy': 'toggleDecoy',
-		// 'change .toggle-vis': 'toggleColumn',
-		// // ToDo: need to be moved to listenTo -> spectrumPanel needs to move to BB
-		// // 'click #prevSpectrum': 'prevSpectrum',
-		// // 'click #nextSpectrum': 'nextSpectrum',
+
 	},
 
 	initialize: function() {
+
+		this.listenTo(CLMSUI.vent, 'scoreChange', this.changeDisplayScore);
+		// this.listenTo(CLMSUI.vent, 'loadSpectrum', this.loadSpectrum);
+
 		var self = this;
 
 		this.wrapper = d3.select(this.el);
+
+		/* Create an array with the values of all the input boxes in a column, parsed as numbers */
+		$.fn.dataTable.ext.order['dom-text-numeric'] = function  ( settings, col )
+		{
+		    return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
+		        return $('span', td).text() * 1;
+		    } );
+		}
+
+		this.ajaxUrl = "php/getAltList.php?id=-1&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
 
 		var tableVars = {
 			"dom": '<"altListToolbar">frti<"bottom-lenMenu"l>p',
@@ -46,23 +53,23 @@ var altListTableView = Backbone.View.extend({
 			//"ordering": true,
 			"order": [[2, "desc"], [9, "desc"]],
 			//"info":     false,
-			"ajax": "php/getAltList.php?id=-1&db="+this.model.get('database'),
+			"ajax": this.ajaxUrl,
 			"columns": [
 				{ "title": "internal_id", "data": "id" },		//0
 				{ "title": "id", "data": "mzid" }, 	//1
 				{ "title": "rank", "data": "rank", "className": "dt-center" },		//2
-				{ "title": "peptide 1", "data": "pep1" },		//3
-				{ "title": "peptide 2", "data": "pep2" },		//4
-				{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center" },	//5
-				{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center" },	//6
+				{ "title": "peptide 1", "data": "pep1", "name": "pep1" },	//3
+				{ "title": "peptide 2", "data": "pep2", "name": "pep2" },	//4
+				{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center", "name": "linkpos1" },	//5
+				{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center", "name": "linkpos2" },	//6
 				{ "title": "charge", "data": "charge", "className": "dt-center" },		//7
 				{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center" },	//8
-				{ "title": "score", "data": "score", "className": "dt-center" },		//9
-				{ "title": "allScores", "data": "allScores", "name": "allScores" },		//10
-				{ "title": "protein1", "data": "protein1", "className": "dt-center" },	//11
-				{ "title": "protein2", "data": "protein2", "className": "dt-center" },	//12
+				{ "title": "score", "data": "score", "className": "dt-center", "name": "score" },    //9
+				{ "title": "allScores", "data": "allScores", "name": "allScores" },    //10
+				{ "title": "protein1", "data": "protein1", "className": "dt-center", "name": "protein1" },	//11
+				{ "title": "protein2", "data": "protein2", "className": "dt-center", "name": "protein2" },	//12
 				{ "title": "passThreshold", "data": "passThreshold" },	//13
-				{ "title": "alt_count", "data": "alt_count" },		//14
+				{ "title": "alt_count", "data": "alt_count" },		//14 needed?
 			],
 			"createdRow": function( row, data, dataIndex ) {
 				if ( data[6] == "0" )
@@ -73,7 +80,7 @@ var altListTableView = Backbone.View.extend({
 		    "columnDefs": [
 		    	{
 					"class": "invisible",
-					"targets": [ 0, 1, 10, 12, 13 ],
+					"targets": [ 0, 1, 10, 13, 14 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
@@ -101,14 +108,13 @@ var altListTableView = Backbone.View.extend({
 						for (key in json) {
 							result.push(key+'='+json[key]);
 						}
-						return '<span title="'+result.join("; ")+'">'+parseFloat(data).toFixed(2)+'</span>'
+						return '<span title="'+result.join("; ")+'">'+data+'</span>'
 					},
 					"targets": [ 9 ],
 				},
-	        ],
+			],
 			"drawCallback": function( settings ) {
-				if (window.Spectrum !== undefined)
-					window.Spectrum.resize();
+					self.hideEmptyColumns();
 			}
 		};
 
@@ -121,47 +127,54 @@ var altListTableView = Backbone.View.extend({
 		this.DataTable.on('click', 'tbody tr', function(e) {
 			self.DataTable.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
+			// CLMSUI.vent.trigger('loadSpectrum', self.DataTable.row(this).data());
 			loadSpectrum(self.DataTable.row(this).data());
 		});
 
-		var altListToolbar = d3.selectAll('.altListToolbar').attr('class', 'listToolbar').attr('id', 'altListId');
+		this.altListToolbar = d3.selectAll('.altListToolbar').attr('class', 'listToolbar').attr('id', 'altListId');
 
 	},
 
-// 	hideEmptyColumns: function(e) {
-//
-// 		if (typeof this.DataTable === 'undefined')
-// 			return
-//
-// 		var self = this;
-// 		var selector = this.el;
-// 		var columnsToHide = [];
-//
-// 		$(selector).find('th').each(function(i) {
-//
-// 			var columnIndex = $(this).index();
-// 			var rows = $(this).parents('table').find('tr td:nth-child(' + (i + 1) + ')'); //Find all rows of each column
-// 			var rowsLength = $(rows).length;
-// 			var emptyRows = 0;
-//
-// 			rows.each(function(r) {
-// 			if (this.innerHTML == '')
-// 				emptyRows++;
-// 			});
-//
-// 			if(emptyRows == rowsLength) {
-// 				columnsToHide.push(columnIndex); //If all rows in the colmun are empty, add index to array
-// 			}
-// 		});
-//
-// 		for(var i=0; i< self.DataTable.columns().header().length; i++) {
-// 			if(columnsToHide.indexOf(i) != -1)
-// 				self.DataTable.column(i).visible(false);
-// 			else
-// 				self.DataTable.column(i).visible(true);
-// // 			self.DataTable.column(columnsToHide[i]).visible(false);
-// 		}
-// 	},
+	// render: function(){
+	// 	this.DataTable.draw();
+	// },
 
+	changeDisplayScore: function(scoreName){
+		console.log('altListTable - changeDisplayScore: '+scoreName);
+		this.DataTable.ajax.url(this.ajaxUrl + '&scol=' + scoreName).load();
+	},
+
+	// loadSpectrum: function(rowdata){
+	// 	var mzid = rowdata['mzid'];
+	// 	this.altListToolbar.text("Alternatives for "+rowdata['mzid']);
+	// },
+	//
+	// userScoreChange: function(e){
+	// 	CLMSUI.vent.trigger('scoreChange', parseInt($(e.target).attr('data-score')));
+	// },
+	//
+	// hideEmptyColumns: function(e) {
+	// 	if (this.DataTable === undefined)
+	// 		return false;
+	// 	if(this.isEmpty(this.DataTable.columns('pep2:name').data()[0])){
+	// 		this.DataTable.columns('pep2:name').visible( false );
+	// 		this.DataTable.columns('linkpos1:name').visible( false );
+	// 		this.DataTable.columns('linkpos2:name').visible( false );
+	// 		this.DataTable.columns('protein2:name').visible( false );
+	// 	}
+	// 	else{
+	// 		this.DataTable.columns('pep2:name').visible( true);
+	// 		this.DataTable.columns('linkpos1:name').visible( true );
+	// 		this.DataTable.columns('linkpos2:name').visible( true );
+	// 		this.DataTable.columns('protein2:name').visible( true );
+	// 	}
+	// },
+	//
+	// isEmpty: function(arr) {
+	// 	for(var i=0; i<arr.length; i++) {
+	// 		if(arr[i] !== "") return false;
+	// 	}
+	// 	return true;
+	// },
 
 });
