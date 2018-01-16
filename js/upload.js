@@ -1,3 +1,4 @@
+var CLMSUI = CLMSUI || {};
 
 $( document ).ready(function() {
 	_.extend(window, Backbone.Events);
