@@ -131,8 +131,8 @@
 							</tr>
 							<tr>
 								<td>modifications</td>
-								<td>lowercase and numbers</td>
-								<td>ox | bs3nh2</td>
+								<td>anything not uppercase</td>
+								<td>ox | bs3nh2 | (+16)</td>
 							</tr>
 							<tr>
 								<td>peptide delimiter</td>
