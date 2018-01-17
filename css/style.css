@@ -84,13 +84,13 @@ em, i {
     margin-left: auto;
     margin-right: auto;
 }
-#main a {
+a {
     color: #750000;
 }
-#main a:visited {
+a:visited {
     color: #300;
 }
-#main a:hover {
+a:hover {
     color: #333333;
     border-bottom-color: rgba(255, 255, 255, 0);
 }
@@ -958,7 +958,22 @@ code {
 
 #errorLog {
     width: 100%;
+    display: none;
     height: 25em;
+}
+
+#submitDataTop {
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+#submitDataControls {
+  margin-top: 0.7em;
+}
+
+#ionsMsg{
+  margin-bottom: 0.5em;
 }
 
 .annotation-csv-file, .cross-link-csv, .fasta-file {

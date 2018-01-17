@@ -214,9 +214,11 @@
 		</div>
 		<div id="submitDataModal" role="dialog" class="modal" style="display: none;">
 			<div id=submitDataInfo>
-				<div id="errorInfo" style="display: none;">
-					<div id="errorMsg"></div>
-					<textarea class="form-control" id="errorLog" readonly></textarea>
+				<div id="submitDataTop">
+					<div id="errorInfo" style="display: none;">
+						<div id="errorMsg"></div>
+						<textarea class="form-control" id="errorLog" readonly></textarea>
+					</div>
 				</div>
 				<div id="ionsInfo"  style="display: none;">
 					<div id="ionsMsg"></div>
@@ -249,7 +251,7 @@
 					<div id="modificationsMsg"></div>
 					<form id="csvModificationsForm" method="post" action="php/submitModDataForCSV.php"></form>
 				</div>
-				<div style="margin-top: 0.6em;">
+				<div id="submitDataControls">
 					<button id="cancelUpload" class="btn btn-1a btn-2" href="#">Cancel</button>
 					<a id="gitHubIssue" class="btn btn-1a" style="display:none;" href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'>
 						<i class="fa fa-github" aria-hidden="true"></i>Create issue

@@ -20,6 +20,10 @@ $( document ).ready(function() {
 
 	$('#cancelUpload').click(function(){
 		window.location.href = 'upload.php';
+	});
+
+	$('#errorMsg').on('click','#showErrorLog', function(){
+		$('#errorLog').toggle();
 	})
 
 	$("#csvHeaderModal").easyModal();
@@ -339,16 +343,24 @@ $( document ).ready(function() {
 					$('#processDataInfo').hide();
 					$('#processText').html("");
 
-					if (resp.errors.length > 0){
+					var errorNum = resp.errors.length;
+					var warnNum = resp.warnings.length;
+					if ( errorNum > 0 || warnNum > 0 ){
 						$('#errorInfo').show();
 						$('#gitHubIssue').show();
-						$('#errorMsg').html(resp.errors.length + " error(s) occured parsing your data. See the log for more information:");
+						$('#errorMsg').html(warnNum + ' warning(s) and ' + errorNum + ' error(s) occurred parsing your data.</br><a href="#" id="showErrorLog"><i class="fa fa-chevron-down" aria-hidden="true"></i>Show log for more information.<i class="fa fa-chevron-down" aria-hidden="true"></i></a>');
 						$('#errorLog').append('log id: ' + resp.log + ' (include this in the github issue)\n');
-						resp.errors.forEach(function (error){
-							if (error.type == 'IonParsingError'){
+
+						resp.warnings.forEach(function (warn){
+							if (warn.type == 'IonParsing'){
 								$('#ionsInfo').show();
-								$('#ionsMsg').html('Fragment ion detection failed.\nSet ion types:');
+								$('#ionsMsg').html('Fragment ion detection failed!</br>Select and update ion types below then click continue to view your data.');
 							}
+							$('#errorLog').append("warning type: " + warn.type + "\nmessage: "+ warn.message + '\nid: ' + warn.id + '\n\n');
+
+						})
+
+						resp.errors.forEach(function (error){
 							$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message + '\nid: ' + error.id + '\n\n');
 
 						})
