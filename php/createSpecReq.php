@@ -13,7 +13,7 @@
 	else {
 		die();
 	}
-	
+
 	if(!in_array($_GET['db'], $_SESSION['access'])){
 		$json['error'] = "Authentication error occured!";
 		die(json_encode($json));
@@ -79,8 +79,21 @@
 
 	}
 
+	if ($fragTol[1] == "Da"){
+		$customCfg = "LOWRESOLUTION:true";
+	}
+	else {
+		$customCfg = "LOWRESOLUTION:false";
+	}
 
-	$annotation = array('fragmentTolerance' => $tol, 'modifications' => $modifications, 'ions' => $ions, 'cross-linker' => $cl, 'precursorCharge' => $preCharge, 'custom' => "LOWRESOLUTION:false"); //ToDo: LOWRESOLUTION: true setting
+	$annotation = array(
+		'fragmentTolerance' => $tol,
+		'modifications' => $modifications,
+		'ions' => $ions,
+		'cross-linker' => $cl,
+		'precursorCharge' => $preCharge,
+		'custom' => $customCfg
+	);
 
 	// $annotation = json_decode($result['annotation']);
 

@@ -267,8 +267,8 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 	applyCustomCfg: function(){
 		var json = this.model.get("JSONrequest");
-		json['annotation']['custom'] = "LOWRESOLUTION:false\n";	//ToDo: temp fix until new xiAnnotator version is released
-		json['annotation']['custom'] += $("#settingsCustomCfg-input").val().split("\n");
+		// json['annotation']['custom'] = "LOWRESOLUTION:false\n";	//ToDo: temp fix until new xiAnnotator version is released
+		json['annotation']['custom'] = $("#settingsCustomCfg-input").val().split("\n");
 
 		this.model.otherModel.request_annotation(json);
 		this.model.otherModel.changedAnnotation = true;
@@ -305,7 +305,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 			processData: false,
 			success: function (response) {
 				var json = JSON.parse(response);
-				json['annotation']['custom'] = "LOWRESOLUTION:false\n";	//ToDo: temp fix until new xiAnnotator version is released
+				// json['annotation']['custom'] = "LOWRESOLUTION:false\n";	//ToDo: temp fix until new xiAnnotator version is released
 				self.model.otherModel.request_annotation(json);
 				self.model.otherModel.changedAnnotation = true;
 				self.model.otherModel.trigger("changed:annotation");
