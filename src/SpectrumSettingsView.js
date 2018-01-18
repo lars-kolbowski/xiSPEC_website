@@ -285,9 +285,11 @@ var SpectrumSettingsView = Backbone.View.extend({
 		e.preventDefault();
 
 		var form = e.currentTarget;
-		if(!this.checkInputsForValidity(form))
+		//Todo error handling!
+		if(!this.checkInputsForValidity(form)){
+			console.log('Invalid character found in form');
 			return false;
-
+		}
 		var self = this;
 		var formData = new FormData($(form)[0]);
 		$('#settingsForm').hide();
@@ -318,33 +320,48 @@ var SpectrumSettingsView = Backbone.View.extend({
 		//window.SpectrumModel.request_annotation(window.SettingsSpectrumModel.JSONdata);
 	},
 
+	//ToDo: improve error handling to be more informative - display outside of console
 	checkInputsForValidity: function(formData){
 
 		var invalidChars = function(input, unknownCharPattern){
 			var match = input.match(unknownCharPattern);
 			if (match){
-				console.log(match);
-				return match;
+				return match[0];
 			}
 			return false;
 		}
+
 		//peptideStr
-		if (invalidChars(formData['peps'].value, /([^GALMFWKQESPVICYHRNDTa-z;#0-9(.)]+)/))
-			return false
+		var invalidChar = invalidChars(formData['peps'].value, /([^GALMFWKQESPVICYHRNDTa-z;#0-9(.)\-]+)/);
+		if (invalidChar){
+			alert('Invalid character(s) in peptide sequence: ' + invalidChar);
+			return false;
+		}
 
 		//peakList
-		if (invalidChars(formData['peaklist'].value, /([^0-9\.\s]+)/))
-			return false
+		var invalidChar = invalidChars(formData['peaklist'].value, /([^0-9\.\s]+)/);
+		if (invalidChar){
+			alert('Invalid character(s) in peak list: ' + invalidChar);
+			return false;
+		}
 		//clModMass
-		if (invalidChars(formData['clModMass'].value, /([^0-9\.]+)/))
-			return false
+		var invalidChar = invalidChars(formData['clModMass'].value, /([^0-9\.]+)/);
+		if (invalidChar){
+			alert('Invalid character(s) in cros-linker modmass: ' + invalidChar);
+			return false;
+		}
 		//precursor charge state
-		if (invalidChars(formData['preCharge'].value, /([^0-9]+)/))
-			return false
+		var invalidChar = invalidChars(formData['preCharge'].value, /([^0-9]+)/);
+		if (invalidChar){
+			alert('Invalid character(s) in charge state: ' + invalidChar);
+			return false;
+		}
 		//ms2Tolerance
-		if (invalidChars(formData['ms2Tol'].value, /([^0-9\.]+)/))
-			return false
-
+		var invalidChar = invalidChars(formData['ms2Tol'].value, /([^0-9\.]+)/);
+		if (invalidChar){
+			alert('Invalid character(s) in ms2Tolerance: ' + invalidChar);
+			return false;
+		}
 
 		return true;
 
