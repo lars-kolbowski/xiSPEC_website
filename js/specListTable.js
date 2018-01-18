@@ -109,6 +109,19 @@ var specListTableView = DataTableView.extend({
 				},
 				{
 					"render": function ( data, type, row, meta ) {
+						var uniprotAccessionPatt = /[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}/;
+						var regexMatch = uniprotAccessionPatt.exec(data);
+						if (regexMatch) {
+							return '<a target="_blank" class="uniprotAccession" href="https://www.uniprot.org/uniprot/'+regexMatch[0]+'">'+data+"</a>";
+						}
+						else {
+							return data;
+						}
+					},
+					"targets": [ 10, 11 ],
+				},
+				{
+					"render": function ( data, type, row, meta ) {
 						if (data == "0")
 							return 'False';
 						else
@@ -179,6 +192,13 @@ var specListTableView = DataTableView.extend({
 		this.DataTable = $(table[0]).DataTable(this.tableVars);
 
 		// ToDo: move to BB event handling?
+		this.DataTable.on('click', '.uniprotAccession', function(e) {
+			e.preventDefault();
+			window.open(e.currentTarget.href, '_blank');
+
+		});
+
+
 		this.DataTable.on('click', 'tbody tr', function(e) {
 			console.log('click');
 			self.DataTable.$('tr.selected').removeClass('selected');
