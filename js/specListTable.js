@@ -112,7 +112,7 @@ var specListTableView = DataTableView.extend({
 						var uniprotAccessionPatt = /[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}/;
 						var regexMatch = uniprotAccessionPatt.exec(data);
 						if (regexMatch) {
-							return '<a target="_blank" class="uniprotAccession" href="https://www.uniprot.org/uniprot/'+regexMatch[0]+'">'+data+"</a>";
+							return '<a target="_blank" class="uniprotAccession" title="Click to open Uniprot page" href="https://www.uniprot.org/uniprot/'+regexMatch[0]+'">'+data+"</a>";
 						}
 						else {
 							return data;
@@ -195,7 +195,8 @@ var specListTableView = DataTableView.extend({
 		this.DataTable.on('click', '.uniprotAccession', function(e) {
 			e.preventDefault();
 			window.open(e.currentTarget.href, '_blank');
-
+			e.stopPropagation();
+			return false;
 		});
 
 
