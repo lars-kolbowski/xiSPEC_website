@@ -591,6 +591,8 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	revert_annotation: function(){
+		this.userModifications = [];
+		this.otherModel.userModifications = [];
 		if(!this.changedAnnotation)
 			return
 		else {
