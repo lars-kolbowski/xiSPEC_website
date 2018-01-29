@@ -153,7 +153,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 			.attr("autocomplete", "off")
 			.attr("name", "ms2Tol")
 			.attr("min", "0")
-			.attr("step", "1")
+			.attr("step", "0.1")
 			.attr("required", "")
 			.attr("class", "stepInput")
 		;
@@ -169,7 +169,15 @@ var SpectrumSettingsView = Backbone.View.extend({
 		this.crossLinkerModMassWrapper = rightDiv.append("label").attr("class", "flex-row").text("Cross-linker mod mass: ");
 
 		this.crossLinkerModMass = this.crossLinkerModMassWrapper.append('div').attr('class', 'flex-grow')
-			.append("input").attr("placeholder", "CL mod mass").attr("autocomplete", "off").attr("name", "clModMass").attr("required", "").attr("type", "text")
+			.append("input")
+				.attr("placeholder", "CL mod mass")
+				.attr("autocomplete", "off")
+				.attr("name", "clModMass")
+				.attr("required", "")
+				.attr("type", "text")
+				// .attr("type", "number")
+				// .attr("step", "0.001")
+				// .attr("class", "stepInput")
 		;
 
 		//modTable
@@ -345,7 +353,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 			return false;
 		}
 		//clModMass
-		var invalidChar = invalidChars(formData['clModMass'].value, /([^0-9\.]+)/);
+		var invalidChar = invalidChars(formData['clModMass'].value, /([^0-9\.\-]+)/);
 		if (invalidChar){
 			alert('Invalid character(s) in cros-linker modmass: ' + invalidChar);
 			return false;
@@ -423,7 +431,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 							var stepSize = '0.'+'0'.repeat(data.toString().split('.')[1].length - 1) + 1;
 						else
 							var stepSize = 1;
-						return '<input class="form-control stepInput" id="modMass_'+meta.row+'" row="'+meta.row+'" title="modification mass" name="modMasses[]" type="number" min=0 step="'+stepSize+'" required value='+data+' autocomplete=off>';
+						return '<input class="form-control stepInput" id="modMass_'+meta.row+'" row="'+meta.row+'" title="modification mass" name="modMasses[]" type="number" step="'+stepSize+'" required value='+data+' autocomplete=off>';
 					},
 					"targets": 2,
 				},

@@ -155,7 +155,7 @@ $( document ).ready(function() {
 								data = model.knownModifications['modifications'][i].mass;
 						}
 					}
-					return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" name="modMasses[]" type="number" min=0 step=0.0001 required value='+data+' autocomplete=off>';
+					return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" name="modMasses[]" type="number" step=0.0001 required value='+data+' autocomplete=off>';
 				},
 				"targets": 2,
 			},
@@ -372,7 +372,7 @@ $( document ).ready(function() {
 						$('#modificationsMsg').html("Please provide the mass(es) for the following " + resp.modifications.length + " modification(s):");
 						resp.modifications.forEach(function (mod){
 							var modNameInput = '<input class="form-control" name="mods[]" readonly type="text" value='+mod+'>';
-							var modMassInput = '<input class="form-control" name="modMasses[]" type="number" min=0 step=0.000001 value="0" required autocomplete=off>';
+							var modMassInput = '<input class="form-control" name="modMasses[]" type="number" step=0.000001 value="0" required autocomplete=off>';
 							$('#csvModificationsForm').append('<div style="margin-bottom: 5px;">' + modNameInput + modMassInput + '</div>');
 						})
 						$('#csvModificationsForm').append('<input type="submit" value="update modifications" class="btn btn-1a btn-2" id="updateModsSubmit">');
