@@ -174,10 +174,9 @@ var SpectrumSettingsView = Backbone.View.extend({
 				.attr("autocomplete", "off")
 				.attr("name", "clModMass")
 				.attr("required", "")
-				.attr("type", "text")
-				// .attr("type", "number")
-				// .attr("step", "0.001")
-				// .attr("class", "stepInput")
+				.attr("type", "number")
+				.attr("step", "0.001")
+				.attr("class", "stepInput")
 		;
 
 		//modTable
@@ -540,12 +539,13 @@ var SpectrumSettingsView = Backbone.View.extend({
 	updateStepSize: function(e){
 		var $target = $(e.target);
 		//update stepsize
-		if ($target.val().toString().split('.')[1])
-			var stepSize = '0.'+'0'.repeat($target.val().toString().split('.')[1].length - 1) + 1;
+		if ($target.prop('value').toString().split('.')[1])
+			var stepSize = '0.'+'0'.repeat($target.prop('value').toString().split('.')[1].length - 1) + '1';
 		else {
 			var stepSize = 1;
 		}
 		$target.attr('step', stepSize);
+		$target.attr('value', $target.prop('value'));
 	},
 
 	changeTab: function(e) {
