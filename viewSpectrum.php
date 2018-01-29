@@ -3,78 +3,25 @@
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
-
+$justSaved = 'false';
 if (empty($_POST)){
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 	$dbView = true;
-	$justSaved = 'false';
+
 	if(isset($_GET['sid']) || isset($_GET['db'])){
 		$tmpDB = false;
 
 		#this includes a connection string to the sql database
 		require('../xiSPEC_sql_conn.php');
-
-		$xiSPECdb = new PDO("mysql:host=localhost;dbname=".$DBname, $DBuser, $DBpass) or die("cannot open the database");
-		$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-		//share db link
-		if(!empty($_GET['sid'])){
-			$stmt = $xiSPECdb->prepare("SELECT name FROM dbs WHERE share = :share;");
-			$stmt->bindParam(':share', $_GET['sid'], PDO::PARAM_STR);
-			$stmt->execute();
-			$dbName = $stmt->fetchColumn();
-
-			if(!$dbName)
-				header('Location: index.php');
-
-			if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
-			if(!in_array($dbName, $_SESSION['access'])){
-				$_SESSION['access'][] = $dbName;
-			}
-
-			$shareLink = "http://" . $_SERVER['SERVER_NAME'] . "/viewSpectrum.php?sid=" . $_GET['sid'];
-		}
-
-		//normal db link
-		else if(!empty($_GET['db'])){
-
-			if(isset($_SESSION[$_GET['db']])){
-				unset($_SESSION[$_GET['db']]);
-				$justSaved = 'true';
-			}
-
-			$stmt = $xiSPECdb->prepare("SELECT share, pass FROM dbs WHERE name = :name;");
-			$stmt->bindParam(':name', $_GET['db'], PDO::PARAM_STR);
-			$stmt->execute();
-			$result = $stmt->fetch();
-
-			if (!$result) {
-				header("Location: index.php");
-				exit();
-			}
-
-			//public check
-			if ($result['pass'] === 'public'){
-				if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
-				if(!in_array($_GET['db'], $_SESSION['access'])){
-					$_SESSION['access'][] = $_GET['db'];
-				}
-				$public = true;
-			}
-
-			if($result['share'] != null)
-				$shareLink = (isset($_SERVER['HTTPS']) ? "https://" : "http://") . $_SERVER['SERVER_NAME'] . "/viewSpectrum.php?sid=" . $result['share'];
-			else
-				$shareLink = false;
-
-			$dbName = $_GET['db'];
-		}
-		//check Authentication
-		if(!in_array($dbName, $_SESSION['access'])){
-			header('Location: auth.php?db='.$_GET['db']);
-		}
+		require('php/checkAuth.php');
 		//log access
 		require("php/logAccess.php");
+
+		if(isset($_SESSION[$_GET['db']])){
+			unset($_SESSION[$_GET['db']]);
+			$justSaved = 'true';
+		}
+
 	}
 	elseif(isset($_SESSION['tmpDB'])){
 		$dbName = $_SESSION['tmpDB'];

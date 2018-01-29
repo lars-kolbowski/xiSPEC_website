@@ -14,10 +14,20 @@
 		die();
 	}
 
+	//check authentication
+	if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
+	if(!in_array($_GET['db'], $_SESSION['access'])){
+		//if no valid authentication re-test authentication
+		//this includes a connection string to the sql database
+		require('../../xiSPEC_sql_conn.php');
+		require('checkAuth.php');
+	}
+	// re-check authentication
 	if(!in_array($_GET['db'], $_SESSION['access'])){
 		$json['error'] = "Authentication error occured!";
 		die(json_encode($json));
 	}
+
 	$xiSPEC_ms_parser_dir = '../../xiSPEC_ms_parser/';
 	$dir = 'sqlite:'.$xiSPEC_ms_parser_dir.'/dbs/'.$dbname.'.db';
 	$dbh = new PDO($dir) or die("cannot open the database");

@@ -53,6 +53,15 @@
 		die();
 	}
 
+	//check authentication
+	if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
+	if(!in_array($_GET['db'], $_SESSION['access'])){
+		//if no valid authentication re-test authentication
+		//this includes a connection string to the sql database
+		require('../../xiSPEC_sql_conn.php');
+		require('checkAuth.php');
+	}
+	// re-check authentication
 	if(!in_array($_GET['db'], $_SESSION['access'])){
 		$json['error'] = "Authentication error occured!";
 		die(json_encode($json));
