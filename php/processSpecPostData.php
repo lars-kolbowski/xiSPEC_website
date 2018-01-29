@@ -79,7 +79,12 @@
 	);
 
 	//final array
-	$postData = array('Peptides' => $peptides, 'LinkSite' => $linkSites, 'peaks' => $peaks, 'annotation' => $annotation);
+	$postData = array(
+		'Peptides' => $peptides,
+		'LinkSite' => $linkSites,
+		'peaks' => $peaks,
+		'annotation' => $annotation
+	);
 
 	$postJSON = json_encode($postData);
 	//var_dump(json_encode($postData));
