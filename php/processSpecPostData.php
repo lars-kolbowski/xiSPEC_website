@@ -62,7 +62,7 @@
 
 	$cl = array('modMass' => $clModMass);
 
-	if ($fragTol[1] == "Da"){
+	if ($tolUnit == "Da"){
 		$customCfg = "LOWRESOLUTION:true";
 	}
 	else {
