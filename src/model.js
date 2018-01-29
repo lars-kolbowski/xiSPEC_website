@@ -21,15 +21,18 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.moveLabels = false;
 		this.measureMode = false;
 		this.showSpectrum = true;
-		if (_.isUndefined(Cookies.get('customMods')))
+
+		// get rid of cookie Modifications for now.
+		// if (_.isUndefined(Cookies.get('customMods')))
+		// else
 			this.userModifications = [];
-		else
-			this.userModifications = JSON.parse(Cookies.get('customMods'));
+		// 	this.userModifications = JSON.parse(Cookies.get('customMods'));
 		$.getJSON(self.baseDir + 'json/aaMasses.json', function(data) {
     		self.aaMasses = data
 		});
 
 		//ToDo: change JSONdata gets called 3 times for some reason?
+		// define event triggers and listeners better
 		this.on("change:JSONdata", function(){
 			var json = this.get("JSONdata");
 			if (typeof json !== 'undefined'){
@@ -585,6 +588,8 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	loadSpectrum: function(rowdata){
+		this.userModifications = [];
+		this.otherModel.userModifications = []; 
 		var id = rowdata['id'];
 		this.mzid = rowdata['mzid'];
 		this.create_annotation_request(id);

@@ -32,6 +32,7 @@ var SpectrumView = Backbone.View.extend({
 		this.listenTo(this.model, 'changed:lossyShown', this.showLossy);
 		this.listenTo(this.model, 'request_annotation:pending', this.showSpinner);
 		this.listenTo(this.model, 'request_annotation:done', this.hideSpinner);
+		this.listenTo(this.model, 'request_annotation:done', this.disableRevertAnnotation);
 		this.listenTo(this.model, 'changed:annotation', this.enableRevertAnnotation);
 		//this.listenTo(this.model, 'destroy', this.remove);
 	},
@@ -263,14 +264,18 @@ var SpectrumView = Backbone.View.extend({
 		if(this.model.changedAnnotation){
 			$(this.el).css('background-color', '#fff');
 			this.model.revert_annotation();
-			$('#revertAnnotation').removeClass('btn-1a');
-			$('#revertAnnotation').addClass('disabled');
+			this.disableRevertAnnotation();
 		};
 	},
 
 	enableRevertAnnotation: function(){
 		$(this.el).css('background-color', 'rgb(210, 224, 255)');
 		$('#revertAnnotation').addClass('btn-1a');
-		$('#revertAnnotation').removeClass('disabled');		
-	}
+		$('#revertAnnotation').removeClass('disabled');
+	},
+
+	disableRevertAnnotation: function(){
+		$('#revertAnnotation').removeClass('btn-1a');
+		$('#revertAnnotation').addClass('disabled');
+	},
 });
