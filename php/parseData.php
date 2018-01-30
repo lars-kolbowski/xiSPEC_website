@@ -26,11 +26,29 @@
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 	$_SESSION['tmpDB'] = session_id();
 
-	$target_dir = "../uploads/".session_id()."/";
-	$mzid_file = $target_dir . escapeshellarg($_POST['mzid_fn']);
-	$mzml_file = $target_dir . escapeshellarg($_POST['mzml_fn']);
 
-	$xiSPEC_ms_parser_dir = '../../xiSPEC_ms_parser/';
+	if( isset($_POST['res_fn']) && isset($_POST['peakFile_fn']) ){
+		$id_file = $_POST['res_fn'];
+		$pl_file = $_POST['peakFile_fn'];
+
+		$target_dir = "../uploads/".session_id()."/";
+		$id_arg = $target_dir . escapeshellarg($id_file);
+		$pl_arg = $target_dir . escapeshellarg($pl_file);
+		$upload_arg = session_id();
+		$ftp_arg = '';
+	}
+	elseif ( isset($_POST['res_ftp']) && isset($_POST['peakFile_ftp']) ) {
+		$id_file = substr($_POST['res_ftp'], strrpos($_POST['res_ftp'], "/") + 1) ;
+		$pl_file = substr($_POST['peakFile_ftp'], strrpos($_POST['peakFile_ftp'], "/") + 1) ;
+
+		$id_arg = escapeshellarg($_POST['res_ftp']);
+		$pl_arg = escapeshellarg($_POST['peakFile_ftp']);
+		$upload_arg = session_id();
+		$ftp_arg = '-f';
+	}
+	else {
+		die('error: invalid post data!');
+	}
 
 	$date = date('Y-m-d H:i:s');
 	$ip = getUserIP();
@@ -50,8 +68,8 @@
 
 	$stmt = $xiSPECdb->prepare("INSERT INTO `upload_log`(`id_file`, `pl_file`, `ip`, `hostname`, `country`, `region`, `city`, `org`, `date`)
 															VALUES (:id_file, :pl_file, :ip, :hostname, :country, :region, :city, :org, :dates);");
-	$stmt->bindParam(':id_file', $_POST['mzid_fn'], PDO::PARAM_STR);
-	$stmt->bindParam(':pl_file', $_POST['mzml_fn'], PDO::PARAM_STR);
+	$stmt->bindParam(':id_file', $id_file, PDO::PARAM_STR);
+	$stmt->bindParam(':pl_file', $pl_file, PDO::PARAM_STR);
 	$stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
 	$stmt->bindParam(':hostname', $ipInfo->hostname, PDO::PARAM_STR);
 	$stmt->bindParam(':country', $ipInfo->country, PDO::PARAM_STR);
@@ -62,8 +80,9 @@
 
 	$stmt->execute();
 
+	$argStr = implode(' ', [$ftp_arg, $id_arg, $pl_arg, $upload_arg]);
 
-	$command = $xiSPEC_ms_parser_dir.'python_env/bin/python '.$xiSPEC_ms_parser_dir.'parser.py '.$mzid_file.' '.$mzml_file.' '.session_id();
+	$command = $xiSPEC_ms_parser_dir.'python_env/bin/python '.$xiSPEC_ms_parser_dir.'parser.py '.$argStr;
 	// die($command);
 	// echo "<br/>";
 	$output = shell_exec($command);

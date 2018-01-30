@@ -145,7 +145,6 @@ nav a:focus, nav a:hover {
     outline: 0;
 }
 
-
 #fileupload {
     width: 0.1px;
     height: 0.1px;
@@ -1359,6 +1358,10 @@ div.file_upload input {
     display: flex;
     margin-top: 0.9em;
     font-size: 1.3em;
+}
+#pxdFileTable{
+    font-size: 0.8em;
+    white-space:nowrap;
 }
 .btn {
     border: none;

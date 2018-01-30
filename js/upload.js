@@ -39,6 +39,120 @@ $( document ).ready(function() {
 			window.peptide.set("clModMass", value);
 	});
 
+	//ToDo: move to BB View
+	var initial_pxd = 'PXD005654';
+	$('#pxd_title').html("Showing files for " + initial_pxd);
+
+	window.pxdFileTable = $('#pxdFileTable').DataTable( {
+		"paging":   false,
+		"ordering": false,
+		"info":	 false,
+		"searching":false,
+		"ajax":{
+			// "url": "json/PXD000001.json",
+			"url": "https://www.ebi.ac.uk:443/pride/ws/archive/file/list/project/" + initial_pxd,
+			error: function (jqXHR, textStatus, errorThrown) {
+				$('#pxd_error').html("Could not access this dataset! Double check the accession number and make sure it's publicly available!");
+			},
+			"dataSrc": function ( json ) {
+				return json.list.filter(function(f){
+					if (f.fileType == "RESULT"){
+						if (new RegExp(/(\.mzid)(\.gz|\.zip)?$/i).test(f.fileName))
+							return true;
+					}
+					else if (f.fileType == "PEAK"){
+						if (new RegExp(/(\.mgf|\.mzml|\.zip)(\.gz|\.zip)?$/i).test(f.fileName))
+							return true;
+					}
+
+				});
+			}
+		},
+		"columns": [
+				// { "data": "assayAccession" },
+				{ "title": "select", "data": null },
+				{ "data": "fileType", "title": "type", "name": "fileType"},
+				{ "data": "fileName", "title": "name"},
+				{ "data": "fileSize", "title": "size"},
+				{ "data": "downloadLink", "name": "downloadLink"}
+		],
+		"columnDefs": [
+		 {
+			 "class": "invisible",
+			 "targets": [ 4 ],
+		 },
+		{
+			"render": function ( data, type, row, meta ) {
+					if (row.fileType == 'PEAK')
+						return '<input type="checkbox" name=pxdPeakFile[] class="pxdPeakFileChkbx" data-row="'+meta.row+'"/>';
+					if (row.fileType == 'RESULT')
+						return '<input type="checkbox" name=pxdResFile[] class="pxdResChkbx" data-row="'+meta.row+'"/>';
+				},
+			// "searchable": true,
+			"targets": [ 0 ]
+		},
+		{
+			"render": function ( data, type, row, meta ) {
+					return (parseFloat(data)/(1024*1024)).toFixed(2) + ' MB';
+				},
+			"targets": [ 3 ]
+		},
+	 ]
+	});
+
+	window.pxdFileTable.on('click', '.pxdPeakFileChkbx', function(e) {
+		$('.pxdPeakFileChkbx:checkbox:checked').each(function(){
+			$(this).prop('checked', false);;
+		});
+		$(this).prop('checked', true);
+	});
+
+	window.pxdFileTable.on('click', '.pxdResChkbx', function(e) {
+		$('.pxdResChkbx:checkbox:checked').each(function(){
+			$(this).prop('checked', false);;
+		});
+		$(this).prop('checked', true);
+	});
+
+
+	$('#prideForm').submit(function(e){
+		e.preventDefault();
+		var pxd = $('#pxd_in').val();
+
+		if(new RegExp("\(^PXD[0-9]+)", 'i').test(pxd)){
+			var pxd_url = 'https://www.ebi.ac.uk:443/pride/ws/archive/file/list/project/' + pxd;
+			window.pxdFileTable.ajax.url( pxd_url ).load();
+			$('#pxd_title').html("Showing files for " + pxd);
+		}
+		else {
+			$('#pxd_error').html('not a valid accession number');
+		}
+	});
+
+	$('#pxd_submit').click(function(e){
+		e.preventDefault();
+		var $pxdResChkbx = $('.pxdResChkbx:checkbox:checked');
+		var $pxdPeakFileChkbx = $('.pxdPeakFileChkbx:checkbox:checked');
+		if ($pxdResChkbx.length == 1 && $pxdPeakFileChkbx.length == 1){
+			var resRowNum = $pxdResChkbx.data('row');
+			var resFTP = window.pxdFileTable.row(resRowNum).data().downloadLink;
+			var peakFileRowNum = $pxdPeakFileChkbx.data('row');
+			var peakFileFTP = window.pxdFileTable.row(peakFileRowNum).data().downloadLink;
+
+			var formData = new FormData();
+			formData.append("peakFile_ftp", peakFileFTP);
+			formData.append("res_ftp", resFTP);
+			startParser(formData);
+
+		}
+		else{
+			$('#pxd_error').html('You must select 1 RESULT-type and 1 PEAK-type file!');
+		}
+
+	});
+
+
+
 	updateCL();		//gets customCL data from cookie and fills in options
 
 	$('#addCustomCLform').submit(function(e){
@@ -315,73 +429,77 @@ $( document ).ready(function() {
 
 	$("#startParsing").click(function(e){
 		e.preventDefault();
-		var spinner = new Spinner({scale: 5}).spin();
-		var target = d3.select("#processDataInfo > .spinnerWrapper").node();
 		var formData = new FormData();
-		formData.append("mzml_fn", $('#mzml_fileBox .fileName').html());
-		formData.append("mzid_fn", $('#mzid_fileBox .fileName').html());
+		formData.append("peakFile_fn", $('#mzml_fileBox .fileName').html());
+		formData.append("res_fn", $('#mzid_fileBox .fileName').html());
+		startParser(formData);
 
-		$.ajax({
-			url: "php/parseData.php",
-			type: 'POST',
-			data: formData,
-			//async: false,
-			contentType: false,
-			processData: false,
-			beforeSend: function(){
-				$(".overlay").css("visibility", "visible").css("z-index", 1);
-				target.appendChild(spinner.el);
-				$("#submitDataModal").trigger('openModal');
-			},
-			success: function (data) {
-				spinner.stop();
-				resp = JSON.parse(data);
-				if (resp.errors.length == 0 && resp.modifications.length == 0)
-					window.location.href = "viewSpectrum.php";
-				else{
-					$('#submitDataInfo').show();
-					$('#processDataInfo').hide();
-					$('#processText').html("");
+	});
 
-					var errorNum = resp.errors.length;
-					var warnNum = resp.warnings.length;
-					if ( errorNum > 0 || warnNum > 0 ){
-						$('#errorInfo').show();
-						$('#gitHubIssue').show();
-						$('#errorMsg').html(warnNum + ' warning(s) and ' + errorNum + ' error(s) occurred parsing your data.</br><a href="#" id="showErrorLog"><i class="fa fa-chevron-down" aria-hidden="true"></i>Show log for more information.<i class="fa fa-chevron-down" aria-hidden="true"></i></a>');
-						$('#errorLog').append('log id: ' + resp.log + ' (include this in the github issue)\n');
+function startParser(form_data){
+	var spinner = new Spinner({scale: 5}).spin();
+	var target = d3.select("#processDataInfo > .spinnerWrapper").node();
+	$.ajax({
+		url: "php/parseData.php",
+		type: 'POST',
+		data: form_data,
+		//async: false,
+		contentType: false,
+		processData: false,
+		beforeSend: function(){
+			$(".overlay").css("visibility", "visible").css("z-index", 1);
+			target.appendChild(spinner.el);
+			$("#submitDataModal").trigger('openModal');
+		},
+		success: function (data) {
+			spinner.stop();
+			resp = JSON.parse(data);
+			if (resp.errors.length == 0 && resp.modifications.length == 0)
+				window.location.href = "viewSpectrum.php";
+			else{
+				$('#submitDataInfo').show();
+				$('#processDataInfo').hide();
+				$('#processText').html("");
 
-						resp.warnings.forEach(function (warn){
-							if (warn.type == 'IonParsing'){
-								$('#ionsInfo').show();
-								$('#ionsMsg').html('Fragment ion detection failed!</br>Select and update ion types below then click continue to view your data.');
-							}
-							$('#errorLog').append("warning type: " + warn.type + "\nmessage: "+ warn.message + '\nid: ' + warn.id + '\n\n');
+				var errorNum = resp.errors.length;
+				var warnNum = resp.warnings.length;
+				if ( errorNum > 0 || warnNum > 0 ){
+					$('#errorInfo').show();
+					$('#gitHubIssue').show();
+					$('#errorMsg').html(warnNum + ' warning(s) and ' + errorNum + ' error(s) occurred parsing your data.</br><a href="#" id="showErrorLog"><i class="fa fa-chevron-down" aria-hidden="true"></i>Show log for more information.<i class="fa fa-chevron-down" aria-hidden="true"></i></a>');
+					$('#errorLog').append('log id: ' + resp.log + ' (include this in the github issue)\n');
 
-						})
+					resp.warnings.forEach(function (warn){
+						if (warn.type == 'IonParsing'){
+							$('#ionsInfo').show();
+							$('#ionsMsg').html('Fragment ion detection failed!</br>Select and update ion types below then click continue to view your data.');
+						}
+						$('#errorLog').append("warning type: " + warn.type + "\nmessage: "+ warn.message + '\nid: ' + warn.id + '\n\n');
 
-						resp.errors.forEach(function (error){
-							$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message + '\nid: ' + error.id + '\n\n');
+					})
 
-						})
-					}
+					resp.errors.forEach(function (error){
+						$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message + '\nid: ' + error.id + '\n\n');
 
-					if (resp.modifications.length > 0){
-						$('#continueToDB').prop('disabled', true);
-						$('#modificationsInfo').show();
-						$('#modificationsMsg').html("Please provide the mass(es) for the following " + resp.modifications.length + " modification(s):");
-						resp.modifications.forEach(function (mod){
-							var modNameInput = '<input class="form-control" name="mods[]" readonly type="text" value='+mod+'>';
-							var modMassInput = '<input class="form-control" name="modMasses[]" type="number" step=0.000001 value="0" required autocomplete=off>';
-							$('#csvModificationsForm').append('<div style="margin-bottom: 5px;">' + modNameInput + modMassInput + '</div>');
-						})
-						$('#csvModificationsForm').append('<input type="submit" value="update modifications" class="btn btn-1a btn-2" id="updateModsSubmit">');
-					}
+					})
+				}
+
+				if (resp.modifications.length > 0){
+					$('#continueToDB').prop('disabled', true);
+					$('#modificationsInfo').show();
+					$('#modificationsMsg').html("Please provide the mass(es) for the following " + resp.modifications.length + " modification(s):");
+					resp.modifications.forEach(function (mod){
+						var modNameInput = '<input class="form-control" name="mods[]" readonly type="text" value='+mod+'>';
+						var modMassInput = '<input class="form-control" name="modMasses[]" type="number" step=0.000001 value="0" required autocomplete=off>';
+						$('#csvModificationsForm').append('<div style="margin-bottom: 5px;">' + modNameInput + modMassInput + '</div>');
+					})
+					$('#csvModificationsForm').append('<input type="submit" value="update modifications" class="btn btn-1a btn-2" id="updateModsSubmit">');
 				}
 			}
-		  });
-		  return false;
-	});
+		}
+		});
+		return false;
+}
 
 });
 

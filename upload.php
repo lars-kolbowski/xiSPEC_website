@@ -71,7 +71,24 @@
 					</div>
 				</div>
 			</section>
-			<section id="bottom" class="one">
+			<section class="one">
+				<div class="container">
+					<h1 class="page-header accordionHead"><i class="fa fa-plus-square" aria-hidden="true"></i> PRIDE data access</h1>
+					<div class="accordionContent" style="display: none;">
+						<form id="prideForm">
+							<div style="display:flex;">
+								<label class="label">PRIDE accession number: <input type="text" id="pxd_in" class="form-control"/></label>
+								<button class="btn btn-1a btn-2" type="submit">List files</button>
+							</div>
+							<div id="pxd_error"></div>
+							<div id="pxd_title"></div>
+							<button type="submit" id="pxd_submit" class="btn btn-1a btn-2">Submit selected files</button>
+							<table id="pxdFileTable" class="display" width="100%" style="text-align:center;"></table>
+						</form>
+					</div>
+				</div>
+			</section>
+			<section class="one">
 <!-- <span class="glyphicon glyphicon-upload"></span> -->
 				<div class="container">
 					<h1 class="page-header accordionHead"><i <?php echo (isset($_GET['ex']) ? 'class="fa fa-minus-square"' : 'class="fa fa-plus-square"');?> aria-hidden="true"></i> Data Input - Manually input your spectrum data</h1>
