@@ -127,7 +127,7 @@ Graph = function(targetSvg, model, options) {
 
 
 	this.highlights = this.innerSVG.append("g").attr("class", "peakHighlights");
-	this.peaks = this.innerSVG.append("g").attr("class", "peaks");
+	this.peaksSVG = this.innerSVG.append("g").attr("class", "peaks");
 	this.lossyAnnotations = this.innerSVG.append("g").attr("class", "lossyAnnotations");
 	this.annotations = this.innerSVG.append("g").attr("class", "annotations");
 
@@ -168,17 +168,17 @@ Graph = function(targetSvg, model, options) {
 };
 
 Graph.prototype.setData = function(){
-	//create points array with Peaks
-	this.points = new Array();
+	//create peaks array with Peaks
+	this.peaks = new Array();
 	this.pep1 = this.model.pep1;
 	this.pep2 = this.model.pep2;
     if (this.model.JSONdata) {
         for (var i = 0; i < this.model.JSONdata.peaks.length; i++){
         		var peak = this.model.JSONdata.peaks[i];
-            this.points.push(new Peak(i, this));
+            this.peaks.push(new Peak(i, this));
         }
 
-        this.model.points = this.points;
+        this.model.peaks = this.peaks;
         this.updatePeakColors();
     }
     if(this.model.lockZoom){
@@ -315,7 +315,7 @@ Graph.prototype.measure = function(on){
       		.attr("width", self.plot[0][0].getAttribute("width"))
       		.attr("height", self.plot[0][0].getAttribute("height"));
 
-		self.peaks.style("pointer-events", "none");		//disable peak highlighting
+		self.peaksSVG.style("pointer-events", "none");		//disable peak highlighting
 
 		self.disableZoom();
 
@@ -327,9 +327,9 @@ Graph.prototype.measure = function(on){
 			var mouseX = self.x.invert(coords[0]);
 			var distance = 100;
 			var highlighttrigger = 10;
-			var peakCount = self.points.length;
+			var peakCount = self.peaks.length;
 			for (var p = 0; p < peakCount; p++) {
-				var peak = self.points[p];
+				var peak = self.peaks[p];
 				if (_.intersection(self.model.highlights, peak.fragments).length != 0 && Math.abs(peak.x - mouseX)  < highlighttrigger){
 					self.measureStartPeak = peak;
 					break;
@@ -365,9 +365,9 @@ Graph.prototype.measure = function(on){
 			var distance = 2;
 			var highlighttrigger = 15;	//triggerdistance to prioritize highlighted peaks as endpoint
 			var triggerdistance = 10;	//triggerdistance to use peak as endpoint
-			var peakCount = self.points.length;
+			var peakCount = self.peaks.length;
 			for (var p = 0; p < peakCount; p++) {
-				var peak = self.points[p];
+				var peak = self.peaks[p];
 				if (peak != self.measureStartPeak){
 					if (_.intersection(self.model.highlights, peak.fragments).length != 0 && Math.abs(peak.x - mouseX)  < highlighttrigger){
 						var endPeak = peak;
@@ -523,7 +523,7 @@ Graph.prototype.measure = function(on){
 	}
 	else{
 		this.measureClear();
-		this.peaks.style("pointer-events", "visible");
+		this.peaksSVG.style("pointer-events", "visible");
 		this.measureBackground.attr("height", 0);
 		this.enableZoom();
 	}
@@ -545,20 +545,20 @@ Graph.prototype.redraw = function(){
 		//adjust y scale to new highest intensity
 
 		//self.measureClear();
-		if (self.points) {
+		if (self.peaks) {
 			var ymax = 0
 			var xDomain = self.x.domain();
-			for (var i = 0; i < self.points.length; i++){
-			  if (self.points[i].y > ymax && (self.points[i].x > xDomain[0] && self.points[i].x < xDomain[1]))
-			  	ymax = self.points[i].y;
+			for (var i = 0; i < self.peaks.length; i++){
+			  if (self.peaks[i].y > ymax && (self.peaks[i].x > xDomain[0] && self.peaks[i].x < xDomain[1]))
+			  	ymax = self.peaks[i].y;
 			}
 			//console.log(ymax);
 			self.y.domain([0, ymax/0.95]);
 			self.y_right.domain([0, (ymax/(self.model.ymaxPrimary*0.95))*100]);
 			self.yAxisLeftSVG.call(self.yAxisLeft);
 			self.yAxisRightSVG.call(self.yAxisRight);
-			for (var i = 0; i < self.points.length; i++){
-				self.points[i].update();
+			for (var i = 0; i < self.peaks.length; i++){
+				self.peaks[i].update();
 			}
 		}
 		self.xaxisSVG.call( self.xAxis);
@@ -574,36 +574,35 @@ Graph.prototype.redraw = function(){
 Graph.prototype.clear = function(){
 	this.model.measureMode = false;
 	this.measure(false);
-	this.points= [];
+	this.peaks = [];
 	this.highlights.selectAll("*").remove();
-	this.peaks.selectAll("*").remove();
+	this.peaksSVG.selectAll("*").remove();
 	this.lossyAnnotations.selectAll("*").remove();
 	this.annotations.selectAll("*").remove();
 }
 
 
 Graph.prototype.clearHighlights = function(peptide, pepI){
-	var peakCount = this.points.length;
+	var peakCount = this.peaks.length;
 	for (var p = 0; p < peakCount; p++) {
-		if (this.points[p].fragments.length > 0 && !_.contains(this.model.sticky, this.points[p].fragments[0])) {
-			this.points[p].highlight(false);
+		if (this.peaks[p].fragments.length > 0 && !_.contains(this.model.sticky, this.peaks[p].fragments[0])) {
+			this.peaks[p].highlight(false);
 		}
 	}
 }
 
 Graph.prototype.updatePeakColors = function(){
-	var peakCount = this.points.length;
+	var peakCount = this.peaks.length;
 
-	if (this.model.highlights.length == 0){
+	if (this.model.highlights.length == 0 || this.model.showAllFragmentsHighlight){
 		for (var p = 0; p < peakCount; p++) {
-			this.points[p].line.attr("stroke", this.points[p].colour);
+			this.peaks[p].line.attr("stroke", this.peaks[p].colour);
 		}
 	}
 	else{
 		var self = this;
-		//var curPeaks = this.points.filter(function(peak){ if (peak.x > self.x.domain()[0] && peak.x < self.x.domain()[1]) return peak; })
 		var highlightClusterIds = [].concat.apply([], this.model.highlights.map(function(h){ return h.clusterIds;}));
-		this.points.forEach(function(p){
+		this.peaks.forEach(function(p){
 			if (_.intersection(self.model.highlights, p.fragments).length > 0 || _.intersection(highlightClusterIds, p.clusterIds).length > 0)
 				p.line.attr("stroke", p.colour);
 			else
@@ -611,51 +610,54 @@ Graph.prototype.updatePeakColors = function(){
 
 		});
 
-		// for (var p = 0; p < peakCount; p++) {
-		// 	if (_.intersection(this.model.highlights, this.points[p].fragments).length == 0)
-		// 		this.points[p].line.attr("stroke", this.model.peakColour);
-		// 	else
-		// 		this.points[p].line.attr("stroke", this.points[p].colour);
-		// }
 	}
 }
 
 Graph.prototype.updatePeakLabels = function(){
-	var peakCount = this.points.length;
+	var peakCount = this.peaks.length;
 
 	if (this.model.highlights.length == 0){
 		for (var p = 0; p < peakCount; p++) {
-			if (this.points[p].fragments.length > 0) {
-				this.points[p].removeLabels();
-				this.points[p].showLabels();
+			if (this.peaks[p].fragments.length > 0) {
+				this.peaks[p].removeLabels();
+				this.peaks[p].showLabels();
 			}
 		}
 	}
 	else{
 		for (var p = 0; p < peakCount; p++) {
-			if (_.intersection(this.model.highlights, this.points[p].fragments).length == 0)
-				this.points[p].removeLabels();
+			// if it's not a fragment from the highlight selection
+			if (_.intersection(this.model.highlights, this.peaks[p].fragments).length == 0){
+				// show it if allFragmentHighlights is true (dependent on lossyShown)
+				if (this.model.showAllFragmentsHighlight){
+					this.peaks[p].showLabels();
+				}
+				else{
+					this.peaks[p].removeLabels();
+				}
+			}
+			// if it is from the highlight selection force show all Labels overriding lossyShown
 			else{
-				this.points[p].removeLabels();
-				this.points[p].showLabels(true);
+				this.peaks[p].removeLabels();
+				this.peaks[p].showLabels(true);
 			}
 		}
 	}
 }
 
 Graph.prototype.updateColors = function(){
-	var peakCount = this.points.length;
+	var peakCount = this.peaks.length;
 		for (var p = 0; p < peakCount; p++) {
-			this.points[p].updateColor();
+			this.peaks[p].updateColor();
 		}
 }
 
 Graph.prototype.updateHighlightColors = function(){
-	var peakCount = this.points.length;
+	var peakCount = this.peaks.length;
 		for (var p = 0; p < peakCount; p++) {
-			if(this.points[p].highlightLine !== undefined){
-				this.points[p].highlightLine.attr("stroke", this.model.highlightColour);
-				this.points[p].labelHighlights.attr("stroke", this.model.highlightColour);
+			if(this.peaks[p].highlightLine !== undefined){
+				this.peaks[p].highlightLine.attr("stroke", this.model.highlightColour);
+				this.peaks[p].labelHighlights.attr("stroke", this.model.highlightColour);
 			}
 		}
 }

@@ -65,7 +65,7 @@ function Peak (id, graph){
 	};
 
 	//svg elements
-	this.g = this.graph.peaks.append('g');
+	this.g = this.graph.peaksSVG.append('g');
 
 	this.linegroup = this.g.append('g');
 
@@ -424,7 +424,7 @@ Peak.prototype.highlight = function(show, fragments){
 		   ;
 		    this.labels.filter(ffunc).attr("display", "inline");
 		}
-		this.graph.peaks.node().appendChild(this.g.node());
+		this.graph.peaksSVG.node().appendChild(this.g.node());
 		this.line.attr("stroke", this.colour);
 	} else {
 		this.highlightLine.attr("opacity",0);

@@ -31,6 +31,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 		'click .settingsCancel' : 'cancel',
 		'change #settingsDecimals' : 'changeDecimals',
 		'change #highlightColor' : 'updateJScolor',
+		'change #peakHighlightMode' : 'changePeakHighlightMode',
 		'click #toggleCustomCfgHelp' : 'toggleCustomCfgHelp',
 		'click #settingsCustomCfgApply' : 'applyCustomCfg',
 		'submit #settingsForm' : 'applyData',
@@ -224,6 +225,10 @@ var SpectrumSettingsView = Backbone.View.extend({
 				.attr("style", "width: 103px;")
 		;
 		jscolor.installByClassName("jscolor");
+
+		var highlightingModeChkBx = appearanceTab.append("label").attr("class", "btn").text("Hide not selected fragments.")
+			.append("input").attr("type", "checkbox").attr("id", "peakHighlightMode")
+		;
 
 		var lossyChkBx = appearanceTab.append("label").attr("class", "btn").text("Show neutral loss labels")
 			.append("input").attr("type", "checkbox").attr("id", "lossyChkBx")
@@ -572,6 +577,14 @@ var SpectrumSettingsView = Backbone.View.extend({
 		//for now change color of model directly
 		//ToDo: Maybe change this also to apply/cancel and/or put in reset to default values
 		this.model.otherModel.changeHighlightColor( color );
+	},
+
+	changePeakHighlightMode: function(event){
+		var model = this.model.otherModel; //apply changes directly for now
+		var $target = $(event.target);
+        var selected = $target .is(':checked');
+		model.showAllFragmentsHighlight = !selected;
+		model.trigger("changed:fragHighlighting");
 	},
 
 	updateIons: function(event){

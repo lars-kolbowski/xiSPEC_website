@@ -34,6 +34,7 @@ var SpectrumView = Backbone.View.extend({
 		this.listenTo(this.model, 'request_annotation:done', this.hideSpinner);
 		this.listenTo(this.model, 'request_annotation:done', this.disableRevertAnnotation);
 		this.listenTo(this.model, 'changed:annotation', this.enableRevertAnnotation);
+		this.listenTo(this.model, 'changed:fragHighlighting', this.updatePeakHighlighting);
 		//this.listenTo(this.model, 'destroy', this.remove);
 	},
 
@@ -140,12 +141,13 @@ var SpectrumView = Backbone.View.extend({
 		this.model.clearStickyHighlights();
 	},
 
-// 	changeColorScheme: function(e){
-// 		this.model.changeColorScheme(e.target.value);
-// 	},
-
 	updateColors: function(){
 		this.graph.updateColors();
+	},
+
+	updatePeakHighlighting: function(){
+		this.graph.updatePeakLabels();
+		this.graph.updatePeakColors();
 	},
 
 	updateHighlightColors: function(){
@@ -154,7 +156,7 @@ var SpectrumView = Backbone.View.extend({
 
 	updateHighlights: function(){
 
-		var peaks = this.graph.points;
+		var peaks = this.graph.peaks;
 
 		for(p = 0; p < peaks.length; p++){
 			if(peaks[p].fragments.length > 0)
@@ -182,7 +184,7 @@ var SpectrumView = Backbone.View.extend({
 		var selected = $target.is(':checked');
 		this.model.moveLabels = selected;
 
-		var peaks = this.graph.points;
+		var peaks = this.graph.peaks;
 
 		if (selected){
 			// for(p = 0; p < peaks.length; p++){

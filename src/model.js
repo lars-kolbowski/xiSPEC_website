@@ -21,6 +21,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.moveLabels = false;
 		this.measureMode = false;
 		this.showSpectrum = true;
+		this.showAllFragmentsHighlight = true;
 
 		// get rid of cookie Modifications for now.
 		// if (_.isUndefined(Cookies.get('customMods')))
@@ -589,7 +590,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	loadSpectrum: function(rowdata){
 		this.userModifications = [];
-		this.otherModel.userModifications = []; 
+		this.otherModel.userModifications = [];
 		var id = rowdata['id'];
 		this.mzid = rowdata['mzid'];
 		this.create_annotation_request(id);
