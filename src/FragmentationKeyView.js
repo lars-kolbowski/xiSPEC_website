@@ -572,7 +572,7 @@ var FragmentationKeyView = Backbone.View.extend({
 				var mod = self.model.annotationData.modifications.filter(function(m){
 					return m.id == fullModName;
 				});
-				if (mod.length != 1){
+				if (mod.length < 1){
 					console.log('error finding modification');
 					return;
 				}

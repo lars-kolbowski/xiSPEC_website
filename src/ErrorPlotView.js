@@ -221,7 +221,7 @@ var ErrorPlotView = Backbone.View.extend({
 			.style('opacity', 0)
 			.style('pointer-events', 'none')
 			.attr('id', function (d) { return d.fragId })
-			.attr('r', 10);
+			.attr('r', 8);
 
 		this.datapoints = this.g.selectAll('scatter-dots')
 			.data(this.data)
