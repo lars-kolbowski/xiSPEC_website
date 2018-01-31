@@ -197,7 +197,7 @@ echo 	'<script type="text/javascript" src="./src/TableWrapperView.js"></script>
 							<div class="dynDiv" id="settingsWrapper">
 								<div class="dynDiv_moveParentDiv">
 									<span class="dynTitle">Settings</span>
-									<i class="fa fa-times-circle closeButton settingsCancel" id="closeSettings"></i>
+									<i class="fa fa-times-circle settingsCancel" id="closeSettings"></i>
 								</div>
 								<div class="dynDiv_resizeDiv_tl draggableCorner"></div>
 								<div class="dynDiv_resizeDiv_tr draggableCorner"></div>

@@ -30,7 +30,11 @@ $(function() {
 		$("#shareModal").trigger('openModal');
 		$("#shareModal").css('z-index', 2000000001);
 		$('#justSavedMsg').html("Your dataset was successfully saved!")
-	}
+	};
+
+	$('.closeButton').click(function(){
+		$(this).parent().hide();
+	});
 
 	$('#shareDB').click(function(){
 		$('#justSavedMsg').html("")

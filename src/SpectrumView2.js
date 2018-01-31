@@ -12,7 +12,8 @@ var SpectrumView = Backbone.View.extend({
 		'click #downloadSVG': 'downloadSVG',
 		'click #toggleView' : 'toggleView',
 		'click #toggleSettings' : 'toggleSettings',
-		'click #revertAnnotation' : 'revertAnnotation'
+		'click #revertAnnotation' : 'revertAnnotation',
+		'click #toggleSpecList' : 'toggleSpecList',
 	  },
 
 	initialize: function() {
@@ -260,6 +261,10 @@ var SpectrumView = Backbone.View.extend({
 	hideSpinner: function(){
 // 		console.log('hide');
 		this.spinner.stop();
+	},
+
+	toggleSpecList: function(){
+		CLMSUI.vent.trigger('toggleTableView');
 	},
 
 	revertAnnotation: function(){

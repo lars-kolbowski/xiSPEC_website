@@ -29,11 +29,12 @@ var TableWrapperView = Backbone.View.extend({
 	initialize: function() {
 
 		this.listenTo(CLMSUI.vent, 'loadSpectrum', this.updateNav);
+		this.listenTo(CLMSUI.vent, 'toggleTableView', this.toggleView);
 
 		var d3el = d3.select(this.el);
 
 		var closeButton = d3el.append("i")
-			.attr("class", "fa fa-times-circle closeButton closeTable")
+			.attr("class", "fa fa-times-circle closeTable")
 			.attr("id", "specListClose")
 		;
 
@@ -88,12 +89,17 @@ var TableWrapperView = Backbone.View.extend({
 		window.trigger('resize');
 	},
 
+	toggleView: function(){
+		$(this.el).toggle();
+		window.trigger('resize');
+	},
+
 	changeTab: function(e){
 		if ($(e.target).parent().hasClass("disabled")) {
 			e.preventDefault();
 			return false;
 		}
-		
+
 		var target_href = e.target.getAttribute('href');
 
 		if(target_href == '#tab-altListTable'){
