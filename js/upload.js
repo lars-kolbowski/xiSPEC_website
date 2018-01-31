@@ -152,7 +152,6 @@ $( document ).ready(function() {
 	});
 
 
-
 	updateCL();		//gets customCL data from cookie and fills in options
 
 	$('#addCustomCLform').submit(function(e){
@@ -472,7 +471,7 @@ function startParser(form_data){
 					resp.warnings.forEach(function (warn){
 						if (warn.type == 'IonParsing'){
 							$('#ionsInfo').show();
-							$('#ionsMsg').html('Fragment ion detection failed!</br>Select and update ion types below then click continue to view your data.');
+							$('#ionsMsg').html('Your input file did not specify fragment ion types.</br>Select and update ion types below. Then click continue to view your data.');
 						}
 						$('#errorLog').append("warning type: " + warn.type + "\nmessage: "+ warn.message + '\nid: ' + warn.id + '\n\n');
 
