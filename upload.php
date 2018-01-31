@@ -262,6 +262,7 @@
 							</div>
 						</div>
 						<button type="submit" id="ionsFormSubmit" class="btn btn-1a btn-2">update ions</button>
+						<div id="ionsUpdateMsg" style="font-size: 0.8em;display: inline;"></div>
 					</form>
 				</div>
 				<div id="modificationsInfo"  style="display: none;">

@@ -410,10 +410,12 @@ $( document ).ready(function() {
 			beforeSend: function(){
 				$('#ionsFormSubmit').prop("disabled", true);
 				target.appendChild(spinner.el);
+				$('#ionsUpdateMsg').html('');
 			},
 			success: function (data) {
 				spinner.stop();
 				$('#ionsFormSubmit').prop("disabled", false);
+				$('#ionsUpdateMsg').html('update successful!');
 			}
 		});
 	});
