@@ -63,7 +63,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	setData: function(){
 		this.changedAnnotation = false;
-		this.userModified = false;
+
 		if (this.get("JSONdata") == null){
 			this.trigger("changed:data");
 			return
@@ -459,24 +459,21 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		}
 
 		var totalMass = 0;
-
-
+		var clModMass = 0;
 		if(this.get("clModMass") !== undefined)
 			var clModMass = parseInt(this.get("clModMass"));
 		else if (this.annotationData['cross-linker'] !== undefined)
 			var clModMass = this.annotationData['cross-linker'].modMass;
 
-
-		if(clModMass !== undefined){
-			for (var i = 0; i < massArr.length; i++) {
-				totalMass += massArr[i];
-			}
-			totalMass += clModMass;
-			this.mass = [totalMass];
+		for (var i = 0; i < massArr.length; i++) {
+			totalMass += massArr[i];
 		}
-		else{
-			this.mass = massArr;
+		// NOT Multilink future proof
+		if(this.JSONdata.LinkSite.length > 0){
+			if (this.JSONdata.LinkSite[0].linkSite != -1 && this.JSONdata.LinkSite[1].linkSite != -1)
+				totalMass += clModMass;
 		}
+		this.mass = totalMass
 // 		console.log(this.mass);
 		this.trigger("changed:mass");
 	},
