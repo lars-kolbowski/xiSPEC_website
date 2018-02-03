@@ -202,11 +202,11 @@ var SpectrumSettingsView = Backbone.View.extend({
 			.append("select").attr("id", 'colorSelector').attr("class", 'form-control pointer')
 		;
 		var colOptions = [
-			{value: "RdBu", text: "Red & Blue"},
-			{value: "BrBG", text: "Brown & Teal"},
-			{value: "PiYG", text: "Pink & Green"},
-			{value: "PRGn", text: "Purple & Green"},
-			{value: "PuOr", text: "Orange & Purple"},
+			{value: "RdBu", text: "Red (& Blue)"},
+			{value: "BrBG", text: "Brown (& Teal)"},
+			{value: "PiYG", text: "Pink (& Green)"},
+			{value: "PRGn", text: "Purple (& Green)"},
+			{value: "PuOr", text: "Orange (& Purple)"},
 		];
 
 		d3.select("#colorSelector").selectAll("option").data(colOptions)
@@ -526,10 +526,6 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 		this.updateStepSize($(this.toleranceValue[0][0]));
 		this.updateStepSize($(this.crossLinkerModMass[0][0]));
-		//trigger Stepsize update
-		// d3.selectAll('.stepInput')[0].forEach(function(el){
-		// 	self.updateStepSize($(el));
-		// });
 	},
 
 	cancel: function(){
