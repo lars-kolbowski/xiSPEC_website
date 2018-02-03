@@ -5,6 +5,17 @@
 		error_reporting(E_ALL & ~E_NOTICE);
 		$pageName = "Upload";
 		include("head.php");
+		if (isset($_GET['ex'])){
+			if ($_GET['ex'] == 'cl');
+				$example = "cl";
+			if ($_GET['ex'] == 'lin')
+				$example = "lin";
+			if ($_GET['ex'] == 'pxd')
+				$example = "pxd";
+		}
+		else {
+			$example = false;
+		};
 		?>
 		<?php include("xiSPEC_scripts.php");?>
 		<script type="text/javascript" src="./src/PepInputView.js"></script>
@@ -17,6 +28,7 @@
 		<script src="vendor/jQueryFileUploadMin/jquery.ui.widget.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.iframe-transport.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.fileupload.js"></script>
+		<script type="text/javascript" src="src/PrideSelectionView.js"></script>
 
 		<link rel="stylesheet" href="./css/dropdown.css" />
 	</head>
@@ -28,11 +40,11 @@
 			<!-- Intro -->
 			<section id="top" class="one">
 				<div class="container" id="jquery-fileupload">
-					<h1 class="page-header accordionHead"><i <?php echo (isset($_GET['ex']) ? 'class="fa fa-plus-square"' : 'class="fa fa-minus-square"');?> aria-hidden="true"></i> Data Upload - Upload your data (identification & peak list file pair)</h1>
-					<div class="accordionContent" <?php echo (isset($_GET['ex']) ? 'style="display: none;"' : '');?>>
+					<h1 class="page-header accordionHead"><i <?php echo($example ? 'class="fa fa-plus-square"' : 'class="fa fa-minus-square"');?> aria-hidden="true"></i> Data Upload - Upload your data (identification & peak list file pair)</h1>
+					<div class="accordionContent" <?php echo ($example ? 'style="display: none;"' : '');?>>
 						<div style="margin-left: 1em; line-height: 1.7em;">
-							Supported identification file formats: <a title="HUPO Proteomics: mzidentML" href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> and <a title="Show column headings" class="showCsvHeader" href="#">csv</a>.</br>
-							Supported peak list file formats: <a title="HUPO Proteomics: mzML" href="http://www.psidev.info/mzml" target="blank">mzML</a> and <a title="Mascot Generic Format" href="http://www.matrixscience.com/help/data_file_help.html#GEN">mgf</a> (+ zip archives of mzML/mgf).</br>
+							Supported identification file formats: <a title="HUPO-PIS: mzidentML" href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> and <a title="Show column headings" class="showCsvHeader" href="#">csv</a>.</br>
+							Supported peak list file formats: <a title="HUPO-PIS: mzML" href="http://www.psidev.info/mzml" target="blank">mzML</a> and <a title="Mascot Generic Format" href="http://www.matrixscience.com/help/data_file_help.html#GEN">mgf</a> (+ zip/gz archives of mzML/mgf).</br>
 							<div style="font-size: 0.8em; line-height: 1.7em; margin-top:0.5em;">
 								mzML: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
 								<!-- mzML: Make sure to use centroided MS2 data! (e.g. use 'Peak picking' for profile data in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br> -->
@@ -73,8 +85,8 @@
 			</section>
 			<section class="one">
 				<div class="container">
-					<h1 class="page-header accordionHead"><i class="fa fa-plus-square" aria-hidden="true"></i> PRIDE data access</h1>
-					<div class="accordionContent" style="display: none;">
+					<h1 class="page-header accordionHead"><i <?php echo (($example == 'pxd') ? 'class="fa fa-minus-square"' : 'class="fa fa-plus-square"');?> aria-hidden="true"></i> PRIDE data access</h1>
+					<div class="accordionContent" id="prideSelectionWrapper" <?php echo (($example == 'pxd') ? '' : 'style="display: none;"');?>>
 						<form id="prideForm">
 							<div style="display:flex;">
 								<label class="label">PRIDE accession number: <input type="text" id="pxd_in" class="form-control"/></label>
@@ -91,8 +103,8 @@
 			<section class="one">
 <!-- <span class="glyphicon glyphicon-upload"></span> -->
 				<div class="container">
-					<h1 class="page-header accordionHead"><i <?php echo (isset($_GET['ex']) ? 'class="fa fa-minus-square"' : 'class="fa fa-plus-square"');?> aria-hidden="true"></i> Data Input - Manually input your spectrum data</h1>
-					<div class="accordionContent" <?php echo (isset($_GET['ex']) ? '' : 'style="display: none;"');?> >
+					<h1 class="page-header accordionHead"><i <?php echo (($example == "lin" || $example == "cl") ? 'class="fa fa-minus-square"' : 'class="fa fa-plus-square"');?> aria-hidden="true"></i> Data Input - Manually input your spectrum data</h1>
+					<div class="accordionContent" <?php echo (($example == "lin" || $example == "cl") ? '' : 'style="display: none;"');?> >
 						<form id="manUpPepForm" action="viewSpectrum.php" method="post" target="_blank">
 						<!-- <form id="xisv_entryform"  action="http://spectrumviewer.org/xisv/index.php" method="post" target="_blank" onsubmit="doPreSubmission();"> -->
 							<section style="margin-bottom:2%;">
@@ -288,12 +300,14 @@
 		<div class="overlay" style="z-index: -1; visibility: hidden;"></div>
 
 		<script type="text/javascript">
-		<?php echo "var example = '".(isset($_GET['ex']) ? $_GET['ex'] : false)."';\r\n";?>
+		<?php echo ('var example = "'.$example.'";');?>
 			$( document ).ready(function() {
 				if (example == 'cl')
 					doExampleCL();
 				else if (example == 'lin')
 					doExampleLinear();
+				else if (example == 'pxd')
+					window.prideSelectionView.load_pxd('PXD005654');
 			});
 		</script>
 
