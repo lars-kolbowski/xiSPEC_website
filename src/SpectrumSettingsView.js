@@ -243,14 +243,14 @@ var SpectrumSettingsView = Backbone.View.extend({
 		;
 
 
-        //custom config
+		//custom config
 		var customConfigTab = mainDiv.append("div").attr("class", "settings-tab flex-column").attr("id", "settings_custom_config").style("display", "none");
 		customConfigTab.append('div').attr('id', 'toggleCustomCfgHelp').attr('class', 'pointer').text('Help ').append('i').attr("class", "fa fa-question-circle").attr("aria-hidden", "true");
 		customConfigTab.append("textarea")
 			.attr("id", "customCfgHelp")
 			.attr("class", "form-control")
 			.text('# enable double fragmentation within one fragment\n# also fragmentation events on both peptides\nfragment:BLikeDoubleFragmentation\n\n# custom loss definition examples\n## Water\nloss:AminoAcidRestrictedLoss:NAME:H20;aminoacids:S,T,D,E;MASS:18.01056027;cterm\n## Amonia\nloss:AminoAcidRestrictedLoss:NAME:NH3;aminoacids:R,K,N,Q;MASS:17.02654493;nterm\n## AIons as loss from BIons\n## when defiend as loss the matched fragments will have less impact on the score then matching A-Ions\nloss:AIonLoss\n\n# also match peaks if they are one dalton off - assuming that sometimes the monoisotopic peak is missing\nMATCH_MISSING_MONOISOTOPIC:(true|false)');
-		var customConfigInput = customConfigTab.append("textarea").attr("id", "settingsCustomCfg-input").attr("class", "form-control");
+		this.customConfigInput = customConfigTab.append("textarea").attr("id", "settingsCustomCfg-input").attr("class", "form-control");
 		var customConfigBottom = customConfigTab.append("div").attr("class", "settings-bottom");
 		var customConfigSubmit = customConfigBottom.append("input").attr("class", "btn btn-1 btn-1a network-control").attr("value", "Apply").attr("id", "settingsCustomCfgApply").attr("type", "submit");
 
@@ -279,8 +279,14 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 	applyCustomCfg: function(){
 		var json = this.model.get("JSONrequest");
-		// json['annotation']['custom'] = "LOWRESOLUTION:false\n";	//ToDo: temp fix until new xiAnnotator version is released
-		json['annotation']['custom'] = $("#settingsCustomCfg-input").val().split("\n");
+		if(this.model.MSnTolerance.unit == "ppm"){
+			json['annotation']['custom'] = "LOWRESOLUTION:false\n";	//ToDo: temp fix until new xiAnnotator version is released
+		}
+		else{
+			json['annotation']['custom'] = "LOWRESOLUTION:true\n";	//ToDo: temp fix until new xiAnnotator version is released
+		}
+
+		json['annotation']['custom'] += $("#settingsCustomCfg-input").val();
 
 		this.model.otherModel.request_annotation(json);
 		this.model.otherModel.changedAnnotation = true;
@@ -523,6 +529,8 @@ var SpectrumSettingsView = Backbone.View.extend({
 			$(this.crossLinkerModMassWrapper[0][0]).hide();
 		else
 			$(this.crossLinkerModMassWrapper[0][0]).show();
+
+		this.customConfigInput[0][0].value = this.model.customSettings;
 
 		this.updateStepSize($(this.toleranceValue[0][0]));
 		this.updateStepSize($(this.crossLinkerModMass[0][0]));
