@@ -38,10 +38,16 @@ Graph = function(targetSvg, model, options) {
 				.attr("class", "spectrum")
 				.attr("id", "spectrumGraph");
 
+	this.plot = this.g.append("rect")
+		.style("fill", "white")
+		.attr("pointer-events", "visible");
+
+	this.innerSVG = this.g.append("g")
+		.attr("class", "innerSpectrum");
 
 	this.xaxisSVG = this.g.append("g")
 		.attr("class", "x axis");
-		//~
+
 	/*
 	 * -webkit-user-select: none;
 			-khtml-user-select: none;
@@ -66,9 +72,6 @@ Graph = function(targetSvg, model, options) {
 		.attr("class", "y axis");
 	this.yAxisRightSVG = this.g.append("g")
 		.attr("class", "y axis");
-	this.plot = this.g.append("rect")
-		.style("fill", "transparent")
-		.attr("pointer-events", "visible");
 
 	this.measureBackground = this.g.append("rect")
 		.attr("width", "0")
@@ -76,8 +79,6 @@ Graph = function(targetSvg, model, options) {
 		.style("cursor", "crosshair")
 		.attr("pointer-events", "visible");
 
-	this.innerSVG = this.g.append("g")
-		.attr("class", "innerSpectrum");
 	this.dragZoomHighlight = this.innerSVG.append("rect").attr("y", 0).attr("width", 0).attr("fill","#addd8e");
 
 	this.plot.on("click", function(){
