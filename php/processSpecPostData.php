@@ -62,12 +62,12 @@
 
 	$cl = array('modMass' => $clModMass);
 
-	if ($tolUnit == "Da"){
-		$customCfg = "LOWRESOLUTION:true";
-	}
-	else {
-		$customCfg = "LOWRESOLUTION:false";
-	}
+	// if ($tolUnit == "Da"){
+	// 	$customCfg = "LOWRESOLUTION:true\n";
+	// }
+	// else {
+	// 	$customCfg = "LOWRESOLUTION:false\n";
+	// }
 
 	$annotation = array(
 		'fragmentTolerance' => $tol,
@@ -75,7 +75,7 @@
 		'ions' => $ions,
 		'cross-linker' => $cl,
 		'precursorCharge' => $preCharge,
-		'custom' => $customCfg
+		'custom' => ['']
 	);
 
 	//final array

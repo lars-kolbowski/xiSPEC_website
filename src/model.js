@@ -75,12 +75,6 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.highlights = Array();
 		this.JSONdata = this.get("JSONdata");
 		this.match = this.get("match");
-		if(this.match !== undefined){
-				this.customSettings = CLMSUI.compositeModelInst.get("clmsModel").get("searches").get(this.match.searchId).customsettings;
-		}
-		else{
-			this.customSettings = "";
-		}
 		this.randId = this.get("randId");
 		//console.log(this.JSONdata);
 		this.annotationData = this.JSONdata.annotation || {};
@@ -562,7 +556,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	request_annotation: function(json_request){
-
+// 		json_request.annotation.custom = json_request.annotation.custom.concat(this.customSettings);
 		this.trigger('request_annotation:pending');
 		console.log("annotation request:", json_request);
 		var self = this;

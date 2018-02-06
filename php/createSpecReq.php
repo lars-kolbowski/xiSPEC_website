@@ -89,12 +89,12 @@
 
 	}
 
-	if ($fragTol[1] == "Da"){
-		$customCfg = "LOWRESOLUTION:true";
-	}
-	else {
-		$customCfg = "LOWRESOLUTION:false";
-	}
+	// if ($fragTol[1] == "Da"){
+	// 	$customCfg = "LOWRESOLUTION:true\n";
+	// }
+	// else {
+	// 	$customCfg = "LOWRESOLUTION:false\n";
+	// }
 
 	$annotation = array(
 		'fragmentTolerance' => $tol,
@@ -102,7 +102,7 @@
 		'ions' => $ions,
 		'cross-linker' => $cl,
 		'precursorCharge' => $preCharge,
-		'custom' => $customCfg
+		'custom' => ['']
 	);
 
 	// $annotation = json_decode($result['annotation']);

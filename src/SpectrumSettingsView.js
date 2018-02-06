@@ -277,20 +277,25 @@ var SpectrumSettingsView = Backbone.View.extend({
 		model.trigger('change'); //necessary for PrecursorInfoView update
 	},
 
-	applyCustomCfg: function(){
-		var json = this.model.get("JSONrequest");
-		if(this.model.MSnTolerance.unit == "ppm"){
-			json['annotation']['custom'] = "LOWRESOLUTION:false\n";	//ToDo: temp fix until new xiAnnotator version is released
-		}
-		else{
-			json['annotation']['custom'] = "LOWRESOLUTION:true\n";	//ToDo: temp fix until new xiAnnotator version is released
-		}
+	applyCustomCfg: function(e){
 
-		json['annotation']['custom'] += $("#settingsCustomCfg-input").val();
+		this.model.otherModel.customSettings = $("#settingsCustomCfg-input").val().split("\n");
+		var json = this.model.get("JSONrequest");
+		// if(this.model.MSnTolerance.unit == "ppm"){
+		// 	json['annotation']['custom'] = ["LOWRESOLUTION:false"];	//ToDo: temp fix until new xiAnnotator version is released
+		// }
+		// else{
+		// 	json['annotation']['custom'] = ["LOWRESOLUTION:true"];	//ToDo: temp fix until new xiAnnotator version is released
+		// }
+
+		json['annotation']['custom'] = $("#settingsCustomCfg-input").val().split("\n");
 
 		this.model.otherModel.request_annotation(json);
 		this.model.otherModel.changedAnnotation = true;
 		this.model.otherModel.trigger("changed:annotation");
+
+		// this.render();
+
 	},
 
 	toggleView: function(){
@@ -530,7 +535,8 @@ var SpectrumSettingsView = Backbone.View.extend({
 		else
 			$(this.crossLinkerModMassWrapper[0][0]).show();
 
-		this.customConfigInput[0][0].value = this.model.customSettings;
+		if (this.model.JSONdata.annotation.custom !== undefined)
+			this.customConfigInput[0][0].value = this.model.JSONdata.annotation.custom.join("\n");
 
 		this.updateStepSize($(this.toleranceValue[0][0]));
 		this.updateStepSize($(this.crossLinkerModMass[0][0]));
