@@ -357,15 +357,18 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.changedAnnotation = true;
 	},
 
-	matchMassToAA: function(delta, peak) {
+	matchMassToAA: function(mass) {
 		var self = this;
 		var aaArray = this.aaMasses.filter(function(d){
-			if(self.MSnTolerance.unit == "ppm"){
-				var uplim = d.monoisotopicMass + peak * self.MSnTolerance.value * 1e-6;
-				var lowlim = d.monoisotopicMass - peak * self.MSnTolerance.value * 1e-6;
-				if(delta < uplim && delta > lowlim)
-					return true;
-			}
+
+			if (Math.abs(mass - d.monoisotopicMass) < 0.01)
+				return true;
+			// if(self.MSnTolerance.unit == "ppm"){
+			// 	var uplim = d.monoisotopicMass + peak * self.MSnTolerance.value * 1e-6;
+			// 	var lowlim = d.monoisotopicMass - peak * self.MSnTolerance.value * 1e-6;
+			// 	if(delta < uplim && delta > lowlim)
+			// 		return true;
+			// }
 			//TODO: matchMass for Da error type
 			// if(self.MSnTolerance.unit == "Da"){
 			// 	var uplim = d.monoisotopicMass + self.MSnTolerance.value;
