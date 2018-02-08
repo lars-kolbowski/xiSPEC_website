@@ -29,6 +29,7 @@ var QCwrapperView = Backbone.View.extend({
 		'click .dockRight' : 'dockRight',
 		'click .dockBottom' : 'dockBottom',
 		'change .plotSelectChkbox': 'updatePlots',
+		'click #downloadQCSVG': 'downloadQCSVG',
 	},
 
 	initialize: function() {
@@ -72,6 +73,13 @@ var QCwrapperView = Backbone.View.extend({
 			.text(function(d) { return d.text; })
 		;
 
+		var downloadButton = this.controlsDiv.append('i')
+		 	.attr("class", "btn btn-1a btn-topNav fa fa-download pointer")
+			.attr("aria-hidden", "true")
+			.attr("id", "downloadQCSVG")
+			.attr("title", "download SVG(s)")
+		;
+
 		var rightControls = this.controlsDiv.append('div')
 			.attr('class', 'rightControls')
 		;
@@ -107,6 +115,10 @@ var QCwrapperView = Backbone.View.extend({
 			.attr('aria-hidden', 'true')
 			.attr('title', 'hide QC plots')
 		;
+	},
+
+	downloadQCSVG: function(){
+		CLMSUI.vent.trigger('downloadQCSVG');
 	},
 
 	splitHorizontal: function(){

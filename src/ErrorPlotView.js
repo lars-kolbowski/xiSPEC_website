@@ -29,6 +29,7 @@ var ErrorPlotView = Backbone.View.extend({
 		this.listenTo(CLMSUI.vent, 'QCabsErr', this.toggleAbsErr);
 		this.listenTo(CLMSUI.vent, 'QCPlotToggle', this.toggleView);
 		this.listenTo(window, 'resize', _.debounce(this.render));
+		this.listenTo(CLMSUI.vent, 'downloadQCSVG', this.downloadSVG);
 
 		var self = this;
 
@@ -39,6 +40,7 @@ var ErrorPlotView = Backbone.View.extend({
 
 		this.wrapper = this.options.wrapper;
 		this.absolute = false;
+		this.isVisible = true;
 
 		var svgId = this.options.svg || this.el.getElementsByTagName("svg")[0];
 		this.svg = d3.select(svgId);
@@ -77,9 +79,52 @@ var ErrorPlotView = Backbone.View.extend({
 		this.listenTo(this.model, 'changed:Highlights', this.updateHighlights);
 	},
 
+	//ToDo: duplicate with SpectrumView2 downloadSVG function
+	downloadSVG: function(){
+		if(this.isVisible){
+			var svgSel = d3.select(this.el).selectAll("svg");
+			var svgArr = svgSel[0];
+			var svgStrings = CLMSUI.svgUtils.capture (svgArr);
+			var svgXML = CLMSUI.svgUtils.makeXMLStr (new XMLSerializer(), svgStrings[0]);
+
+			var charge = this.model.JSONdata.annotation.precursorCharge;
+			var pepStrs = this.model.pepStrsMods;
+			var linkSites = Array(this.model.JSONdata.LinkSite.length);
+
+			this.model.JSONdata.LinkSite.forEach(function(ls){
+				linkSites[ls.peptideId] = ls.linkSite;
+			});
+
+			//insert CL sites with #
+			if (linkSites.length > 0){
+
+				var ins_pepStrs = Array();
+				pepStrs.forEach(function(pepStr, index){
+					var positions = [];
+					for(var i=0; i<pepStr.length; i++){
+						if(pepStr[i].match(/[A-Z]/) != null){
+							positions.push(i);
+						};
+					}
+					var clAA_index = positions[linkSites[index]]+1;
+					var ins_pepStr = pepStr.slice(0, clAA_index) + "#" + pepStr.slice(clAA_index, pepStr.length);
+					pepStrs[index] = ins_pepStr;
+				})
+			}
+
+			var svg_name = pepStrs.join("-") + "_z=" + charge;
+			svg_name += svgSel.node().id;
+			svg_name += ".svg";
+			download (svgXML, 'application/svg', svg_name);
+		};
+	},
+
 	toggleView: function(id){
-		if (id == this.options.xData)
+		if (id == this.options.xData){
+			this.isVisible = (this.isVisible ? false : true);
 			$(this.el).toggle();
+		}
+
 	},
 
 	clear: function() {
