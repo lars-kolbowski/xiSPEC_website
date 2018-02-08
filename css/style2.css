@@ -469,6 +469,11 @@ body, input, select, textarea {
   text-transform: initial;
 }
 
+.measureMasses {
+    font-size: 0.8em;
+    color: #666;
+}
+
 .label{
     font-size: 0.9em;
     line-height: 3.5em;

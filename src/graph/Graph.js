@@ -103,7 +103,10 @@ Graph = function(targetSvg, model, options) {
 			.style("z-index", 1);
 	}
 
-
+	this.highlights = this.innerSVG.append("g").attr("class", "peakHighlights");
+	this.peaksSVG = this.innerSVG.append("g").attr("class", "peaks");
+	this.lossyAnnotations = this.innerSVG.append("g").attr("class", "lossyAnnotations");
+	this.annotations = this.innerSVG.append("g").attr("class", "annotations");
 
 	//MeasuringTool
 	this.measuringTool = this.innerSVG.append("g").attr("class", "measuringTool");
@@ -122,25 +125,26 @@ Graph = function(targetSvg, model, options) {
 		.attr("text-anchor", "middle")
 		.attr("pointer-events", "none")
 
-	this.measureTooltip = this.measuringTool.append("g");
+	this.measureTooltip = this.measuringTool.append("g")
+		.attr("style", "text-anchor: middle;")
+	;
 	this.measureTooltipBackground = this.measureTooltip.append("rect")
 		.attr("x", 0)
 		.attr("y", 0)
-		.attr("fill", "rgba(230,230,230,0.4)")
-		.attr("style", "outline: thin solid rgba(128,128,128,0.5)")
+		.attr("fill", "rgb(200,200,200)")
+		.attr("fill-opacity", "0.5")
+		.attr("stroke-opacity", "0.5")
+		.attr("stroke-width", "1px")
+		.attr("stroke", "rgb(100,100,100)")
 	;
+	
 	this.measureTooltipText = new Array();
 	this.measureTooltipText['from'] = this.measureTooltip.append("text");
 	this.measureTooltipText['to'] = this.measureTooltip.append("text");
 	this.measureTooltipText['match'] = this.measureTooltip.append("text");
-	this.measureTooltipText['masses'] = this.measureTooltip.append("g");
-
-
-	this.highlights = this.innerSVG.append("g").attr("class", "peakHighlights");
-	this.peaksSVG = this.innerSVG.append("g").attr("class", "peaks");
-	this.lossyAnnotations = this.innerSVG.append("g").attr("class", "lossyAnnotations");
-	this.annotations = this.innerSVG.append("g").attr("class", "annotations");
-
+	this.measureTooltipText['masses'] = this.measureTooltip.append("g")
+		.attr("class", "measureMasses")
+	;
 
 	// add Chart Title
 	if (options.title) {
@@ -500,8 +504,11 @@ Graph.prototype.measure = function(on){
 			}
 			var massArr = [];
 			for(i=1; i<7; i++){
-				massArr.push(distance * i);
-			}
+				var massObj = new Object();
+				massObj.mass = distance * i;
+				massObj.matchAA = self.model.matchMassToAA(distance * i)
+				massArr.push(massObj);
+			};
 
 			var yText = coords[1] + 25;
 			self.measureTooltipText['from']
@@ -522,16 +529,15 @@ Graph.prototype.measure = function(on){
 			self.measureTooltipText['masses'].selectAll('text')
 				.data(massArr)
 				.enter().append('text')
-				.text(function (d,i) {
+				.text(function (d, i) {
+					var z = i + 1;
 					var matchText = "";
-					var z = i+1;
-					matchedAA = self.model.matchMassToAA(d);
-					if (matchedAA.length > 0)
-						matchText = "("+matchedAA+")";
-					return "z="+z+": " + d.toFixed(self.model.showDecimals) + " Da " + matchText;
+					if (d.matchAA.length > 0)
+						matchText = "("+d.matchAA+")";
+					return "z="+z+": " + d.mass.toFixed(self.model.showDecimals) + " Da " + matchText;
 				})
 				.attr("y", function (d) { return yText += 15; } )
-				// .attr("x", positionX - 50)
+				.attr("class", function(d){ if(d.matchAA.length > 0) return 'matchedAA' })
 			;
 
 			var maxTextWidth = Math.max.apply(Math,self.measureTooltip.selectAll('text')[0].map(function(t){return d3.select(t).node().getComputedTextLength();}));
@@ -545,11 +551,14 @@ Graph.prototype.measure = function(on){
 			;
 
 			self.measureTooltip.selectAll('text')
-				.attr("x", backgroundWidthX + 10)
+				.attr("x", positionX)
 			;
-			// self.measureTooltipText['masses'].selectAll('text')
-			// 	.attr("x", backgroundWidthX + 20)
-			// 	;
+			self.measureTooltipText['masses'].selectAll('text')
+				.attr("fill", "#333")
+			;
+			self.measureTooltipText['masses'].selectAll('.matchedAA')
+				.attr("fill", "black")
+			;
 		}
 
 		this.measureBrush = d3.svg.brush()
