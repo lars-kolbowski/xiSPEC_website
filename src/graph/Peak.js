@@ -65,7 +65,7 @@ function Peak (id, graph){
 	};
 
 	//svg elements
-	this.g = this.graph.peaks.append('g');
+	this.g = this.graph.peaksSVG.append('g');
 
 	this.linegroup = this.g.append('g');
 
@@ -163,6 +163,13 @@ function Peak (id, graph){
 			self.graph.tooltip.transition()
 				.duration(200)
 				.style("opacity", .9);
+
+			//if cursor is too close to left window edge change tooltip to other side
+			if (window.innerWidth - x < 250){
+				var x = x - 250;
+				var y = y + 20;
+			}
+
 			self.graph.tooltip.style("left", (x + 15) + "px")
 				.style("top", y + "px");
 		}
@@ -417,7 +424,7 @@ Peak.prototype.highlight = function(show, fragments){
 		   ;
 		    this.labels.filter(ffunc).attr("display", "inline");
 		}
-		this.graph.peaks.node().appendChild(this.g.node());
+		this.graph.peaksSVG.node().appendChild(this.g.node());
 		this.line.attr("stroke", this.colour);
 	} else {
 		this.highlightLine.attr("opacity",0);

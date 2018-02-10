@@ -4,17 +4,30 @@
 
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 
-	if (isset($_SESSION['tmpDB'])){
-		$dbname = "tmp/".session_id();
+	if ($_GET['tmp'] == '1'){
+		$dbname = "tmp/".$_GET['db'];
 	}
-	else {
+	elseif (isset($_GET['db'])){
 		$dbname = "saved/".$_GET['db'];
 	}
+	else {
+		die();
+	}
 
+	//check authentication
+	if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
+	if(!in_array($_GET['db'], $_SESSION['access'])){
+		//if no valid authentication re-test authentication
+		//this includes a connection string to the sql database
+		require('../../xiSPEC_sql_conn.php');
+		require('checkAuth.php');
+	}
+	// re-check authentication
 	if(!in_array($_GET['db'], $_SESSION['access'])){
 		$json['error'] = "Authentication error occured!";
 		die(json_encode($json));
 	}
+
 	$xiSPEC_ms_parser_dir = '../../xiSPEC_ms_parser/';
 	$dir = 'sqlite:'.$xiSPEC_ms_parser_dir.'/dbs/'.$dbname.'.db';
 	$dbh = new PDO($dir) or die("cannot open the database");
@@ -76,8 +89,21 @@
 
 	}
 
+	// if ($fragTol[1] == "Da"){
+	// 	$customCfg = "LOWRESOLUTION:true\n";
+	// }
+	// else {
+	// 	$customCfg = "LOWRESOLUTION:false\n";
+	// }
 
-	$annotation = array('fragmentTolerance' => $tol, 'modifications' => $modifications, 'ions' => $ions, 'cross-linker' => $cl, 'precursorCharge' => $preCharge, 'custom' => "LOWRESOLUTION:false"); //ToDo: LOWRESOLUTION: true setting
+	$annotation = array(
+		'fragmentTolerance' => $tol,
+		'modifications' => $modifications,
+		'ions' => $ions,
+		'cross-linker' => $cl,
+		'precursorCharge' => $preCharge,
+		'custom' => ['']
+	);
 
 	// $annotation = json_decode($result['annotation']);
 

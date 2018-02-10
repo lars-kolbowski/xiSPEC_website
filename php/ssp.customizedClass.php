@@ -210,11 +210,11 @@ return $where;
 * @return array Server-side processing response array
 *
 */
-static function simple ( $request, $sql_details, $table, $primaryKey, $columns, $joinQuery = NULL, $extraWhere = '', $groupBy = '', $selectModify = '')
+static function simple ( $request, $sql_details, $table, $primaryKey, $columns, $joinQuery = NULL, $extraWhere = '', $groupBy = '', $selectModify = '', $jsonCol = NULL)
 {
 $bindings = array();
 $db = SSP::sql_connect( $sql_details );
-// Build the SQL query string from the request
+
 $limit = SSP::limit( $request, $columns );
 $order = SSP::order( $request, $columns, $joinQuery );
 $where = SSP::filter( $request, $columns, $bindings, $joinQuery );
@@ -233,8 +233,14 @@ $groupBy
 $order";
 //echo $query;
 }else{
+	if ($jsonCol){
+		$fromModify = ', json_each('.$table.'.'.$jsonCol.')';
+	}
+	else {
+		$fromModify = '';
+	}
 $query = "SELECT ".$selectModify." ".implode(", ", SSP::pluck($columns, 'db'))."
-FROM `$table`
+FROM `$table`".$fromModify."
 $where
 $extraWhere
 $groupBy
@@ -320,6 +326,7 @@ static function sql_exec ( $db, $bindings, $sql=null )
 if ( $sql === null ) {
 $sql = $bindings;
 }
+// echo $sql;
 $stmt = $db->prepare( $sql );
 
 //echo $sql;

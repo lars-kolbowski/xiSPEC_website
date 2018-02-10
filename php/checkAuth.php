@@ -1,35 +1,66 @@
 <?php
 
-	#this includes a connection string to the sql database
-	require('../../xiSPEC_sql_conn.php');
+	$allowAccess = false;
 
-
-	#this includes a connection string to the sql database
-	require('../../xiSPEC_sql_conn.php');
 	$xiSPECdb = new PDO("mysql:host=localhost;dbname=".$DBname, $DBuser, $DBpass) or die("cannot open the database");
 	$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 
-	if (!isset($_POST['dbPass']) || !isset($_POST['dbName'])) {
-		header("Location: ../upload.php");
-		exit();
+	// get database name
+	if (isset($_GET['sid'])) {
+		$stmt = $xiSPECdb->prepare("SELECT name FROM dbs WHERE share = :share;");
+		$stmt->bindParam(':share', $_GET['sid'], PDO::PARAM_STR);
+		$stmt->execute();
+		$dbName = $stmt->fetchColumn();
+
+		if(!$dbName)
+			die("authentication failure: no such database");
+			// header('Location: index.php');
+
+			$allowAccess = true;
+	}
+	elseif (isset($_GET['db'])) {
+			$dbName = $_GET['db'];
+	}
+	else{
+		die("authentication failure: no dbname given");
+		// header('Location: index.php');
 	}
 
-	$stmt = $xiSPECdb->prepare("SELECT pass FROM dbs WHERE name = :name;");
-	$stmt->bindParam(':name', $_POST['dbName'], PDO::PARAM_STR);
-	$stmt->execute();
-	$passHash = $stmt->fetchColumn();
+	//check if it's a public database
+		$stmt = $xiSPECdb->prepare("SELECT pass FROM dbs WHERE name = :name;");
+		$stmt->bindParam(':name', $dbName, PDO::PARAM_STR);
+		$stmt->execute();
+		$passHash = $stmt->fetchColumn();
 
-	if (password_verify($_POST['dbPass'], $passHash)){
-		if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
-
-		if(!in_array($_POST['dbName'], $_SESSION['access'])){
-			$_SESSION['access'][] = $_POST['dbName'];
+		if($passHash == 'public'){
+			$allowAccess = true;
+			$public = true;
 		}
-		header("Location: ../viewSpectrum.php?db=".$_POST['dbName']);
-	}
-	else
-		header("Location: ../auth.php?db=".$_POST['dbName']."&e=-1");
+		// if not check if the use is authentified to see it
+		else{
+			//otherwise redirect him to the password authentication page
+			if(!in_array($dbName, $_SESSION['access']))
+				header("Location: auth.php?db=".$dbName);
+			else {
+				$allowAccess = true;
+			}
+		}
+
+		//finally add database name to SESSION if valid authentication was provided
+		if($allowAccess){
+			if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
+			if(!in_array($dbName, $_SESSION['access'])){
+				$_SESSION['access'][] = $dbName;
+			}
+		}
+		else{
+			die("authentication failure!");
+			// header('Location: index.php');
+		}
+	// }
+
+
 
 ?>

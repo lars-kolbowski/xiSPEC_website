@@ -21,9 +21,9 @@
 
 //TODO: find a better place for this?
 d3.selection.prototype.moveToFront = function() {
-  return this.each(function(){
-    this.parentNode.appendChild(this);
-  });
+	return this.each(function(){
+		this.parentNode.appendChild(this);
+	});
 };
 
 var FragmentationKeyView = Backbone.View.extend({
@@ -75,8 +75,8 @@ var FragmentationKeyView = Backbone.View.extend({
 		for (var i = 0; i < this.peptideStrs.length; i++) {
 			this.peptides[i] = this.peptideStrs[i];
 		};
-	    this.pepLetters = [];
-	    this.pepLetterHighlights = [];
+			this.pepLetters = [];
+			this.pepLetterHighlights = [];
 		this.modLetters = [];
 		this.modLetterHighlights = [];
 		this.pepoffset = [0,0];
@@ -117,16 +117,34 @@ var FragmentationKeyView = Backbone.View.extend({
 
 
 		/*
-	    #==========================================================================
-	    #  FRAGMENTATION KEY STARTS HERE
-	    #==========================================================================
+			#==========================================================================
+			#  FRAGMENTATION KEY STARTS HERE
+			#==========================================================================
 		*/
+		this.fraglines = new Array();
+		var self = this;
 
+		if(fragments !== undefined){
+			for (var i = 0; i < fragments.length; i++) {
+				for (var r = 0; r < fragments[i].range.length; r++) {
+					var pepId = fragments[i].range[r].peptideId;
+					if (fragments[i].range[r].from != 0) //N-terminal fragment
+						this.annotations[pepId][fragments[i].range[r].from-1].y.push(fragments[i]);
+					if (fragments[i].range[r].to != this.peptideStrs[pepId].length-1) //C-terminal fragment
+						this.annotations[pepId][fragments[i].range[r].to].b.push(fragments[i]);
+				}
+			};
+			console.log(this.annotations);
 
-	    this.xStep = 22;
+			this.drawFragmentationEvents(0);
+			if(this.peptides[1])
+				this.drawFragmentationEvents(1);
+		}
 
-	    // the letters
-	    this.drawPeptides();
+			this.xStep = 22;
+
+			// the letters
+			this.drawPeptides();
 		// this.drawPeptide( 0, 20, 5);
 		// if(this.peptides[1])
 			//this.drawPeptide( 1, 71, 83);
@@ -159,7 +177,7 @@ var FragmentationKeyView = Backbone.View.extend({
 				.attr("stroke-width", 1.5)
 				.style("cursor", "pointer");
 
-      //line for changing
+			//line for changing
 			this.changeCLline = this.CL.append("line")
 				.attr("x1", this.xStep * (CLpos - 1))
 				.attr("y1", 25)
@@ -175,10 +193,10 @@ var FragmentationKeyView = Backbone.View.extend({
 					self.CLlineHighlight.attr("opacity", 0.8);
 					self.tooltip.text("Click to change cross-link position");
 					self.tooltip.transition()
-					    .duration(200)
-					    .style("opacity", .9);
+							.duration(200)
+							.style("opacity", .9);
 					self.tooltip.style("left", (d3.event.layerX + 15) + "px")
-					    .style("top", (d3.event.layerY) + "px");
+							.style("top", (d3.event.layerY) + "px");
 				}
 			});
 
@@ -208,7 +226,6 @@ var FragmentationKeyView = Backbone.View.extend({
 		}
 
 		//change-mod svg element
-
 		var changeModLetterG = this.g.append("g")
 		this.changeModLetterHighlight = changeModLetterG.append("text")
 			.attr("text-anchor", "middle")
@@ -220,46 +237,21 @@ var FragmentationKeyView = Backbone.View.extend({
 			.style("font-size", "0.7em")
 			.style("cursor", "default");
 
-
-		this.fraglines = new Array();
-		var self = this;
-
-		if(fragments !== undefined){
-			for (var i = 0; i < fragments.length; i++) {
-				for (var r = 0; r < fragments[i].range.length; r++) {
-					var pepId = fragments[i].range[r].peptideId;
-					if (fragments[i].range[r].from != 0) //N-terminal fragment
-						this.annotations[pepId][fragments[i].range[r].from-1].y.push(fragments[i]);
-					if (fragments[i].range[r].to != this.peptideStrs[pepId].length-1) //C-terminal fragment
-						this.annotations[pepId][fragments[i].range[r].to].b.push(fragments[i]);
-				}
-			};
-			console.log(this.annotations);
-
-		    this.drawFragmentationEvents(0);
-			if(this.peptides[1])
-				this.drawFragmentationEvents(1);
-		}
-
-	    this.drawFragmentationEvents(0);
-		if(this.peptides[1])
-			this.drawFragmentationEvents(1);
-
 		//changeInfo
 		//ToDo: make cleaner
 		if(this.model.match !== undefined){
 			if (this.model.match.oldLinkPos !== undefined){
-			    var linkPos = [];
-			    for (var i = 0; i < this.peptides.length; i++) {
-			    	linkPos.push(this.model.match.oldLinkPos[i])
-			    	var j = 0;
-			    	while(this.peptides[i][j] == "#") {
-			    			linkPos[i] += 1
-			    			j++;
-			    	}
-			    }
-			    this.origCL = this.g.append("g");
-			    this.origCLHighlight = this.origCL.append("line")
+					var linkPos = [];
+					for (var i = 0; i < this.peptides.length; i++) {
+						linkPos.push(this.model.match.oldLinkPos[i])
+						var j = 0;
+						while(this.peptides[i][j] == "#") {
+								linkPos[i] += 1
+								j++;
+						}
+					}
+					this.origCL = this.g.append("g");
+					this.origCLHighlight = this.origCL.append("line")
 					.attr("x1", this.xStep * (linkPos[0] - 1))
 					.attr("y1", 25)
 					.attr("x2", this.xStep * (linkPos[1] - 1))
@@ -268,7 +260,7 @@ var FragmentationKeyView = Backbone.View.extend({
 					.attr("stroke-width", 5)
 					.attr("opacity", 0)
 					.style("cursor", "pointer");
-			    this.origCLline = this.origCL.append("line")
+					this.origCLline = this.origCL.append("line")
 					.attr("x1", this.xStep * (linkPos[0] - 1))
 					.attr("y1", 25)
 					.attr("x2", this.xStep * (linkPos[1] - 1))
@@ -280,10 +272,10 @@ var FragmentationKeyView = Backbone.View.extend({
 					self.origCLHighlight.attr("opacity", 1);
 					self.tooltip.text("Revert to original cross-link position");
 					self.tooltip.transition()
-					    .duration(200)
-					    .style("opacity", .9);
+							.duration(200)
+							.style("opacity", .9);
 					self.tooltip.style("left", (d3.event.layerX + 15) + "px")
-					    .style("top", (d3.event.layerY) + "px");
+							.style("top", (d3.event.layerY) + "px");
 				});
 				this.origCL.on("mouseout", function(){
 					self.origCLHighlight.attr("opacity", 0);
@@ -319,28 +311,28 @@ var FragmentationKeyView = Backbone.View.extend({
 				for (var a = 0; a < n; a++) {arr.push("#")}
 				return arr;
 			}
-		    // #==========================================================================
-		    // #    account for crosslink shift
-		    // #    this alings the peptide sequences at the cross-link site
-		    // #==========================================================================
-		    var shift = this.linkPos[0].linkSite - this.linkPos[1].linkSite;
-		    var spaceArray = arrayOfHashes(Math.abs(shift));
-		    if  (shift <= 0) {
-		        this.peptides[0] = Array(Math.abs(shift) + 1).join("#") + this.peptideStrs[0];
-		        this.pepoffset[0] = Math.abs(shift) - 0;
-		    }
-		    else {
-		        this.peptides[1] = Array(shift + 1).join("#") + this.peptideStrs[1];
-		        this.pepoffset[1] = shift - 0;
+				// #==========================================================================
+				// #    account for crosslink shift
+				// #    this alings the peptide sequences at the cross-link site
+				// #==========================================================================
+				var shift = this.linkPos[0].linkSite - this.linkPos[1].linkSite;
+				var spaceArray = arrayOfHashes(Math.abs(shift));
+				if  (shift <= 0) {
+						this.peptides[0] = Array(Math.abs(shift) + 1).join("#") + this.peptideStrs[0];
+						this.pepoffset[0] = Math.abs(shift) - 0;
+				}
+				else {
+						this.peptides[1] = Array(shift + 1).join("#") + this.peptideStrs[1];
+						this.pepoffset[1] = shift - 0;
 			}
 
-		    var diff = this.peptideStrs[0].length - this.peptideStrs[1].length;
-		    spaceArray = arrayOfHashes(Math.abs(diff));
-		    if (diff <= 0) {
-		        this.peptides[0] = this.peptides[0] + Array(Math.abs(diff) + 1).join("#");
+				var diff = this.peptideStrs[0].length - this.peptideStrs[1].length;
+				spaceArray = arrayOfHashes(Math.abs(diff));
+				if (diff <= 0) {
+						this.peptides[0] = this.peptides[0] + Array(Math.abs(diff) + 1).join("#");
 			}
-		    else {
-		        this.peptides[1] = this.peptides[1] + Array(diff + 1).join("#");
+				else {
+						this.peptides[1] = this.peptides[1] + Array(diff + 1).join("#");
 			}
 		}
 	},
@@ -541,9 +533,9 @@ var FragmentationKeyView = Backbone.View.extend({
 					self.CLlineHighlight.attr("x1", pepLetterHighlight.getAttribute("x"));
 				}
 				else if (pepLetterData.pepIndex == 1){
-			 		self.changeCLline
-			 			.attr("x2", pepLetterHighlight.getAttribute("x"))
-			 			.attr("opacity", 1);
+					self.changeCLline
+						.attr("x2", pepLetterHighlight.getAttribute("x"))
+						.attr("opacity", 1);
 					self.CLlineHighlight.attr("x2", pepLetterHighlight.getAttribute("x"));
 				}
 				pepLetterHighlight.setAttribute("opacity", 1);
@@ -562,6 +554,7 @@ var FragmentationKeyView = Backbone.View.extend({
 					shortMod: short_modname(self.pepModsArray[pepIndex][i]),
 					pepIndex: pepIndex,
 					pos: shift+i,
+					modMass: get_mod_mass(self.pepModsArray[pepIndex][i])
 				})
 			}
 
@@ -573,8 +566,20 @@ var FragmentationKeyView = Backbone.View.extend({
 				return fullModName;
 			};
 
-			var modLettersG = pep.group.selectAll("g.modLetterG").data (mod_data);
+			function get_mod_mass(fullModName){
+				if (fullModName === undefined)
+					return;
+				var mod = self.model.annotationData.modifications.filter(function(m){
+					return m.id == fullModName;
+				});
+				if (mod.length < 1){
+					console.log('error finding modification');
+					return;
+				}
+				return mod[0].massDifference.toFixed(6);
+			};
 
+			var modLettersG = pep.group.selectAll("g.modLetterG").data (mod_data);
 			var modLetterG = modLettersG.enter()
 				.append('g')
 				.attr('class', "modLetterG")
@@ -584,16 +589,20 @@ var FragmentationKeyView = Backbone.View.extend({
 						//highlight pepLetter
 						var pepIndex = this.__data__.pepIndex;
 						var pos = this.__data__.pos;
-						d3.select(self.pepLetterHighlights[pepIndex][0][pos]).style("opacity", 1);
+						var modMass = this.__data__.modMass;
+						var tooltipHTML = "Click to change the position";
+						if (modMass !== undefined)
+							tooltipHTML += "</br>mod mass: " + modMass;
 
+						d3.select(self.pepLetterHighlights[pepIndex][0][pos]).style("opacity", 1);
 						d3.select(this).select("text.modLetterHighlight").style("opacity", 1); //highlight modLetter
 						d3.select(this).moveToFront();
-						self.tooltip.text("Click to change the position");
+						self.tooltip.html(tooltipHTML);
 						self.tooltip.transition()
 							.duration(200)
 							.style("opacity", .9);
-						self.tooltip.style("left", (d3.event.layerX + 15) + "px")
-							.style("top", (d3.event.layerY) + "px");
+						self.tooltip.style("left", (d3.event.pageX + 15) + "px")
+							.style("top", (d3.event.pageY) + "px");
 						d3.select(this).selectAll("text")
 							.text(function(d){return d.fullMod});
 					}
@@ -707,14 +716,14 @@ var FragmentationKeyView = Backbone.View.extend({
 
 			//
 			var duplicates = function(a) {
-			    for(var i = 0; i <= a.length; i++) {
-			        for(var j = i; j <= a.length; j++) {
-			            if(i != j && a[i] == a[j]) {
-			                return true;
-			            }
-			        }
-			    }
-			    return false;
+					for(var i = 0; i <= a.length; i++) {
+							for(var j = i; j <= a.length; j++) {
+									if(i != j && a[i] == a[j]) {
+											return true;
+									}
+							}
+					}
+					return false;
 			}
 			//
 
@@ -805,8 +814,8 @@ var FragmentationKeyView = Backbone.View.extend({
 	},
 
 	resize: function(){
-	    var parentDivWidth = $(this.el).width();
-	    var fragKeyWidth = $(".fragKey")[0].getBBox().width;
+			var parentDivWidth = $(this.el).width();
+			var fragKeyWidth = $(".fragKey")[0].getBBox().width;
 		if (parentDivWidth < fragKeyWidth+40)
 			this.fragKeyWrapper.attr("transform", "scale("+parentDivWidth/(fragKeyWidth+40)+")")
 		else

@@ -62,10 +62,29 @@
 
 	$cl = array('modMass' => $clModMass);
 
-	$annotation = array('fragmentTolerance' => $tol, 'modifications' => $modifications, 'ions' => $ions, 'cross-linker' => $cl, 'precursorCharge' => $preCharge, 'custom' => "LOWRESOLUTION:false"); //ToDo: LOWRESOLUTION: true setting
+	// if ($tolUnit == "Da"){
+	// 	$customCfg = "LOWRESOLUTION:true\n";
+	// }
+	// else {
+	// 	$customCfg = "LOWRESOLUTION:false\n";
+	// }
+
+	$annotation = array(
+		'fragmentTolerance' => $tol,
+		'modifications' => $modifications,
+		'ions' => $ions,
+		'cross-linker' => $cl,
+		'precursorCharge' => $preCharge,
+		'custom' => ['']
+	);
 
 	//final array
-	$postData = array('Peptides' => $peptides, 'LinkSite' => $linkSites, 'peaks' => $peaks, 'annotation' => $annotation);
+	$postData = array(
+		'Peptides' => $peptides,
+		'LinkSite' => $linkSites,
+		'peaks' => $peaks,
+		'annotation' => $annotation
+	);
 
 	$postJSON = json_encode($postData);
 	//var_dump(json_encode($postData));

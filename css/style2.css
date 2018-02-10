@@ -248,6 +248,15 @@ body, input, select, textarea {
     margin: 2px 2px 0px 2px;
 }
 
+#revertAnnotation{
+  color: rgb(154, 186, 255);
+}
+
+.disabled{
+  color: #999!important;
+  cursor: default;
+}
+
 #dbcontrols .btn-topNav{
     margin-left: 0px;
 }
@@ -322,7 +331,17 @@ body, input, select, textarea {
 
 .brush .extent {
 }
-.subViewControls{
+
+.plotsDiv {
+    display: flex;
+    flex-direction: column;
+    flex-grow:  1;
+    flex-shrink:  0;
+    height: calc(100% - 35px);
+    position: relative;
+}
+
+.subViewHeader{
   color: #ffffff;
   padding-left: 0.5em;
   border-top: 1px solid black;
@@ -330,15 +349,80 @@ body, input, select, textarea {
   background: rgba(117, 0, 0, 1);
 }
 
-.subViewControls .fa{
+.subViewHeader .btn{
+  padding: 0px 6px;
+}
+
+.right{
+  order: 1;
+  border-left: 1px solid;
+}
+
+.right .subViewContent-plot{
+  /* margin-top: 1em; */
+  flex-grow: 1;
+  display: flex;
+}
+
+.left{
+  order: -2;
+  border-right: 1px solid;
+}
+
+.left .subViewContent-plot{
+  margin-top: 1em;
+}
+
+#QCdiv{
+  position: relative;
+  /* flex-grow:  1; */
+  /* display: flex; */
+  /* flex-flow:  column; */
+}
+
+.rightControls{
+  order;
+  float: right;
+  margin-right: 20px;
+}
+
+.subViewHeader .fa{
+  margin: 2px 3px;
+}
+
+.subViewHeader .minMax{
   position: absolute;
   right: 5px;
-  margin-top: 2px;
 }
+
+.subViewHeader .dockRight{
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.subViewHeader .dockBottom{
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.subViewHeader .dockLeft{
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+
 
 #bottomDiv {
     position: relative; /* will overlay previous absolute divs i.e. distance slider */
-    padding-top: 2px;
+    padding-top: 1px;
 }
 
 #modificationTable .form-control{
@@ -354,7 +438,7 @@ body, input, select, textarea {
 
 .modal{
   background: #333;
-  width:650px; 
+  width:650px;
   text-align: center;
 }
 
@@ -383,6 +467,11 @@ body, input, select, textarea {
 
 .peaks .label{
   text-transform: initial;
+}
+
+.measureMasses {
+    font-size: 0.8em;
+    color: #666;
 }
 
 .label{
@@ -484,6 +573,13 @@ body, input, select, textarea {
     cursor: pointer;
     white-space: nowrap;
 }
+.uniprotAccession{
+  color: #333;
+}
+.dataTable a {
+    color: #000;
+    text-decoration: underline;
+}
 #altListTable tr {
     cursor: pointer;
 }
@@ -492,7 +588,6 @@ body, input, select, textarea {
 }
 
 #specListColSelect input{
-  /* line-height: 0.4em; */
   margin: 2px!important;
 }
 
@@ -508,8 +603,8 @@ body, input, select, textarea {
     margin-bottom: 5px;
 }
 .listToolbar .btn{
-    padding: 4px 8px;
-    margin: 2px 3px;
+    padding: 2px 8px;
+    margin: 5px 0px 2px 3px;
 }
 /* .specListToolbar .btn{
     border-right: 1px solid white;
@@ -758,7 +853,7 @@ A.btn {
 /* For use with Split.js */
 
 .gutter {
-  background-color: #eee;
+  background-color: #333;
   background-repeat: no-repeat;
   background-position: 50%;
   position: relative; /* will overlay previous absolute divs i.e. distance slider */

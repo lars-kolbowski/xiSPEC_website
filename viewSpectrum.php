@@ -3,78 +3,25 @@
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
-
+$justSaved = 'false';
 if (empty($_POST)){
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 	$dbView = true;
-	$justSaved = 'false';
+
 	if(isset($_GET['sid']) || isset($_GET['db'])){
 		$tmpDB = false;
 
 		#this includes a connection string to the sql database
 		require('../xiSPEC_sql_conn.php');
-
-		$xiSPECdb = new PDO("mysql:host=localhost;dbname=".$DBname, $DBuser, $DBpass) or die("cannot open the database");
-		$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-		//share db link
-		if(!empty($_GET['sid'])){
-			$stmt = $xiSPECdb->prepare("SELECT name FROM dbs WHERE share = :share;");
-			$stmt->bindParam(':share', $_GET['sid'], PDO::PARAM_STR);
-			$stmt->execute();
-			$dbName = $stmt->fetchColumn();
-
-			if(!$dbName)
-				header('Location: index.php');
-
-			if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
-			if(!in_array($dbName, $_SESSION['access'])){
-				$_SESSION['access'][] = $dbName;
-			}
-
-			$shareLink = "http://" . $_SERVER['SERVER_NAME'] . "/viewSpectrum.php?sid=" . $_GET['sid'];
-		}
-
-		//normal db link
-		else if(!empty($_GET['db'])){
-
-			if(isset($_SESSION[$_GET['db']])){
-				unset($_SESSION[$_GET['db']]);
-				$justSaved = 'true';
-			}
-
-			$stmt = $xiSPECdb->prepare("SELECT share, pass FROM dbs WHERE name = :name;");
-			$stmt->bindParam(':name', $_GET['db'], PDO::PARAM_STR);
-			$stmt->execute();
-			$result = $stmt->fetch();
-
-			if (!$result) {
-				header("Location: index.php");
-				exit();
-			}
-
-			//public check
-			if ($result['pass'] === 'public'){
-				if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
-				if(!in_array($_GET['db'], $_SESSION['access'])){
-					$_SESSION['access'][] = $_GET['db'];
-				}
-				$public = true;
-			}
-
-			if($result['share'] != null)
-				$shareLink = (isset($_SERVER['HTTPS']) ? "https://" : "http://") . $_SERVER['SERVER_NAME'] . "/viewSpectrum.php?sid=" . $result['share'];
-			else
-				$shareLink = false;
-
-			$dbName = $_GET['db'];
-		}
-		//check Authentication
-		if(!in_array($dbName, $_SESSION['access'])){
-			header('Location: auth.php?db='.$_GET['db']);
-		}
+		require('php/checkAuth.php');
 		//log access
 		require("php/logAccess.php");
+
+		if(isset($_SESSION[$_GET['db']])){
+			unset($_SESSION[$_GET['db']]);
+			$justSaved = 'true';
+		}
+
 	}
 	elseif(isset($_SESSION['tmpDB'])){
 		$dbName = $_SESSION['tmpDB'];
@@ -99,7 +46,7 @@ else{
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>xiSPEC<?php if(isset($dbName) && !$tmpDB) echo " - ".$dbName; ?></title>
+		<title>xiSPEC<?php if(isset($dbName) && !$tmpDB) echo " | ".$dbName; ?></title>
 			<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 			<meta name="description" content="mass spectrometry data analysis and visualization tool" />
 			<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -120,7 +67,7 @@ else{
 
 			<script type="text/javascript" src="./vendor/jscolor.min.js"></script>
 			<script type="text/javascript" src="./vendor/c3.js"></script>
-			<script type="text/javascript" src="./vendor/split.js"></script>
+			<script type="text/javascript" src="./vendor/split.min.js"></script>
 			<script type="text/javascript" src="./vendor/svgexp.js"></script>
 			<script type="text/javascript" src="./vendor/spin.js"></script>
 			<script type="text/javascript" src="./vendor/byrei-dyndiv_1.0rc1.js"></script>
@@ -138,13 +85,16 @@ else{
 			<script type="text/javascript" src="./src/SpectrumSettingsView.js"></script>
 			<script type="text/javascript" src="./js/PeptideView.js"></script>
 			<script type="text/javascript" src="./src/PepInputView.js"></script>
-			<script type="text/javascript" src="./src/ErrorIntensityPlotView.js"></script>
+			<script type="text/javascript" src="./src/QCwrapperView.js"></script>
+			<script type="text/javascript" src="./src/ErrorPlotView.js"></script>
 			<script type="text/javascript" src="./src/FragKey/KeyFragment.js"></script>
 			<script type="text/javascript" src="./src/graph/Graph.js"></script>
 			<script type="text/javascript" src="./src/graph/Peak.js"></script>
 			<script type="text/javascript" src="./src/graph/Fragment.js"></script>
 <?php if($dbView)
-echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
+echo 	'<script type="text/javascript" src="./src/TableWrapperView.js"></script>
+		<script type="text/javascript" src="./src/DataTableView.js"></script>
+		<script type="text/javascript" src="./js/specListTable.js"></script>
 		<script type="text/javascript" src="./js/altListTable.js"></script>';
 ?>
 			<script>
@@ -152,7 +102,8 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		var model_vars = {
 			baseDir: "",
 			xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/",
-			<?php if(isset($dbName)) echo 'database: "'.$dbName.'"'; ?>
+			<?php if(isset($dbName)) echo 'database: "'.$dbName.'",'; ?>
+			<?php if(isset($tmpDB)) echo 'tmpDB: "'.$tmpDB.'",'; ?>
 		};
 
 		SpectrumModel = new AnnotatedSpectrumModel(model_vars);
@@ -195,12 +146,24 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 		window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumPanel"});
 		window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
 		window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
-		window.ErrorIntensityPlot = new ErrorIntensityPlotView({
+		window.QCwrapper = new QCwrapperView({el: '#QCdiv'});
+		window.ErrorIntensityPlot = new ErrorPlotView({
 			model: SpectrumModel,
-			el:"#errIntDiv",
-			margin: {top: 10, right: 60, bottom: 40, left: 65},
+			el:"#subViewContent-left",
+			xData: 'Intensity',
+			margin: {top: 10, right: 30, bottom: 20, left: 65},
 			svg: "#errIntSVG",
 			alwaysShow: true,
+			wrapper: window.QCwrapper,
+		});
+		window.ErrorMzPlot = new ErrorPlotView({
+			model: SpectrumModel,
+			el:"#subViewContent-right",
+			xData: 'm/z',
+			margin: {top: 10, right: 30, bottom: 20, left: 65},
+			svg: "#errMzSVG",
+			alwaysShow: true,
+			wrapper: window.QCwrapper,
 		});
 
 		window.SettingsView = new SpectrumSettingsView({model: SettingsSpectrumModel, el:"#settingsWrapper"});
@@ -214,8 +177,9 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			//window.SettingsView.render();
 		}
 		else {
-			window.specListTable = new specListTableView({model: SpectrumModel, el:"#specListWrapper"});
-			window.altListTable = new altListTableView({model: SpectrumModel, el:"#altListWrapper"});
+			window.TableWrapper = new TableWrapperView({model: SpectrumModel, el:"#bottomDiv"})
+			// window.specListTable = new specListTableView({model: SpectrumModel, el:"#specListWrapper"});
+			// window.altListTable = new altListTableView({model: SpectrumModel, el:"#altListWrapper"});
 		}
 
 });
@@ -227,14 +191,13 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 			<!-- Main -->
 			<div id="mainView">
 				<div class="mainContent">
-					<div id="topDiv"><!--style="height: calc(60% - 5px);">-->
 						<div class="overlay" id="topDiv-overlay"></div>
 						<div id="spectrumPanel">
 
 							<div class="dynDiv" id="settingsWrapper">
 								<div class="dynDiv_moveParentDiv">
 									<span class="dynTitle">Settings</span>
-									<i class="fa fa-times-circle closeButton settingsCancel" id="closeSettings"></i>
+									<i class="fa fa-times-circle settingsCancel" id="closeSettings"></i>
 								</div>
 								<div class="dynDiv_resizeDiv_tl draggableCorner"></div>
 								<div class="dynDiv_resizeDiv_tr draggableCorner"></div>
@@ -250,7 +213,7 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 							<label class="btn" title="toggle measure mode on/off">Measure<input class="pointer" id="measuringTool" type="checkbox"></label>
 							<form id="setrange">
 								<label class="btn" title="m/z range" style="cursor: default;">m/z:</label>
-								<label class="btn" for="lockZoom" title="Lock current zoom level" id="lock" class="btn"><input id="lockZoom" type="checkbox" style="display: none;">🔓</label>
+								<label class="btn" for="lockZoom" title="Lock current zoom level" id="lock" class="btn">🔓</label><input id="lockZoom" type="checkbox" style="display: none;">
 								<input type="text" id="xleft" size="5" title="m/z range from:">
 								<span>-</span>
 								<input type="text" id="xright" size="5" title="m/z range to:">
@@ -273,49 +236,29 @@ echo 	'<script type="text/javascript" src="./js/specListTable.js"></script>
 								<!-- <i id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-right" aria-hidden="true"></i> -->
 							</span>
 							<a href="help.php" target="_blank"><i title="Help" class="btn btn-1a btn-topNav fa fa-question" aria-hidden="true"></i></a>
+							<i id="revertAnnotation" title="revert to original annotation" class="btn btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>
 						</div>
-						<div class="heightFill">
-							<svg id="spectrumSVG"></svg>
-							<div id="measureTooltip"></div>
-						</div>
-						<div id="errIntDiv">
-							<div class='subViewControls'>
-								<span>Error-Intensity plot</span>
-								<i class="fa fa-angle-double-up pointer" id="dockErrInt" aria-hidden="true" title="show error/intensity plot" style="display:none;"></i>
-								<i class="fa fa-angle-double-down pointer" id="minErrInt" aria-hidden="true" title="hide error/intensity plot"></i>
+						<div class="plotsDiv">
+							<div id="mainPlotDiv">
+								<svg id="spectrumSVG"></svg>
+								<div id="measureTooltip"></div>
 							</div>
-							<div class="subViewContent">
-								<svg id="errIntSVG"></svg>
-							</div>
-						</div>
-					</div>
-				</div><!-- end top div -->
-				<div id="bottomDiv" class="tableDiv">
-				<i class="fa fa-times-circle closeButton closeTable" id="specListClose"></i>
-
-					<ul class="nav nav-tabs">
-						<li class="active">
-							<a data-toggle="tab" href="#tab-specListTable">Spectra List</a>
-						</li>
-						<li id="nav-altListTable">
-							<a data-toggle="tab" href="#tab-altListTable">Alternative Explanations <span id="altExpNum"></span></a>
-						</li>
-					</ul>
-
-					<div class="tab-content">
-						<div id="tab-specListTable" class="tab-pane fade in active">
-							<div id="specListWrapper" class="listWrapper">
-							</div>
-						</div>
-						<div id="tab-altListTable" class="tab-pane fade">
-							<div id="altListWrapper" class="listWrapper">
-								<!-- <div id="altList_main">
-									<table id="altListTable" width="100%" style="text-align:center;"></table>
-								</div> -->
+							<div id="QCdiv">
+								<div class="subViewHeader"></div>
+								<div class="subViewContent">
+									<div class="subViewContent-plot" id="subViewContent-left">
+										<!-- <i class="fa fa-times closeButton" aria-hidden="true"></i> -->
+										<svg id="errIntSVG" class="errSVG"></svg>
+									</div>
+									<div class="subViewContent-plot" id="subViewContent-right">
+										<!-- <i class="fa fa-times closeButton" aria-hidden="true"></i> -->
+										<svg id="errMzSVG" class="errSVG"></svg>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
+				<div id="bottomDiv" class="tableDiv"></div>
 			</div>
 		</div><!-- MAIN -->
 

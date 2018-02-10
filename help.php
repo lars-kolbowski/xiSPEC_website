@@ -24,6 +24,18 @@
 				<div class="accordionContent" style="display: none;">
 					<ul>
 						<li>
+							<h5>Zooming</h5>
+						</li>
+						<p>
+							<img src="images/gifs/zoom.gif" />
+							<ul style="margin-left:30px;">
+								<li>Click and drag the cursor below the x-axis to zoom into a specific area of the spectrum.</li>
+								<li>Alternatively you can zoom in/out using the mouse wheel.</li>
+								⇨ XiSPEC updates the annotated spectrum!
+							</ul>
+						</p>
+						<br/>
+						<li>
 							<h5>Change cross-linker position</h5>
 						</li>
 						<p>
@@ -55,10 +67,10 @@
 						<p>
 							<img src="images/gifs/highlighting.gif" />
 							<ul style="margin-left:30px;">
-								<li>Hover over fragments in the spectrum to highlight the corresponding fragment in the Sequence and vice versa.</li>
+								<li>Hover over fragments in any view to highlight the corresponding fragment all views.</li>
 								<li>Click on a fragment to make the highlight permanent.</li>
-								<li>Ctrl+Click to add additional fragments to selection.</li>
-								<li>Click on the background to reset highlighting.</li>
+								<li>Ctrl+Click to add additional fragments to permanent selection.</li>
+								<li>Click on the spectrum background to reset highlighting.</li>
 							</ul>
 						</p>
 					</ul>
@@ -114,13 +126,13 @@
 							</thead>
 							<tr>
 								<td>amino acids</td>
-								<td>upper case one letter code</td>
+								<td>uppercase one letter code</td>
 								<td>ARNDCEQGHILKMFPSTWYV</td>
 							</tr>
 							<tr>
 								<td>modifications</td>
-								<td>lower case characters</td>
-								<td>ox</td>
+								<td>anything not uppercase</td>
+								<td>ox | bs3nh2 | (+16)</td>
 							</tr>
 							<tr>
 								<td>peptide delimiter</td>

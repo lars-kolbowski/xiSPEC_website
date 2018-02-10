@@ -19,7 +19,7 @@
 //
 //		specListTable.js
 
-var specListTableView = Backbone.View.extend({
+var specListTableView = DataTableView.extend({
 
 	events : {
 		'click .tabs': 'initiateTable',
@@ -27,6 +27,8 @@ var specListTableView = Backbone.View.extend({
 		'click #hideLinear': 'toggleLinear',
 		'click #hideDecoy': 'toggleDecoy',
 		'change .toggle-vis': 'toggleColumn',
+		'change .toggle-score': 'userScoreChange',
+
 		// ToDo: need to be moved to listenTo -> spectrumPanel needs to move to BB
 		// 'click #prevSpectrum': 'prevSpectrum',
 		// 'click #nextSpectrum': 'nextSpectrum',
@@ -35,22 +37,28 @@ var specListTableView = Backbone.View.extend({
 	initialize: function() {
 		var self = this;
 
-		this.wrapper = d3.select(this.el);
+		this.listenTo(window, 'resize', this.resize);
+		this.listenTo(CLMSUI.vent, 'scoreChange', this.changeDisplayScore);
 
-		var tableVars = {
+		this.wrapper = d3.select(this.el);
+		this.userPageLen = 8;
+
+		this.ajaxUrl = "php/specListSSprocessing.php?db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
+
+		this.tableVars = {
 			//"ordering": false,
 			//"info":     false,
 		 	"dom": '<"specListToolbar">frti<"bottom-lenMenu"l>p',
 			"searching": true,
-			"pageLength": 8,
-			"lengthMenu": [ 4, 6, 8, 10, 12 ],
+			"pageLength": this.userPageLen,
+			"lengthMenu": [ 4, 6, 8, 10, 12, 14, 16, 18, 20 ],
 			"language": {
 				"lengthMenu": "_MENU_ entries per page"
 			},
 			"order": [[ 8, "desc" ]],
 			"processing": true,
 			"serverSide": true,
-			"ajax": "php/specListSSprocessing.php?db="+this.model.get('database'),
+			"ajax": this.ajaxUrl,
 			"searchCols": [
 				null, //internal_id
 				null, //id
@@ -78,14 +86,14 @@ var specListTableView = Backbone.View.extend({
 				{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center", "name": "linkpos2", "searchable": false },	//5
 				{ "title": "charge", "data": "charge", "className": "dt-center", "name": "charge" },		//6
 				{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center", "name": "isDecoy" },	//7
-				{ "title": "score", "data": "score", "className": "dt-center", "name": "score" },		//8
-				{ "title": "allScores", "data": "allScores", "name": "allScores" },		//9
-				{ "title": "protein 1", "data": "protein1", "className": "dt-center", "name": "protein1" },	//10
-				{ "title": "protein 2", "data": "protein2", "className": "dt-center", "name": "protein2" },	//11
-				{ "title": "passThreshold", "data": "passThreshold", "name": "passThreshold" },	//12
-				{ "title": "alt_count", "data": "alt_count", "name": "alt_count", "searchable": false },		//13
-				{ "title": "dataRef", "data": "file", "name": "dataRef" },				//14
-				{ "title": "scanID", "data": "scanID", "className": "dt-center", "name": "scanID" },		//15
+				{ "title": "score", "data": "score", "className": "dt-center", "name": "score" },    //8
+				{ "title": "allScores", "data": "allScores", "name": "allScores" },    //9
+				{ "title": "protein 1", "data": "protein1", "className": "dt-center", "name": "protein1" },  //10
+				{ "title": "protein 2", "data": "protein2", "className": "dt-center", "name": "protein2" },  //11
+				{ "title": "passThreshold", "data": "passThreshold", "name": "passThreshold" },  //12
+				{ "title": "alt_count", "data": "alt_count", "name": "alt_count", "searchable": false },    //13
+				{ "title": "dataRef", "data": "file", "name": "dataRef" },        //14
+				{ "title": "scanID", "data": "scanID", "className": "dt-center", "name": "scanID" },    //15
 			],
 
 			"createdRow": function( row, data, dataIndex ) {
@@ -98,6 +106,19 @@ var specListTableView = Backbone.View.extend({
 				{
 					"class": "invisible",
 					"targets": [ 0, 9, 12, 13 ],
+				},
+				{
+					"render": function ( data, type, row, meta ) {
+						var uniprotAccessionPatt = /[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}/;
+						var regexMatch = uniprotAccessionPatt.exec(data);
+						if (regexMatch) {
+							return '<a target="_blank" class="uniprotAccession" title="Click to open Uniprot page" href="https://www.uniprot.org/uniprot/'+regexMatch[0]+'">'+data+"</a>";
+						}
+						else {
+							return data;
+						}
+					},
+					"targets": [ 10, 11 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
@@ -115,7 +136,7 @@ var specListTableView = Backbone.View.extend({
 						for (key in json) {
 							result.push(key+'='+json[key]);
 						}
-						return '<span title="'+result.join("; ")+'">'+parseFloat(data).toFixed(2)+'</span>'
+						return '<span title="'+result.join("; ")+'">'+data+'</span>'
 					},
 					"targets": [ 8 ],
 				},
@@ -131,32 +152,20 @@ var specListTableView = Backbone.View.extend({
 					// "targets": [ 0, 4, 5, 6, 7, 8, 11, 12]
 				},
 
-	        ],
+			],
 			"initComplete": function(settings, json) {
-				if (json.data.length == 0){
-					console.log("db could not be found. Redirecting...");
-					window.location.href = "upload.php";
-				}
+// 				if (json.data.length == 0){
+// 					console.log("db could not be found. Redirecting...");
+// 					window.location.href = "upload.php";
+// 				}
 				window.initSpinner.stop();
 				$("#topDiv-overlay").css("z-index", -1);
-				// is cl dataset?
-				// if(self.isEmpty(self.DataTable.columns('pep2:name').data()[0])){
-				// 	var column = self.DataTable.columns('pep2:name');
-				// 	self.DataTable.columns('pep2:name').visible( false );
-				// 	self.DataTable.columns('linkpos1:name').visible( false );
-				// 	self.DataTable.columns('linkpos2:name').visible( false );
-				// 	self.DataTable.columns('protein2:name').visible( false );
-				// 	$('#hideLinear').hide();
-				// }
-				// else{
-				// 	// $( "#hideLinear" ).trigger( "click" );
-				// 	self.DataTable.columns( 'pep2:name' ).search( ".+", true, false ).draw();
-				// 	//$('#hideLinear').find('input:checkbox:first').attr('checked', 'checked');
-				//
-				// 	//self.toggleLinear();
-				// }
 
-				loadSpectrum(self.DataTable.rows( { filter : 'applied'} ).data()[0]);
+				//scoreSelector
+				self.createScoreSelector();
+
+				CLMSUI.vent.trigger('loadSpectrum', self.DataTable.rows( { filter : 'applied'} ).data()[0]);
+
 				firstRow = $('#specListWrapper tr:first-child');
 				$(firstRow).addClass('selected');
 
@@ -167,94 +176,126 @@ var specListTableView = Backbone.View.extend({
 				// self.initiateTable();
 			},
 			"drawCallback": function( settings ) {
-				if(self.isEmpty(self.DataTable.columns('pep2:name').data()[0])){
-					self.DataTable.columns('pep2:name').visible( false );
-					self.DataTable.columns('linkpos1:name').visible( false );
-					self.DataTable.columns('linkpos2:name').visible( false );
-					self.DataTable.columns('protein2:name').visible( false );
-				}
-				else{
-					self.DataTable.columns('pep2:name').visible( true);
-					self.DataTable.columns('linkpos1:name').visible( true );
-					self.DataTable.columns('linkpos2:name').visible( true );
-					self.DataTable.columns('protein2:name').visible( true );
-				}
-				// self.hideEmptyColumns();	//hideEmptyColumns very slow
-				//ToDo : change window to SpectrumView ref
-				if (window.Spectrum !== undefined)
-					window.Spectrum.resize();
+				//check if currently displayed spectra is in the table page and highlight it
+				if (self.DataTable.columns('internal_id:name').data()[0].indexOf(self.model.requestId) != -1)
+					$(self.DataTable.row(self.DataTable.columns('internal_id:name').data()[0].indexOf(self.model.requestId)).node()).addClass('selected');
+
+				self.hideEmptyColumns();
+
+				window.trigger('resize');
 			}
 		}
 
 		var main = this.wrapper.append('div').attr('id', 'specList_main');
 		var table = main.append('table').attr('id', 'specListTable').attr('class', 'display').attr('style', 'width:100%;');
 
-		this.DataTable = $(table[0]).DataTable(tableVars);
+		this.DataTable = $(table[0]).DataTable(this.tableVars);
 
 		// ToDo: move to BB event handling?
+		this.DataTable.on('click', '.uniprotAccession', function(e) {
+			e.preventDefault();
+			window.open(e.currentTarget.href, '_blank');
+			e.stopPropagation();
+			return false;
+		});
+
+
 		this.DataTable.on('click', 'tbody tr', function(e) {
 			console.log('click');
 			self.DataTable.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
-			loadSpectrum(self.DataTable.row(this).data());
+
+			CLMSUI.vent.trigger('loadSpectrum', self.DataTable.row(this).data());
+
 		});
 
 		var specListToolbar = d3.selectAll('.specListToolbar').attr('class', 'listToolbar');
-		// $('.specListToolbar').addClass("listToolbar");
+
 		var dataFilter = specListToolbar.append('div').attr('id', 'data-filter');
-		// $( "<div id='data-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );
+		var passThresholdBtn = '<label class="btn btn-1a" id="passThreshold"><input type="checkbox" checked>passing threshold</label>';
+		var hideLinearBtn = '<label class="btn btn-1a" id="hideLinear"><input type="checkbox">hide linear</label>';
+		var hideDecoysBtn = '<label class="btn btn-1a" id="hideDecoy"><input type="checkbox" checked>hide decoys</label>';
+		var dataFilterHTML = 'Filter: '+ passThresholdBtn + hideLinearBtn + hideDecoysBtn;
+		$("#data-filter").html(dataFilterHTML);
 
-		var data_filterHTML = 'Filter: <label class="btn btn-1a" id="passThreshold"><input type="checkbox" checked>passing threshold</label><label class="btn btn-1a" id="hideLinear"><input type="checkbox">hide linear</label><label class="btn btn-1a" id="hideDecoy"><input type="checkbox" checked>hide decoys</label>';
-
-		$("#data-filter").html(data_filterHTML);
 		var columnFilter = specListToolbar.append('div').attr('id', 'column-filter');
-		// $( "<div id='column-filter'></div>" ).appendTo( $( "div.specListToolbar" ) );
-		$("#column-filter").html('<div class="mulitSelect_dropdown" id="specListColSelect"><span class="btn btn-1a">Select columns<i class="fa fa-chevron-down" aria-hidden="true"></i></span><div class="mulitSelect_dropdown-content mutliSelect"><ul></ul></div></div>');
+		var colSelector = '<div class="mulitSelect_dropdown" id="specListColSelect"><span class="btn btn-1a">Select columns<i class="fa fa-chevron-down" aria-hidden="true"></i></span><div class="mulitSelect_dropdown-content mutliSelect"><ul></ul></div></div>';
+		var scoreSelector = '<div class="mulitSelect_dropdown" id="specListScoreSelect" style="display: none;"><span class="btn btn-1a">Select score<i class="fa fa-chevron-down" aria-hidden="true"></i></span><div class="mulitSelect_dropdown-content mutliSelect"><ul></ul></div></div>';
+
+		var colFilterHTML = colSelector + scoreSelector;
+
+		$("#column-filter").html(colFilterHTML);
 
 		// columnToggleSelector
 	 	this.DataTable.columns()[0].forEach(function(col){
 	 		if (!self.DataTable.columns().header()[col].classList.contains("invisible")){
 		 		var colname =  self.DataTable.columns().header()[col].innerHTML;
-		 		$("#column-filter .mulitSelect_dropdown ul").append('<li><label><input type="checkbox" checked class="toggle-vis" data-column="'+col+'">'+colname+'</label></li>');
+		 		$("#specListColSelect ul").append('<li><label><input type="checkbox" checked class="toggle-vis" data-column="'+col+'">'+colname+'</label></li>');
 	 		}
 	 	});
 
 		// $('div.dataTables_filter input').addClass('form-control');
 	},
 
-	hideEmptyColumns: function(e) {
+	render: function(){
+		this.DataTable.draw();
+	},
 
-		if (typeof this.DataTable === 'undefined')
-			return
-
-		var self = this;
-		var selector = this.el;
-		var columnsToHide = [];
-
-		$(selector).find('th').each(function(i) {
-
-			var columnIndex = $(this).index();
-			var rows = $(this).parents('table').find('tr td:nth-child(' + (i + 1) + ')'); //Find all rows of each column
-			var rowsLength = $(rows).length;
-			var emptyRows = 0;
-
-			rows.each(function(r) {
-			if (this.innerHTML == '')
-				emptyRows++;
-			});
-
-			if(emptyRows == rowsLength) {
-				columnsToHide.push(columnIndex); //If all rows in the colmun are empty, add index to array
+	createScoreSelector: function() {
+		var allScores = new Array();
+		var allScoresJSON = JSON.parse(this.DataTable.columns('allScores:name').data()[0][0])
+		for (var score in allScoresJSON) {
+			if (allScoresJSON.hasOwnProperty(score)) {
+				allScores.push(score);
 			}
-		});
-
-		for(var i=0; i< self.DataTable.columns().header().length; i++) {
-			if(columnsToHide.indexOf(i) != -1)
-				self.DataTable.column(i).visible(false);
-			else
-				self.DataTable.column(i).visible(true);
-// 			self.DataTable.column(columnsToHide[i]).visible(false);
 		}
+
+		if (allScores.length > 1){
+			$("#specListScoreSelect").show();
+
+			allScores.forEach(function(score, i){
+				if (i == 0)
+					checked = 'checked';
+				else
+					checked = '';
+				$("#specListScoreSelect ul").append('<li><label><input type="radio" name="scoreRadio" '+checked+' class="toggle-score" data-score="'+score+'">'+score+'</label></li>');
+			});
+		}
+
+	},
+
+	changeDisplayScore: function(scoreName){
+		console.log('specListTable - changeDisplayScore: '+scoreName);
+		this.DataTable.ajax.url(this.ajaxUrl + '&scol=' + scoreName).load();
+	},
+
+	// userScoreChange: function(e){
+	// 	CLMSUI.vent.trigger('scoreChange', parseInt($(e.target).attr('data-score')));
+	// },
+
+	// hideEmptyColumns: function(e) {
+	// 	if(this.isEmpty(this.DataTable.columns('pep2:name').data()[0])){
+	// 		this.DataTable.columns('pep2:name').visible( false );
+	// 		this.DataTable.columns('linkpos1:name').visible( false );
+	// 		this.DataTable.columns('linkpos2:name').visible( false );
+	// 		this.DataTable.columns('protein2:name').visible( false );
+	// 	}
+	// 	else{
+	// 		this.DataTable.columns('pep2:name').visible( true);
+	// 		this.DataTable.columns('linkpos1:name').visible( true );
+	// 		this.DataTable.columns('linkpos2:name').visible( true );
+	// 		this.DataTable.columns('protein2:name').visible( true );
+	// 	}
+	// },
+
+	resize: function() {
+
+		// if ($(document).height() < 700){
+		// 	this.userPageLen = this.DataTable.page.len();
+		// 	this.DataTable.page.len( 4 ).draw();
+		// }
+		// else if (this.DataTable.page.len() != this.userPageLen)
+		// 	this.DataTable.page.len( this.userPageLen ).draw();
 	},
 
 	initiateTable: function() {
@@ -318,14 +359,14 @@ var specListTableView = Backbone.View.extend({
 		this.DataTable.rows( '.selected' ).nodes().to$().removeClass('selected');
 		var curDataArr = this.DataTable.rows( { filter : 'applied'} ).data().toArray();
 		var curIndex = curDataArr.findIndex(function(el){
-			return el[0] == this.model.requestId
+			return el[0] == this.model.requestId;
 		});
 
-		if (curIndex == -1)
-			loadSpectrum(this.DataTable.rows( { filter : 'applied'} ).data()[0]);
-
+		if (curIndex == -1){
+			CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[0]);
+		}
 		else if (curIndex - 1 >= 0){
-			loadSpectrum(this.DataTable.rows( { filter : 'applied'} ).data()[curIndex-1]);
+			CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[curIndex-1]);
 
 			//change pagination to show cur selected spectrum
 			if (!(this.DataTable.page.info().start < (curIndex-1) &&  (curIndex-1) < this.DataTable.page.info().end)){
@@ -347,11 +388,11 @@ var specListTableView = Backbone.View.extend({
 			return el[0] == this.model.requestId
 		});
 
-		if (curIndex == -1)
-			loadSpectrum(this.DataTable.rows( { filter : 'applied'} ).data()[0]);
-
+		if (curIndex == -1){
+			CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[0]);
+		}
 		else if (curIndex + 1 < this.DataTable.rows( { filter : 'applied'} ).data().length){
-			loadSpectrum(this.DataTable.rows( { filter : 'applied'} ).data()[curIndex+1]);
+			CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[curIndex+1]);
 
 			//change pagination to show cur selected spectrum
 			if (!(this.DataTable.page.info().start < (curIndex+1) &&  (curIndex+1) < this.DataTable.page.info().end)){
@@ -364,13 +405,12 @@ var specListTableView = Backbone.View.extend({
 
 	},
 
-	isEmpty: function(arr) {
-		for(var i=0; i<arr.length; i++) {
-			if(arr[i] !== "") return false;
-		}
-		return true;
-	}
+	// isEmpty: function(arr) {
+	// 	for(var i=0; i<arr.length; i++) {
+	// 		if(arr[i] !== "") return false;
+	// 	}
+	// 	return true;
+	// },
 
 
 });
-	// 	//filters TODO: adjust pagination to show current selected one if it is in list

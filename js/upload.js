@@ -1,3 +1,4 @@
+var CLMSUI = CLMSUI || {};
 
 $( document ).ready(function() {
 	_.extend(window, Backbone.Events);
@@ -5,6 +6,7 @@ $( document ).ready(function() {
 	window.peptide = new AnnotatedSpectrumModel();
 	window.peptideView = new PeptideView({model: window.peptide, el:"#peptideDiv"});
 	window.pepInputView = new PepInputView({model: window.peptide, el:"#myPeptide"});
+	window.prideSelectionView = new PrideSelectionView({el:"#prideSelectionWrapper"});
 	//window.precursorInfoView = new PrecursorInfoView({model: window.peptide, el:"#precursorInfo"});
 	$("#addCLModal").easyModal({
 		onClose: function(myModal){
@@ -16,15 +18,19 @@ $( document ).ready(function() {
 		overlayClose: false,
 		closeOnEscape: false
 	});
+
 	$('#cancelUpload').click(function(){
 		window.location.href = 'upload.php';
+	});
+
+	$('#errorMsg').on('click','#showErrorLog', function(){
+		$('#errorLog').toggle();
 	})
 
 	$("#csvHeaderModal").easyModal();
 	$('.showCsvHeader').click(function(){
 		$("#csvHeaderModal").trigger('openModal');
 	});
-
 
 	$('#myCL').change(function(){
 		var value = $(this).val();
@@ -57,9 +63,7 @@ $( document ).ready(function() {
 		window.peptide.set("charge", this.value);
 	});
 
-
 	$('#modificationTable').on('input', 'input', function() {
-
 		var row = this.getAttribute("row");
 		var modName = $('#modName_'+row).val();
 		var modMass = parseFloat($('#modMass_'+row).val());
@@ -69,8 +73,6 @@ $( document ).ready(function() {
 
 		window.peptide.updateUserModifications(mod);
 		displayModified($(this).closest("tr"));
-
-
 	 });
 
 	var displayModified = function (row){
@@ -93,6 +95,17 @@ $( document ).ready(function() {
 			$('#ionSelection').val("Select ions...");
 		else
 			$('#ionSelection').val(ionSelectionArr.join(", "));
+	});
+
+	$('.ionSelectChkboxSubmit').change(function(){
+		var ionSelectionArr = new Array();
+		$('.ionSelectChkboxSubmit:checkbox:checked').each(function(){
+			ionSelectionArr.push($(this).val());
+		});
+		if (ionSelectionArr.length == 0)
+			$('#ionSelectionSubmit').val("Select ions...");
+		else
+			$('#ionSelectionSubmit').val(ionSelectionArr.join(", "));
 	});
 
 	window.modTable = $('#modificationTable').DataTable( {
@@ -143,7 +156,7 @@ $( document ).ready(function() {
 								data = model.knownModifications['modifications'][i].mass;
 						}
 					}
-					return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" name="modMasses[]" type="number" min=0 step=0.0001 required value='+data+' autocomplete=off>';
+					return '<input class="form-control" id="modMass_'+meta.row+'" row="'+meta.row+'" name="modMasses[]" type="number" step=0.0001 required value='+data+' autocomplete=off>';
 				},
 				"targets": 2,
 			},
@@ -163,7 +176,6 @@ $( document ).ready(function() {
 								data = _.union(data, model.knownModifications['modifications'][i].aminoAcids);
 								data.sort();
 								data = data.join("");
-
 							}
 						}
 					}
@@ -254,78 +266,129 @@ $( document ).ready(function() {
 
 	$(".uploadCheckbox").change(function(){
 		if ($('.uploadCheckbox:checked').length == $('.uploadCheckbox').length) {
-		   $('#startParsing').prop('disabled', false);
+			$('#startParsing').prop('disabled', false);
 		}
 		else{
 			$('#startParsing').prop('disabled', true);
 		}
 	});
 
-// 	$("#continueToDB").click(function(){
-// 		window.location.href = "viewSpectrum.php";
-// 	});
+	$('#csvModificationsForm').submit(function(e){
+		e.preventDefault();
+		var fd = $(this).serialize();
+		$.ajax({
+			url: "php/submitModDataForCSV.php",
+			type: 'POST',
+			data: fd,
+			success: function (data) {
+				$('#continueToDB').prop("disabled", false);
+			}
+		});
+	});
+
+	$('#ionsForm').submit(function(e){
+		e.preventDefault();
+		var fd = $(this).serialize();
+		var spinner = new Spinner({scale: 0.3}).spin();
+		var target = d3.select('#ionsFormSubmit').node();
+		$.ajax({
+			url: "php/updateIons.php",
+			type: 'POST',
+			data: fd,
+			beforeSend: function(){
+				$('#ionsFormSubmit').prop("disabled", true);
+				target.appendChild(spinner.el);
+				$('#ionsUpdateMsg').html('');
+			},
+			success: function (data) {
+				spinner.stop();
+				$('#ionsFormSubmit').prop("disabled", false);
+				$('#ionsUpdateMsg').html('update successful!');
+			}
+		});
+	});
 
 	$('#continueToDB').click(function(){
-		if($('#csvModificationsForm input').length > 0)
-			$('#csvModificationsForm').submit();
-		else
-			window.location.href = "viewSpectrum.php";
-		// var fd = new FormData($('#csvModificationsForm')[0]);
-
+		// if($('#csvModificationsForm input').length > 0)
+		// 	$('#csvModificationsForm').submit();
+		// if($('#ionsInfo').is(':visible'))
+		// 	$('#ionsForm').submit();
+		window.location.href = "viewSpectrum.php";
 	});
 
 	$("#startParsing").click(function(e){
 		e.preventDefault();
-		var spinner = new Spinner({scale: 5}).spin();
-		var target = d3.select("#processDataInfo > .spinnerWrapper").node();
 		var formData = new FormData();
-		formData.append("mzml_fn", $('#mzml_fileBox .fileName').html());
-		formData.append("mzid_fn", $('#mzid_fileBox .fileName').html());
+		formData.append("peakFile_fn", $('#mzml_fileBox .fileName').html());
+		formData.append("res_fn", $('#mzid_fileBox .fileName').html());
+		CLMSUI.startParser(formData);
 
-		$.ajax({
-			url: "php/parseData.php",
-			type: 'POST',
-			data: formData,
-			//async: false,
-			contentType: false,
-			processData: false,
-			beforeSend: function(){
-				$(".overlay").css("visibility", "visible").css("z-index", 1);
-				target.appendChild(spinner.el);
-				$("#submitDataModal").trigger('openModal');
+	});
 
-			},
-			success: function (data) {
-				spinner.stop();
-				resp = JSON.parse(data);
-				if (resp.errors.length == 0 && resp.modifications.length == 0)
-					window.location.href = "viewSpectrum.php";
-				else{
-					$('#submitDataInfo').show();
-					$('#processDataInfo').hide();
-					$('#processText').html("");
-					if (resp.errors.length > 0){
-						$('#errorInfo').show();
-						$('#gitHubIssue').show();
-						$('#errorMsg').html(resp.errors.length + " error(s) occured parsing your data. See the log for more information:");
-						resp.errors.forEach(function (error){
-							$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message+'\nid: ' + error.id + '\n\n');
-						})
-					}
-					if (resp.modifications.length > 0){
-						$('#modificationsInfo').show();
-						$('#modificationsMsg').html("Please provide the masses for the following " + resp.modifications.length + " modification(s):");
-						resp.modifications.forEach(function (mod){
-							var modNameInput = '<input class="form-control" name="mods[]" readonly type="text" value='+mod+'>';
-							var modMassInput = '<input class="form-control" name="modMasses[]" type="number" min=0 step=0.000001 value="0" required autocomplete=off>';
-							$('#csvModificationsForm').append(modNameInput + modMassInput + '\n\n');
-						})
-					}
+	CLMSUI.startParser = function(form_data){
+	var spinner = new Spinner({scale: 5}).spin();
+	var target = d3.select("#processDataInfo > .spinnerWrapper").node();
+	$.ajax({
+		url: "php/parseData.php",
+		type: 'POST',
+		data: form_data,
+		//async: false,
+		contentType: false,
+		processData: false,
+		beforeSend: function(){
+			$(".overlay").css("visibility", "visible").css("z-index", 1);
+			target.appendChild(spinner.el);
+			$("#submitDataModal").trigger('openModal');
+		},
+		success: function (data) {
+			spinner.stop();
+			resp = JSON.parse(data);
+			if (resp.errors.length == 0 && resp.modifications.length == 0)
+				window.location.href = "viewSpectrum.php";
+			else{
+				$('#submitDataInfo').show();
+				$('#processDataInfo').hide();
+				$('#processText').html("");
+
+				var errorNum = resp.errors.length;
+				var warnNum = resp.warnings.length;
+				if ( errorNum > 0 || warnNum > 0 ){
+					$('#errorInfo').show();
+					$('#gitHubIssue').show();
+					$('#errorMsg').html(warnNum + ' warning(s) and ' + errorNum + ' error(s) occurred parsing your data.</br><a href="#" id="showErrorLog"><i class="fa fa-chevron-down" aria-hidden="true"></i>Show log for more information.<i class="fa fa-chevron-down" aria-hidden="true"></i></a>');
+					$('#errorLog').append('log id: ' + resp.log + ' (include this in the github issue)\n');
+
+					resp.warnings.forEach(function (warn){
+						if (warn.type == 'IonParsing'){
+							$('#ionsInfo').show();
+							$('#ionsMsg').html('Your input file did not specify fragment ion types.</br>Select and update ion types below. Then click continue to view your data.');
+						}
+						$('#errorLog').append("warning type: " + warn.type + "\nmessage: "+ warn.message + '\nid: ' + warn.id + '\n\n');
+
+					})
+
+					resp.errors.forEach(function (error){
+						$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message + '\nid: ' + error.id + '\n\n');
+
+					})
+				}
+
+				if (resp.modifications.length > 0){
+					$('#continueToDB').prop('disabled', true);
+					$('#modificationsInfo').show();
+					$('#modificationsMsg').html("Please provide the mass(es) for the following " + resp.modifications.length + " modification(s):");
+					resp.modifications.forEach(function (mod){
+						var modNameInput = '<input class="form-control" name="mods[]" readonly type="text" value='+mod+'>';
+						var modMassInput = '<input class="form-control" name="modMasses[]" type="number" step=0.000001 value="0" required autocomplete=off>';
+						$('#csvModificationsForm').append('<div style="margin-bottom: 5px;">' + modNameInput + modMassInput + '</div>');
+					})
+					$('#csvModificationsForm').append('<input type="submit" value="update modifications" class="btn btn-1a btn-2" id="updateModsSubmit">');
 				}
 			}
-		  });
-		  return false;
-	});
+		}
+		});
+		return false;
+}
 
 });
 

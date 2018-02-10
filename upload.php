@@ -5,6 +5,17 @@
 		error_reporting(E_ALL & ~E_NOTICE);
 		$pageName = "Upload";
 		include("head.php");
+		if (isset($_GET['ex'])){
+			if ($_GET['ex'] == 'cl');
+				$example = "cl";
+			if ($_GET['ex'] == 'lin')
+				$example = "lin";
+			if ($_GET['ex'] == 'pxd')
+				$example = "pxd";
+		}
+		else {
+			$example = false;
+		};
 		?>
 		<?php include("xiSPEC_scripts.php");?>
 		<script type="text/javascript" src="./src/PepInputView.js"></script>
@@ -17,6 +28,7 @@
 		<script src="vendor/jQueryFileUploadMin/jquery.ui.widget.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.iframe-transport.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.fileupload.js"></script>
+		<script type="text/javascript" src="src/PrideSelectionView.js"></script>
 
 		<link rel="stylesheet" href="./css/dropdown.css" />
 	</head>
@@ -28,14 +40,17 @@
 			<!-- Intro -->
 			<section id="top" class="one">
 				<div class="container" id="jquery-fileupload">
-					<h1 class="page-header accordionHead"><i <?php echo (isset($_GET['ex']) ? 'class="fa fa-plus-square"' : 'class="fa fa-minus-square"');?> aria-hidden="true"></i> Data Upload - Upload your data (identification & peak list file pair)</h1>
-					<div class="accordionContent" <?php echo (isset($_GET['ex']) ? 'style="display: none;"' : '');?>>
-						<div style="margin-left: 1em; font-size: 0.8em; line-height: 1.7em;">
-							Supported identification file formats: <a title="HUPO Proteomics: mzidentML" href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> and <a title="Show column headings" class="showCsvHeader" href="#">csv</a>.</br>
-							Supported peak list file formats: <a title="HUPO Proteomics: mzML" href="http://www.psidev.info/mzml" target="blank">mzML</a> and <a title="Mascot Generic Format" href="http://www.matrixscience.com/help/data_file_help.html#GEN">mgf</a> (+ zip archives of mzML/mgf).</br>
-							mzML: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
-							mzML: Make sure to use centroided MS2 data! (e.g. use 'Peak picking' for profile data in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
-							csv: <a href="example/example.csv">download example .csv</a>
+					<h1 class="page-header accordionHead"><i <?php echo($example ? 'class="fa fa-plus-square"' : 'class="fa fa-minus-square"');?> aria-hidden="true"></i> Data Upload - Upload your data (identification & peak list file pair)</h1>
+					<div class="accordionContent" <?php echo ($example ? 'style="display: none;"' : '');?>>
+						<div style="margin-left: 1em; line-height: 1.7em;">
+							Supported identification file formats: <a title="HUPO-PIS: mzidentML" href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> and <a title="Show column headings" class="showCsvHeader" href="#">csv</a>.</br>
+							Supported peak list file formats: <a title="HUPO-PIS: mzML" href="http://www.psidev.info/mzml" target="blank">mzML</a> and <a title="Mascot Generic Format" href="http://www.matrixscience.com/help/data_file_help.html#GEN">mgf</a> (+ zip/gz archives of mzML/mgf).</br>
+							<div style="font-size: 0.8em; line-height: 1.7em; margin-top:0.5em;">
+								mzML: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
+								<!-- mzML: Make sure to use centroided MS2 data! (e.g. use 'Peak picking' for profile data in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br> -->
+								mgf: If the file does not contain ALL scans it must either contain the scan number directly in the header (SCANS=XX) or in the title (check TPP compatibility in MSconvert)!<br>
+								csv: <a href="example/example.csv">download example .csv</a>
+							</div>
 						</div>
 						<div id="fileUploadWrapper">
 							<input id="fileupload" type="file" name="files[]" accept=".mzid,.csv,.mzml,.mgf,.zip" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
@@ -43,7 +58,7 @@
 							<div id="uploadProgress">
 								<div class="file_upload_bar" style="width: 0%;"><div class="file_upload_percent"></div></div>
 							</div>
-							<button id="startParsing" disabled="true" class="btn btn-1a">Submit Data</button>
+							<button id="startParsing" disabled="true" class="btn btn-1a btn-2">Submit Data</button>
 						</div>
 						<div class="fileupload_info">
 						<table>
@@ -68,11 +83,28 @@
 					</div>
 				</div>
 			</section>
-			<section id="bottom" class="one">
+			<section class="one">
+				<div class="container">
+					<h1 class="page-header accordionHead"><i <?php echo (($example == 'pxd') ? 'class="fa fa-minus-square"' : 'class="fa fa-plus-square"');?> aria-hidden="true"></i> PRIDE data access</h1>
+					<div class="accordionContent" id="prideSelectionWrapper" <?php echo (($example == 'pxd') ? '' : 'style="display: none;"');?>>
+						<form id="prideForm">
+							<div style="display:flex;">
+								<label class="label">PRIDE accession number: <input type="text" id="pxd_in" class="form-control"/></label>
+								<button class="btn btn-1a btn-2" type="submit">List files</button>
+							</div>
+							<div id="pxd_error"></div>
+							<div id="pxd_title"></div>
+							<button type="submit" id="pxd_submit" class="btn btn-1a btn-2">Submit selected files</button>
+							<table id="pxdFileTable" class="display" width="100%" style="text-align:center;"></table>
+						</form>
+					</div>
+				</div>
+			</section>
+			<section class="one">
 <!-- <span class="glyphicon glyphicon-upload"></span> -->
 				<div class="container">
-					<h1 class="page-header accordionHead"><i <?php echo (isset($_GET['ex']) ? 'class="fa fa-minus-square"' : 'class="fa fa-plus-square"');?> aria-hidden="true"></i> Data Input - Manually input your spectrum data</h1>
-					<div class="accordionContent" <?php echo (isset($_GET['ex']) ? '' : 'style="display: none;"');?> >
+					<h1 class="page-header accordionHead"><i <?php echo (($example == "lin" || $example == "cl") ? 'class="fa fa-minus-square"' : 'class="fa fa-plus-square"');?> aria-hidden="true"></i> Data Input - Manually input your spectrum data</h1>
+					<div class="accordionContent" <?php echo (($example == "lin" || $example == "cl") ? '' : 'style="display: none;"');?> >
 						<form id="manUpPepForm" action="viewSpectrum.php" method="post" target="_blank">
 						<!-- <form id="xisv_entryform"  action="http://spectrumviewer.org/xisv/index.php" method="post" target="_blank" onsubmit="doPreSubmission();"> -->
 							<section style="margin-bottom:2%;">
@@ -211,19 +243,50 @@
 		</div>
 		<div id="submitDataModal" role="dialog" class="modal" style="display: none;">
 			<div id=submitDataInfo>
-				<div id="errorInfo" style="display: none;">
-					<div id="errorMsg"></div>
-					<textarea class="form-control" id="errorLog"></textarea>
+				<div id="submitDataTop">
+					<div id="errorInfo" style="display: none;">
+						<div id="errorMsg"></div>
+						<textarea class="form-control" id="errorLog" readonly></textarea>
+					</div>
+				</div>
+				<div id="ionsInfo"  style="display: none;">
+					<div id="ionsMsg"></div>
+					<form id="ionsForm" method="post" action="php/updateIons.php">
+						<div class="mulitSelect_dropdown" style="margin-right:2%;">
+							<input type="text" class="form-control btn-drop" id="ionSelectionSubmit" title="fragment ion types" value="peptide, b, y" readonly>
+							<div class="mulitSelect_dropdown-content mutliSelect">
+								<ul>
+									<li>
+										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="peptide" checked id="PeptideIonSubmit" name="ions[]" />Peptide ion</label></li>
+									<li>
+										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="a" id="AIonSubmit" name="ions[]" />A ion</label></li>
+									<li>
+										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="b" checked id="BIonSubmit" name="ions[]" />B ion</label></li>
+									<li>
+										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="c" id="CIonSubmit" name="ions[]" />C ion</label></li>
+									<li>
+										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="x" id="XIonSubmit" name="ions[]" />X ion</label></li>
+									<li>
+										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="y" checked id="YIonSubmit" name="ions[]" />Y ion</label></li>
+									<li>
+										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="z" id="ZIonSubmit" name="ions[]" />Z ion</label></li>
+								</ul>
+							</div>
+						</div>
+						<button type="submit" id="ionsFormSubmit" class="btn btn-1a btn-2">update ions</button>
+						<div id="ionsUpdateMsg" style="font-size: 0.8em;display: inline;"></div>
+					</form>
 				</div>
 				<div id="modificationsInfo"  style="display: none;">
 					<div id="modificationsMsg"></div>
-					<form id="csvModificationsForm" method="post" action="php/submitModDataForCSV.php">
-					</form>
+					<form id="csvModificationsForm" method="post" action="php/submitModDataForCSV.php"></form>
 				</div>
-				<div>
-					<a id="cancelUpload" class="btn btn-1a" href="#">Cancel</a>
-					<a id="gitHubIssue" class="btn btn-1a" style="display:none;" href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'><i class="fa fa-github" aria-hidden="true"></i>Create issue</a>
-					<a id="continueToDB" class="btn btn-1a" href="#">Continue</a>
+				<div id="submitDataControls">
+					<button id="cancelUpload" class="btn btn-1a btn-2" href="#">Cancel</button>
+					<a id="gitHubIssue" class="btn btn-1a" style="display:none;" href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'>
+						<i class="fa fa-github" aria-hidden="true"></i>Create issue
+					</a>
+					<button id="continueToDB" class="btn btn-1a btn-2" href="#">Continue</button>
 				</div>
 			</div>
 			<div id="processDataInfo">
@@ -237,12 +300,14 @@
 		<div class="overlay" style="z-index: -1; visibility: hidden;"></div>
 
 		<script type="text/javascript">
-		<?php echo "var example = '".(isset($_GET['ex']) ? $_GET['ex'] : false)."';\r\n";?>
+		<?php echo ('var example = "'.$example.'";');?>
 			$( document ).ready(function() {
 				if (example == 'cl')
 					doExampleCL();
 				else if (example == 'lin')
 					doExampleLinear();
+				else if (example == 'pxd')
+					window.prideSelectionView.load_pxd('PXD005654');
 			});
 		</script>
 

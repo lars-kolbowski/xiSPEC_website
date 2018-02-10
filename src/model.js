@@ -9,6 +9,9 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
   },
 
 	initialize: function(){
+		//ToDo: change to model change event instead of CLSUI.vent?
+		this.listenTo(CLMSUI.vent, 'loadSpectrum', this.loadSpectrum);
+
 		var self = this;
 		this.xiAnnotatorBaseURL = this.get('xiAnnotatorBaseURL');
 		this.baseDir = this.get('baseDir');
@@ -18,15 +21,19 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.moveLabels = false;
 		this.measureMode = false;
 		this.showSpectrum = true;
-		if (_.isUndefined(Cookies.get('customMods')))
+		this.showAllFragmentsHighlight = true;
+
+		// get rid of cookie Modifications for now.
+		// if (_.isUndefined(Cookies.get('customMods')))
+		// else
 			this.userModifications = [];
-		else
-			this.userModifications = JSON.parse(Cookies.get('customMods'));
+		// 	this.userModifications = JSON.parse(Cookies.get('customMods'));
 		$.getJSON(self.baseDir + 'json/aaMasses.json', function(data) {
     		self.aaMasses = data
 		});
 
 		//ToDo: change JSONdata gets called 3 times for some reason?
+		// define event triggers and listeners better
 		this.on("change:JSONdata", function(){
 			var json = this.get("JSONdata");
 			if (typeof json !== 'undefined'){
@@ -55,6 +62,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	setData: function(){
+		this.changedAnnotation = false;
 
 		if (this.get("JSONdata") == null){
 			this.trigger("changed:data");
@@ -111,9 +119,9 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.p2color = this.cmap[7];
 		this.p2color_cluster = this.cmap[5];
 		this.p2color_loss = this.cmap[6];
-		this.peakColour = "#ccc";
+		this.peakColour = "#a6a6a6";
 		this.highlightColour = "#FFFF00";
-		this.highlightWidth = 10;
+		this.highlightWidth = 8;
 
 		this.calcPrecursorMass();
 
@@ -262,7 +270,6 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	changeLinkPos: function(newLinkSites){
-
 		if(this.get("JSONrequest") !== undefined){
 			json_req = this.get("JSONrequest");
 			for (var i = 0; i < newLinkSites.length; i++) {
@@ -293,11 +300,12 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			this.setData();
 		}
 
+		this.trigger("changed:annotation");
+		this.changedAnnotation = true;
 	},
 
 
 	changeMod: function(oldPos, newPos, oldPepIndex, newPepIndex){
-
 		if(this.get("JSONrequest") !== undefined){
 			json_req = this.get("JSONrequest");
 			//standalone
@@ -345,18 +353,22 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			this.setData();
 		}
 
-
+		this.trigger("changed:annotation");
+		this.changedAnnotation = true;
 	},
 
-	matchMassToAA: function(delta, peak) {
+	matchMassToAA: function(mass) {
 		var self = this;
 		var aaArray = this.aaMasses.filter(function(d){
-			if(self.MSnTolerance.unit == "ppm"){
-				var uplim = d.monoisotopicMass + peak * self.MSnTolerance.value * 1e-6;
-				var lowlim = d.monoisotopicMass - peak * self.MSnTolerance.value * 1e-6;
-				if(delta < uplim && delta > lowlim)
-					return true;
-			}
+
+			if (Math.abs(mass - d.monoisotopicMass) < 0.01)
+				return true;
+			// if(self.MSnTolerance.unit == "ppm"){
+			// 	var uplim = d.monoisotopicMass + peak * self.MSnTolerance.value * 1e-6;
+			// 	var lowlim = d.monoisotopicMass - peak * self.MSnTolerance.value * 1e-6;
+			// 	if(delta < uplim && delta > lowlim)
+			// 		return true;
+			// }
 			//TODO: matchMass for Da error type
 			// if(self.MSnTolerance.unit == "Da"){
 			// 	var uplim = d.monoisotopicMass + self.MSnTolerance.value;
@@ -439,7 +451,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			massArr[i] = h2o;
 			for (var j = 0; j < this.peptides[i].sequence.length; j++) {
 				var AA = this.peptides[i].sequence[j].aminoAcid;
-				massArr[i] += mA[aastr.indexOf(AA.charAt(i))];
+				massArr[i] += mA[aastr.indexOf(AA)];
 				//mod
 				var mod = this.peptides[i].sequence[j].Modification;
 				for (var k = 0; k < this.knownModifications['modifications'].length; k++) {
@@ -450,25 +462,22 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		}
 
 		var totalMass = 0;
-
-
+		var clModMass = 0;
 		if(this.get("clModMass") !== undefined)
 			var clModMass = parseInt(this.get("clModMass"));
 		else if (this.annotationData['cross-linker'] !== undefined)
 			var clModMass = this.annotationData['cross-linker'].modMass;
 
-
-		if(clModMass !== undefined){
-			for (var i = 0; i < massArr.length; i++) {
-				totalMass += massArr[i];
-			}
-			totalMass += clModMass;
-			this.mass = [totalMass];
+		for (var i = 0; i < massArr.length; i++) {
+			totalMass += massArr[i];
 		}
-		else{
-			this.mass = massArr;
+		// NOT Multilink future proof
+		if(this.JSONdata.LinkSite.length > 0){
+			if (this.JSONdata.LinkSite[0].linkSite != -1 && this.JSONdata.LinkSite[1].linkSite != -1)
+				totalMass += clModMass;
 		}
-		console.log(this.mass);
+		this.mass = totalMass
+// 		console.log(this.mass);
 		this.trigger("changed:mass");
 	},
 
@@ -550,7 +559,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	request_annotation: function(json_request){
-
+// 		json_request.annotation.custom = json_request.annotation.custom.concat(this.customSettings);
 		this.trigger('request_annotation:pending');
 		console.log("annotation request:", json_request);
 		var self = this;
@@ -577,6 +586,42 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 				self.trigger('request_annotation:done');
 			}
 		});
+	},
 
-	}
+	loadSpectrum: function(rowdata){
+		this.userModifications = [];
+		this.otherModel.userModifications = [];
+		var id = rowdata['id'];
+		this.mzid = rowdata['mzid'];
+		this.create_annotation_request(id);
+	},
+
+	revert_annotation: function(){
+		this.userModifications = [];
+		this.otherModel.userModifications = [];
+		if(!this.changedAnnotation)
+			return
+		else {
+			this.create_annotation_request(this.requestId);
+		}
+	},
+
+	create_annotation_request: function(id){
+		var self = this;
+		$.ajax({
+			url: 'php/createSpecReq.php?id='+id + "&db=" + this.get('database')+"&tmp=" + this.get('tmpDB'),
+			type: 'GET',
+			async: false,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function (returndata) {
+				var json = JSON.parse(returndata);
+				self.requestId = id;
+// 				self.mzid = mzid;
+				self.request_annotation(json);
+			}
+		});
+	},
+
 });

@@ -31,10 +31,11 @@ var SpectrumSettingsView = Backbone.View.extend({
 		'click .settingsCancel' : 'cancel',
 		'change #settingsDecimals' : 'changeDecimals',
 		'change #highlightColor' : 'updateJScolor',
+		'change #peakHighlightMode' : 'changePeakHighlightMode',
 		'click #toggleCustomCfgHelp' : 'toggleCustomCfgHelp',
 		'click #settingsCustomCfgApply' : 'applyCustomCfg',
 		'submit #settingsForm' : 'applyData',
-		'keyup .stepInput' : 'updateStepSize',
+		'keyup .stepInput' : 'updateStepSizeKeyUp',
 		'change .ionSelectChkbox': 'updateIons'
 	},
 
@@ -116,9 +117,10 @@ var SpectrumSettingsView = Backbone.View.extend({
 			.attr("id", "ionSelection")
 			.attr("readonly", "")
 		;
-		var ionSelectorDropdown = ionSelector.append("div").attr("class", "mulitSelect_dropdown-content mutliSelect").append("ul").attr("id", 'ionList');
+		var ionSelectorDropdown = ionSelector.append("div").attr("class", "mulitSelect_dropdown-content mutliSelect");
+		var ionSelectorList = ionSelectorDropdown.append("ul").attr("id", 'ionList');
 		var ionOptions = [
-			{value: "peptide", text: "Peptide ion"},
+			{value: "peptide", text: "Peptide Ion"},
 			{value: "a", text: "A Ion"},
 			{value: "b", text: "B Ion"},
 			{value: "c", text: "C Ion"},
@@ -126,15 +128,19 @@ var SpectrumSettingsView = Backbone.View.extend({
 			{value: "y", text: "Y Ion"},
 			{value: "z", text: "Z Ion"},
 		];
-		d3.select("#ionList").selectAll("li").data(ionOptions)
+		ionSelectorList.selectAll("li").data(ionOptions)
 			.enter()
-			.append("li").append("label").text(function(d) { return d.text; })
+			.append("li").append("label")
 			.append("input")
 				.attr("class", "ionSelectChkbox")
 				.attr("type", "checkbox")
 				.attr("name", "ions[]")
 				.attr("id", function(d) { return d.text.replace(" ", ""); })
 				.attr("value", function(d) { return d.value; })
+		;
+		ionSelectorList.selectAll("label").data(ionOptions)
+			.append('span')
+			.text(function(d) { return d.text; })
 		;
 
 		this.precursorZ = rightDiv.append("label").attr("class", "flex-row").text("Precursor charge state: ").append('div').attr('class', 'flex-grow')
@@ -148,8 +154,9 @@ var SpectrumSettingsView = Backbone.View.extend({
 			.attr("autocomplete", "off")
 			.attr("name", "ms2Tol")
 			.attr("min", "0")
-			.attr("step", "1")
+			.attr("step", "0.1")
 			.attr("required", "")
+			.attr("class", "stepInput")
 		;
 		this.toleranceUnit = toleranceWrapper.append('div').append("select")
 			.attr("name", "tolUnit")
@@ -163,7 +170,14 @@ var SpectrumSettingsView = Backbone.View.extend({
 		this.crossLinkerModMassWrapper = rightDiv.append("label").attr("class", "flex-row").text("Cross-linker mod mass: ");
 
 		this.crossLinkerModMass = this.crossLinkerModMassWrapper.append('div').attr('class', 'flex-grow')
-			.append("input").attr("placeholder", "CL mod mass").attr("autocomplete", "off").attr("name", "clModMass").attr("required", "").attr("type", "text")
+			.append("input")
+				.attr("placeholder", "CL mod mass")
+				.attr("autocomplete", "off")
+				.attr("name", "clModMass")
+				.attr("required", "")
+				.attr("type", "number")
+				.attr("step", "0.001")
+				.attr("class", "stepInput")
 		;
 
 		//modTable
@@ -188,11 +202,11 @@ var SpectrumSettingsView = Backbone.View.extend({
 			.append("select").attr("id", 'colorSelector').attr("class", 'form-control pointer')
 		;
 		var colOptions = [
-			{value: "RdBu", text: "Red & Blue"},
-			{value: "BrBG", text: "Brown & Teal"},
-			{value: "PiYG", text: "Pink & Green"},
-			{value: "PRGn", text: "Purple & Green"},
-			{value: "PuOr", text: "Orange & Purple"},
+			{value: "RdBu", text: "Red (& Blue)"},
+			{value: "BrBG", text: "Brown (& Teal)"},
+			{value: "PiYG", text: "Pink (& Green)"},
+			{value: "PRGn", text: "Purple (& Green)"},
+			{value: "PuOr", text: "Orange (& Purple)"},
 		];
 
 		d3.select("#colorSelector").selectAll("option").data(colOptions)
@@ -212,6 +226,10 @@ var SpectrumSettingsView = Backbone.View.extend({
 		;
 		jscolor.installByClassName("jscolor");
 
+		var highlightingModeChkBx = appearanceTab.append("label").attr("class", "btn").text("Hide not selected fragments.")
+			.append("input").attr("type", "checkbox").attr("id", "peakHighlightMode")
+		;
+
 		var lossyChkBx = appearanceTab.append("label").attr("class", "btn").text("Show neutral loss labels")
 			.append("input").attr("type", "checkbox").attr("id", "lossyChkBx")
 		;
@@ -225,14 +243,14 @@ var SpectrumSettingsView = Backbone.View.extend({
 		;
 
 
-        //custom config
+		//custom config
 		var customConfigTab = mainDiv.append("div").attr("class", "settings-tab flex-column").attr("id", "settings_custom_config").style("display", "none");
 		customConfigTab.append('div').attr('id', 'toggleCustomCfgHelp').attr('class', 'pointer').text('Help ').append('i').attr("class", "fa fa-question-circle").attr("aria-hidden", "true");
 		customConfigTab.append("textarea")
 			.attr("id", "customCfgHelp")
 			.attr("class", "form-control")
 			.text('# enable double fragmentation within one fragment\n# also fragmentation events on both peptides\nfragment:BLikeDoubleFragmentation\n\n# custom loss definition examples\n## Water\nloss:AminoAcidRestrictedLoss:NAME:H20;aminoacids:S,T,D,E;MASS:18.01056027;cterm\n## Amonia\nloss:AminoAcidRestrictedLoss:NAME:NH3;aminoacids:R,K,N,Q;MASS:17.02654493;nterm\n## AIons as loss from BIons\n## when defiend as loss the matched fragments will have less impact on the score then matching A-Ions\nloss:AIonLoss\n\n# also match peaks if they are one dalton off - assuming that sometimes the monoisotopic peak is missing\nMATCH_MISSING_MONOISOTOPIC:(true|false)');
-		var customConfigInput = customConfigTab.append("textarea").attr("id", "settingsCustomCfg-input").attr("class", "form-control");
+		this.customConfigInput = customConfigTab.append("textarea").attr("id", "settingsCustomCfg-input").attr("class", "form-control");
 		var customConfigBottom = customConfigTab.append("div").attr("class", "settings-bottom");
 		var customConfigSubmit = customConfigBottom.append("input").attr("class", "btn btn-1 btn-1a network-control").attr("value", "Apply").attr("id", "settingsCustomCfgApply").attr("type", "submit");
 
@@ -259,12 +277,25 @@ var SpectrumSettingsView = Backbone.View.extend({
 		model.trigger('change'); //necessary for PrecursorInfoView update
 	},
 
-	applyCustomCfg: function(){
+	applyCustomCfg: function(e){
+
+		this.model.otherModel.customSettings = $("#settingsCustomCfg-input").val().split("\n");
 		var json = this.model.get("JSONrequest");
-		json['annotation']['custom'] = "LOWRESOLUTION:false\n";	//ToDo: temp fix until new xiAnnotator version is released
-		json['annotation']['custom'] += $("#settingsCustomCfg-input").val().split("\n");
+		// if(this.model.MSnTolerance.unit == "ppm"){
+		// 	json['annotation']['custom'] = ["LOWRESOLUTION:false"];	//ToDo: temp fix until new xiAnnotator version is released
+		// }
+		// else{
+		// 	json['annotation']['custom'] = ["LOWRESOLUTION:true"];	//ToDo: temp fix until new xiAnnotator version is released
+		// }
+
+		json['annotation']['custom'] = $("#settingsCustomCfg-input").val().split("\n");
 
 		this.model.otherModel.request_annotation(json);
+		this.model.otherModel.changedAnnotation = true;
+		this.model.otherModel.trigger("changed:annotation");
+
+		// this.render();
+
 	},
 
 	toggleView: function(){
@@ -277,9 +308,11 @@ var SpectrumSettingsView = Backbone.View.extend({
 		e.preventDefault();
 
 		var form = e.currentTarget;
-		if(!this.checkInputsForValidity(form))
+		//Todo error handling!
+		if(!this.checkInputsForValidity(form)){
+			console.log('Invalid character found in form');
 			return false;
-
+		}
 		var self = this;
 		var formData = new FormData($(form)[0]);
 		$('#settingsForm').hide();
@@ -295,8 +328,10 @@ var SpectrumSettingsView = Backbone.View.extend({
 			processData: false,
 			success: function (response) {
 				var json = JSON.parse(response);
-				json['annotation']['custom'] = "LOWRESOLUTION:false\n";	//ToDo: temp fix until new xiAnnotator version is released
+				// json['annotation']['custom'] = "LOWRESOLUTION:false\n";	//ToDo: temp fix until new xiAnnotator version is released
 				self.model.otherModel.request_annotation(json);
+				self.model.otherModel.changedAnnotation = true;
+				self.model.otherModel.trigger("changed:annotation");
 				spinner.stop();
 				$('#settingsForm').show();
 			}
@@ -308,33 +343,48 @@ var SpectrumSettingsView = Backbone.View.extend({
 		//window.SpectrumModel.request_annotation(window.SettingsSpectrumModel.JSONdata);
 	},
 
+	//ToDo: improve error handling to be more informative - display outside of console
 	checkInputsForValidity: function(formData){
 
 		var invalidChars = function(input, unknownCharPattern){
 			var match = input.match(unknownCharPattern);
 			if (match){
-				console.log(match);
-				return match;
+				return match[0];
 			}
 			return false;
 		}
+
 		//peptideStr
-		if (invalidChars(formData['peps'].value, /([^GALMFWKQESPVICYHRNDTa-z;#0-9(.)]+)/))
-			return false
+		var invalidChar = invalidChars(formData['peps'].value, /([^GALMFWKQESPVICYHRNDTa-z;#0-9(.)\-]+)/);
+		if (invalidChar){
+			alert('Invalid character(s) in peptide sequence: ' + invalidChar);
+			return false;
+		}
 
 		//peakList
-		if (invalidChars(formData['peaklist'].value, /([^0-9\.\s]+)/))
-			return false
+		var invalidChar = invalidChars(formData['peaklist'].value, /([^0-9\.\s]+)/);
+		if (invalidChar){
+			alert('Invalid character(s) in peak list: ' + invalidChar);
+			return false;
+		}
 		//clModMass
-		if (invalidChars(formData['clModMass'].value, /([^0-9\.]+)/))
-			return false
+		var invalidChar = invalidChars(formData['clModMass'].value, /([^0-9\.\-]+)/);
+		if (invalidChar){
+			alert('Invalid character(s) in cros-linker modmass: ' + invalidChar);
+			return false;
+		}
 		//precursor charge state
-		if (invalidChars(formData['preCharge'].value, /([^0-9]+)/))
-			return false
+		var invalidChar = invalidChars(formData['preCharge'].value, /([^0-9]+)/);
+		if (invalidChar){
+			alert('Invalid character(s) in charge state: ' + invalidChar);
+			return false;
+		}
 		//ms2Tolerance
-		if (invalidChars(formData['ms2Tol'].value, /([^0-9\.]+)/))
-			return false
-
+		var invalidChar = invalidChars(formData['ms2Tol'].value, /([^0-9\.]+)/);
+		if (invalidChar){
+			alert('Invalid character(s) in ms2Tolerance: ' + invalidChar);
+			return false;
+		}
 
 		return true;
 
@@ -396,7 +446,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 							var stepSize = '0.'+'0'.repeat(data.toString().split('.')[1].length - 1) + 1;
 						else
 							var stepSize = 1;
-						return '<input class="form-control stepInput" id="modMass_'+meta.row+'" row="'+meta.row+'" title="modification mass" name="modMasses[]" type="number" min=0 step="'+stepSize+'" required value='+data+' autocomplete=off>';
+						return '<input class="form-control stepInput" id="modMass_'+meta.row+'" row="'+meta.row+'" title="modification mass" name="modMasses[]" type="number" step="'+stepSize+'" required value='+data+' autocomplete=off>';
 					},
 					"targets": 2,
 				},
@@ -484,6 +534,12 @@ var SpectrumSettingsView = Backbone.View.extend({
 			$(this.crossLinkerModMassWrapper[0][0]).hide();
 		else
 			$(this.crossLinkerModMassWrapper[0][0]).show();
+
+		if (this.model.JSONdata.annotation.custom !== undefined)
+			this.customConfigInput[0][0].value = this.model.JSONdata.annotation.custom.join("\n");
+
+		this.updateStepSize($(this.toleranceValue[0][0]));
+		this.updateStepSize($(this.crossLinkerModMass[0][0]));
 	},
 
 	cancel: function(){
@@ -502,15 +558,20 @@ var SpectrumSettingsView = Backbone.View.extend({
 		$('#customCfgHelp').toggle();
 	},
 
-	updateStepSize: function(e){
-		var $target = $(e.target);
+	updateStepSizeKeyUp: function(e){
+		this.updateStepSize($(e.target));
+	},
+
+	updateStepSize: function($target){
+		// var $target = $(e.target);
 		//update stepsize
-		if ($target.val().toString().split('.')[1])
-			var stepSize = '0.'+'0'.repeat($target.val().toString().split('.')[1].length - 1) + 1;
+		if ($target.prop('value').toString().split('.')[1])
+			var stepSize = '0.'+'0'.repeat($target.prop('value').toString().split('.')[1].length - 1) + '1';
 		else {
 			var stepSize = 1;
 		}
 		$target.attr('step', stepSize);
+		$target.attr('value', $target.prop('value'));
 	},
 
 	changeTab: function(e) {
@@ -526,6 +587,14 @@ var SpectrumSettingsView = Backbone.View.extend({
 		//for now change color of model directly
 		//ToDo: Maybe change this also to apply/cancel and/or put in reset to default values
 		this.model.otherModel.changeHighlightColor( color );
+	},
+
+	changePeakHighlightMode: function(event){
+		var model = this.model.otherModel; //apply changes directly for now
+		var $target = $(event.target);
+        var selected = $target .is(':checked');
+		model.showAllFragmentsHighlight = !selected;
+		model.trigger("changed:fragHighlighting");
 	},
 
 	updateIons: function(event){

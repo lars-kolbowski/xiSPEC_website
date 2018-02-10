@@ -145,7 +145,6 @@ nav a:focus, nav a:hover {
     outline: 0;
 }
 
-
 #fileupload {
     width: 0.1px;
     height: 0.1px;
@@ -184,15 +183,7 @@ nav a:focus, nav a:hover {
     flex-grow: 1;
     margin: 10px;
 }
-#startParsing{
-    border: 1px solid #666;
-    /* font-size: 1.0em; */
-}
-#startParsing:disabled{
-    border: 1px solid #eee;
-    cursor: not-allowed;
-    color: #eee;
-}
+
 .menu-top{
     display: none;
 }
@@ -963,10 +954,35 @@ code {
     text-align: center;
     display: none;
 }
+#submitDataInfo  a {
+    color: #750000;
+}
+#submitDataInfo  a:visited {
+    color: #300;
+}
+#submitDataInfo  a:hover {
+    color: #333333;
+    border-bottom-color: rgba(255, 255, 255, 0);
+}
 
 #errorLog {
     width: 100%;
+    display: none;
     height: 25em;
+}
+
+#submitDataTop {
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+#submitDataControls {
+  margin-top: 0.7em;
+}
+
+#ionsMsg{
+  margin-bottom: 0.5em;
 }
 
 .annotation-csv-file, .cross-link-csv, .fasta-file {
@@ -1343,6 +1359,10 @@ div.file_upload input {
     margin-top: 0.9em;
     font-size: 1.3em;
 }
+#pxdFileTable{
+    font-size: 0.8em;
+    white-space:nowrap;
+}
 .btn {
     border: none;
     font-family: inherit;
@@ -1378,6 +1398,16 @@ form table td {
     border: 1px solid #fff;
     color: #fff;
 }
+.btn-2 {
+    border: 1px solid #666;
+    color: #666;
+}
+.btn-2:disabled{
+    border: 1px solid #ccc;
+    cursor: not-allowed;
+    color: #ccc!important;
+}
+
 .btn-1a:active, .btn-1a:hover {
     color: #333333;
     background: #fff;

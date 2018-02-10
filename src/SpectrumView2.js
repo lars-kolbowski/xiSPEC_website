@@ -4,16 +4,16 @@ var SpectrumView = Backbone.View.extend({
 
 	events : {
 		'click #reset' : 'resetZoom',
-// 		'click #lossyChkBx': 'showLossy',
 		'submit #setrange' : 'setrange',
 		'click #lockZoom' : 'lockZoom',
 		'click #clearHighlights' : 'clearHighlights',
-// 		'change #colorSelector': 'changeColorScheme',
 		'click #measuringTool': 'measuringTool',
 		'click #moveLabels': 'moveLabels',
 		'click #downloadSVG': 'downloadSVG',
 		'click #toggleView' : 'toggleView',
-		'click #toggleSettings' : 'toggleSettings'
+		'click #toggleSettings' : 'toggleSettings',
+		'click #revertAnnotation' : 'revertAnnotation',
+		'click #toggleSpecList' : 'toggleSpecList',
 	  },
 
 	initialize: function() {
@@ -33,10 +33,14 @@ var SpectrumView = Backbone.View.extend({
 		this.listenTo(this.model, 'changed:lossyShown', this.showLossy);
 		this.listenTo(this.model, 'request_annotation:pending', this.showSpinner);
 		this.listenTo(this.model, 'request_annotation:done', this.hideSpinner);
+		this.listenTo(this.model, 'request_annotation:done', this.disableRevertAnnotation);
+		this.listenTo(this.model, 'changed:annotation', this.enableRevertAnnotation);
+		this.listenTo(this.model, 'changed:fragHighlighting', this.updatePeakHighlighting);
 		//this.listenTo(this.model, 'destroy', this.remove);
 	},
 
 	render: function() {
+		$(this.el).css('background-color', '#fff');
 		this.graph.clear();
 		this.lockZoom();
 		if (this.model.JSONdata)
@@ -138,12 +142,13 @@ var SpectrumView = Backbone.View.extend({
 		this.model.clearStickyHighlights();
 	},
 
-// 	changeColorScheme: function(e){
-// 		this.model.changeColorScheme(e.target.value);
-// 	},
-
 	updateColors: function(){
 		this.graph.updateColors();
+	},
+
+	updatePeakHighlighting: function(){
+		this.graph.updatePeakLabels();
+		this.graph.updatePeakColors();
 	},
 
 	updateHighlightColors: function(){
@@ -152,7 +157,7 @@ var SpectrumView = Backbone.View.extend({
 
 	updateHighlights: function(){
 
-		var peaks = this.graph.points;
+		var peaks = this.graph.peaks;
 
 		for(p = 0; p < peaks.length; p++){
 			if(peaks[p].fragments.length > 0)
@@ -180,7 +185,7 @@ var SpectrumView = Backbone.View.extend({
 		var selected = $target.is(':checked');
 		this.model.moveLabels = selected;
 
-		var peaks = this.graph.points;
+		var peaks = this.graph.peaks;
 
 		if (selected){
 			// for(p = 0; p < peaks.length; p++){
@@ -213,7 +218,7 @@ var SpectrumView = Backbone.View.extend({
 	},
 	downloadSVG:function(){
 		var svgSel = d3.select(this.el).selectAll("svg");
-		var svgArr = [svgSel.node()];
+		var svgArr = svgSel[0];
 		var svgStrings = CLMSUI.svgUtils.capture (svgArr);
 		var svgXML = CLMSUI.svgUtils.makeXMLStr (new XMLSerializer(), svgStrings[0]);
 
@@ -242,19 +247,43 @@ var SpectrumView = Backbone.View.extend({
 			})
 		}
 
-		var svg_name = pepStrs.join("-") + "_z=" + charge + ".svg";
-
+		var svg_name = pepStrs.join("-") + "_z=" + charge;
+		svg_name += svgSel.node().id;
+		svg_name += ".svg";
 		download (svgXML, 'application/svg', svg_name);
 	},
 
 	showSpinner: function(){
 		this.graph.clear();
 		this.spinner.spin(d3.select(this.el).node());
-		console.log('show');
+// 		console.log('show');
 	},
 
 	hideSpinner: function(){
 // 		console.log('hide');
 		this.spinner.stop();
+	},
+
+	toggleSpecList: function(){
+		CLMSUI.vent.trigger('toggleTableView');
+	},
+
+	revertAnnotation: function(){
+		if(this.model.changedAnnotation){
+			$(this.el).css('background-color', '#fff');
+			this.model.revert_annotation();
+			this.disableRevertAnnotation();
+		};
+	},
+
+	enableRevertAnnotation: function(){
+		$(this.el).css('background-color', 'rgb(210, 224, 255)');
+		$('#revertAnnotation').addClass('btn-1a');
+		$('#revertAnnotation').removeClass('disabled');
+	},
+
+	disableRevertAnnotation: function(){
+		$('#revertAnnotation').removeClass('btn-1a');
+		$('#revertAnnotation').addClass('disabled');
 	},
 });

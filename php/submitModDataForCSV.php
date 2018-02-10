@@ -14,7 +14,7 @@
 
 	$i = 0;
 	foreach ($_POST['mods'] as $modname) {
-		$stmt = $dbh->prepare("INSERT INTO modifications ('id', 'name', 'mass', 'residues') VALUES (:id, :modname, :modmass, '*');");
+		$stmt = $dbh->prepare("INSERT INTO modifications ('id', 'name', 'mass', 'residues', 'accession') VALUES (:id, :modname, :modmass, '*', '');");
 		$stmt->bindParam(':id', $i, PDO::PARAM_INT);
 		$stmt->bindParam(':modname', $modname, PDO::PARAM_STR);
 		$stmt->bindParam(':modmass', $_POST['modMasses'][$i], PDO::PARAM_STR);
@@ -22,11 +22,18 @@
 			$stmt->execute();
 		}
 		catch (PDOException $e) {
-			die(json_encode($e));
+			if ($e->getCode() == 23000) {
+					$stmt = $dbh->prepare("UPDATE modifications SET mass=:modmass WHERE name==:modname;");
+					$stmt->bindParam(':modname', $modname, PDO::PARAM_STR);
+					$stmt->bindParam(':modmass', $_POST['modMasses'][$i], PDO::PARAM_STR);
+					$stmt->execute();
+			} else {
+					die(json_encode($e));
+			}
 		}
 	}
 
-	header("Location: ../viewSpectrum.php");
-	die();
+	// header("Location: ../viewSpectrum.php");
+	// die();
 
 ?>

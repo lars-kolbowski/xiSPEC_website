@@ -3,13 +3,25 @@
 	$mzid = $_GET['id'];
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 
-	if (isset($_SESSION['tmpDB'])){
-		$dbname = "tmp/".session_id();
+	if ($_GET['tmp'] == '1'){
+		$dbname = "tmp/".$_GET['db'];
 	}
-	else {
+	elseif (isset($_GET['db'])){
 		$dbname = "saved/".$_GET['db'];
 	}
+	else {
+		die();
+	}
 
+	//check authentication
+	if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
+	if(!in_array($_GET['db'], $_SESSION['access'])){
+		//if no valid authentication re-test authentication
+		//this includes a connection string to the sql database
+		require('../../xiSPEC_sql_conn.php');
+		require('checkAuth.php');
+	}
+	// re-check authentication
 	if(!in_array($_GET['db'], $_SESSION['access'])){
 		$json['error'] = "Authentication error occured!";
 		die(json_encode($json));
@@ -32,8 +44,27 @@
 
 	$JSON = array();
 
-	$stmt = $dbh->prepare("SELECT id, mzid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, score, allScores, protein1, protein2, passThreshold, rank FROM identifications WHERE mzid=:mzid ORDER BY id,rank;");
-	$stmt->bindParam(':mzid', $mzid);
+	if (isset($_GET['sname'])){
+		$sql = 	"SELECT identifications.id, mzid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, atom AS score, allScores, protein1, protein2, passThreshold, rank
+			FROM identifications, json_each(identifications.allScores)
+			WHERE json_each.key LIKE :scoreName AND mzid=:mzid
+			ORDER BY identifications.id,rank";
+			$stmt = $dbh->prepare($sql);
+			$stmt->bindParam(':mzid', $mzid);
+			$stmt->bindParam(':scoreName', $_GET['sname']);
+	}
+
+	else {
+		$sql = "SELECT identifications.id, mzid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, atom AS score, allScores, protein1, protein2, passThreshold, rank
+			FROM identifications, json_each(identifications.allScores)
+			WHERE mzid=:mzid
+			ORDER BY identifications.id,rank";
+			$stmt = $dbh->prepare($sql);
+			$stmt->bindParam(':mzid', $mzid);
+	}
+
+	// echo $mzid;
+
 	if ($stmt->execute()) {
 
 		$result = $stmt->fetchAll();
