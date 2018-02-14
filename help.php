@@ -7,6 +7,7 @@
 		include("xiSPEC_scripts.php");
 		?>
 		<script type="text/javascript" src="./js/accordion.js"></script>
+		<script type="text/javascript" src="./js/directURL.js"></script>
 	</head>
 
 	<body>
@@ -21,7 +22,7 @@
 				<h1 class="page-header accordionHead">
 					<i class="fa fa-plus-square" aria-hidden="true"></i> xiSPEC Feature support
 				</h1>
-				<div class="accordionContent" style="display: none;">
+				<div class="accordionContent" style="display: none;" id="features">
 					<ul>
 						<li>
 							<h5>Zooming</h5>
@@ -79,7 +80,7 @@
 				<h1 class="page-header accordionHead">
 					<i class="fa fa-plus-square" aria-hidden="true"></i> Peptide identification csv column headings
 				</h1>
-				<div class="accordionContent" style="display: none;">
+				<div class="accordionContent" style="display: none;" id="csv">
 					<table class="myTable" id="csvTable">
 						<thead>
 							<tr><th>column</th><th>required</th><th>default</th><th>example(s)</th></tr>
@@ -113,7 +114,7 @@
 				<h1 class="page-header accordionHead">
 					<i class="fa fa-plus-square" aria-hidden="true"></i> Input data format for manual data input & re-annotation requests
 				</h1>
-				<div class="accordionContent" style="display: none;">
+				<div class="accordionContent" style="display: none;" id="syntax">
  					<ul>
    	 					<li><h5>Peptide Sequence</h5></li>
 						<table class="myTable" style="max-width: 700px;">
