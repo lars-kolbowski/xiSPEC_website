@@ -166,7 +166,11 @@ echo 	'<script type="text/javascript" src="./src/TableWrapperView.js"></script>
 			wrapper: window.QCwrapper,
 		});
 
-		window.SettingsView = new SpectrumSettingsView({model: SettingsSpectrumModel, el:"#settingsWrapper"});
+		window.SettingsView = new SpectrumSettingsView({
+			model: SettingsSpectrumModel,
+			el:"#settingsWrapper",
+			showCustomCfg: false,
+		});
 
 		if(!dbView){
 			SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
