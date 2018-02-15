@@ -31,6 +31,7 @@
 					die(json_encode($e));
 			}
 		}
+		$i++;
 	}
 
 	// header("Location: ../viewSpectrum.php");
