@@ -344,7 +344,7 @@ $( document ).ready(function() {
 		success: function (data) {
 			spinner.stop();
 			resp = JSON.parse(data);
-			if (resp.errors.length == 0 && resp.modifications.length == 0)
+			if (resp.errors.length == 0 && resp.modifications.length == 0 && resp.warnings.length == 0)
 				window.location.href = "viewSpectrum.php";
 			else{
 				$('#submitDataInfo').show();
