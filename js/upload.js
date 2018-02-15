@@ -338,6 +338,7 @@ $( document ).ready(function() {
 		beforeSend: function(){
 			$(".overlay").css("visibility", "visible").css("z-index", 1);
 			target.appendChild(spinner.el);
+			$("#processText").html("Your data is being processed. Please wait...</br>Depending on the size of your data this process may take up to several minutes.");
 			$("#submitDataModal").trigger('openModal');
 		},
 		success: function (data) {
