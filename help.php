@@ -122,18 +122,18 @@
 								<tr>
 									<th>What?</th>
 									<th>How?</th>
-									<th>Example</th>
+									<th>Example(s)</th>
 								</tr>
 							</thead>
 							<tr>
-								<td>amino acids</td>
+								<td>amino acid residues</td>
 								<td>uppercase one letter code</td>
 								<td>ARNDCEQGHILKMFPSTWYV</td>
 							</tr>
 							<tr>
-								<td>modifications</td>
-								<td>anything not uppercase</td>
-								<td>ox | bs3nh2 | (+16)</td>
+								<td style="vertical-align:middle;">modifications</td>
+								<td style="line-height:1.2em;">anything not uppercase<br />(following the residue)</td>
+								<td style="vertical-align:middle;">Mox | Kbs3nh2 | K(+16)</td>
 							</tr>
 							<tr>
 								<td>peptide delimiter</td>
@@ -141,7 +141,7 @@
 								<td rowspan="2" style="vertical-align: middle">K#LM;DAHK#SEVR</td>
 							</tr>
 							<tr>
-								<td>cross-linked amino acid</td>
+								<td>cross-linked residue</td>
 								<td>#</td>
 							</tr>
 						</table>
