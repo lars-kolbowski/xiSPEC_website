@@ -49,7 +49,7 @@
 								mzML: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
 								<!-- mzML: Make sure to use centroided MS2 data! (e.g. use 'Peak picking' for profile data in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br> -->
 								mgf: If the file does not contain ALL scans it must either contain the scan number directly in the header (SCANS=XX) or in the title (check TPP compatibility in MSconvert)!<br>
-								csv: <a href="example/example.csv">download example .csv</a>
+								csv: <a href="example/example.csv">download example .csv</a> (<a href="example/example.mzML">corresponding peak list file</a>)
 							</div>
 						</div>
 						<div id="fileUploadWrapper">
