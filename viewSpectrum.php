@@ -1,5 +1,5 @@
 <?php
-
+$root = realpath($_SERVER["DOCUMENT_ROOT"]);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
@@ -13,9 +13,9 @@ if (empty($_POST)){
 
 		#this includes a connection string to the sql database
 		require('../xiSPEC_sql_conn.php');
-		require('php/checkAuth.php');
+		require("$root/php/checkAuth.php");
 		//log access
-		require("php/logAccess.php");
+		require("$root/php/logAccess.php");
 
 		if(isset($_SESSION[$_GET['db']])){
 			unset($_SESSION[$_GET['db']]);
@@ -32,13 +32,13 @@ if (empty($_POST)){
 		}
 	}
 	else{
-		header('Location: index.php');
+		header('Location: /index.php');
 	}
 
 }
 else{
 	$dbView = FALSE;
-	require('php/processSpecPostData.php');
+	require("$root/php/processSpecPostData.php");
 }
 
 ?>
@@ -52,55 +52,55 @@ else{
 			<meta name="viewport" content="width=device-width, initial-scale=1">
 			<meta name="apple-mobile-web-app-capable" content="yes">
 			<meta name="apple-mobile-web-app-status-bar-style" content="black">
-			<link rel="icon" type="image/ico" href="images/logos/favicon.ico">
-			<link rel="stylesheet" href="./css/style.css" />
-			<link rel="stylesheet" href="./css/style2.css" />
-			<link rel="stylesheet" href="./css/settings.css" />
-			<link rel="stylesheet" href="./css/tooltip.css">
-			<link rel="stylesheet" href="./css/xiSPEC_tooltip.css">
-			<link rel="stylesheet" href="./css/spectrumViewWrapper.css">
-			<link rel="stylesheet" href="./css/validationPage.css">
-			<link rel="stylesheet" href="./css/dropdown.css">
-			<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
-			<link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css"/>
-			<?php include("xiSPEC_scripts.php");?>
+			<link rel="icon" type="image/ico" href="/images/logos/favicon.ico">
+			<link rel="stylesheet" href="/css/style.css" />
+			<link rel="stylesheet" href="/css/style2.css" />
+			<link rel="stylesheet" href="/css/settings.css" />
+			<link rel="stylesheet" href="/css/tooltip.css">
+			<link rel="stylesheet" href="/css/xiSPEC_tooltip.css">
+			<link rel="stylesheet" href="/css/spectrumViewWrapper.css">
+			<link rel="stylesheet" href="/css/validationPage.css">
+			<link rel="stylesheet" href="/css/dropdown.css">
+			<link rel="stylesheet" type="text/css" href="/vendor/bootstrap/css/bootstrap.min.css"/>
+			<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css"/>
+			<?php include("$root/xiSPEC_scripts.php");?>
 
-			<script type="text/javascript" src="./vendor/jscolor.min.js"></script>
-			<script type="text/javascript" src="./vendor/c3.js"></script>
-			<script type="text/javascript" src="./vendor/split.min.js"></script>
-			<script type="text/javascript" src="./vendor/svgexp.js"></script>
-			<script type="text/javascript" src="./vendor/spin.js"></script>
-			<script type="text/javascript" src="./vendor/byrei-dyndiv_1.0rc1.js"></script>
-			<script type="text/javascript" src="./vendor/download.js"></script>
-			<script type="text/javascript" src="./vendor/bootstrap/js/bootstrap.min.js"></script>
-			<script type="text/javascript" src="./vendor/dataTables.bootstrap.min.js"></script>
+			<script type="text/javascript" src="/vendor/jscolor.min.js"></script>
+			<script type="text/javascript" src="/vendor/c3.js"></script>
+			<script type="text/javascript" src="/vendor/split.min.js"></script>
+			<script type="text/javascript" src="/vendor/svgexp.js"></script>
+			<script type="text/javascript" src="/vendor/spin.js"></script>
+			<script type="text/javascript" src="/vendor/byrei-dyndiv_1.0rc1.js"></script>
+			<script type="text/javascript" src="/vendor/download.js"></script>
+			<script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+			<script type="text/javascript" src="/vendor/dataTables.bootstrap.min.js"></script>
 
 
 			<!-- Spectrum view .js files -->
-			<script type="text/javascript" src="./js/app.js"></script>
-			<script type="text/javascript" src="./src/model.js"></script>
-			<script type="text/javascript" src="./src/SpectrumView2.js"></script>
-			<script type="text/javascript" src="./src/FragmentationKeyView.js"></script>
-			<script type="text/javascript" src="./src/PrecursorInfoView.js"></script>
-			<script type="text/javascript" src="./src/SpectrumSettingsView.js"></script>
-			<script type="text/javascript" src="./js/PeptideView.js"></script>
-			<script type="text/javascript" src="./src/PepInputView.js"></script>
-			<script type="text/javascript" src="./src/QCwrapperView.js"></script>
-			<script type="text/javascript" src="./src/ErrorPlotView.js"></script>
-			<script type="text/javascript" src="./src/FragKey/KeyFragment.js"></script>
-			<script type="text/javascript" src="./src/graph/Graph.js"></script>
-			<script type="text/javascript" src="./src/graph/Peak.js"></script>
-			<script type="text/javascript" src="./src/graph/Fragment.js"></script>
+			<script type="text/javascript" src="/js/app.js"></script>
+			<script type="text/javascript" src="/src/model.js"></script>
+			<script type="text/javascript" src="/src/SpectrumView2.js"></script>
+			<script type="text/javascript" src="/src/FragmentationKeyView.js"></script>
+			<script type="text/javascript" src="/src/PrecursorInfoView.js"></script>
+			<script type="text/javascript" src="/src/SpectrumSettingsView.js"></script>
+			<script type="text/javascript" src="/js/PeptideView.js"></script>
+			<script type="text/javascript" src="/src/PepInputView.js"></script>
+			<script type="text/javascript" src="/src/QCwrapperView.js"></script>
+			<script type="text/javascript" src="/src/ErrorPlotView.js"></script>
+			<script type="text/javascript" src="/src/FragKey/KeyFragment.js"></script>
+			<script type="text/javascript" src="/src/graph/Graph.js"></script>
+			<script type="text/javascript" src="/src/graph/Peak.js"></script>
+			<script type="text/javascript" src="/src/graph/Fragment.js"></script>
 <?php if($dbView)
-echo 	'<script type="text/javascript" src="./src/TableWrapperView.js"></script>
-		<script type="text/javascript" src="./src/DataTableView.js"></script>
-		<script type="text/javascript" src="./js/specListTable.js"></script>
-		<script type="text/javascript" src="./js/altListTable.js"></script>';
+echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
+		<script type="text/javascript" src="/src/DataTableView.js"></script>
+		<script type="text/javascript" src="/js/specListTable.js"></script>
+		<script type="text/javascript" src="/js/altListTable.js"></script>';
 ?>
 			<script>
 
 		var model_vars = {
-			baseDir: "",
+			baseDir: "/",
 			xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/",
 			<?php if(isset($dbName)) echo 'database: "'.$dbName.'",'; ?>
 			<?php if(isset($tmpDB)) echo 'tmpDB: "'.$tmpDB.'",'; ?>
@@ -169,7 +169,7 @@ echo 	'<script type="text/javascript" src="./src/TableWrapperView.js"></script>
 		window.SettingsView = new SpectrumSettingsView({
 			model: SettingsSpectrumModel,
 			el:"#settingsWrapper",
-			showCustomCfg: false,
+			showCustomCfg: true,
 		});
 
 		if(!dbView){
@@ -311,6 +311,9 @@ echo 	'<script type="text/javascript" src="./src/TableWrapperView.js"></script>
 						}
 					}
 				 ?>
+				 <div>
+				 <label><input type="checkbox" id="shareInclSid"/>Include currently selected spectrum in link</label>
+				 </div>
 						</div>
 		<!-- End Share Modal -->
 	</body>

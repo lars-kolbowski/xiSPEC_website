@@ -115,7 +115,7 @@ $( document ).ready(function() {
 		"searching":false,
 		"processing": true,
 		"serverSide": true,
-		"ajax": "php/convertModsToJSON.php?peps=",
+		"ajax": "/php/convertModsToJSON.php?peps=",
 		"columns": [
 			{ "data": "id" },
 			{},
@@ -277,7 +277,7 @@ $( document ).ready(function() {
 		e.preventDefault();
 		var fd = $(this).serialize();
 		$.ajax({
-			url: "php/submitModDataForCSV.php",
+			url: "/php/submitModDataForCSV.php",
 			type: 'POST',
 			data: fd,
 			success: function (data) {
@@ -292,7 +292,7 @@ $( document ).ready(function() {
 		var spinner = new Spinner({scale: 0.3}).spin();
 		var target = d3.select('#ionsFormSubmit').node();
 		$.ajax({
-			url: "php/updateIons.php",
+			url: "/php/updateIons.php",
 			type: 'POST',
 			data: fd,
 			beforeSend: function(){
@@ -329,7 +329,7 @@ $( document ).ready(function() {
 	var spinner = new Spinner({scale: 5}).spin();
 	var target = d3.select("#processDataInfo > .spinnerWrapper").node();
 	$.ajax({
-		url: "php/parseData.php",
+		url: "/php/parseData.php",
 		type: 'POST',
 		data: form_data,
 		//async: false,

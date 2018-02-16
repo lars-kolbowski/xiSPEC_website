@@ -6,8 +6,8 @@
 		include("head.php");
 		include("xiSPEC_scripts.php");
 		?>
-		<script type="text/javascript" src="./js/accordion.js"></script>
-		<script type="text/javascript" src="./js/directURL.js"></script>
+		<script type="text/javascript" src="/js/accordion.js"></script>
+		<script type="text/javascript" src="/js/directURL.js"></script>
 	</head>
 
 	<body>

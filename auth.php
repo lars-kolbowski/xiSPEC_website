@@ -5,11 +5,11 @@
 <html>
 	<head>
 		<title>xiSPEC - authenticate</title>
-		<link rel="icon" type="image/ico" href="images/logos/favicon.ico">
-		<link rel="stylesheet" href="./css/auth.css" />
-		<link rel="stylesheet" href="./css/style2.css" />
-		<link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css"/>
-		<link rel="stylesheet" href="./css/validationPage.css">
+		<link rel="icon" type="image/ico" href="/images/logos/favicon.ico">
+		<link rel="stylesheet" href="/css/auth.css" />
+		<link rel="stylesheet" href="/css/style2.css" />
+		<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css"/>
+		<link rel="stylesheet" href="/css/validationPage.css">
 	</head>
 	<body>
 
@@ -22,7 +22,7 @@
 				<div class="container">
 
 					<?php if(isset($_GET['e']) && $_GET['e'] == -1) echo 'wrong password!'; ?>
-					<form action='php/checkAuthForm.php' method='POST'>
+					<form action='/php/checkAuthForm.php' method='POST'>
 						The database <?php echo $_GET['db']; ?> is private and password protected!</br>
 						<input style="display: none;" name="dbName" value="<?php echo $_GET['db']; ?>">
 						<label class="flex-row label">

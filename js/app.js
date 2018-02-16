@@ -68,7 +68,7 @@ $(function() {
 			datatype: "json",
 			async: false,
 			data: fd,
-			url: "php/saveDataSet.php",
+			url: "/php/saveDataSet.php",
 			success: function(response) {
 				response = JSON.parse(response);
 				if (response.hasOwnProperty('error'))
@@ -88,7 +88,7 @@ $(function() {
 		$.ajax({
 			type: "GET",
 			async: false,
-			url: "php/generateShareUrl.php?db="+dbName,
+			url: "/php/generateShareUrl.php?db="+dbName,
 			success: function(response) {
 				response = JSON.parse(response);
 				if(response.error){
