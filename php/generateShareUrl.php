@@ -28,7 +28,7 @@
 
 		$stmt->execute();
 		$shareStr = $stmt->fetchColumn();
-		$json['url'] = "https://" . $_SERVER['HTTP_HOST'] . "/viewSpectrum.php?s=" . $shareStr;
+		$json['url'] = "http://" . $_SERVER['HTTP_HOST'] . "/viewSpectrum.php?s=" . $shareStr;
 
 		echo json_encode($json);
 	} catch (PDOException $e) {
