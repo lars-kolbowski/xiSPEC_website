@@ -8,7 +8,7 @@
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 
 	if (!isset($_POST['dbPass']) || !isset($_POST['dbName'])) {
-		header("Location: ../upload.php");
+		header("Location: /upload.php");
 		exit();
 	}
 
@@ -23,9 +23,9 @@
 		if(!in_array($_POST['dbName'], $_SESSION['access'])){
 			$_SESSION['access'][] = $_POST['dbName'];
 		}
-		header("Location: ../viewSpectrum.php?db=".$_POST['dbName']);
+		header("Location: /viewSpectrum.php?db=".$_POST['dbName']);
 	}
 	else
-		header("Location: ../auth.php?db=".$_POST['dbName']."&e=-1");
+		header("Location: /auth.php?db=".$_POST['dbName']."&e=-1");
 
 ?>

@@ -49,7 +49,7 @@
 								mzML: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
 								<!-- mzML: Make sure to use centroided MS2 data! (e.g. use 'Peak picking' for profile data in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br> -->
 								mgf: If the file does not contain ALL scans it must either contain the scan number directly in the header (SCANS=XX) or in the title (check TPP compatibility in MSconvert)!<br>
-								csv: <a href="example/example.csv">download example .csv</a>
+								csv: <a href="example/example.csv">download example .csv</a> (<a href="example/example.mzML">corresponding peak list file</a>)
 							</div>
 						</div>
 						<div id="fileUploadWrapper">
@@ -58,7 +58,7 @@
 							<div id="uploadProgress">
 								<div class="file_upload_bar" style="width: 0%;"><div class="file_upload_percent"></div></div>
 							</div>
-							<button id="startParsing" disabled="true" class="btn btn-1a btn-2">Submit Data</button>
+							<button id="startParsing" disabled="true" class="btn btn-2">Submit Data</button>
 						</div>
 						<div class="fileupload_info">
 						<table>
@@ -90,11 +90,16 @@
 						<form id="prideForm">
 							<div style="display:flex;">
 								<label class="label">PRIDE accession number: <input type="text" id="pxd_in" class="form-control"/></label>
-								<button class="btn btn-1a btn-2" type="submit">List files</button>
+								<button class="btn btn-2" style="margin-left: 1em; margin-bottom: 0.6em; font-size: 0.8em;" type="submit">List files</button>
 							</div>
 							<div id="pxd_error"></div>
 							<div id="pxd_title"></div>
-							<button type="submit" id="pxd_submit" class="btn btn-1a btn-2">Submit selected files</button>
+							<div id="pxd_submit" style="display: none;">
+								<div id="pxd_submitInfo">
+								Please Select 1 RESULT and 1 PEAK file then press Submit selected files.</br>
+								Files belonging together usually share the same assayAccession!</div>
+								<button type="submit" id="pxd_submitBtn" class="btn btn-2">Submit selected files</button>
+							</div>
 							<table id="pxdFileTable" class="display" width="100%" style="text-align:center;"></table>
 						</form>
 					</div>
@@ -273,7 +278,7 @@
 								</ul>
 							</div>
 						</div>
-						<button type="submit" id="ionsFormSubmit" class="btn btn-1a btn-2">update ions</button>
+						<button type="submit" id="ionsFormSubmit" class="btn btn-2">update ions</button>
 						<div id="ionsUpdateMsg" style="font-size: 0.8em;display: inline;"></div>
 					</form>
 				</div>
@@ -282,19 +287,16 @@
 					<form id="csvModificationsForm" method="post" action="php/submitModDataForCSV.php"></form>
 				</div>
 				<div id="submitDataControls">
-					<button id="cancelUpload" class="btn btn-1a btn-2" href="#">Cancel</button>
+					<button id="cancelUpload" class="btn btn-2" href="#">Cancel</button>
 					<a id="gitHubIssue" class="btn btn-1a" style="display:none;" href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'>
 						<i class="fa fa-github" aria-hidden="true"></i>Create issue
 					</a>
-					<button id="continueToDB" class="btn btn-1a btn-2" href="#">Continue</button>
+					<button id="continueToDB" class="btn btn-2" href="#">Continue</button>
 				</div>
 			</div>
 			<div id="processDataInfo">
 				<div class="spinnerWrapper"></div>
-				<div id="processText" style="text-align: center; padding-top: 140px; margin:10px;">
-					<p>Your data is being processed. Please wait...</p>
-					<p>Depending on the size of your data this process may take up to several minutes.</p>
-				</div>
+				<div id="processText" style="text-align: center; padding-top: 140px; margin:10px;"></div>
 			</div>
 		</div>
 		<div class="overlay" style="z-index: -1; visibility: hidden;"></div>

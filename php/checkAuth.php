@@ -8,9 +8,9 @@
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 
 	// get database name
-	if (isset($_GET['sid'])) {
+	if (isset($_GET['s'])) {
 		$stmt = $xiSPECdb->prepare("SELECT name FROM dbs WHERE share = :share;");
-		$stmt->bindParam(':share', $_GET['sid'], PDO::PARAM_STR);
+		$stmt->bindParam(':share', $_GET['s'], PDO::PARAM_STR);
 		$stmt->execute();
 		$dbName = $stmt->fetchColumn();
 
@@ -42,7 +42,7 @@
 		else{
 			//otherwise redirect him to the password authentication page
 			if(!in_array($dbName, $_SESSION['access']))
-				header("Location: auth.php?db=".$dbName);
+				header("Location: /auth.php?db=".$dbName);
 			else {
 				$allowAccess = true;
 			}

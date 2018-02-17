@@ -15,7 +15,7 @@
 	$table = 'identifications';
 
 	// Table's primary key - key for getting total results not real primary table key
-	$primaryKey = 'mzid';
+	$primaryKey = 'sid';
 
 	// Array of database columns which should be read and sent back to DataTables.
 	// The `db` parameter represents the column name in the database, while the `dt`
@@ -24,7 +24,7 @@
 	$columns = array(
 		array( 'db' => 'MIN('.$table.'.id)',		'dt' => 'id', 'field' => 'id', 'as' => 'id'),
 		array( 'db' => 'COUNT('.$table.'.id)',	'dt' => 'alt_count', 'field' => 'alt_count', 'as' => 'alt_count'),
-		array( 'db' => 'mzid',			'dt' => 'mzid', 'field' => 'mzid', 'as' => 'mzid'),
+		array( 'db' => 'sid',			'dt' => 'sid', 'field' => 'sid', 'as' => 'sid'),
 		array( 'db' => 'pep1',			'dt' => 'pep1', 'field' => 'pep1', 'as' => 'pep1'),
 		array( 'db' => 'pep2',			'dt' => 'pep2', 'field' => 'pep2', 'as' => 'pep2'),
 		array( 'db' => 'linkpos1',	'dt' => 'linkpos1', 'field' => 'linkpos1', 'as' => 'linkpos1'),
@@ -72,8 +72,8 @@
 
 	require( 'ssp.customizedClass.php' );
 
-	$groupBy = "GROUP BY `mzid`, json_each.id";
-	// $groupBy = "GROUP BY `mzid`";
+	$groupBy = "GROUP BY `sid`, json_each.id";
+	// $groupBy = "GROUP BY `sid`";
 
 	if (isset($_GET['scol']))
 		$extraWhere = "json_each.key == '".$_GET['scol']."' AND rank = 1";

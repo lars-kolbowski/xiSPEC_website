@@ -1,5 +1,5 @@
 <?php
-
+$root = realpath($_SERVER["DOCUMENT_ROOT"]);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
@@ -7,15 +7,15 @@ $justSaved = 'false';
 if (empty($_POST)){
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 	$dbView = true;
-
-	if(isset($_GET['sid']) || isset($_GET['db'])){
+	$sid = (isset($_GET['sid']) ? $_GET['sid'] : false);
+	
+	if(isset($_GET['s']) || isset($_GET['db'])){
 		$tmpDB = false;
-
 		#this includes a connection string to the sql database
 		require('../xiSPEC_sql_conn.php');
-		require('php/checkAuth.php');
+		require("$root/php/checkAuth.php");
 		//log access
-		require("php/logAccess.php");
+		require("$root/php/logAccess.php");
 
 		if(isset($_SESSION[$_GET['db']])){
 			unset($_SESSION[$_GET['db']]);
@@ -32,13 +32,13 @@ if (empty($_POST)){
 		}
 	}
 	else{
-		header('Location: index.php');
+		header('Location: /index.php');
 	}
 
 }
 else{
 	$dbView = FALSE;
-	require('php/processSpecPostData.php');
+	require("$root/php/processSpecPostData.php");
 }
 
 ?>
@@ -52,55 +52,56 @@ else{
 			<meta name="viewport" content="width=device-width, initial-scale=1">
 			<meta name="apple-mobile-web-app-capable" content="yes">
 			<meta name="apple-mobile-web-app-status-bar-style" content="black">
-			<link rel="icon" type="image/ico" href="images/logos/favicon.ico">
-			<link rel="stylesheet" href="./css/style.css" />
-			<link rel="stylesheet" href="./css/style2.css" />
-			<link rel="stylesheet" href="./css/settings.css" />
-			<link rel="stylesheet" href="./css/tooltip.css">
-			<link rel="stylesheet" href="./css/xiSPEC_tooltip.css">
-			<link rel="stylesheet" href="./css/spectrumViewWrapper.css">
-			<link rel="stylesheet" href="./css/validationPage.css">
-			<link rel="stylesheet" href="./css/dropdown.css">
-			<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
-			<link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css"/>
-			<?php include("xiSPEC_scripts.php");?>
+			<link rel="icon" type="image/ico" href="/images/logos/favicon.ico">
+			<link rel="stylesheet" href="/css/style.css" />
+			<link rel="stylesheet" href="/css/style2.css" />
+			<link rel="stylesheet" href="/css/settings.css" />
+			<link rel="stylesheet" href="/css/tooltip.css">
+			<link rel="stylesheet" href="/css/xiSPEC_tooltip.css">
+			<link rel="stylesheet" href="/css/spectrumViewWrapper.css">
+			<link rel="stylesheet" href="/css/validationPage.css">
+			<link rel="stylesheet" href="/css/dropdown.css">
+			<link rel="stylesheet" type="text/css" href="/vendor/bootstrap/css/bootstrap.min.css"/>
+			<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css"/>
+			<?php include("$root/xiSPEC_scripts.php");?>
 
-			<script type="text/javascript" src="./vendor/jscolor.min.js"></script>
-			<script type="text/javascript" src="./vendor/c3.js"></script>
-			<script type="text/javascript" src="./vendor/split.min.js"></script>
-			<script type="text/javascript" src="./vendor/svgexp.js"></script>
-			<script type="text/javascript" src="./vendor/spin.js"></script>
-			<script type="text/javascript" src="./vendor/byrei-dyndiv_1.0rc1.js"></script>
-			<script type="text/javascript" src="./vendor/download.js"></script>
-			<script type="text/javascript" src="./vendor/bootstrap/js/bootstrap.min.js"></script>
-			<script type="text/javascript" src="./vendor/dataTables.bootstrap.min.js"></script>
+			<script type="text/javascript" src="/vendor/jscolor.min.js"></script>
+			<script type="text/javascript" src="/vendor/c3.js"></script>
+			<script type="text/javascript" src="/vendor/split.min.js"></script>
+			<script type="text/javascript" src="/vendor/svgexp.js"></script>
+			<script type="text/javascript" src="/vendor/spin.js"></script>
+			<script type="text/javascript" src="/vendor/byrei-dyndiv_1.0rc1.js"></script>
+			<script type="text/javascript" src="/vendor/download.js"></script>
+			<script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+			<script type="text/javascript" src="/vendor/dataTables.bootstrap.min.js"></script>
+			<!-- <script type="text/javascript" src="cdn.datatables.net/plug-ins/1.10.16/api/fnFindCellRowIndexes.js"></script> -->
 
 
 			<!-- Spectrum view .js files -->
-			<script type="text/javascript" src="./js/app.js"></script>
-			<script type="text/javascript" src="./src/model.js"></script>
-			<script type="text/javascript" src="./src/SpectrumView2.js"></script>
-			<script type="text/javascript" src="./src/FragmentationKeyView.js"></script>
-			<script type="text/javascript" src="./src/PrecursorInfoView.js"></script>
-			<script type="text/javascript" src="./src/SpectrumSettingsView.js"></script>
-			<script type="text/javascript" src="./js/PeptideView.js"></script>
-			<script type="text/javascript" src="./src/PepInputView.js"></script>
-			<script type="text/javascript" src="./src/QCwrapperView.js"></script>
-			<script type="text/javascript" src="./src/ErrorPlotView.js"></script>
-			<script type="text/javascript" src="./src/FragKey/KeyFragment.js"></script>
-			<script type="text/javascript" src="./src/graph/Graph.js"></script>
-			<script type="text/javascript" src="./src/graph/Peak.js"></script>
-			<script type="text/javascript" src="./src/graph/Fragment.js"></script>
+			<script type="text/javascript" src="/js/app.js"></script>
+			<script type="text/javascript" src="/src/model.js"></script>
+			<script type="text/javascript" src="/src/SpectrumView2.js"></script>
+			<script type="text/javascript" src="/src/FragmentationKeyView.js"></script>
+			<script type="text/javascript" src="/src/PrecursorInfoView.js"></script>
+			<script type="text/javascript" src="/src/SpectrumSettingsView.js"></script>
+			<script type="text/javascript" src="/js/PeptideView.js"></script>
+			<script type="text/javascript" src="/src/PepInputView.js"></script>
+			<script type="text/javascript" src="/src/QCwrapperView.js"></script>
+			<script type="text/javascript" src="/src/ErrorPlotView.js"></script>
+			<script type="text/javascript" src="/src/FragKey/KeyFragment.js"></script>
+			<script type="text/javascript" src="/src/graph/Graph.js"></script>
+			<script type="text/javascript" src="/src/graph/Peak.js"></script>
+			<script type="text/javascript" src="/src/graph/Fragment.js"></script>
 <?php if($dbView)
-echo 	'<script type="text/javascript" src="./src/TableWrapperView.js"></script>
-		<script type="text/javascript" src="./src/DataTableView.js"></script>
-		<script type="text/javascript" src="./js/specListTable.js"></script>
-		<script type="text/javascript" src="./js/altListTable.js"></script>';
+echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
+		<script type="text/javascript" src="/src/DataTableView.js"></script>
+		<script type="text/javascript" src="/js/specListTable.js"></script>
+		<script type="text/javascript" src="/js/altListTable.js"></script>';
 ?>
 			<script>
 
 		var model_vars = {
-			baseDir: "",
+			baseDir: "/",
 			xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/",
 			<?php if(isset($dbName)) echo 'database: "'.$dbName.'",'; ?>
 			<?php if(isset($tmpDB)) echo 'tmpDB: "'.$tmpDB.'",'; ?>
@@ -166,7 +167,11 @@ echo 	'<script type="text/javascript" src="./src/TableWrapperView.js"></script>
 			wrapper: window.QCwrapper,
 		});
 
-		window.SettingsView = new SpectrumSettingsView({model: SettingsSpectrumModel, el:"#settingsWrapper"});
+		window.SettingsView = new SpectrumSettingsView({
+			model: SettingsSpectrumModel,
+			el:"#settingsWrapper",
+			showCustomCfg: false,
+		});
 
 		if(!dbView){
 			SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
@@ -177,7 +182,11 @@ echo 	'<script type="text/javascript" src="./src/TableWrapperView.js"></script>
 			//window.SettingsView.render();
 		}
 		else {
-			window.TableWrapper = new TableWrapperView({model: SpectrumModel, el:"#bottomDiv"})
+			window.TableWrapper = new TableWrapperView({
+				model: SpectrumModel,
+				el:"#bottomDiv",
+				initId: "<?php echo $sid; ?>"
+			});
 			// window.specListTable = new specListTableView({model: SpectrumModel, el:"#specListWrapper"});
 			// window.altListTable = new altListTableView({model: SpectrumModel, el:"#altListWrapper"});
 		}
@@ -291,22 +300,25 @@ echo 	'<script type="text/javascript" src="./src/TableWrapperView.js"></script>
 				<div id='justSavedMsg' style="line-height: 2em;"></div>
 				<?php
 
-					$link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://". $_SERVER['SERVER_NAME'] . "/viewSpectrum.php?db=" . $dbName;
+					$link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://". $_SERVER['SERVER_NAME'] . "/db/" . $dbName;
 					if (isset($public)){
-						echo 'This dataset is public - you can go ahead and share the link below</br><label class="flex-row label">url: <div class="flex-grow"><input type="text" class="form-control" value="'.$link.'" readonly onClick="this.select();"></div></label>';
+						echo 'This dataset is public - you can go ahead and share the link below</br><label class="flex-row label">url: <div class="flex-grow"><input type="text" class="form-control shareURL" value="'.$link.'" readonly onClick="this.select();"></div></label>';
 					}
 					else {
-						echo 'This dataset is private - you can either share the password protected link:</br><label class="flex-row label">url (password protected): <div class="flex-grow"><input type="text" class="form-control" value="'.$link.'" readonly onClick="this.select();"></div></label></br>';
+						echo 'This dataset is private - you can either share the password protected link:</br><label class="flex-row label">url (password protected): <div class="flex-grow"><input type="text" class="form-control shareURL" value="'.$link.'" readonly onClick="this.select();"></div></label></br>';
 						if(!$shareLink){
 							echo '<span id="shareLinkSpan">or <a id="createShareLink" class="pointer">generate a share link</a> - </span><strong>Anyone</strong> with the link will be able view this dataset!';
-							echo '<label class="flex-row label" id="shareLinkLabel" style="display: none;">url: <div class="flex-grow"><input type="text" id="shareLink" class="form-control" value="" readonly onClick="this.select();"></div></label>';
+							echo '<label class="flex-row label" id="shareLinkLabel" style="display: none;">url: <div class="flex-grow"><input type="text" id="shareLink" class="form-control shareURL" value="" readonly onClick="this.select();"></div></label>';
 						}
 						else{
 							echo 'or share the link below - <strong>Anyone</strong> with the link will be able view this dataset!';
-							echo '<label class="flex-row label" id="shareLinkLabel">url: <div class="flex-grow"><input type="text" id="shareLink" class="form-control" value="'.$shareLink.'" readonly onClick="this.select();"></div></label>';
+							echo '<label class="flex-row label" id="shareLinkLabel">url: <div class="flex-grow"><input type="text" id="shareLink" class="form-control shareURL" value="'.$shareLink.'" readonly onClick="this.select();"></div></label>';
 						}
 					}
 				 ?>
+				 <div style="display:none;">
+				 <label><input type="checkbox" id="shareInclSid"/>Include currently selected spectrum in link</label>
+				 </div>
 						</div>
 		<!-- End Share Modal -->
 	</body>

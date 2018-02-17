@@ -23,7 +23,7 @@ var PrideSelectionView = Backbone.View.extend({
 
 	events : {
 		'submit #prideForm': 'validate_pxd',
-		'click #pxd_submit': 'submit_files',
+		'click #pxd_submitBtn': 'submit_files',
 	},
 
 	initialize: function() {
@@ -136,7 +136,7 @@ var PrideSelectionView = Backbone.View.extend({
 			var peakFileRowNum = $pxdPeakFileChkbx.data('row');
 
 			if(this.pxdFileTable.row(resRowNum).data().assayAccession !== this.pxdFileTable.row(peakFileRowNum).data().assayAccession){
-				console.log('Warning!');
+				console.log('Warning: different assays');
 			}
 
 			var resFTP = this.pxdFileTable.row(resRowNum).data().downloadLink;
@@ -148,7 +148,7 @@ var PrideSelectionView = Backbone.View.extend({
 			CLMSUI.startParser(formData);
 		}
 		else{
-			$('#pxd_error').html('You must select 1 RESULT-type and 1 PEAK-type file!');
+			$('#pxd_error').html('You must select 1 RESULT and 1 PEAK-type file!');
 		}
 	},
 
@@ -156,12 +156,11 @@ var PrideSelectionView = Backbone.View.extend({
 		var pxd_api_project_url = 'https://www.ebi.ac.uk:443/pride/ws/archive/project/' + pxd;
 		$.get(pxd_api_project_url, function(res){
 			console.log(res);
-			var pxd_project_url = 'https://www.ebi.ac.uk:443/pride/ws/archive/project/' + res.accession;
+			var pxd_project_url = 'https://www.ebi.ac.uk/pride/archive/projects/' + res.accession;
 			var html = 'Showing files for <a href="'+pxd_project_url+'" target="_blank">' + res.accession + '</a>: '
-			html += 'Please Select 1 result file and 1 Peak file then press Submit selected files.</br>'
-			html += "Title: " + res.title + "</br>";
+			html += res.title + "</br>";
 			$('#pxd_title').html(html);
-
+			$('#pxd_submit').show();
 		});
 	},
 

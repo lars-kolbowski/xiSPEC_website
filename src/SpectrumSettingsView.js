@@ -41,7 +41,16 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 	identifier: "Spectrum Settings",
 
-	initialize: function() {
+	initialize: function(options) {
+
+		var defaultOptions = {
+			showCustomCfg: true,
+		};
+
+		this.options = _.extend(defaultOptions, options);
+
+		this.options = _.extend({}, this.defaults, options);
+
 		SpectrumSettingsView.__super__.initialize.apply (this, arguments);
 		var self = this;
 
@@ -65,10 +74,15 @@ var SpectrumSettingsView = Backbone.View.extend({
 			self.menu.append("button")
 				.attr("class", "settingsTab btn btn-1a")
 				.attr("data-tab", b_id)
+				.attr("id", b_id)
 				.attr("style", "z-index: " + zIndex)
 				.text(b)
 			;
 		});
+
+		if (!this.options.showCustomCfg){
+			this.menu.selectAll('#custom_config').style("display", "none");
+		}
 
 		// add active class to first tab-button
 		this.menu.select('button').classed('active', true);
@@ -253,7 +267,6 @@ var SpectrumSettingsView = Backbone.View.extend({
 		this.customConfigInput = customConfigTab.append("textarea").attr("id", "settingsCustomCfg-input").attr("class", "form-control");
 		var customConfigBottom = customConfigTab.append("div").attr("class", "settings-bottom");
 		var customConfigSubmit = customConfigBottom.append("input").attr("class", "btn btn-1 btn-1a network-control").attr("value", "Apply").attr("id", "settingsCustomCfgApply").attr("type", "submit");
-
 
 		d3.select(this.el).selectAll("label")
 			.classed ("label", true)

@@ -115,7 +115,7 @@ $( document ).ready(function() {
 		"searching":false,
 		"processing": true,
 		"serverSide": true,
-		"ajax": "php/convertModsToJSON.php?peps=",
+		"ajax": "/php/convertModsToJSON.php?peps=",
 		"columns": [
 			{ "data": "id" },
 			{},
@@ -277,7 +277,7 @@ $( document ).ready(function() {
 		e.preventDefault();
 		var fd = $(this).serialize();
 		$.ajax({
-			url: "php/submitModDataForCSV.php",
+			url: "/php/submitModDataForCSV.php",
 			type: 'POST',
 			data: fd,
 			success: function (data) {
@@ -292,7 +292,7 @@ $( document ).ready(function() {
 		var spinner = new Spinner({scale: 0.3}).spin();
 		var target = d3.select('#ionsFormSubmit').node();
 		$.ajax({
-			url: "php/updateIons.php",
+			url: "/php/updateIons.php",
 			type: 'POST',
 			data: fd,
 			beforeSend: function(){
@@ -329,7 +329,7 @@ $( document ).ready(function() {
 	var spinner = new Spinner({scale: 5}).spin();
 	var target = d3.select("#processDataInfo > .spinnerWrapper").node();
 	$.ajax({
-		url: "php/parseData.php",
+		url: "/php/parseData.php",
 		type: 'POST',
 		data: form_data,
 		//async: false,
@@ -338,12 +338,13 @@ $( document ).ready(function() {
 		beforeSend: function(){
 			$(".overlay").css("visibility", "visible").css("z-index", 1);
 			target.appendChild(spinner.el);
+			$("#processText").html("Your data is being processed. Please wait...</br>Depending on the size of your data this process may take up to several minutes.");
 			$("#submitDataModal").trigger('openModal');
 		},
 		success: function (data) {
 			spinner.stop();
 			resp = JSON.parse(data);
-			if (resp.errors.length == 0 && resp.modifications.length == 0)
+			if (resp.errors.length == 0 && resp.modifications.length == 0 && resp.warnings.length == 0)
 				window.location.href = "viewSpectrum.php";
 			else{
 				$('#submitDataInfo').show();

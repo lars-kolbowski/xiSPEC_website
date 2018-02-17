@@ -19,10 +19,10 @@
 		</div>
 		<div class="bottom">
 			<a href="http://rappsilberlab.org/" target="_blank">
-				<img alt="Find out more about us." id="rapplablogo" class="image" src="images/logos/rappsilber-lab-small.png"/>
+				<img alt="Find out more about us." id="rapplablogo" class="image" src="/images/logos/rappsilber-lab-small.png"/>
 			</a>
 		   	<a href="http://www.wellcome.ac.uk/" target="_blank">
-		   		<img alt="Visit the Wellcome Trust website." id="wellcometrustlogo" class="image" src="images/logos/wellcome-trust-small.png"/>
+		   		<img alt="Visit the Wellcome Trust website." id="wellcometrustlogo" class="image" src="/images/logos/wellcome-trust-small.png"/>
 		   	</a>
 		</div> <!-- BOTTOM -->
 	</div> <!-- headerbg -->
