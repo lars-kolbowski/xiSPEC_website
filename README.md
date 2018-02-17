@@ -1,2 +1,2 @@
-dependencies:
-https://github.com/lars-kolbowski/xiSPEC_ms_parser
+back-end repository:
+https://github.com/Rappsilber-Laboratory/xiSPEC_ms_parser
