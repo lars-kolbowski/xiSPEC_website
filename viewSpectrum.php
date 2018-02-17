@@ -170,7 +170,7 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
 		window.SettingsView = new SpectrumSettingsView({
 			model: SettingsSpectrumModel,
 			el:"#settingsWrapper",
-			showCustomCfg: true,
+			showCustomCfg: false,
 		});
 
 		if(!dbView){
@@ -316,7 +316,7 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
 						}
 					}
 				 ?>
-				 <div>
+				 <div style="display:none;">
 				 <label><input type="checkbox" id="shareInclSid"/>Include currently selected spectrum in link</label>
 				 </div>
 						</div>
