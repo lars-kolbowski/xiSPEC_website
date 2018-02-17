@@ -8,9 +8,9 @@ if (empty($_POST)){
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 	$dbView = true;
 
-	if(isset($_GET['sid']) || isset($_GET['db'])){
+	if(isset($_GET['s']) || isset($_GET['db'])){
 		$tmpDB = false;
-
+		$sid = (isset($_GET['sid']) ? $_GET['sid'] : false);
 		#this includes a connection string to the sql database
 		require('../xiSPEC_sql_conn.php');
 		require("$root/php/checkAuth.php");
@@ -74,6 +74,7 @@ else{
 			<script type="text/javascript" src="/vendor/download.js"></script>
 			<script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 			<script type="text/javascript" src="/vendor/dataTables.bootstrap.min.js"></script>
+			<!-- <script type="text/javascript" src="cdn.datatables.net/plug-ins/1.10.16/api/fnFindCellRowIndexes.js"></script> -->
 
 
 			<!-- Spectrum view .js files -->
@@ -181,7 +182,11 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
 			//window.SettingsView.render();
 		}
 		else {
-			window.TableWrapper = new TableWrapperView({model: SpectrumModel, el:"#bottomDiv"})
+			window.TableWrapper = new TableWrapperView({
+				model: SpectrumModel,
+				el:"#bottomDiv",
+				initId: "<?php echo $sid; ?>"
+			});
 			// window.specListTable = new specListTableView({model: SpectrumModel, el:"#specListWrapper"});
 			// window.altListTable = new altListTableView({model: SpectrumModel, el:"#altListWrapper"});
 		}
@@ -297,17 +302,17 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
 
 					$link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://". $_SERVER['SERVER_NAME'] . "/db/" . $dbName;
 					if (isset($public)){
-						echo 'This dataset is public - you can go ahead and share the link below</br><label class="flex-row label">url: <div class="flex-grow"><input type="text" class="form-control" value="'.$link.'" readonly onClick="this.select();"></div></label>';
+						echo 'This dataset is public - you can go ahead and share the link below</br><label class="flex-row label">url: <div class="flex-grow"><input type="text" class="form-control shareURL" value="'.$link.'" readonly onClick="this.select();"></div></label>';
 					}
 					else {
-						echo 'This dataset is private - you can either share the password protected link:</br><label class="flex-row label">url (password protected): <div class="flex-grow"><input type="text" class="form-control" value="'.$link.'" readonly onClick="this.select();"></div></label></br>';
+						echo 'This dataset is private - you can either share the password protected link:</br><label class="flex-row label">url (password protected): <div class="flex-grow"><input type="text" class="form-control shareURL" value="'.$link.'" readonly onClick="this.select();"></div></label></br>';
 						if(!$shareLink){
 							echo '<span id="shareLinkSpan">or <a id="createShareLink" class="pointer">generate a share link</a> - </span><strong>Anyone</strong> with the link will be able view this dataset!';
-							echo '<label class="flex-row label" id="shareLinkLabel" style="display: none;">url: <div class="flex-grow"><input type="text" id="shareLink" class="form-control" value="" readonly onClick="this.select();"></div></label>';
+							echo '<label class="flex-row label" id="shareLinkLabel" style="display: none;">url: <div class="flex-grow"><input type="text" id="shareLink" class="form-control shareURL" value="" readonly onClick="this.select();"></div></label>';
 						}
 						else{
 							echo 'or share the link below - <strong>Anyone</strong> with the link will be able view this dataset!';
-							echo '<label class="flex-row label" id="shareLinkLabel">url: <div class="flex-grow"><input type="text" id="shareLink" class="form-control" value="'.$shareLink.'" readonly onClick="this.select();"></div></label>';
+							echo '<label class="flex-row label" id="shareLinkLabel">url: <div class="flex-grow"><input type="text" id="shareLink" class="form-control shareURL" value="'.$shareLink.'" readonly onClick="this.select();"></div></label>';
 						}
 					}
 				 ?>

@@ -26,7 +26,13 @@ var TableWrapperView = Backbone.View.extend({
 		'click .nav-tabs a[data-toggle=tab]' : 'changeTab',
 	},
 
-	initialize: function() {
+	initialize: function(viewOptions) {
+
+		//ToDo: need to check if initId is alternative explanation or not
+		var defaultOptions = {
+			initId: false,
+		};
+		this.options = _.extend(defaultOptions, viewOptions);
 
 		this.listenTo(CLMSUI.vent, 'loadSpectrum', this.updateNav);
 		this.listenTo(CLMSUI.vent, 'toggleTableView', this.toggleView);
@@ -67,6 +73,7 @@ var TableWrapperView = Backbone.View.extend({
 			model: this.model,
 			el:"#specListWrapper",
 			wrapper: this,
+			initId: this.options.initId,
 		});
 
 		var altListTab = contentDiv.append("div")

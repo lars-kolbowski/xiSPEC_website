@@ -34,8 +34,13 @@ var specListTableView = DataTableView.extend({
 		// 'click #nextSpectrum': 'nextSpectrum',
 	},
 
-	initialize: function() {
+	initialize: function(viewOptions) {
 		var self = this;
+
+		var defaultOptions = {
+			initId: false,
+		};
+		this.options = _.extend(defaultOptions, viewOptions);
 
 		this.listenTo(window, 'resize', this.resize);
 		this.listenTo(CLMSUI.vent, 'scoreChange', this.changeDisplayScore);
@@ -79,7 +84,7 @@ var specListTableView = DataTableView.extend({
 			],
 			"columns": [
 				{ "title": "internal_id", "data": "id", "name": "internal_id", "searchable": false },	//0
-				{ "title": "id", "data": "mzid", "name": "mzid" },	//1
+				{ "title": "id", "data": "sid", "name": "sid" },	//1
 				{ "title": "peptide 1", "data": "pep1", "name": "pep1" },	//2
 				{ "title": "peptide 2", "data": "pep2", "name": "pep2" },	//3
 				{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center", "name": "linkpos1", "searchable": false },	//4
@@ -164,10 +169,21 @@ var specListTableView = DataTableView.extend({
 				//scoreSelector
 				self.createScoreSelector();
 
-				CLMSUI.vent.trigger('loadSpectrum', self.DataTable.rows( { filter : 'applied'} ).data()[0]);
+				if(self.options.initId){
+// 					var row = self.DataTable.columns( 'sid:name' ).search( self.options.initId )[0][0];
+// 					CLMSUI.vent.trigger('loadSpectrum', self.DataTable.rows(row).data()[0]);
+					self.DataTable.columns( 'sid:name' ).data().filter( function(e){
+						 if (e == self.options.initId) return true;
+					});
+					$('.dataTables_filter input').val(self.options.initId);
+				}
+// 				else{
+					CLMSUI.vent.trigger('loadSpectrum', self.DataTable.rows( { filter : 'applied'} ).data()[0]);
+					firstRow = $('#specListWrapper tr:first-child');
+					$(firstRow).addClass('selected');
+// 				}
 
-				firstRow = $('#specListWrapper tr:first-child');
-				$(firstRow).addClass('selected');
+
 
 				if(self.isEmpty(self.DataTable.columns('dataRef:name').data()[0])){
 					var column = self.DataTable.columns('dataRef:name');

@@ -54,7 +54,7 @@ var altListTableView = DataTableView.extend({
 			"ajax": "/php/getAltList.php?id=-1&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB'),
 			"columns": [
 				{ "title": "internal_id", "data": "id" },		//0
-				{ "title": "id", "data": "mzid" }, 	//1
+				{ "title": "id", "data": "sid" }, 	//1
 				{ "title": "rank", "data": "rank", "className": "dt-center" },		//2
 				{ "title": "peptide 1", "data": "pep1", "name": "pep1" },	//3
 				{ "title": "peptide 2", "data": "pep2", "name": "pep2" },	//4
@@ -133,19 +133,19 @@ var altListTableView = DataTableView.extend({
 	},
 
 	render: function(){
-		var url = "/php/getAltList.php?id="+this.model.mzid+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
+		var url = "/php/getAltList.php?id="+this.model.sid+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
 		this.DataTable.ajax.url( url ).load();
 	},
 
 	changeDisplayScore: function(scoreName){
 		console.log('altListTable - changeDisplayScore: '+scoreName);
-		var url = "/php/getAltList.php?id="+this.model.mzid+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB')+'&scol='+scoreName;
+		var url = "/php/getAltList.php?id="+this.model.sid+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB')+'&scol='+scoreName;
 		this.DataTable.ajax.url( url ).load();
 	},
 
 	updateTitle: function(rowdata){
-		var mzid = rowdata['mzid'];
-		this.altListToolbar.text("Alternatives for "+rowdata['mzid']);
+		var sid = rowdata['sid'];
+		this.altListToolbar.text("Alternatives for "+rowdata['sid']);
 	},
 	//
 	// userScoreChange: function(e){

@@ -592,7 +592,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.userModifications = [];
 		this.otherModel.userModifications = [];
 		var id = rowdata['id'];
-		this.mzid = rowdata['mzid'];
+		this.sid = rowdata['sid'];
 		this.create_annotation_request(id);
 	},
 
@@ -618,7 +618,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			success: function (returndata) {
 				var json = JSON.parse(returndata);
 				self.requestId = id;
-// 				self.mzid = mzid;
+// 				self.sid = sid;
 				self.request_annotation(json);
 			}
 		});

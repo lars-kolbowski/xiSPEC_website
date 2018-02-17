@@ -103,4 +103,15 @@ $(function() {
 		});
 	});
 
+	$('#shareInclSid').click(function(){
+		if(this.checked){
+			var orgURL = $('.shareURL').val()
+			$('.shareURL').val(orgURL+"/"+SpectrumModel.sid);
+		}
+		else {
+			var orgURL = $('.shareURL').val()
+			$('.shareURL').val(orgURL.substring(0, orgURL.lastIndexOf("/")));
+		}
+	});
+
 });

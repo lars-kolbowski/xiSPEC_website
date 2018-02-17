@@ -1,6 +1,6 @@
 <?php
 
-	$mzid = $_GET['id'];
+	$sid = $_GET['id'];
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 
 	if ($_GET['tmp'] == '1'){
@@ -33,11 +33,11 @@
 	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
-	if ($mzid == -1){
-		$stmt = $dbh->prepare("SELECT mzid FROM identifications LIMIT 1");
+	if ($sid == -1){
+		$stmt = $dbh->prepare("SELECT sid FROM identifications LIMIT 1");
 		if ($stmt->execute()) {
 			while ($row = $stmt->fetch()) {
-				$mzid = $row['mzid'];
+				$sid = $row['sid'];
 			}
 		}
 	}
@@ -45,25 +45,25 @@
 	$JSON = array();
 
 	if (isset($_GET['sname'])){
-		$sql = 	"SELECT identifications.id, mzid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, atom AS score, allScores, protein1, protein2, passThreshold, rank
+		$sql = 	"SELECT identifications.id, sid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, atom AS score, allScores, protein1, protein2, passThreshold, rank
 			FROM identifications, json_each(identifications.allScores)
-			WHERE json_each.key LIKE :scoreName AND mzid=:mzid
+			WHERE json_each.key LIKE :scoreName AND sid=:sid
 			ORDER BY identifications.id,rank";
 			$stmt = $dbh->prepare($sql);
-			$stmt->bindParam(':mzid', $mzid);
+			$stmt->bindParam(':sid', $sid);
 			$stmt->bindParam(':scoreName', $_GET['sname']);
 	}
 
 	else {
-		$sql = "SELECT identifications.id, mzid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, atom AS score, allScores, protein1, protein2, passThreshold, rank
+		$sql = "SELECT identifications.id, sid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, atom AS score, allScores, protein1, protein2, passThreshold, rank
 			FROM identifications, json_each(identifications.allScores)
-			WHERE mzid=:mzid
+			WHERE sid=:sid
 			ORDER BY identifications.id,rank";
 			$stmt = $dbh->prepare($sql);
-			$stmt->bindParam(':mzid', $mzid);
+			$stmt->bindParam(':sid', $sid);
 	}
 
-	// echo $mzid;
+	// echo $sid;
 
 	if ($stmt->execute()) {
 
