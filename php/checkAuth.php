@@ -42,7 +42,7 @@
 		else{
 			//otherwise redirect him to the password authentication page
 			if(!in_array($dbName, $_SESSION['access']))
-				header("Location: auth.php?db=".$dbName);
+				header("Location: /auth.php?db=".$dbName);
 			else {
 				$allowAccess = true;
 			}
