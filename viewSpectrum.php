@@ -7,10 +7,10 @@ $justSaved = 'false';
 if (empty($_POST)){
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 	$dbView = true;
-
+	$sid = (isset($_GET['sid']) ? $_GET['sid'] : false);
+	
 	if(isset($_GET['s']) || isset($_GET['db'])){
 		$tmpDB = false;
-		$sid = (isset($_GET['sid']) ? $_GET['sid'] : false);
 		#this includes a connection string to the sql database
 		require('../xiSPEC_sql_conn.php');
 		require("$root/php/checkAuth.php");
