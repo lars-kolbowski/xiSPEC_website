@@ -25,14 +25,27 @@
 				<div class="accordionContent" style="display: none;" id="features">
 					<ul>
 						<li>
+							<h5>Saving a dataset</h5>
+						</li>
+						<p>
+							<img src="/images/gifs/saving.gif" />
+							<ul style="margin-left:30px;">
+								<li>After data processing you can view your data as a temporary dataset</li>
+								<li>To save your dataset simply click on the save icon</li>
+								<li>Fill out the form and click save</li>
+								⇨ You will be redirected to your saved dataset!
+							</ul>
+						</p>
+						<br/>
+						<li>
 							<h5>Zooming</h5>
 						</li>
 						<p>
-							<img src="images/gifs/zoom.gif" />
+							<img src="/images/gifs/zoom.gif" />
 							<ul style="margin-left:30px;">
 								<li>Click and drag the cursor below the x-axis to zoom into a specific area of the spectrum.</li>
 								<li>Alternatively you can zoom in/out using the mouse wheel.</li>
-								⇨ XiSPEC updates the annotated spectrum!
+								⇨ xiSPEC updates the annotated spectrum!
 							</ul>
 						</p>
 						<br/>
@@ -40,12 +53,12 @@
 							<h5>Change cross-linker position</h5>
 						</li>
 						<p>
-							<img src="images/gifs/changeCL.gif" />
+							<img src="/images/gifs/changeCL.gif" />
 							<ul style="margin-left:30px;">
 								<li>Click on the cross-link line.</li>
 								<li>Move the mouse over the desired cross-linked amino acids.</li>
 								<li>Click on the amino acid to confirm the position(s).</li>
-								⇨ XiSPEC updates the annotated spectrum!
+								⇨ xiSPEC updates the annotated spectrum!
 							</ul>
 						</p>
 						<br/>
@@ -53,12 +66,12 @@
 							<h5>Change modification position</h5>
 						</li>
 						<p>
-							<img src="images/gifs/changeMod.gif" />
+							<img src="/images/gifs/changeMod.gif" />
 							<ul style="margin-left:30px;">
 								<li>Click on the modification.</li>
 								<li>Move the mouse over the desired modified amino acids.</li>
 								<li>Click on the amino acid to confirm the position.</li>
-								⇨ XiSPEC updates the annotated spectrum!
+								⇨ xiSPEC updates the annotated spectrum!
 							</ul>
 						</p>
 						<br/>
@@ -66,7 +79,7 @@
 							<h5>Highlight fragments</h5>
 						</li>
 						<p>
-							<img src="images/gifs/highlighting.gif" />
+							<img src="/images/gifs/highlighting.gif" />
 							<ul style="margin-left:30px;">
 								<li>Hover over fragments in any view to highlight the corresponding fragment all views.</li>
 								<li>Click on a fragment to make the highlight permanent.</li>
