@@ -1,4 +1,4 @@
-Id,Rank,PepSeq1,PepSeq2,LinkPos1,LinkPos2,CrossLinkerModMass,Charge,PassThreshold,FragmentTolerance,IonTypes,Score,isDecoy,Protein 1,Protein 2,ScanNumber,RunName
+Id,Rank,PepSeq 1,PepSeq 2,LinkPos1,LinkPos2,CrossLinkerModMass,Charge,PassThreshold,FragmentTolerance,IonTypes,Score,isDecoy,Protein 1,Protein 2,ScanNumber,RunName
 5673034220,1,LKCcarbamidomethylASLQK,,,,,3,TRUE,20.0 ppm,peptide;b;y,2.577788304,FALSE,P02768-A,,7307,example.mzML
 5673034222,1,AWAVAR,,,,,2,TRUE,20.0 ppm,peptide;b;y,5.437835716,FALSE,P02768-A,,11175,example.mzML
 5673034224,1,KQTALVELVK,,,,,3,TRUE,20.0 ppm,peptide;b;y,6.209524497,FALSE,P02768-A,,14681,example.mzML
