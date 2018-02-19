@@ -24,6 +24,8 @@
 					<ul>
 						<li><a href="#Hsave_db">Saving a dataset</a></li>
 						<li><a href="#Hzoom">Zooming</a></li>
+						<li><a href="#Hmeasure">Measure distances</a></li>
+						<li><a href="#HmoveLabels">Move labels</a></li>
 						<li><a href="#HclChange">Change cross-linker position</a></li>
 						<li><a href="#HmodChange">Change modification position</a></li>
 						<li><a href="#Hhighlight">Highlight fragments</h5></a></li>
@@ -55,6 +57,33 @@
 							</ul>
 						</p>
 						<br/>
+						<li>
+							<h5 id="Hmeasure">Measure distances<a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
+						</li>
+						<p>
+							<img src="/images/gifs/measure.gif" />
+							<ul style="margin-left:30px;">
+								<li>Activate measuring mode by checking the 'Measure' option.</li>
+								<li>Your cursor will change to a crosshair.</li>
+								<li>Click and drag in the spectrum to measure distances between peaks.</li>
+								⇨ xiSPEC displays potential amino acid residue hits in the tooltip!
+							</ul>
+						</p>
+						<br/>
+
+						<li>
+							<h5 id="HmoveLabels">Move labels<a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
+						</li>
+						<p>
+							<img src="/images/gifs/moveLabels.gif" />
+							<ul style="margin-left:30px;">
+								<li>Activate moveable labels by checking the 'Move labels' option.</li>
+								<li>Click and drag labels to move them around.</li>
+								⇨ xiSPEC draws dashed lines to the corresponding peaks!
+							</ul>
+						</p>
+						<br/>
+
 						<li>
 							<h5 id="HclChange">Change cross-linker position <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
 						</li>
