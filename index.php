@@ -63,7 +63,7 @@
 				<p>xiSPEC is an open source project on <a href="https://github.com/Rappsilber-Laboratory/xiSPEC" >GitHub</a>. Report issues and request features <a href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues">here</a>.</p>
 				<div style="text-align: center;">
 					<div class="sliderWrapper">
-					<img class="sliderImg" alt="Interactive highlighting between all views" src="images/slider/dbView.png">
+					<img class="sliderImg" alt="Interactive highlighting between all views" src="images/slider/interactiveViews.png">
 					<img class="sliderImg" alt="Measure distances between peaks" src="images/slider/measuringTool.png" style="display:none;">
 					<img class="sliderImg" alt="Change spectrum annotation parameters" src="images/slider/settingsView.png" style="display:none;">
 					<img class="sliderImg" alt="Zoom into spectra" src="images/slider/zoom.png" style="display:none;">
