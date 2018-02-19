@@ -18,6 +18,9 @@
 //
 //
 //		PeptideView.js
+
+//  ToDo: could possibly be removed
+// (redundancy - trimmed down version of FragmentationKeyView)
 var PeptideView = Backbone.View.extend({
 
 	events : {
@@ -209,7 +212,7 @@ var PeptideView = Backbone.View.extend({
 				.style("cursor", "pointer");
 
 			//line for changing
-			this.changeCLline = this.g.append("line")
+			this.changeCLline = this.CL.append("line")
 				.attr("x1", this.xStep * (CLpos - 1))
 				.attr("y1", 25)
 				.attr("x2", this.xStep * (CLpos - 1))
