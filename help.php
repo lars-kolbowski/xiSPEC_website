@@ -16,16 +16,22 @@
 
    	 	<!-- Main -->
    	 	<div id="main">
-
 			<div class="container">
-
 				<h1 class="page-header accordionHead">
 					<i class="fa fa-plus-square" aria-hidden="true"></i> xiSPEC Feature support
 				</h1>
 				<div class="accordionContent" style="display: none;" id="features">
 					<ul>
+						<li><a href="#Hsave_db">Saving a dataset</a></li>
+						<li><a href="#Hzoom">Zooming</a></li>
+						<li><a href="#HclChange">Change cross-linker position</a></li>
+						<li><a href="#HmodChange">Change modification position</a></li>
+						<li><a href="#Hhighlight">Highlight fragments</h5></a></li>
+					</ul>
+					</br>
+					<ul>
 						<li>
-							<h5>Saving a dataset</h5>
+							<h5 id="Hsave_db">Saving a dataset <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
 						</li>
 						<p>
 							<img src="/images/gifs/saving.gif" />
@@ -38,7 +44,7 @@
 						</p>
 						<br/>
 						<li>
-							<h5>Zooming</h5>
+							<h5 id="Hzoom">Zooming <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
 						</li>
 						<p>
 							<img src="/images/gifs/zoom.gif" />
@@ -50,7 +56,7 @@
 						</p>
 						<br/>
 						<li>
-							<h5>Change cross-linker position</h5>
+							<h5 id="HclChange">Change cross-linker position <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
 						</li>
 						<p>
 							<img src="/images/gifs/changeCL.gif" />
@@ -63,7 +69,7 @@
 						</p>
 						<br/>
 						<li>
-							<h5>Change modification position</h5>
+							<h5 id="HmodChange">Change modification position <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
 						</li>
 						<p>
 							<img src="/images/gifs/changeMod.gif" />
@@ -76,7 +82,7 @@
 						</p>
 						<br/>
 						<li>
-							<h5>Highlight fragments</h5>
+							<h5 id="Hhighlight">Highlight fragments <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
 						</li>
 						<p>
 							<img src="/images/gifs/highlighting.gif" />
