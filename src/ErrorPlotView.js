@@ -61,8 +61,8 @@ var ErrorPlotView = Backbone.View.extend({
 		if (CLMSUI.compositeModelInst !== undefined)
 			this.tooltip = CLMSUI.compositeModelInst.get("tooltipModel");
 		else{
-			target = this.el; //this would get you #spectrumPanel
-			this.tooltip = d3.select(target).append("span")
+			// target = window; //this would get you #spectrumPanel
+			this.tooltip = d3.select("body").append("span")
 				.style("font-size", "small")
 				.style("padding", "0 5px")
 				.style("border-radius", "6px")

@@ -54,12 +54,6 @@ Graph = function(targetSvg, model, options) {
 	this.xaxisSVG = this.g.append("g")
 		.attr("class", "x axis");
 
-	/*
-	 * -webkit-user-select: none;
-			-khtml-user-select: none;
-			-moz-user-select: -moz-none;
-			-o-user-select: none;
-			user-select: none;*/
 	//brush
 	this.brush = d3.svg.brush()
 		.x(this.x);
@@ -72,7 +66,6 @@ Graph = function(targetSvg, model, options) {
 					.attr("pointer-events", "visible")
 					.style("cursor", "crosshair");
 	this.xaxisRect.call(this.brush);
-	//~ this
 
 	this.yAxisLeftSVG = this.g.append("g")
 		.attr("class", "y axis");
@@ -89,8 +82,8 @@ Graph = function(targetSvg, model, options) {
 	if (CLMSUI.compositeModelInst !== undefined)
 		this.tooltip = CLMSUI.compositeModelInst.get("tooltipModel");
 	else{
-		target = this.g.node().parentNode.parentNode; //this would get you #spectrumPanel
-		this.tooltip = d3.select(target).append("span")
+		// target = this.g.node().parentNode.parentNode; //this would get you #spectrumPanel
+		this.tooltip = d3.select("body").append("span")
 			.style("font-size", "small")
 			.style("padding", "0 5px")
 			.style("border-radius", "6px")
@@ -137,7 +130,7 @@ Graph = function(targetSvg, model, options) {
 		.attr("stroke-width", "1px")
 		.attr("stroke", "rgb(100,100,100)")
 	;
-	
+
 	this.measureTooltipText = new Array();
 	this.measureTooltipText['from'] = this.measureTooltip.append("text");
 	this.measureTooltipText['to'] = this.measureTooltip.append("text");
