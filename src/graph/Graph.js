@@ -671,6 +671,7 @@ Graph.prototype.updatePeakLabels = function(){
 			if (_.intersection(this.model.highlights, this.peaks[p].fragments).length == 0){
 				// show it if allFragmentHighlights is true (dependent on lossyShown)
 				if (this.model.showAllFragmentsHighlight){
+					this.peaks[p].removeLabels();
 					this.peaks[p].showLabels();
 				}
 				else{

@@ -327,6 +327,10 @@ var ErrorPlotView = Backbone.View.extend({
 		}
 		else{
 			var html = header.join(" ");
+			for (var i = 0; i < data.charge; i++){
+				html += "+";
+			}
+
 			for (var i = contents.length - 1; i >= 0; i--) {
 				html += "</br>";
 				html += contents[i].join(": ");
