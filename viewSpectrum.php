@@ -1,4 +1,5 @@
 <?php
+$cacheBuster = '?v='.microtime(true);
 $root = realpath($_SERVER["DOCUMENT_ROOT"]);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
@@ -8,7 +9,7 @@ if (empty($_POST)){
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 	$dbView = true;
 	$sid = (isset($_GET['sid']) ? $_GET['sid'] : false);
-	
+
 	if(isset($_GET['s']) || isset($_GET['db'])){
 		$tmpDB = false;
 		#this includes a connection string to the sql database
@@ -40,7 +41,6 @@ else{
 	$dbView = FALSE;
 	require("$root/php/processSpecPostData.php");
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -78,25 +78,25 @@ else{
 
 
 			<!-- Spectrum view .js files -->
-			<script type="text/javascript" src="/js/app.js"></script>
-			<script type="text/javascript" src="/src/model.js"></script>
-			<script type="text/javascript" src="/src/SpectrumView2.js"></script>
-			<script type="text/javascript" src="/src/FragmentationKeyView.js"></script>
-			<script type="text/javascript" src="/src/PrecursorInfoView.js"></script>
-			<script type="text/javascript" src="/src/SpectrumSettingsView.js"></script>
-			<script type="text/javascript" src="/js/PeptideView.js"></script>
-			<script type="text/javascript" src="/src/PepInputView.js"></script>
-			<script type="text/javascript" src="/src/QCwrapperView.js"></script>
-			<script type="text/javascript" src="/src/ErrorPlotView.js"></script>
-			<script type="text/javascript" src="/src/FragKey/KeyFragment.js"></script>
-			<script type="text/javascript" src="/src/graph/Graph.js"></script>
-			<script type="text/javascript" src="/src/graph/Peak.js"></script>
-			<script type="text/javascript" src="/src/graph/Fragment.js"></script>
+			<script type="text/javascript" src="/js/app.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/model.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/SpectrumView2.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/FragmentationKeyView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/PrecursorInfoView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/SpectrumSettingsView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/js/PeptideView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/PepInputView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/QCwrapperView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/ErrorPlotView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/FragKey/KeyFragment.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/graph/Graph.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/graph/Peak.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/graph/Fragment.js<?php echo $cacheBuster ?>"></script>
 <?php if($dbView)
-echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
-		<script type="text/javascript" src="/src/DataTableView.js"></script>
-		<script type="text/javascript" src="/js/specListTable.js"></script>
-		<script type="text/javascript" src="/js/altListTable.js"></script>';
+echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuster.'"></script>
+		<script type="text/javascript" src="/src/DataTableView.js'.$cacheBuster.'"></script>
+		<script type="text/javascript" src="/js/specListTable.js'.$cacheBuster.'"></script>
+		<script type="text/javascript" src="/js/altListTable.js'.$cacheBuster.'"></script>';
 ?>
 			<script>
 
@@ -278,7 +278,7 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
 				<div id="saveDBerror"></div>
 				<form id='saveDB_form'>
 					<label class="flex-row label">
-						Name: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbName" name="dbName" type="text" placeholder="Enter a name for the dataset"></div>
+						Name: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbName" autocomplete="off" name="dbName" type="text" placeholder="Enter a name for the dataset"></div>
 					</label>
 					<label class="flex-row label" style="line-height: 1.5em; margin: 1.5em 0em;">
 						Public: <input id="publicDBchkBox" class="pointer" name="public" type="checkbox"> <span style="text-transform: initial; letter-spacing: initial; color: #ccc;">(checking this will allow anyone who knows the name of the dataset to view it.)</span>

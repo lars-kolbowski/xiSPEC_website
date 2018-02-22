@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<?php
+		$cacheBuster = '?v='.microtime(true);
 		error_reporting(E_ALL & ~E_NOTICE);
 		$pageName = "Upload";
 		include("head.php");
@@ -18,17 +19,17 @@
 		};
 		?>
 		<?php include("xiSPEC_scripts.php");?>
-		<script type="text/javascript" src="./src/PepInputView.js"></script>
-		<script type="text/javascript" src="./js/PeptideView.js"></script>
-		<script type="text/javascript" src="./src/PrecursorInfoView.js"></script>
-		<script type="text/javascript" src="./src/model.js"></script>
-		<script type="text/javascript" src="./js/upload.js"></script>
-		<script type="text/javascript" src="./js/accordion.js"></script>
+		<script type="text/javascript" src="./src/PepInputView.js<?php echo $cacheBuster ?>"></script>
+		<script type="text/javascript" src="./js/PeptideView.js<?php echo $cacheBuster ?>"></script>
+		<script type="text/javascript" src="./src/PrecursorInfoView.js<?php echo $cacheBuster ?>"></script>
+		<script type="text/javascript" src="./src/model.js<?php echo $cacheBuster ?>"></script>
+		<script type="text/javascript" src="./js/upload.js<?php echo $cacheBuster ?>"></script>
+		<script type="text/javascript" src="./js/accordion.js<?php echo $cacheBuster ?>"></script>
+		<script type="text/javascript" src="src/PrideSelectionView.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./vendor/spin.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.ui.widget.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.iframe-transport.js"></script>
 		<script src="vendor/jQueryFileUploadMin/jquery.fileupload.js"></script>
-		<script type="text/javascript" src="src/PrideSelectionView.js"></script>
 
 		<link rel="stylesheet" href="./css/dropdown.css" />
 	</head>
