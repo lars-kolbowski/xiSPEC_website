@@ -147,14 +147,24 @@ var specListTableView = DataTableView.extend({
 				},
 				{
 					"render": function ( data, type, row, meta ) {
-						if (data == '-1')
+						data = parseInt(data)
+						if (data == -1)
 							return '';
+						if (data == 0)
+							return 'N';
+						if(meta.col == 4)
+							var pepSeq = row.pep1;
+						else if (meta.col == 5)
+							var pepSeq = row.pep2;
+						var AAlength = pepSeq.replace(/[^A-Z]/g, '').length;
+						if (data == (AAlength + 1))
+							return 'C';
 						else
-							return parseInt(data)+1;
+							return data;
 					},
 					"searchable": false,
+					"orderable": false,
 					"targets": [ 4, 5 ]
-					// "targets": [ 0, 4, 5, 6, 7, 8, 11, 12]
 				},
 
 			],

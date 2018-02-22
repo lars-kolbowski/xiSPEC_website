@@ -50,8 +50,23 @@
 
 	$linkSites = array();
 	if ($result['linkpos1'] != -1){
-		array_push($linkSites, array('id' => 0, 'peptideId' => 0, 'linkSite' => (intval($result['linkpos1'])) ));
-		array_push($linkSites, array('id' => 0, 'peptideId' => 1, 'linkSite' => (intval($result['linkpos2'])) ));
+		//in the database 0 is N-terminal while 1 is first aa sidechain
+		//xiAnnotator does not make this distinction atm and is 0 based
+		$linkPos1 = intval($result['linkpos1']);
+		if ($linkPos1 != 0){
+			$linkPos1--; //change to 0 based index
+			if ($linkPos1 == sizeof($peptides[0]['sequence']))
+				$linkPos1--; //C-terminal link to last aa
+		}
+		array_push($linkSites, array('id' => 0, 'peptideId' => 0, 'linkSite' => $linkPos1 ));
+
+		$linkPos2 = intval($result['linkpos2']);
+		if ($linkPos2 != 0){
+			$linkPos2--; //change to 0 based index
+			if ($linkPos2 == sizeof($peptides[1]['sequence']))
+				$linkPos2--; //C-terminal link to last aa
+		}
+		array_push($linkSites, array('id' => 0, 'peptideId' => 1, 'linkSite' => $linkPos2 ));
 	}
 
 

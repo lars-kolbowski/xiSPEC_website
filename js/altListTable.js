@@ -88,7 +88,28 @@ var altListTableView = DataTableView.extend({
 							return data;
 					},
 					"searchable": false,
-					"targets": [ 2, 5, 6, ]
+					"targets": [ 2 ]
+				},
+				{
+					"render": function ( data, type, row, meta ) {
+						data = parseInt(data)
+						if (data == -1)
+							return '';
+						if (data == 0)
+							return 'N';
+						if(meta.col == 5)
+							var pepSeq = row.pep1;
+						else if (meta.col == 6)
+							var pepSeq = row.pep2;
+						var AAlength = pepSeq.replace(/[^A-Z]/g, '').length;
+						if (data == (AAlength + 1))
+							return 'C';
+						else
+							return data;
+					},
+					"searchable": false,
+					"orderable": false,
+					"targets": [ 5, 6 ]
 				},
 				{
 					"render": function ( data, type, row, meta ) {
