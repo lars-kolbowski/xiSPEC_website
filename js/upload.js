@@ -188,7 +188,7 @@ $( document ).ready(function() {
 
 	$('#fileupload').fileupload({
 		dataType: 'json',
-		fileTypes: "mzid|mzml|mgf|csv|zip",
+		fileTypes: "mzid|mzml|mgf|csv|zip|gz",
 		maxChunkSize: 100000000,	//100MB
 		progressall: function (e, data) {
 			var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -200,14 +200,14 @@ $( document ).ready(function() {
 		},
 		add: function (e, data) {
 
-			if(new RegExp("\.(mzid|csv)$", 'i').test(data.files[0].name)){
+			if(new RegExp("\.(mzid|csv)(.gz)?$", 'i').test(data.files[0].name)){
 				$('#mzid_checkbox').prop( "checked", false ).change();
 				$('#mzid_fileBox .fileName').html(data.files[0].name);
 				data.context = $('#mzid_fileBox .statusBox').html('<div class="loader"></div>');
 				data.submit();
 			}
 
-			if(new RegExp("\.(mzml|mgf|zip)$", 'i').test(data.files[0].name)){
+			if(new RegExp("\.(mzml|mgf|zip)(.gz)?$", 'i').test(data.files[0].name)){
 				$('#mzml_checkbox').prop( "checked", false ).change();
 				$('#mzml_fileBox .fileName').html(data.files[0].name);
 				data.context = $('#mzml_fileBox .statusBox').html('<div class="loader"></div>');

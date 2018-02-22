@@ -53,7 +53,7 @@
 							</div>
 						</div>
 						<div id="fileUploadWrapper">
-							<input id="fileupload" type="file" name="files[]" accept=".mzid,.csv,.mzml,.mgf,.zip" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
+							<input id="fileupload" type="file" name="files[]" accept=".mzid,.csv,.mzml,.mgf,.zip,.gz" multiple data-url="vendor/jQueryFileUploadMin/fileUpload.php">
 							<label for="fileupload"><span class="uploadbox"></span><span class="btn">Choose file(s)</span></label>
 							<div id="uploadProgress">
 								<div class="file_upload_bar" style="width: 0%;"><div class="file_upload_percent"></div></div>
