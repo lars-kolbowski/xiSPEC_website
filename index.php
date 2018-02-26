@@ -17,14 +17,14 @@
 			if(slideIndex+n >= $('.sliderImg').length)
 				slideIndex = 0;
 			else if(slideIndex+n < 0)
-				slideIndex = $('.sliderImg').length-1;
+				slideIndex = $('.sliderImg').length - 1;
 			else
 				slideIndex += n;
 			$('.sliderImg').eq(oldSlide).fadeOut(300, function(){ $('.sliderImg').eq(slideIndex).fadeIn(300); });
 			$('#sliderInfo').text($('.sliderImg').eq(slideIndex).attr('alt'));
 		}
 
-		var myTimer = setInterval(function () {showDiv(slideIndex+1)}, 4000);
+		var myTimer = setInterval(function () {showDiv(1)}, 4000);
 
 		$('.sliderImg').click(function(){
 			clearInterval(myTimer);
