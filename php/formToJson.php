@@ -57,10 +57,16 @@ foreach ($mods as $mod) {
     $i++;
 }
 
+$customCfg = [];
+
 $ions = array();
 foreach ($_POST['ions'] as $iontype) {
-	$iontype = ucfirst($iontype)."Ion";
-	array_push($ions, array('type' => $iontype));
+    if($iontype === 'BLikeDoubleFragmentation')
+        $customCfg[] = ('fragment:BLikeDoubleFragmentation');
+    else{
+    	$iontype = ucfirst($iontype)."Ion";
+    	array_push($ions, array('type' => $iontype));
+    }
 }
 
 // array_push($ions, array('type' => 'PeptideIon'));
@@ -94,7 +100,7 @@ $annotation = array(
   'ions' => $ions,
   'cross-linker' => $cl,
   'precursorCharge' => $preCharge,
-  // 'custom' => ''
+  'custom' => $customCfg
 );
 
 //final array

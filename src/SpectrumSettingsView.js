@@ -141,6 +141,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 			{value: "x", text: "X Ion"},
 			{value: "y", text: "Y Ion"},
 			{value: "z", text: "Z Ion"},
+			{value: "BLikeDoubleFragmentation", text: "BLikeDoubleFragmentation"},
 		];
 		ionSelectorList.selectAll("li").data(ionOptions)
 			.enter()
@@ -240,7 +241,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 		;
 		jscolor.installByClassName("jscolor");
 
-		var highlightingModeChkBx = appearanceTab.append("label").attr("class", "btn").text("Hide not selected fragments.")
+		var highlightingModeChkBx = appearanceTab.append("label").attr("class", "btn").text("Hide not selected fragments")
 			.append("input").attr("type", "checkbox").attr("id", "peakHighlightMode")
 		;
 
@@ -605,7 +606,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 	changePeakHighlightMode: function(event){
 		var model = this.model.otherModel; //apply changes directly for now
 		var $target = $(event.target);
-        var selected = $target .is(':checked');
+		var selected = $target .is(':checked');
 		model.showAllFragmentsHighlight = !selected;
 		model.trigger("changed:fragHighlighting");
 	},
