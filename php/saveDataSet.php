@@ -52,10 +52,11 @@
 	$xiSPECdb = new PDO("mysql:host=localhost;dbname=".$DBname, $DBuser, $DBpass) or die("cannot open the database");
 	$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-	$stmt = $xiSPECdb->prepare("INSERT INTO `dbs`(`name`, `pass`, `ip`, `hostname`, `country`, `region`, `city`, `org`, `date`)
-															VALUES (:name, :pass, :ip, :hostname, :country, :region, :city, :org, :dates);");
+	$stmt = $xiSPECdb->prepare("INSERT INTO `dbs`(`name`, `pass`, `email`, `ip`, `hostname`, `country`, `region`, `city`, `org`, `date`)
+															VALUES (:name, :pass, :email, :ip, :hostname, :country, :region, :city, :org, :dates);");
 	$stmt->bindParam(':name', $dbname, PDO::PARAM_STR);
 	$stmt->bindParam(':pass', $passHash, PDO::PARAM_STR);
+	$stmt->bindParam(':email', $_POST['dbEmail'], PDO::PARAM_STR);
 	$stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
 	$stmt->bindParam(':hostname', $ipInfo->hostname, PDO::PARAM_STR);
 	$stmt->bindParam(':country', $ipInfo->country, PDO::PARAM_STR);
@@ -79,12 +80,6 @@
 		}
 		$_SESSION[$dbname] = 'saved';
 		$json['name'] = $dbname;
-		// "http://" . $_SERVER['SERVER_NAME'] . "/xiSPEC/viewSpectrum.php?db=" . $dbname;
-
-			//delete tmpDBs with cronjob
-		// if (file_exists($tmpDB))
-		// 	unlink($tmpDB);
-
 
 	} catch (PDOException $e) {
 			if ($e->getCode() == 23000) {

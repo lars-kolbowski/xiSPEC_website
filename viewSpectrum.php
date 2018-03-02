@@ -280,6 +280,10 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 					<label class="flex-row label">
 						Name: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbName" autocomplete="off" name="dbName" type="text" placeholder="Enter a name for the dataset"></div>
 					</label>
+					<label class="flex-row label">
+						Email: <div class="flex-grow"><input class="form-control" length=128 id="saveDbEmail" name="dbEmail" type="text" placeholder="Enter your email address (optional)"></div>
+					</label>
+
 					<label class="flex-row label" style="line-height: 1.5em; margin: 1.5em 0em;">
 						Public: <input id="publicDBchkBox" class="pointer" name="public" type="checkbox"> <span style="text-transform: initial; letter-spacing: initial; color: #ccc;">(checking this will allow anyone who knows the name of the dataset to view it.)</span>
 					</label>
@@ -287,7 +291,7 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 						Password: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbPass" name="dbPass" type="password" placeholder="Enter password"></div>
 						<div class="flex-grow"><input class="form-control" required length=30 id="saveDbPassControl" name="dbPass" type="password" placeholder="Retype password"></div>
 					</label>
-
+					
 					<input type="submit" id="saveDataSet" class="btn btn-1 btn-1a" style="font-size: 1em;" value="save">
 				</form>
 			</div>

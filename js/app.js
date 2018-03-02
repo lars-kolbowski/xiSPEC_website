@@ -54,12 +54,22 @@ $(function() {
 
 	$('#saveDB_form').submit(function(e){
 		e.preventDefault();
+		$('#saveDBerror').html("");
 
 		var pass = $('#saveDbPass').val();
 		var control = $('#saveDbPassControl').val();
 		if (pass != control && $('#publicDBchkBox:checked').length == 0) {
-			$('#saveDBerror').html("Passwords don't match");
-			return
+			$('#saveDBerror').html("Passwords don't match!");
+			return;
+		}
+
+		var email = $('#saveDbEmail').val();
+		if(email !== ""){
+			var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			if(!re.test(email)){
+				$('#saveDBerror').html("Invalid email adress!");
+				return;
+			}
 		}
 
 		var fd = $(this).serializeArray();
