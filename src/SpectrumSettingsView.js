@@ -560,12 +560,8 @@ var SpectrumSettingsView = Backbone.View.extend({
 	cancel: function(){
 		$(this.wrapper[0]).hide();
 		document.getElementById('highlightColor').jscolor.hide();
-		//reset the model by copying the original model
-		var model_copy = jQuery.extend({}, this.model.otherModel);
-		model_copy.otherModel = this.model.otherModel;
-		this.model = model_copy;
-		this.render();
-		// window.SettingsView.render();
+		this.model.resetModel();
+		// this.render();
 
 	},
 

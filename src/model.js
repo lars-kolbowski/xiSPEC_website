@@ -22,7 +22,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			this.xiUI = false;
 		else
 			this.xiUI = true;
-		
+
 		if(this.xiUI)
 			this.getKnownModifications('xiDB');
 
@@ -631,6 +631,15 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		else {
 			this.create_annotation_request(this.requestId);
 		}
+	},
+
+	resetModel: function(){
+
+		var json_data_copy = jQuery.extend({}, this.otherModel.get("JSONdata"));
+		var json_request_copy =  jQuery.extend({}, this.otherModel.get("JSONrequest"));
+		this.set({"JSONdata": json_data_copy, "JSONrequest": json_request_copy});
+		this.trigger("change:JSONdata");
+
 	},
 
 	create_annotation_request: function(id){
