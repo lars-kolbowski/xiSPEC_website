@@ -103,6 +103,7 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 		var model_vars = {
 			baseDir: "/",
 			xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/",
+			knownModifications: false, 
 			<?php if(isset($dbName)) echo 'database: "'.$dbName.'",'; ?>
 			<?php if(isset($tmpDB)) echo 'tmpDB: "'.$tmpDB.'",'; ?>
 		};
@@ -291,7 +292,7 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 						Password: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbPass" name="dbPass" type="password" placeholder="Enter password"></div>
 						<div class="flex-grow"><input class="form-control" required length=30 id="saveDbPassControl" name="dbPass" type="password" placeholder="Retype password"></div>
 					</label>
-					
+
 					<input type="submit" id="saveDataSet" class="btn btn-1 btn-1a" style="font-size: 1em;" value="save">
 				</form>
 			</div>

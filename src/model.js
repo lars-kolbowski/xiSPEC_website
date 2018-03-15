@@ -15,6 +15,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		var self = this;
 		this.xiAnnotatorBaseURL = this.get('xiAnnotatorBaseURL');
 		this.baseDir = this.get('baseDir');
+
 		this.getKnownModifications();
 
 		this.showDecimals = 2;
@@ -482,8 +483,13 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	},
 
 	getKnownModifications: function(){
-		var self = this;
 
+		if(!this.get('knownModifications')){
+			this.knownModifications = {modifications: []};
+			return;
+		}
+
+		var self = this;
 		var response = $.ajax({
 			type: "GET",
 			datatype: "json",
