@@ -103,7 +103,6 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 		var model_vars = {
 			baseDir: "/",
 			xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/",
-			knownModifications: false, 
 			<?php if(isset($dbName)) echo 'database: "'.$dbName.'",'; ?>
 			<?php if(isset($tmpDB)) echo 'tmpDB: "'.$tmpDB.'",'; ?>
 		};

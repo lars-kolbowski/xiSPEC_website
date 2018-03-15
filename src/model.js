@@ -3,8 +3,9 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	defaults: function() {
     return {
       baseDir:  '',
-			xiAnnotatorBaseURL: 'http://xi3.bio.ed.ac.uk/xiAnnotator/',
+	  xiAnnotatorBaseURL: 'http://xi3.bio.ed.ac.uk/xiAnnotator/',
       JSONdata: false,
+      standalone: true,
     };
   },
 
@@ -16,7 +17,14 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.xiAnnotatorBaseURL = this.get('xiAnnotatorBaseURL');
 		this.baseDir = this.get('baseDir');
 
-		this.getKnownModifications();
+		//way to diff between standalone and xiUI
+		if(this.get('standalone'))
+			this.xiUI = false;
+		else
+			this.xiUI = true;
+		
+		if(this.xiUI)
+			this.getKnownModifications('xiDB');
 
 		this.showDecimals = 2;
 		this.moveLabels = false;
@@ -80,8 +88,8 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		//console.log(this.JSONdata);
 		this.annotationData = this.JSONdata.annotation || {};
 
-		//overwrite xiKnownModifications with data from input
-		this.updateKnownModifications();
+		if(!this.xiUI)
+			this.getKnownModifications('standalone');
 
 		if (this.annotationData.fragementTolerance !== undefined){
 			this.MSnTolerance = {
@@ -482,54 +490,67 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.trigger("changed:mass");
 	},
 
-	getKnownModifications: function(){
+	getKnownModifications: function(source){
+		var self = this;
 
-		if(!this.get('knownModifications')){
-			this.knownModifications = {modifications: []};
-			return;
+		if(source == 'xiDB'){
+			var response = $.ajax({
+				type: "GET",
+				datatype: "json",
+				async: false,
+				url: self.xiAnnotatorBaseURL + "annotate/knownModifications",
+				success: function(data) {
+					self.knownModifications = data;
+				},
+				error: function(xhr, status, error){
+					alert("xiAnnotator could not be reached. Please try again later!");
+				},
+			});
 		}
-
-		var self = this;
-		var response = $.ajax({
-			type: "GET",
-			datatype: "json",
-			async: false,
-			url: self.xiAnnotatorBaseURL + "annotate/knownModifications",
-			success: function(data) {
-				self.knownModifications = data;
-			},
-		    error: function(xhr, status, error){
-        		alert("xiAnnotator could not be reached. Please try again later!");
-    		},
-		});
-	},
-
-
-	updateKnownModifications: function(){
-		var self = this;
-		if(this.annotationData.modifications){
-			this.annotationData.modifications.forEach(function(annotation_mod){
-				var overlap = self.knownModifications["modifications"].filter(function(km){ return annotation_mod.id == km.id;});
-				if (overlap.length > 0){
-					overlap.forEach(function(overlap_mod){
-						overlap_mod.mass = annotation_mod.massDifference;
-						if(overlap_mod.aminoAcids.indexOf(annotation_mod.aminoacid) == -1)
-							overlap_mod.aminoAcids.push(annotation_mod.aminoacid);
-// 						overlap_mod.aminoAcids = annotation_mod.aminoAcids;
-					});
-				}
-				else{
-					//what is mass in the modification array corresponds to massDifference from xiAnnotator
+		else{
+			// standalone  version only knows about modifications that are in the current spectrum
+			// ToDo: getKnownModifications from SQLite database
+			this.knownModifications = {modifications: []};
+			if(this.annotationData.modifications){
+				this.annotationData.modifications.forEach(function(annotation_mod){
+					// mass in the modification array corresponds to massDifference from xiAnnotator
 					var new_mod = new Object;
 					new_mod['mass'] = annotation_mod['massDifference'];
 					new_mod['aminoAcids'] = [annotation_mod['aminoacid']];
 					new_mod['id'] = annotation_mod['id'];
 					self.knownModifications["modifications"].push(new_mod);
-				}
-
-			})
+				});
+			}
 		}
 	},
+
+
+	// not used anymore - was used for merging knownModifications from xiDB with mods from db
+// 	updateKnownModifications: function(){
+// 		var self = this;
+// 		if(this.annotationData.modifications){
+// 			this.annotationData.modifications.forEach(function(annotation_mod){
+// 				var overlap = self.knownModifications["modifications"].filter(function(km){ return annotation_mod.id == km.id;});
+// 				if (overlap.length > 0){
+// 					overlap.forEach(function(overlap_mod){
+// 						overlap_mod.mass = annotation_mod.massDifference;
+// 						if(overlap_mod.aminoAcids.indexOf(annotation_mod.aminoacid) == -1)
+// 							overlap_mod.aminoAcids.push(annotation_mod.aminoacid);
+// // 						overlap_mod.aminoAcids = annotation_mod.aminoAcids;
+// 					});
+// 				}
+// 				else{
+// 					// mass in the modification array corresponds to massDifference from xiAnnotator
+// 					var new_mod = new Object;
+// 					new_mod['mass'] = annotation_mod['massDifference'];
+// 					new_mod['aminoAcids'] = [annotation_mod['aminoacid']];
+// 					new_mod['id'] = annotation_mod['id'];
+// 					self.knownModifications["modifications"].push(new_mod);
+// 				}
+
+// 			})
+// 		}
+// 	},
 
 	updateUserModifications: function(mod, saveToCookie=true){
 
