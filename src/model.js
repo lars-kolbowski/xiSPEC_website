@@ -24,7 +24,9 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			this.xiUI = true;
 
 		if(this.xiUI)
-			this.getKnownModifications('xiDB');
+			this.getKnownModifications(this.xiAnnotatorBaseURL + "annotate/knownModifications");
+		else
+			this.getKnownModifications(this.baseDir + "php/getModifications.php?db=" + this.get('database'));
 
 		this.showDecimals = 2;
 		this.moveLabels = false;
@@ -87,9 +89,6 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.randId = this.get("randId");
 		//console.log(this.JSONdata);
 		this.annotationData = this.JSONdata.annotation || {};
-
-		if(!this.xiUI)
-			this.getKnownModifications('standalone');
 
 		if (this.annotationData.fragementTolerance !== undefined){
 			this.MSnTolerance = {
@@ -423,9 +422,6 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			if (this.annotationData.precursorMZ !== undefined && this.annotationData.precursorMZ !== -1)
 				return
 
-
-		//if(this.knownModifications === undefined)
-		//	this.getKnownModifications();
 		var aastr = "ARNDCEQGHILKMFPSTWYV";
 		var mA = new Array();
 		mA[aastr.indexOf("A")] = 71.03711;
@@ -490,38 +486,20 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.trigger("changed:mass");
 	},
 
-	getKnownModifications: function(source){
+	getKnownModifications: function(modifications_url){
 		var self = this;
-
-		if(source == 'xiDB'){
-			var response = $.ajax({
-				type: "GET",
-				datatype: "json",
-				async: false,
-				url: self.xiAnnotatorBaseURL + "annotate/knownModifications",
-				success: function(data) {
-					self.knownModifications = data;
-				},
-				error: function(xhr, status, error){
-					alert("xiAnnotator could not be reached. Please try again later!");
-				},
-			});
-		}
-		else{
-			// standalone  version only knows about modifications that are in the current spectrum
-			// ToDo: getKnownModifications from SQLite database
-			this.knownModifications = {modifications: []};
-			if(this.annotationData.modifications){
-				this.annotationData.modifications.forEach(function(annotation_mod){
-					// mass in the modification array corresponds to massDifference from xiAnnotator
-					var new_mod = new Object;
-					new_mod['mass'] = annotation_mod['massDifference'];
-					new_mod['aminoAcids'] = [annotation_mod['aminoacid']];
-					new_mod['id'] = annotation_mod['id'];
-					self.knownModifications["modifications"].push(new_mod);
-				});
-			}
-		}
+		var response = $.ajax({
+			type: "GET",
+			datatype: "json",
+			async: false,
+			url: modifications_url,
+			success: function(data) {
+				self.knownModifications = data;
+			},
+			error: function(xhr, status, error){
+				alert("xiAnnotator could not be reached. Please try again later!");
+			},
+		});
 	},
 
 
