@@ -585,7 +585,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 			var stepSize = 0.1;
 		}
 		$target.attr('step', stepSize);
-		$target.attr('value', $target.prop('value'));
+// 		$target.attr('value', $target.prop('value'));
 	},
 
 	changeTab: function(e) {
