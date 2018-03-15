@@ -581,7 +581,8 @@ var SpectrumSettingsView = Backbone.View.extend({
 		if ($target.prop('value').toString().split('.')[1])
 			var stepSize = '0.'+'0'.repeat($target.prop('value').toString().split('.')[1].length - 1) + '1';
 		else {
-			var stepSize = 1;
+			//min stepsize to 0.1 -- can't read out 0. from target value
+			var stepSize = 0.1;
 		}
 		$target.attr('step', stepSize);
 		$target.attr('value', $target.prop('value'));
