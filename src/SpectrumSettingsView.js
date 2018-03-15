@@ -35,7 +35,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 		'click #toggleCustomCfgHelp' : 'toggleCustomCfgHelp',
 		'click #settingsCustomCfgApply' : 'applyCustomCfg',
 		'submit #settingsForm' : 'applyData',
-		'keyup .stepInput' : 'updateStepSizeKeyUp',
+		// 'keyup .stepInput' : 'updateStepSizeKeyUp',
 		'change .ionSelectChkbox': 'updateIons'
 	},
 
@@ -162,15 +162,16 @@ var SpectrumSettingsView = Backbone.View.extend({
 		;
 
 		var toleranceWrapper = rightDiv.append("label").attr("class", "flex-row").text("MS2 tolerance: ");
-		this.toleranceValue = toleranceWrapper.append('div').attr('class', 'flex-grow stepInput').append("input")
-			.attr("type", "number")
-			.attr("placeholder", "Error tolerance")
+		this.toleranceValue = toleranceWrapper.append('div').attr('class', 'flex-grow').append("input")
+			.attr("type", "text")
+			// .attr("type", "number")
+			.attr("placeholder", "tolerance")
 			.attr("autocomplete", "off")
 			.attr("name", "ms2Tol")
-			.attr("min", "0")
-			.attr("step", "0.1")
+			// .attr("min", "0")
+			// .attr("step", "0.1")
 			.attr("required", "")
-			.attr("class", "stepInput")
+			// .attr("class", "stepInput")
 		;
 		this.toleranceUnit = toleranceWrapper.append('div').append("select")
 			.attr("name", "tolUnit")
@@ -189,9 +190,10 @@ var SpectrumSettingsView = Backbone.View.extend({
 				.attr("autocomplete", "off")
 				.attr("name", "clModMass")
 				.attr("required", "")
-				.attr("type", "number")
-				.attr("step", "0.001")
-				.attr("class", "stepInput")
+				.attr("type", "text")
+				// .attr("type", "number")
+				// .attr("step", "0.001")
+				// .attr("class", "stepInput")
 		;
 
 		//modTable
@@ -459,7 +461,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 							var stepSize = '0.'+'0'.repeat(data.toString().split('.')[1].length - 1) + 1;
 						else
 							var stepSize = 1;
-						return '<input class="form-control stepInput" id="modMass_'+meta.row+'" row="'+meta.row+'" title="modification mass" name="modMasses[]" type="number" step="'+stepSize+'" required value='+data+' autocomplete=off>';
+						return '<input class="form-control stepInput" id="modMass_'+meta.row+'" row="'+meta.row+'" title="modification mass" name="modMasses[]" type="text" required value='+data+' autocomplete=off>';
 					},
 					"targets": 2,
 				},
@@ -551,8 +553,8 @@ var SpectrumSettingsView = Backbone.View.extend({
 		if (this.model.JSONdata.annotation.custom !== undefined)
 			this.customConfigInput[0][0].value = this.model.JSONdata.annotation.custom.join("\n");
 
-		this.updateStepSize($(this.toleranceValue[0][0]));
-		this.updateStepSize($(this.crossLinkerModMass[0][0]));
+		// this.updateStepSize($(this.toleranceValue[0][0]));
+		// this.updateStepSize($(this.crossLinkerModMass[0][0]));
 	},
 
 	cancel: function(){
@@ -571,22 +573,22 @@ var SpectrumSettingsView = Backbone.View.extend({
 		$('#customCfgHelp').toggle();
 	},
 
-	updateStepSizeKeyUp: function(e){
-		this.updateStepSize($(e.target));
-	},
-
-	updateStepSize: function($target){
-		// var $target = $(e.target);
-		//update stepsize
-		if ($target.prop('value').toString().split('.')[1])
-			var stepSize = '0.'+'0'.repeat($target.prop('value').toString().split('.')[1].length - 1) + '1';
-		else {
-			//min stepsize to 0.1 -- can't read out 0. from target value
-			var stepSize = 0.1;
-		}
-		$target.attr('step', stepSize);
-// 		$target.attr('value', $target.prop('value'));
-	},
+	// updateStepSizeKeyUp: function(e){
+	// 	this.updateStepSize($(e.target));
+	// },
+	//
+	// updateStepSize: function($target){
+	// 	// var $target = $(e.target);
+	// 	//update stepsize
+	// 	if ($target.prop('value').toString().split('.')[1])
+	// 		var stepSize = '0.'+'0'.repeat($target.prop('value').toString().split('.')[1].length - 1) + '1';
+	// 	else {
+	// 		//min stepsize to 0.1 -- can't read out 0. from target value
+	// 		var stepSize = 0.1;
+	// 	}
+	// 	$target.attr('step', stepSize);
+	// 	$target.attr('value', $target.prop('value'));
+	// },
 
 	changeTab: function(e) {
 		var activeTab = $(e.currentTarget).data('tab');
