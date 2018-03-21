@@ -242,10 +242,10 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 									// <i id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-left" aria-hidden="true"></i> -->
 									echo '<i id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav fa fa-bars" aria-hidden="true"></i>';
 									//  <i id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-right" aria-hidden="true"></i> -->
-									echo '<i id="revertAnnotation" title="revert to original annotation" class="btn btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>';
 									echo '</span>';
 								}
 								?>
+							<i id="revertAnnotation" title="revert to original annotation" class="btn btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>
 							<a href="help.php" target="_blank"><i title="Help" class="btn btn-1a btn-topNav fa fa-question" aria-hidden="true"></i></a>
 
 						</div>
