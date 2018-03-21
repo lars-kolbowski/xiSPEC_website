@@ -49,7 +49,7 @@ var altListTableView = DataTableView.extend({
 			"lengthMenu": [ 4, 6, 8, 10, 12 ],
 			"paging":   true,
 			//"ordering": true,
-			"order": [[2, "desc"], [9, "desc"]],
+			"order": [[2, "asc"], [9, "desc"]],
 			//"info":     false,
 			"ajax": "/php/getAltList.php?id=-1&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB'),
 			"columns": [
