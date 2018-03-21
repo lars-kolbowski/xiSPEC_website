@@ -3,7 +3,9 @@ var CLMSUI = CLMSUI || {};
 $( document ).ready(function() {
 	_.extend(window, Backbone.Events);
 	window.onresize = function() { window.trigger('resize') };
-	window.peptide = new AnnotatedSpectrumModel();
+	window.peptide = new AnnotatedSpectrumModel({
+		standalone: false //to use knownModifications from xiAnnotator here. Should probably be changed in the future to unimod?
+	});
 	window.peptideView = new PeptideView({model: window.peptide, el:"#peptideDiv"});
 	window.pepInputView = new PepInputView({model: window.peptide, el:"#myPeptide"});
 	window.prideSelectionView = new PrideSelectionView({el:"#prideSelectionWrapper"});
