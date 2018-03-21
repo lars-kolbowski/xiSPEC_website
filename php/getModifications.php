@@ -25,7 +25,7 @@
 	foreach ($dbh->query($query) as $row)
 	{
 		$mod = [
-			"id" => $row['name'],
+			"id" => $row['mod_name'],
 			"mass" => floatval($row['mass']),
 			"aminoAcids" => str_split($row['residues']),
 		];

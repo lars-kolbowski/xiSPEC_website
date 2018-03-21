@@ -1,6 +1,6 @@
 <?php
 
-	$sid = $_GET['id'];
+	$si_id = $_GET['id'];
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 
 	if ($_GET['tmp'] == '1'){
@@ -32,12 +32,12 @@
 	$dbh = new PDO($dir) or die("cannot open the database");
 	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-
-	if ($sid == -1){
-		$stmt = $dbh->prepare("SELECT sid FROM identifications LIMIT 1");
+	//ToDo: not needed? if we use first internal_id
+	if ($si_id == -1){
+		$stmt = $dbh->prepare("SELECT id FROM spectrum_identifications LIMIT 1");
 		if ($stmt->execute()) {
 			while ($row = $stmt->fetch()) {
-				$sid = $row['sid'];
+				$si_id = $row['id'];
 			}
 		}
 	}
@@ -45,22 +45,84 @@
 	$JSON = array();
 
 	if (isset($_GET['sname'])){
-		$sql = 	"SELECT identifications.id, sid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, atom AS score, allScores, protein1, protein2, passThreshold, rank
-			FROM identifications, json_each(identifications.allScores)
-			WHERE json_each.key LIKE :scoreName AND sid=:sid
-			ORDER BY identifications.id,rank";
-			$stmt = $dbh->prepare($sql);
-			$stmt->bindParam(':sid', $sid);
-			$stmt->bindParam(':scoreName', $_GET['sname']);
+		$scoreName = $_GET['sname'];
+
+		$sql = "SELECT
+				si.id AS id,
+				sp.spectrum_ref AS spectrum_ref,
+				pep1_table.seq_mods AS pep1,
+				pep2_table.seq_mods AS pep2,
+				pep1_table.link_site AS linkpos1,
+				pep2_table.link_site AS linkpos2,
+				si.charge_state AS charge,
+				pep1_ev.decoy AS is_decoy,
+				atom AS score,
+				si.scores AS scores,
+				pep1_ev.protein AS protein1,
+				pep2_ev.protein AS protein2,
+				si.pass_threshold AS pass_threshold,
+				si.rank AS rank
+				-- sp.peak_list_file_name AS file,
+				-- sp.scan_id AS scanID
+				FROM spectrum_identifications AS si, json_each(si.scores)
+				LEFT JOIN spectra AS sp ON (si.spectrum_id = sp.id)
+				LEFT JOIN peptides AS pep1 ON (si.pep1_id = pep1_table.id)
+				LEFT JOIN
+					(SELECT peptide_ref, group_concat(DISTINCT protein_accession) AS protein,
+					group_concat(DISTINCT is_decoy) AS decoy
+					FROM peptide_evidences GROUP BY peptide_ref) AS pep1_ev ON (si.pep1_id = pep1_ev.peptide_ref)
+				LEFT JOIN peptides AS pep2 ON (si.pep2_id = pep2.id)
+				LEFT JOIN
+					(SELECT peptide_ref, group_concat(DISTINCT protein_accession) AS protein,
+					group_concat(DISTINCT is_decoy) AS decoy FROM peptide_evidences GROUP BY peptide_ref) AS pep2_ev ON (si.pep2_id = pep2_ev.peptide_ref)
+				WHERE json_each.key LIKE :scoreName AND si.id=:si_id
+				ORDER BY si.rank";
+
+		// $sql = 	"SELECT identifications.id, sid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, atom AS score, allScores, protein1, protein2, passThreshold, rank
+		// 	FROM identifications, json_each(identifications.allScores)
+		// 	WHERE json_each.key LIKE :scoreName AND sid=:sid
+		// 	ORDER BY identifications.id,rank";
+		$stmt = $dbh->prepare($sql);
+		$stmt->bindParam(':si_id', $si_id);
+		$stmt->bindParam(':scoreName', $scoreName);
 	}
 
 	else {
-		$sql = "SELECT identifications.id, sid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, atom AS score, allScores, protein1, protein2, passThreshold, rank
-			FROM identifications, json_each(identifications.allScores)
-			WHERE sid=:sid
-			ORDER BY identifications.id,rank";
-			$stmt = $dbh->prepare($sql);
-			$stmt->bindParam(':sid', $sid);
+		$sql = "SELECT
+				si.id AS id,
+				sp.spectrum_ref AS sprectrum_ref,
+				pep1_table.seq_mods AS pep1,
+				pep2_table.seq_mods AS pep2,
+				pep1_table.link_site AS linkpos1,
+				pep2_table.link_site AS linkpos2,
+				si.charge_state AS charge,
+				pep1_ev.decoy AS isDecoy,
+				atom AS score,
+				si.scores AS scores,
+				pep1_ev.protein AS protein1,
+				pep2_ev.protein AS protein2,
+				si.pass_threshold AS pass_threshold,
+				si.rank AS rank
+				FROM spectrum_identifications AS si, json_each(si.scores)
+				LEFT JOIN spectra AS sp ON (si.spectrum_id = sp.id)
+				LEFT JOIN peptides AS pep1_table ON (si.pep1_id = pep1_table.id)
+				LEFT JOIN
+					(SELECT peptide_ref, group_concat(DISTINCT protein_accession) AS protein,
+					group_concat(DISTINCT is_decoy) AS decoy
+					FROM peptide_evidences GROUP BY peptide_ref) AS pep1_ev ON (si.pep1_id = pep1_ev.peptide_ref)
+				LEFT JOIN peptides AS pep2_table ON (si.pep2_id = pep2_table.id)
+				LEFT JOIN
+					(SELECT peptide_ref, group_concat(DISTINCT protein_accession) AS protein,
+					group_concat(DISTINCT is_decoy) AS decoy FROM peptide_evidences GROUP BY peptide_ref) AS pep2_ev ON (si.pep2_id = pep2_ev.peptide_ref)
+				WHERE si.id=:si_id
+				ORDER BY si.rank";
+		// $sql = "SELECT identifications.id, sid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, atom AS score, allScores, protein1, protein2, passThreshold, rank
+		// 	FROM identifications, json_each(identifications.allScores)
+		// 	WHERE sid=:sid
+		// 	ORDER BY identifications.id,rank";
+		// echo($sql);
+		$stmt = $dbh->prepare($sql);
+		$stmt->bindParam(':si_id', $si_id);
 	}
 
 	// echo $sid;

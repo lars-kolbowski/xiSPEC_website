@@ -72,37 +72,37 @@ var specListTableView = DataTableView.extend({
 				null, //linkpos1
 				null, //linkpos2
 				null, //charge
-				{ "search": "0" }, //isDecoy
+				{ "search": "0" }, //is_decoy
 				null, //score
-				null, //allScores
+				null, //scores
 				null, //protein1
 				null, //protein2
-				{ "search": "1" }, //passThreshold
+				{ "search": "1" }, //pass_threshold
 				null, //alt_count
 				null, //dataRef
-				null  //scanID
+				null  //scan_id
 			],
 			"columns": [
 				{ "title": "internal_id", "data": "id", "name": "internal_id", "searchable": false },	//0
-				{ "title": "id", "data": "sid", "name": "sid" },	//1
+				{ "title": "id", "data": "spectrum_ref", "name": "spectrum_ref" },	//1
 				{ "title": "peptide 1", "data": "pep1", "name": "pep1" },	//2
 				{ "title": "peptide 2", "data": "pep2", "name": "pep2" },	//3
 				{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center", "name": "linkpos1", "searchable": false },	//4
 				{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center", "name": "linkpos2", "searchable": false },	//5
 				{ "title": "charge", "data": "charge", "className": "dt-center", "name": "charge" },		//6
-				{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center", "name": "isDecoy" },	//7
+				{ "title": "isDecoy", "data": "is_decoy", "className": "dt-center", "name": "is_decoy" },	//7
 				{ "title": "score", "data": "score", "className": "dt-center", "name": "score" },    //8
-				{ "title": "allScores", "data": "allScores", "name": "allScores" },    //9
+				{ "title": "scores", "data": "scores", "name": "scores" },    //9
 				{ "title": "protein 1", "data": "protein1", "className": "dt-center", "name": "protein1" },  //10
 				{ "title": "protein 2", "data": "protein2", "className": "dt-center", "name": "protein2" },  //11
-				{ "title": "passThreshold", "data": "passThreshold", "name": "passThreshold" },  //12
+				{ "title": "passThreshold", "data": "pass_threshold", "name": "pass_threshold", "className": "dt-center" },  //12
 				{ "title": "alt_count", "data": "alt_count", "name": "alt_count", "searchable": false },    //13
 				{ "title": "dataRef", "data": "file", "name": "dataRef" },        //14
-				{ "title": "scanID", "data": "scanID", "className": "dt-center", "name": "scanID" },    //15
+				{ "title": "scan_id", "data": "scan_id", "className": "dt-center", "name": "scan_id" },    //15
 			],
 
 			"createdRow": function( row, data, dataIndex ) {
-				if ( data['passThreshold'] == 0 )
+				if ( data['pass_threshold'] == 0 )
 					$(row).addClass('red');
 				// if ( data['id'] == this.model.requestId)
 				// 	$(row).addClass("selected");
@@ -110,7 +110,8 @@ var specListTableView = DataTableView.extend({
 			 	"columnDefs": [
 				{
 					"class": "invisible",
-					"targets": [ 0, 9, 12, 13 ],
+					// "targets": [ 0, 9, 13 ],
+					"targets": [ 9, 13 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
@@ -132,11 +133,11 @@ var specListTableView = DataTableView.extend({
 						else
 							return 'True';
 					},
-					"targets": [ 7 ],
+					"targets": [ 7, 12 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
-						var json = JSON.parse(row.allScores);
+						var json = JSON.parse(row.scores);
 						var result = new Array();
 						for (key in json) {
 							result.push(key+'='+json[key]);
@@ -147,7 +148,9 @@ var specListTableView = DataTableView.extend({
 				},
 				{
 					"render": function ( data, type, row, meta ) {
-						data = parseInt(data)
+ 						if(!data)
+ 							return '';
+						data = parseInt(data);
 						if (data == -1)
 							return '';
 						if (data == 0)
@@ -180,9 +183,9 @@ var specListTableView = DataTableView.extend({
 				self.createScoreSelector();
 
 				if(self.options.initId){
-// 					var row = self.DataTable.columns( 'sid:name' ).search( self.options.initId )[0][0];
+// 					var row = self.DataTable.columns( 'spectrum_ref:name' ).search( self.options.initId )[0][0];
 // 					CLMSUI.vent.trigger('loadSpectrum', self.DataTable.rows(row).data()[0]);
-					self.DataTable.columns( 'sid:name' ).data().filter( function(e){
+					self.DataTable.columns( 'spectrum_ref:name' ).data().filter( function(e){
 						 if (e == self.options.initId) return true;
 					});
 					$('.dataTables_filter input').val(self.options.initId);
@@ -268,18 +271,18 @@ var specListTableView = DataTableView.extend({
 	},
 
 	createScoreSelector: function() {
-		var allScores = new Array();
-		var allScoresJSON = JSON.parse(this.DataTable.columns('allScores:name').data()[0][0])
-		for (var score in allScoresJSON) {
-			if (allScoresJSON.hasOwnProperty(score)) {
-				allScores.push(score);
+		var scores = new Array();
+		var scoresJSON = JSON.parse(this.DataTable.columns('scores:name').data()[0][0])
+		for (var score in scoresJSON) {
+			if (scoresJSON.hasOwnProperty(score)) {
+				scores.push(score);
 			}
 		}
 
-		if (allScores.length > 1){
+		if (scores.length > 1){
 			$("#specListScoreSelect").show();
 
-			allScores.forEach(function(score, i){
+			scores.forEach(function(score, i){
 				if (i == 0)
 					checked = 'checked';
 				else
@@ -332,13 +335,13 @@ var specListTableView = DataTableView.extend({
 	toggleThreshold: function(e){
 		if (e.target.checked){
 		    this.DataTable
-		        .columns( 'passThreshold:name' )
+		        .columns( 'pass_threshold:name' )
 		        .search( "1" )
 		        .draw();
 		}
 		else{
 		    this.DataTable
-		        .columns( 'passThreshold:name' )
+		        .columns( 'pass_threshold:name' )
 		        .search( "" )
 		        .draw();
 		}
@@ -360,16 +363,16 @@ var specListTableView = DataTableView.extend({
 	},
 
 	toggleDecoy: function(e){
-		var column = this.DataTable.column( 'isDecoy:name' );
+		var column = this.DataTable.column( 'is_decoy:name' );
 		if (e.target.checked){
 			//column.visible( false );
 			//$(".toggle-vis[data-column='7']").attr("checked", "");
-		    this.DataTable.columns( 'isDecoy:name' ).search( "0" ).draw();
+		    this.DataTable.columns( 'is_decoy:name' ).search( "0" ).draw();
 		}
 		else{
 			//column.visible( true );
 			//$(".toggle-vis[data-column='7']").attr("checked", "checked");
-		    this.DataTable.columns( 'isDecoy:name').search( "" ).draw();
+		    this.DataTable.columns( 'is_decoy:name').search( "" ).draw();
 		}
 	},
 
