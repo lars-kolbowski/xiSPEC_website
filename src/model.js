@@ -5,7 +5,8 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
       baseDir:  '',
 	  xiAnnotatorBaseURL: 'http://xi3.bio.ed.ac.uk/xiAnnotator/',
       JSONdata: false,
-      standalone: true,
+	  standalone: true,
+	  database: false,
     };
   },
 
@@ -17,16 +18,16 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.xiAnnotatorBaseURL = this.get('xiAnnotatorBaseURL');
 		this.baseDir = this.get('baseDir');
 
-		//way to diff between standalone and xiUI
-		if(this.get('standalone'))
-			this.xiUI = false;
-		else
-			this.xiUI = true;
-
-		if(this.xiUI)
+		this.standalone = this.get('standalone');
+		this.database = this.get('database');
+		if(!this.standalone)
 			this.getKnownModifications(this.xiAnnotatorBaseURL + "annotate/knownModifications");
-		else
-			this.getKnownModifications(this.baseDir + "php/getModifications.php?db=" + this.get('database'));
+		else{
+			if(this.database)
+				this.getKnownModifications(this.baseDir + "php/getModifications.php?db=" + this.get('database'));
+			else
+				this.knownModifications = {};
+		}
 
 		this.showDecimals = 2;
 		this.moveLabels = false;
@@ -420,7 +421,10 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		// don't calculate the mass if it's already defined by xiAnnotator
 		if (this.annotationData !== undefined)
 			if (this.annotationData.precursorMZ !== undefined && this.annotationData.precursorMZ !== -1)
-				return
+				return;
+
+		if(this.annotationData.modifications === undefined)
+			return;
 
 		var aastr = "ARNDCEQGHILKMFPSTWYV";
 		var mA = new Array();
@@ -459,10 +463,14 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 				massArr[i] += mA[aastr.indexOf(AA)];
 				//mod
 				var mod = this.peptides[i].sequence[j].Modification;
-				for (var k = 0; k < this.knownModifications['modifications'].length; k++) {
-					if (this.knownModifications['modifications'][k].id == mod)
-						massArr[i] += this.knownModifications['modifications'][k].mass;
+				for (var k = 0; k < this.annotationData.modifications.length; k++) {
+					if (this.annotationData.modifications[k].id == mod)
+					massArr[i] += this.annotationData.modifications[k].massDifference;
 				}
+				// for (var k = 0; k < this.knownModifications['modifications'].length; k++) {
+				// 	if (this.knownModifications['modifications'][k].id == mod)
+				// 		massArr[i] += this.knownModifications['modifications'][k].mass;
+				// }
 			}
 		}
 

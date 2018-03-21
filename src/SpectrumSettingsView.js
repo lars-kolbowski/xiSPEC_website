@@ -450,7 +450,8 @@ var SpectrumSettingsView = Backbone.View.extend({
 								displayModified(rowNode);
 							}
 						}
-						if (!found){
+
+						if (!found && self.model.knownModifications['modifications'] !== undefined){
 							for (var i = 0; i < self.model.knownModifications['modifications'].length; i++) {
 								if(self.model.knownModifications['modifications'][i].id == row.id)
 									data = self.model.knownModifications['modifications'][i].mass;
@@ -473,7 +474,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 								var found = true;
 							}
 						}
-						if (!found){
+						if (!found&& self.model.knownModifications['modifications'] !== undefined){
 							for (var i = 0; i < self.model.knownModifications['modifications'].length; i++) {
 								if(self.model.knownModifications['modifications'][i].id == row.id){
 									data = data.split(",");
