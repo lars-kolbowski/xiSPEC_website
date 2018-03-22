@@ -463,14 +463,12 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 				massArr[i] += mA[aastr.indexOf(AA)];
 				//mod
 				var mod = this.peptides[i].sequence[j].Modification;
-				for (var k = 0; k < this.annotationData.modifications.length; k++) {
-					if (this.annotationData.modifications[k].id == mod)
-					massArr[i] += this.annotationData.modifications[k].massDifference;
+				if(mod != ""){
+					for (var k = 0; k < this.annotationData.modifications.length; k++) {
+						if (this.annotationData.modifications[k].id == mod)
+						massArr[i] += this.annotationData.modifications[k].massDifference;
+					}
 				}
-				// for (var k = 0; k < this.knownModifications['modifications'].length; k++) {
-				// 	if (this.knownModifications['modifications'][k].id == mod)
-				// 		massArr[i] += this.knownModifications['modifications'][k].mass;
-				// }
 			}
 		}
 
@@ -489,7 +487,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 			if (this.JSONdata.LinkSite[0].linkSite != -1 && this.JSONdata.LinkSite[1].linkSite != -1)
 				totalMass += clModMass;
 		}
-		this.mass = totalMass
+		this.calcMass = totalMass
 // 		console.log(this.mass);
 		this.trigger("changed:mass");
 	},
