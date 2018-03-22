@@ -246,7 +246,7 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 								}
 								?>
 							<i id="revertAnnotation" title="revert to original annotation" class="btn btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>
-							<a href="help.php" target="_blank"><i title="Help" class="btn btn-1a btn-topNav fa fa-question" aria-hidden="true"></i></a>
+							<a href="/help.php" target="_blank"><i title="Help" class="btn btn-1a btn-topNav fa fa-question" aria-hidden="true"></i></a>
 
 						</div>
 						<div class="plotsDiv">
