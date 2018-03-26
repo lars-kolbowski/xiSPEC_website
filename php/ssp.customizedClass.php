@@ -328,7 +328,7 @@ static function sql_exec ( $db, $bindings, $sql=null )
 if ( $sql === null ) {
 $sql = $bindings;
 }
-echo $sql;
+// echo $sql;
 $stmt = $db->prepare( $sql );
 
 // echo $sql;

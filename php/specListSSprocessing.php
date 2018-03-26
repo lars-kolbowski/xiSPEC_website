@@ -24,7 +24,7 @@
 
 	$columns = array(
 		array( 'db' => 'si.id',		'dt' => 'id', 'field' => 'id', 'as' => 'id'),
-		array( 'db' => 'COUNT(si.id)',	'dt' => 'alt_count', 'field' => 'alt_count', 'as' => 'alt_count'),
+		array( 'db' => 'sid_count.counted',	'dt' => 'alt_count', 'field' => 'alt_count', 'as' => 'alt_count'),
 		array( 'db' => 'sp.spectrum_ref',			'dt' => 'spectrum_ref', 'field' => 'spectrum_ref', 'as' => 'spectrum_ref'),
 		array( 'db' => 'pep1_table.seq_mods',			'dt' => 'pep1', 'field' => 'pep1', 'as' => 'pep1'),
 		array( 'db' => 'pep2_table.seq_mods',			'dt' => 'pep2', 'field' => 'pep2', 'as' => 'pep2'),
@@ -75,7 +75,6 @@
 
 	$jsonCol = 'scores';
 
-	$groupBy = "GROUP BY si.spectrum_id, json_each.id";
 	// $groupBy = "GROUP BY `sid`";
 	$joinQuery = "FROM $table AS si, json_each(si.$jsonCol)
 	LEFT JOIN spectra AS sp ON (si.spectrum_id = sp.id)
@@ -89,12 +88,16 @@
 	  (SELECT peptide_ref, group_concat(DISTINCT protein_accession) AS protein, group_concat(DISTINCT is_decoy) AS decoy
 	  FROM peptide_evidences GROUP BY peptide_ref)
 	AS pep2_ev ON (si.pep2_id = pep2_ev.peptide_ref)
+	LEFT JOIN (SELECT spectrum_id, COUNT() AS counted FROM $table GROUP BY spectrum_id) AS sid_count ON si.spectrum_id = sid_count.spectrum_id
 	";
+
+	$groupBy = "GROUP BY si.spectrum_id, json_each.id HAVING MIN(si.id)";
 
 	if (isset($_GET['scol']))
 		$extraWhere = "json_each.key == '".$_GET['scol']."' AND si.rank = 1";
 	else
 		$extraWhere = "json_each.id == 2 AND si.rank = 1"; // id=2 is the first key in a json (could change in future json1 versions)
+
 	$json = json_encode(
 	    SSP::simple(
 			$_GET,
