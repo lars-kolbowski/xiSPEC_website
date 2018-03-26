@@ -123,7 +123,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 		var rightDiv = dataFlexRow.append("div").attr("class", "settingsDataRight");
 
 		var ionSelector = rightDiv.append("label").attr("class", "flex-row").text("Fragment Ions: ")
-			.append("div").attr("class", "mulitSelect_dropdown flex-grow")
+			.append("div").attr("class", "multiSelect_dropdown flex-grow")
 		;
 		ionSelector.append("input")
 			.attr("type", "text")
@@ -131,7 +131,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 			.attr("id", "ionSelection")
 			.attr("readonly", "")
 		;
-		var ionSelectorDropdown = ionSelector.append("div").attr("class", "mulitSelect_dropdown-content mutliSelect");
+		var ionSelectorDropdown = ionSelector.append("div").attr("class", "multiSelect_dropdown-content mutliSelect");
 		var ionSelectorList = ionSelectorDropdown.append("ul").attr("id", 'ionList');
 		var ionOptions = [
 			{value: "peptide", text: "Peptide Ion"},

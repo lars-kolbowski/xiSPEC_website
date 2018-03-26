@@ -258,9 +258,9 @@
 				<div id="ionsInfo"  style="display: none;">
 					<div id="ionsMsg"></div>
 					<form id="ionsForm" method="post" action="php/updateIons.php">
-						<div class="mulitSelect_dropdown" style="margin-right:2%;">
+						<div class="multiSelect_dropdown" style="margin-right:2%;">
 							<input type="text" class="form-control btn-drop" id="ionSelectionSubmit" title="fragment ion types" value="peptide, b, y" readonly>
-							<div class="mulitSelect_dropdown-content mutliSelect">
+							<div class="multiSelect_dropdown-content mutliSelect">
 								<ul>
 									<li>
 										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="peptide" checked id="PeptideIonSubmit" name="ions[]" />Peptide ion</label></li>
