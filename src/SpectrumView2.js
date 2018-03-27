@@ -277,9 +277,11 @@ var SpectrumView = Backbone.View.extend({
 	},
 
 	enableRevertAnnotation: function(){
-		$(this.el).css('background-color', 'rgb(210, 224, 255)');
-		$('#revertAnnotation').addClass('btn-1a');
-		$('#revertAnnotation').removeClass('disabled');
+		if(this.model.get('database') || !this.model.get('standalone')){
+			$(this.el).css('background-color', 'rgb(210, 224, 255)');
+			$('#revertAnnotation').addClass('btn-1a');
+			$('#revertAnnotation').removeClass('disabled');
+		}
 	},
 
 	disableRevertAnnotation: function(){
