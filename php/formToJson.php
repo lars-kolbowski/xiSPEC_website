@@ -1,5 +1,5 @@
 <?php
-
+//ToDo: duplication formToJson.php amd processSpecPostData.php
 require("functions.php");
 
 $dbView = FALSE;
@@ -80,13 +80,6 @@ foreach ($_POST['ions'] as $iontype) {
 // };
 
 $cl = array('modMass' => $clModMass);
-
-// if ($tolUnit == "Da"){
-//   $customCfg = ["LOWRESOLUTION:true"];
-// }
-// else {
-//   $customCfg = ["LOWRESOLUTION:false"];
-// }
 
 $annotation = array(
   'fragmentTolerance' => $tol,

@@ -22,9 +22,16 @@
 var CLMSUI = CLMSUI || {};
 
 var ManualDataInputView = Backbone.View.extend({
-
+//ToDo: recfator to load examples as json into model?
 	events : {
-		'change .ionSelectChkbox': 'updateIons'
+		'change .ionSelectChkbox': 'updateIons',
+		'change #manDataInput-ClSelect': 'changeCrossLinker',
+		'change #manDataInput-charge': 'changeCharge',
+		'submit #manUpPepForm' : 'submitForm',
+		'click #manDataInput-clExample' : 'clExample',
+		'click #manDataInput-linExample' : 'linExample',
+		'click #manDataInput-clearForm' : 'reset',
+		'submit #addCustomCLform': 'addCustomCrossLinker',
 	},
 
 	identifier: "Manual Data Input",
@@ -46,49 +53,120 @@ var ManualDataInputView = Backbone.View.extend({
 		this.listenTo(this.model, 'change:JSONdata', this.render);
 		this.wrapper = d3.select(this.el);
 
-		var mainDiv = this.wrapper.append("div").attr("id", "settings_main");
+		this.mainForm = this.wrapper.append("form")
+			.attr("id", "manUpPepForm")
+			.attr("target", "_blank")
+			.attr("action", "viewSpectrum.php")
+			.attr("method", "post")
+		;
 
-		//data ToDo: change to more BBlike data handling
-		var dataTab = mainDiv.append("div").attr("class", "settings-tab flex-column").attr("id", "settings_data");
+		var topSection = this.mainForm.append("section")
+			.attr("id", "manDataInput-topSection")
+		;
 
-		var dataForm = dataTab.append("form").attr("id", "settingsForm").attr("method", "post").attr("class", "flex-column");
+		var leftDiv = topSection.append('div')
+			.attr("id", "manDataInput-topSectionLeft")
+		;
 
-		var peptideLabel = dataForm.append("label").attr("class", "flex-row").text("Peptide Sequence: ")
-		this.peptideViewEl = peptideLabel.append('div').attr('class', 'flex-grow').append("input")
+		this.pepInputViewEl = leftDiv.append("input")
 			.attr("type", "text")
+			.attr("id", "manDataInput-pepSeq")
 			.attr("required", "")
 			.attr("autofocus", "")
 			.attr("autocomplete", "off")
 			.attr("placeholder", "Peptide Sequence1[;Peptide Sequence2]")
 			.attr("name", "peps")
 		;
-		this.pepInputView = new PepInputView({model: this.model, el: this.peptideViewEl[0] });
+		this.pepInputView = new PepInputView({
+			model: this.model,
+			el: this.pepInputViewEl[0]
+		});
 
-		var dataFlexRow = dataForm.append("div").attr("class", "flex-row midDataDiv");
-
-		var leftDiv = dataFlexRow.append("div").attr("class", "settingsDataLeft");
-
-		this.peaklist = leftDiv.append("label").attr("class", "flex-column").attr("style", "height: 100%").text("Peak list (m/z\tintensity): ").append("textarea")
+		this.peaklist = leftDiv.append("textarea")
 			.attr("required", "")
-			.attr("id", "settingsPeaklist")
+			.attr("id", "manDataInput-peakList")
 			.attr("type", "text")
 			.attr("placeholder", "Peak List [m/z intensity]")
 			.attr("name", "peaklist")
+		;
+
+		var rightDiv = topSection.append('div')
+			.attr("id", "manDataInput-topSectionRight")
+		;
+
+		var pepPreviewText = rightDiv.append('div')
+			.attr("id", "manDataInput-pepPreviewText")
+			.html("Peptide Preview:")
+		;
+
+		var PepPreviewDiv = rightDiv.append('div')
+			.attr("id", "manDataInput-pepPreviewDiv")
 			.attr("class", "form-control")
 		;
 
-		var rightDiv = dataFlexRow.append("div").attr("class", "settingsDataRight");
+		// var peptidePreviewViewSVG = PepPreviewDiv.append("svg")
+		// 	.attr("id", "manDataInput-pepPreViewSVG")
+		// ;
+		this.peptidePreviewView = new PeptideView(
+			{model: this.model, el: PepPreviewDiv[0] }
+		);
 
-		var ionSelector = rightDiv.append("label").attr("class", "flex-row").text("Fragment Ions: ")
-			.append("div").attr("class", "mulitSelect_dropdown flex-grow")
+		// var peptidePreviewViewInstructions = PepPreviewDiv.append("div")
+		// 	.attr("id", "manDataInput-pepPreViewInstructions")
+		// ;
+
+		var midSection = this.mainForm.append("section")
+			.attr("id", "manDataInput-midSection")
 		;
-		ionSelector.append("input")
+
+		var ClSelect = midSection.append("select")
+			.attr("id", "manDataInput-ClSelect")
+			.attr("class", "form-control manDataInput-midSection-el")
+			.attr("name", "clModMass")
+		;
+
+		var ClOptions = [
+			{value: "", text: "Select cross-linker..."},
+			{value: "add", text: "add your own cross-linker..."},
+			{value: "0", text: "none (linear peptide)"},
+			{value: "138.068080", text: "BS3/DSS [138.068080 Da]"},
+			{value: "142.093177", text: "BS3/DSS-d4 [142.093177 Da]"},
+			{value: "82.041865", text: "SDA [82.041865 Da]"},
+			{value: "158.003765", text: "DSSO [158.003765 Da]"},
+			{value: "-19.972072", text: "Photo-Methionine [-19.972072 Da]"},
+			{value: "-16.0313", text: "Photo-Leucine [-16.0313 Da]"},
+		];
+
+		ClSelect.selectAll("option").data(ClOptions)
+			.enter()
+			.append("option")
+				.html(function(d) { return d.text; })
+				.attr("value", function(d) { return d.value; })
+		;
+
+		var precursorZ = midSection.append("input")
+			.attr("id", "manDataInput-charge")
+			.attr("type", "number")
+			.attr("min", "1")
+			.attr("required", "required")
+			.attr("placeholder", "z")
+			.attr("name", "preCharge")
+			.attr("autocomplete", "off")
+			.attr("class", "form-control manDataInput-midSection-el")
+		;
+
+		var ionSelector = midSection.append("div")
+			.attr("class", "multiSelect_dropdown manDataInput-midSection-el")
+
+		;
+		this.ionSelectorInput = ionSelector.append("input")
 			.attr("type", "text")
 			.attr("class", "btn-drop")
-			.attr("id", "ionSelection")
+			.attr("id", "manDataInput-ionSelection")
+			.attr("value", "Select ions...")
 			.attr("readonly", "")
 		;
-		var ionSelectorDropdown = ionSelector.append("div").attr("class", "mulitSelect_dropdown-content mutliSelect");
+		var ionSelectorDropdown = ionSelector.append("div").attr("class", "multiSelect_dropdown-content mutliSelect");
 		var ionSelectorList = ionSelectorDropdown.append("ul").attr("id", 'ionList');
 		var ionOptions = [
 			{value: "peptide", text: "Peptide Ion"},
@@ -114,87 +192,70 @@ var ManualDataInputView = Backbone.View.extend({
 			.text(function(d) { return d.text; })
 		;
 
-		this.precursorZ = rightDiv.append("label").attr("class", "flex-row").text("Precursor charge state: ").append('div').attr('class', 'flex-grow')
-			.append("input").attr("type", "number").attr("placeholder", "Charge").attr("autocomplete", "off").attr("name", "preCharge").attr("min", "1").attr("required", "")
-		;
-
-		var toleranceWrapper = rightDiv.append("label").attr("class", "flex-row").text("MS2 tolerance: ");
-		this.toleranceValue = toleranceWrapper.append('div').attr('class', 'flex-grow').append("input")
+		this.toleranceValue = midSection.append("input")
+			.attr("id", "manDataInput-tolVal")
 			.attr("type", "text")
 			.attr("placeholder", "tolerance")
 			.attr("autocomplete", "off")
 			.attr("name", "ms2Tol")
 			.attr("required", "")
+			.attr("class", "manDataInput-midSection-el")
 		;
-		this.toleranceUnit = toleranceWrapper.append('div').append("select")
+		this.toleranceUnit = midSection.append("select")
+			.attr("id", "manDataInput-tolUnit")
 			.attr("name", "tolUnit")
 			.attr("required", "")
-			.attr("style", "width: 65px; margin-left: 8px;")
 			.attr("class", "form-control")
+			.attr("class", "manDataInput-midSection-el")
 		;
 		this.toleranceUnit.append("option").attr("value", "ppm").text("ppm");
 		this.toleranceUnit.append("option").attr("value", "Da").text("Da");
 
-		this.crossLinkerModMassWrapper = rightDiv.append("label").attr("class", "flex-row").text("Cross-linker mod mass: ");
-
-		this.crossLinkerModMass = this.crossLinkerModMassWrapper.append('div').attr('class', 'flex-grow')
-			.append("input")
-				.attr("placeholder", "CL mod mass")
-				.attr("autocomplete", "off")
-				.attr("name", "clModMass")
-				.attr("required", "")
-				.attr("type", "text")
-		;
-
 		//modTable
-		var modTableWrapper = dataForm.append("div").attr("class", "form-control dataTables_wrapper").attr("id", "modificationTable_wrapperOuter");
-		var modTable = modTableWrapper.append("table").attr("id", "modificationTable").attr("style", "width: 100%");
+		var modificationSection = this.mainForm.append("section");
+		var modTableWrapper = modificationSection.append("div")
+			.attr("class", "form-control dataTables_wrapper")
+			.attr("id", "manDataInput-modTable_wrapperOuter")
+		;
+		var modTable = modTableWrapper.append("table")
+			.attr("id", "modificationTable")
+			.attr("style", "width: 100%")
+		;
 		this.initializeModTable();
 
-		//end modTable
-		var dataBottom = dataForm.append("div").attr("class", "settings-bottom");
 
-		var applyBtn = dataBottom.append("input").attr("class", "btn btn-1 btn-1a network-control").attr("value", "Apply").attr("id", "settingsDataApply").attr("type", "submit");
-		var cancelBtn = dataBottom.append("input").attr("class", "btn btn-1 btn-1a network-control settingsCancel").attr("value", "Cancel").attr("id", "settingsCancel").attr("type", "button");
+		d3.select(this.el).selectAll("input[type=text]")
+			.classed ("form-control", true)
+		;
+		d3.select(this.el).selectAll("textarea")
+			.classed ("form-control", true)
+		;
+		d3.select(this.el).selectAll("select")
+			.classed ("form-control", true)
+		;
 
+		var bottomControls = this.mainForm.append('div')
+			.attr('id', 'manDataInput-bottomControls')
+			.attr('class', 'page-header center')
+		;
 
-	},
+		var bottomControlsButtonData = [
+			{value: "View Spectrum", id: "manDataInput-submit", type: "submit"},
+			{value: "cross-link example", id: "manDataInput-clExample", type: "button"},
+			{value: "linear example", id: "manDataInput-linExample", type: "button"},
+			{value: "reset", id: "manDataInput-clearForm", type: "button"},
+		];
 
-	applyData: function(e){
+		bottomControls.selectAll('input').data(bottomControlsButtonData)
+			.enter()
+			.append("input")
+				.attr("class", "btn btn-1 btn-1a network-control")
+				.attr("type", function(d) { return d.type; })
+				.attr("id", function(d) { return d.id; })
+				.attr("value", function(d) { return d.value; })
+		;
 
-		e.preventDefault();
-
-		var form = e.currentTarget;
-		//Todo error handling!
-		if(!this.checkInputsForValidity(form)){
-			console.log('Invalid character found in form');
-			return false;
-		}
-		var self = this;
-		var formData = new FormData($(form)[0]);
-		$('#settingsForm').hide();
-		var spinner = new Spinner({scale: 5}).spin (d3.select("#settings_main").node());
-
-		$.ajax({
-			url: self.model.baseDir+"php/formToJson.php",
-			type: 'POST',
-			data: formData,
-			async: false,
-			cache: false,
-			contentType: false,
-			processData: false,
-			success: function (response) {
-				var json = JSON.parse(response);
-				self.model.otherModel.request_annotation(json);
-				self.model.otherModel.changedAnnotation = true;
-				self.model.otherModel.trigger("changed:annotation");
-				spinner.stop();
-				$('#settingsForm').show();
-			}
-		});
-
-		this.model.saveUserModificationsToCookie();
-		return false;
+		this.updateCrossLinkerOptions();
 
 	},
 
@@ -221,12 +282,7 @@ var ManualDataInputView = Backbone.View.extend({
 			alert('Invalid character(s) in peak list: ' + invalidChar);
 			return false;
 		}
-		//clModMass
-		var invalidChar = invalidChars(formData['clModMass'].value, /([^0-9\.\-]+)/);
-		if (invalidChar){
-			alert('Invalid character(s) in cros-linker modmass: ' + invalidChar);
-			return false;
-		}
+
 		//precursor charge state
 		var invalidChar = invalidChars(formData['preCharge'].value, /([^0-9]+)/);
 		if (invalidChar){
@@ -360,7 +416,6 @@ var ManualDataInputView = Backbone.View.extend({
 			self.modTable.ajax.reload();
 		});
 
-
 	},
 
 	render: function() {
@@ -368,32 +423,25 @@ var ManualDataInputView = Backbone.View.extend({
 		this.pepInputView.render();
 		this.modTable.ajax.url( this.model.baseDir + "php/convertModsToJSON.php?peps="+encodeURIComponent(this.model.pepStrsMods.join(";"))).load();
 		//ions
-		this.model.JSONdata.annotation.ions.forEach(function(ion){
+		this.model.fragmentIons.forEach(function(ion){
 			$('#'+ion.type).attr('checked', true);
 		});
+
 		var ionSelectionArr = new Array();
 		$('.ionSelectChkbox:checkbox:checked').each(function(){
 			ionSelectionArr.push($(this).val());
 		});
-		$('#ionSelection').val(ionSelectionArr.join(", "));
+		if(ionSelectionArr.length > 0)
+			$('#manDataInput-ionSelection').val(ionSelectionArr.join(", "));
 
-		this.peaklist[0][0].value = this.model.peaksToMGF();
-		this.precursorZ[0][0].value  = this.model.JSONdata.annotation.precursorCharge;
-		this.toleranceValue[0][0].value  = this.model.JSONdata.annotation.fragementTolerance.split(' ')[0];
-		this.toleranceUnit[0][0].value = this.model.JSONdata.annotation.fragementTolerance.split(" ")[1];
-		this.crossLinkerModMass[0][0].value = this.model.JSONdata.annotation['cross-linker'].modMass;
-		this.decimals[0][0].value = this.model.showDecimals;
 
-		if(this.model.isLinear)
-			$(this.crossLinkerModMassWrapper[0][0]).hide();
-		else
-			$(this.crossLinkerModMassWrapper[0][0]).show();
+		if(this.model.MSnTolerance){
+			this.toleranceValue[0][0].value = this.model.MSnTolerance.value;
+			this.toleranceUnit[0][0].value = this.model.MSnTolerance.unit;
+		}
 
-		if (this.model.JSONdata.annotation.custom !== undefined)
-			this.customConfigInput[0][0].value = this.model.JSONdata.annotation.custom.join("\n");
+		// this.crossLinkerModMass[0][0].value = this.crossLinkerModMass;
 
-		// this.updateStepSize($(this.toleranceValue[0][0]));
-		// this.updateStepSize($(this.crossLinkerModMass[0][0]));
 	},
 
 	updateIons: function(event){
@@ -404,10 +452,136 @@ var ManualDataInputView = Backbone.View.extend({
 		});
 
 		if (ionSelectionArr.length == 0)
-			$('#ionSelection').val("Select ions...");
+			$('#manDataInput-ionSelection').val("Select ions...");
 		else
-			$('#ionSelection').val(ionSelectionArr.join(", "));
+			$('#manDataInput-ionSelection').val(ionSelectionArr.join(", "));
 
 	},
+
+	submit: function(){
+		console.log('submit');
+	},
+
+	clExample: function(){
+
+		$("#manDataInput-pepSeq").val("QNCcmELFEQLGEYK#FQNALLVR;K#QTALVELVK");
+		$.get("example/cl-peaklist.txt",function(data){
+			$("#manDataInput-peakList").val(data);
+		});
+		this.pepInputView.contentChanged();
+		$("#manDataInput-ClSelect").val("138.068080");
+		this.model.set("clModMass", "138.068080");
+// 		$("#manDataInput-ClSelect").change();
+		$("#manDataInput-charge").val("4");
+		this.model.set("charge", "4");
+// 		$("#manDataInput-charge").change();
+		//ions
+		$('.ionSelectChkbox').prop('checked', false);
+		$('#PeptideIon').prop('checked', true);
+		$('#BIon').prop('checked', true);
+		$('#YIon').prop('checked', true);
+		this.updateIons();
+
+		$("#manDataInput-tolVal").val("20.0");
+		$("#manDataInput-tolUnit").val("ppm");
+
+	},
+
+	linExample: function(){
+		//ToDo: refactor to get rid of jquery calls?
+		$("#manDataInput-pepSeq").val("VHTECcmCcmHGDLLECcmADDRADLAK");
+		$.get("example/linear-peaklist.txt",function(data){
+			$("#manDataInput-peakList").val(data);
+		});
+		this.pepInputView.contentChanged();
+		$("#manDataInput-ClSelect").val("0");
+		$("#manDataInput-ClSelect").change();
+		$("#manDataInput-charge").val("3");
+		$("#manDataInput-charge").change();
+		//ions
+		$('.ionSelectChkbox').prop('checked', false);
+		$('#PeptideIon').prop('checked', true);
+		$('#BIon').prop('checked', true);
+		$('#YIon').prop('checked', true);
+		this.updateIons();
+
+		$("#manDataInput-tolVal").val("20.0");
+		$("#manDataInput-tolUnit").val("ppm");
+
+	},
+
+	reset: function(){
+		//ToDo: refactor to get rid of jquery calls?
+		//ToDo: change to model reset?
+		$("#manDataInput-pepSeq").val("");
+		$("#manDataInput-peakList").val("");
+		$("#manDataInput-ClSelect").val("");
+		$("#manDataInput-charge").val("");
+		$('.ionSelectChkbox').prop('checked', false);
+		this.updateIons();
+		$("#manDataInput-tolVal").val("");
+		$("#manDataInput-tolUnit").val("ppm");
+
+		this.pepInputView.contentChanged();
+	},
+
+	updateCrossLinkerOptions: function(selected){
+		var cookie = Cookies.get('customCL');
+		if (cookie !== undefined){
+			$("option[class=customCL]").remove();
+			var selectValues = JSON.parse(Cookies.get('customCL')).data;
+			$.each(selectValues, function(key, value) {
+				var cl = JSON.parse(value);
+				$('#manDataInput-ClSelect')
+					.append($("<option></option>")
+					.attr("value", cl.clModMass)
+					.attr("class", "customCL")
+					.text(cl.clName+" ["+cl.clModMass+" Da]"));
+			});
+			//select new cl
+			$('#manDataInput-ClSelect').val(selected);
+		}
+	},
+
+	changeCrossLinker: function(event){
+		var value = event.originalEvent.srcElement.value;
+		if (value == "add")
+			$("#addCLModal").trigger('openModal');
+		else
+			this.model.set("clModMass", value);
+	},
+
+	changeCharge: function(event){
+		var value = event.originalEvent.srcElement.value;
+		this.model.set("charge", parseInt(value));
+	},
+
+	addCustomCrossLinker: function(e){
+		e.preventDefault();
+		var clname = $('#newCLname').val();
+		var clmass = $('#newCLmodmass').val();
+		var cl = JSON.stringify({ "clName": clname, "clModMass": clmass });
+
+		if (Cookies.get('customCL') === undefined){
+			Cookies.set('customCL', {"data":[]})
+		}
+		var JSONobj = JSON.parse(Cookies.get('customCL'));
+		JSONobj.data.push(cl);
+		cookie = JSON.stringify(JSONobj);
+		Cookies.set('customCL', cookie);
+		$("#addCLModal").trigger('closeModal');
+		this.updateCrossLinkerOptions(clmass);
+	},
+
+	submitForm: function(e){
+		e.preventDefault();
+		var form = e.currentTarget;
+		//Todo error handling!
+		if(!this.checkInputsForValidity(form)){
+			console.log('Invalid character found in form');
+			return false;
+		}
+		form.submit();
+	}
 
 });

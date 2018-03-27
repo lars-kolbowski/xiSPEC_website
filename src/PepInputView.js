@@ -68,8 +68,6 @@ var PepInputView = Backbone.View.extend({
       peptides.push(peptide);
     }
 
-
-
     //update model with input data
 
     if (this.model.JSONdata !== undefined && this.model.JSONdata !== null){
@@ -81,7 +79,7 @@ var PepInputView = Backbone.View.extend({
       this.model.set({JSONdata: {'Peptides': peptides, 'LinkSite': linkSites} });
 
     //ToDo: this should be handled inside the model
-    this.model.calcPrecursorMass();
+    // this.model.calcPrecursorMass();
 
   },
 

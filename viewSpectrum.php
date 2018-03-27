@@ -5,6 +5,7 @@ $root = realpath($_SERVER["DOCUMENT_ROOT"]);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
 $justSaved = 'false';
+$sid = false;
 if (empty($_POST)){
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 	$dbView = true;
