@@ -245,8 +245,8 @@ var specListTableView = DataTableView.extend({
 		$("#data-filter").html(dataFilterHTML);
 
 		var columnFilter = specListToolbar.append('div').attr('id', 'column-filter');
-		var colSelector = '<div class="mulitSelect_dropdown" id="specListColSelect"><span class="btn btn-1a">Select columns<i class="fa fa-chevron-down" aria-hidden="true"></i></span><div class="mulitSelect_dropdown-content mutliSelect"><ul></ul></div></div>';
-		var scoreSelector = '<div class="mulitSelect_dropdown" id="specListScoreSelect" style="display: none;"><span class="btn btn-1a">Select score<i class="fa fa-chevron-down" aria-hidden="true"></i></span><div class="mulitSelect_dropdown-content mutliSelect"><ul></ul></div></div>';
+		var colSelector = '<div class="multiSelect_dropdown" id="specListColSelect"><span class="btn btn-1a">Select columns<i class="fa fa-chevron-down" aria-hidden="true"></i></span><div class="multiSelect_dropdown-content mutliSelect"><ul></ul></div></div>';
+		var scoreSelector = '<div class="multiSelect_dropdown" id="specListScoreSelect" style="display: none;"><span class="btn btn-1a">Select score<i class="fa fa-chevron-down" aria-hidden="true"></i></span><div class="multiSelect_dropdown-content mutliSelect"><ul></ul></div></div>';
 
 		var colFilterHTML = colSelector + scoreSelector;
 

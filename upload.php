@@ -22,6 +22,7 @@
 		<script type="text/javascript" src="./src/PepInputView.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./js/PeptideView.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./src/PrecursorInfoView.js<?php echo $cacheBuster ?>"></script>
+		<script type="text/javascript" src="./src/ManualDataInputView.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./src/model.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./js/upload.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./js/accordion.js<?php echo $cacheBuster ?>"></script>
@@ -32,6 +33,7 @@
 		<script src="vendor/jQueryFileUploadMin/jquery.fileupload.js"></script>
 
 		<link rel="stylesheet" href="./css/dropdown.css" />
+		<link rel="stylesheet" href="./css/manDataInput.css" />
 	</head>
 	<body>
 		<!-- Sidebar -->
@@ -111,87 +113,23 @@
 				<div class="container">
 					<h1 class="page-header accordionHead"><i <?php echo (($example == "lin" || $example == "cl") ? 'class="fa fa-minus-square"' : 'class="fa fa-plus-square"');?> aria-hidden="true"></i> Data Input - Manually input your spectrum data</h1>
 					<div class="accordionContent" <?php echo (($example == "lin" || $example == "cl") ? '' : 'style="display: none;"');?> >
-						<form id="manUpPepForm" action="viewSpectrum.php" method="post" target="_blank">
-						<!-- <form id="xisv_entryform"  action="http://spectrumviewer.org/xisv/index.php" method="post" target="_blank" onsubmit="doPreSubmission();"> -->
-							<section style="margin-bottom:2%;">
-							<div style="margin-bottom:30px;width:30%;min-width:300px;display:inline;min-width:300px;margin-right:2%;float:left;">
-								<input style="width:100%;margin-bottom:10px" class="form-control" id="myPeptide" title="peptide sequence" required type="text" placeholder="Peptide Sequence1[;Peptide Sequence2]" name="peps" autofocus>
-								<textarea class="form-control" style="padding-bottom:0px; line-height: 1.3em; height: 200px;" id="myPeaklist" title="peak list [m/z intensity]" required type="text" placeholder="Peak List [m/z intensity]" name="peaklist"></textarea>
-							</div>
-							<div style="width:68%;display:inline;">
-								<div style="padding-bottom:15px;"> Peptide Preview:</div>
-								<div style="height:200px; font-size:100%; overflow-y:hidden; position:relative; line-height:1.0em;" id="peptideDiv" class="form-control" ></div>
-							</div>
-							</section>
-							<section style="clear:left;text-align:center;margin-bottom:2%;">
-								<select class="form-control" style="margin-right:2%;width:22%;display:inline;cursor:pointer;" required id="myCL" title="cross-linker" name="clModMass">
-									<option value="" disabled selected>Select cross-linker...</option>
-									<option value="add">add your own...</option>
-									<option value="0">none (linear peptide)</option>
-									<option value="138.068080">BS3/DSS [138.068080 Da]</option>
-									<option value="142.093177">BS3/DSS-d4 [142.093177 Da]</option>
-									<option value="82.041865">SDA [82.041865 Da]</option>
-									<option value="158.003765">DSSO [158.003765 Da]</option>
-									<option value="-19.972072">Photo-Methionine [-19.972072 Da]</option>
-									<option value="-19.972072">Photo-Leucine [-16.0313 Da]</option>
-								</select>
-
-								<div style="margin-right:2%;width:10%;display:inline;">
-									<span class="input-charge-plus">
-											<input class="form-control"   required id="myPrecursorZ" title="charge state" placeholder="z" name="preCharge" autocomplete="off">
-										</span>
-									</div>
-
-								<div class="mulitSelect_dropdown" style="margin-right:2%;">
-									<input type="text" class="form-control btn-drop" id="ionSelection" title="fragment ion types" value="Select ions..." readonly>
-									<div class="mulitSelect_dropdown-content mutliSelect">
-										<ul>
-											<li>
-												<label><input type="checkbox" class="ionSelectChkbox" value="peptide" id="PeptideIon" name="ions[]" />Peptide ion</label></li>
-											<li>
-												<label><input type="checkbox" class="ionSelectChkbox" value="a" id="AIon" name="ions[]" />A ion</label></li>
-											<li>
-												<label><input type="checkbox" class="ionSelectChkbox" value="b" id="BIon" name="ions[]" />B ion</label></li>
-											<li>
-												<label><input type="checkbox" class="ionSelectChkbox" value="c" id="CIon" name="ions[]" />C ion</label></li>
-											<li>
-												<label><input type="checkbox" class="ionSelectChkbox" value="x" id="XIon" name="ions[]" />X ion</label></li>
-											<li>
-												<label><input type="checkbox" class="ionSelectChkbox" value="y" id="YIon" name="ions[]" />Y ion</label></li>
-											<li>
-												<label><input type="checkbox" class="ionSelectChkbox" value="z" id="ZIon" name="ions[]" />Z ion</label></li>
-										</ul>
-									</div>
+						<div id="myManualDataInput" >
+							<div id="addCLModal" role="dialog" class="modal" style="display: none;">
+								<div class="header">
+									<h1>Add custom cross-linker</h1>
 								</div>
-
-								<input class="form-control" style="margin-right:2%;width:15%;display:inline;"  required id="myTolerance" title="error tolerance" type="number" min="0" step="0.1" placeholder="Tolerance" name="ms2Tol" autocomplete="off">
-
-								<select class="form-control" style="margin-right:2%;width:13%;display:inline;" required id="myToleranceUnit" title="error tolerance unit" name="tolUnit">
-									<option value="ppm">ppm</option>
-									<option value="Da">Da</option>
-								</select>
-							</section>
-							<section style="margin-bottom:2%;">
-								<div class="form-control" style="height:auto" id="myMods">
-								<table id="modificationTable" class="display" width="100%" style="text-align:center;">
-									<thead>
-										<tr>
-											<th>Mod-Input</th>
-											<th>Modification</th>
-											<th>Mass<span class="resetMod" title="reset modification parameters to default"></span></th>
-											<th>Specificity</th>
-										</tr>
-									</thead>
-								</table>
-								</div>
-							</section>
-							<div class="page-header center" style="background-color: #555;margin-top:30px;">
-								<input class="btn btn-1 btn-1a network-control" type="submit" value="View Spectrum">
-								<input class="btn btn-1 btn-1a network-control" type="button" value="cross-link example" onclick="doExampleCL(); return false;">
-								<input class="btn btn-1 btn-1a network-control" type="button" value="linear example" onclick="doExampleLinear(); return false;">
-								<input class="btn btn-1 btn-1a network-control" type="button" value="Reset" onclick="doClearForm();">
+								<form id="addCustomCLform" action="#">
+									<div style="text-align:center;">
+										<input class="form-control" style="margin-top:30px;width:40%;display:inline;"  required id="newCLname" type="text" placeholder="name" name="newCLname">
+										<input class="form-control" style="margin-top:30px;margin-left:2%;width:40%;display:inline;"  required id="newCLmodmass" type="text" placeholder="modMass" name="newCLmodmass">
+									</div>
+									<div class="btn clearfix">
+										<input type="submit" class="btn network-control" value="add">
+										<input type="button" class="close cancel btn network-control" value="cancel">
+									</div>
+								</form>
 							</div>
-						</form>
+						</div>
 					</div>
 				</div>
 			</section>
@@ -232,21 +170,6 @@
 				</p>
 			</div>
 		</div>
-		<div id="addCLModal" role="dialog" class="modal" style="display: none;">
-			<div class="header">
-				<h1>Add custom cross-linker</h1>
-			</div>
-			<form id="addCustomCLform" action="#">
-				<div style="text-align:center;">
-					<input class="form-control" style="margin-top:30px;width:40%;display:inline;"  required id="newCLname" type="text" placeholder="name" name="newCLname">
-					<input class="form-control" style="margin-top:30px;margin-left:2%;width:40%;display:inline;"  required id="newCLmodmass" type="text" placeholder="modMass" name="newCLmodmass">
-				</div>
-				<div class="btn clearfix">
-					<input type="submit" class="btn network-control" value="add">
-					<input type="button" class="close cancel btn network-control" value="cancel">
-				</div>
-			</form>
-		</div>
 		<div id="submitDataModal" role="dialog" class="modal" style="display: none;">
 			<div id=submitDataInfo>
 				<div id="submitDataTop">
@@ -258,9 +181,9 @@
 				<div id="ionsInfo"  style="display: none;">
 					<div id="ionsMsg"></div>
 					<form id="ionsForm" method="post" action="php/updateIons.php">
-						<div class="mulitSelect_dropdown" style="margin-right:2%;">
+						<div class="multiSelect_dropdown" style="margin-right:2%;">
 							<input type="text" class="form-control btn-drop" id="ionSelectionSubmit" title="fragment ion types" value="peptide, b, y" readonly>
-							<div class="mulitSelect_dropdown-content mutliSelect">
+							<div class="multiSelect_dropdown-content mutliSelect">
 								<ul>
 									<li>
 										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="peptide" checked id="PeptideIonSubmit" name="ions[]" />Peptide ion</label></li>
