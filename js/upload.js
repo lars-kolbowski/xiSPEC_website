@@ -8,7 +8,7 @@ $( document ).ready(function() {
 	});
 
 	window.prideSelectionView = new PrideSelectionView({el:"#prideSelectionWrapper"});
-	window.ManualDataInputView = new ManualDataInputView({model: window.peptide, el:"#myManualDataInput"});
+	window.manualDataInputView = new ManualDataInputView({model: window.peptide, el:"#myManualDataInput"});
 
 	//ToDo: could be moved to ManualDataInputView
 	$("#addCLModal").easyModal({

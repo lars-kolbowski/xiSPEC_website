@@ -229,9 +229,9 @@
 		<?php echo ('var example = "'.$example.'";');?>
 			$( document ).ready(function() {
 				if (example == 'cl')
-					doExampleCL();
+					manualDataInputView.clExample();
 				else if (example == 'lin')
-					doExampleLinear();
+					manualDataInputView.linExample();
 				else if (example == 'pxd')
 					window.prideSelectionView.load_pxd('PXD005654');
 			});
