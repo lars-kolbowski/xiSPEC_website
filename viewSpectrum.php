@@ -234,8 +234,8 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 							</form>
 								<!-- <button id="toggleView" title="Toggle between quality control/spectrum view" class="btn btn-1 btn-1a">error/int</button> -->
 								<?php
+								echo '<i id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav fa fa-cog" aria-hidden="true"></i>';
 								if($dbView){
-									echo '<i id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav fa fa-cog" aria-hidden="true"></i>';
 									echo '<span id="dbControls">';
 									if($tmpDB) echo '<div class="xispec_tooltip_wrapper"><span class="xispec_tooltip_tr" id="saveTooltip">Your dataset is temporary click here if you want to save it for later access!<i class="fa fa-times-circle closeButton"></i></span><i id="saveDB" title="Save" class="btn btn-1a btn-topNav fa fa-floppy-o" aria-hidden="true"></i></div>';
 									else echo '<i id="shareDB" title="Share" class="btn btn-1a btn-topNav fa fa-share-alt" aria-hidden="true"></i>';

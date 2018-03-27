@@ -443,19 +443,23 @@ var SpectrumSettingsView = Backbone.View.extend({
 						data = 0;
 						var found = false;
 						var rowNode = self.modTable.rows( meta.row ).nodes().to$();
-						for (var i = 0; i < self.model.userModifications.length; i++) {
-							if(self.model.userModifications[i].id == row.id){
-								data = self.model.userModifications[i].mass;
-								found = true;
-								displayModified(rowNode);
-							}
-						}
 
-						if (!found && self.model.knownModifications['modifications'] !== undefined){
+						//check knownModifications first
+						if(self.model.knownModifications['modifications'] !== undefined){
 							for (var i = 0; i < self.model.knownModifications['modifications'].length; i++) {
 								if(self.model.knownModifications['modifications'][i].id == row.id)
 									data = self.model.knownModifications['modifications'][i].mass;
+									found = true;
 							}
+						}
+						//then check JSONdata annotation
+						if (!found){
+							for (var i = 0; i < self.model.annotationData.modifications.length; i++) {
+								if(self.model.annotationData.modifications[i].id == row.id){
+									data = self.model.annotationData.modifications[i].massDifference;
+									
+								}
+							}	
 						}
 						data = parseFloat(data.toFixed(10).toString()); // limit to 10 decimal places and get rid of tailing zeroes
 						if(data.toString().indexOf('.') !== -1)
@@ -468,20 +472,24 @@ var SpectrumSettingsView = Backbone.View.extend({
 				},
 				{
 					"render": function ( data, type, row, meta ) {
-						for (var i = 0; i < self.model.userModifications.length; i++) {
-							if(self.model.userModifications[i].id == row.id){
-								data = self.model.userModifications[i].aminoAcids;
-								var found = true;
-							}
-						}
-						if (!found&& self.model.knownModifications['modifications'] !== undefined){
+						//check knownModifications first
+						if(self.model.knownModifications['modifications'] !== undefined){
 							for (var i = 0; i < self.model.knownModifications['modifications'].length; i++) {
 								if(self.model.knownModifications['modifications'][i].id == row.id){
 									data = data.split(",");
 									data = _.union(data, self.model.knownModifications['modifications'][i].aminoAcids);
 									data.sort();
 									data = data.join("");
-
+									var found = true;
+								}
+							}
+						}
+						//then check JSONdata annotation
+						if (!found){
+							aminoAcids = "";
+							for (var i = 0; i < self.model.annotationData.modifications.length; i++) {
+								if(self.model.annotationData.modifications[i].id == row.id){
+									aminoAcids += self.model.annotationData.modifications[i].aminoacid;
 								}
 							}
 						}
