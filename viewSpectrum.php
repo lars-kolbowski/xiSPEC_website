@@ -60,6 +60,7 @@ else{
 			<link rel="stylesheet" href="/css/tooltip.css">
 			<link rel="stylesheet" href="/css/xiSPEC_tooltip.css">
 			<link rel="stylesheet" href="/css/spectrumViewWrapper.css">
+			<link rel="stylesheet" href="/css/QC.css">
 			<link rel="stylesheet" href="/css/validationPage.css">
 			<link rel="stylesheet" href="/css/dropdown.css">
 			<link rel="stylesheet" type="text/css" href="/vendor/bootstrap/css/bootstrap.min.css"/>

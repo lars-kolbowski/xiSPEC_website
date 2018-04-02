@@ -54,29 +54,6 @@
     flex-grow: 1;
 }
 
-.errSVG {
-    width: 100%;
-    flex-grow: 1;
-}
-
-.subViewContent {
-	flex-direction: row;
-	display:  flex;
-	height: calc(100% - 20px);
-	width: 100%;
-}
-
-#subViewContent-left {
-    flex-grow:  1;
-    display:  flex;
-}
-
-#subViewContent-right {
-    flex-grow:  1;
-    /* position: relative; */
-    display:  flex;
-}
-
 #measureTooltip {
     position: absolute;
     /*max-width: 8em;*/
