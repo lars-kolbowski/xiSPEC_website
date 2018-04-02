@@ -38,6 +38,14 @@ var PepInputView = Backbone.View.extend({
 
     for (var i = 0; i < pepStrs.length; i++) {
 
+      if(pepStrs[i] != ''){
+        var firstChar = pepStrs[i][0];
+        if (firstChar == firstChar.toLowerCase()){
+          alert('peptide sequence must start with an amino acid.');
+          return;
+        }
+      }
+
       var pep_noMods = pepStrs[i].replace(/([^#0-9])([^A-Z#]+)/g, '$1');
 
       //linkSite

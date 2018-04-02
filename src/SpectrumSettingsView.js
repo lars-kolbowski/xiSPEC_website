@@ -370,7 +370,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 		}
 
 		//peptideStr
-		var invalidChar = invalidChars(formData['peps'].value, /([^GALMFWKQESPVICYHRNDTa-z:#0-9(.)\-]+)/);
+		var invalidChar = invalidChars(formData['peps'].value, /([^GALMFWKQESPVICYHRNDTa-z:;#0-9(.)\-]+)/);
 		if (invalidChar){
 			alert('Invalid character(s) in peptide sequence: ' + invalidChar);
 			return false;
@@ -457,9 +457,9 @@ var SpectrumSettingsView = Backbone.View.extend({
 							for (var i = 0; i < self.model.annotationData.modifications.length; i++) {
 								if(self.model.annotationData.modifications[i].id == row.id){
 									data = self.model.annotationData.modifications[i].massDifference;
-									
+
 								}
-							}	
+							}
 						}
 						data = parseFloat(data.toFixed(10).toString()); // limit to 10 decimal places and get rid of tailing zeroes
 						if(data.toString().indexOf('.') !== -1)

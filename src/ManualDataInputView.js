@@ -156,13 +156,14 @@ var ManualDataInputView = Backbone.View.extend({
 		;
 
 		var ionSelector = midSection.append("div")
+			.attr("id", "manDataInput-ionSelection")
 			.attr("class", "multiSelect_dropdown manDataInput-midSection-el")
 
 		;
 		this.ionSelectorInput = ionSelector.append("input")
 			.attr("type", "text")
 			.attr("class", "btn-drop")
-			.attr("id", "manDataInput-ionSelection")
+			.attr("id", "manDataInput-ionSelectionInput")
 			.attr("value", "Select ions...")
 			.attr("readonly", "")
 		;
@@ -432,7 +433,7 @@ var ManualDataInputView = Backbone.View.extend({
 			ionSelectionArr.push($(this).val());
 		});
 		if(ionSelectionArr.length > 0)
-			$('#manDataInput-ionSelection').val(ionSelectionArr.join(", "));
+			$('#manDataInput-ionSelectionInput').val(ionSelectionArr.join(", "));
 
 
 		if(this.model.MSnTolerance){
@@ -452,9 +453,9 @@ var ManualDataInputView = Backbone.View.extend({
 		});
 
 		if (ionSelectionArr.length == 0)
-			$('#manDataInput-ionSelection').val("Select ions...");
+			$('#manDataInput-ionSelectionInput').val("Select ions...");
 		else
-			$('#manDataInput-ionSelection').val(ionSelectionArr.join(", "));
+			$('#manDataInput-ionSelectionInput').val(ionSelectionArr.join(", "));
 
 	},
 

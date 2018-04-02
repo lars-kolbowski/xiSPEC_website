@@ -5,7 +5,7 @@
 
 #manDataInput-topSectionLeft{
 	margin-bottom: 30px;
-	width: 30%;
+	width: 40%;
 	min-width: 300px;
 	display: inline;
 	min-width: 300px;
@@ -62,13 +62,32 @@
 .manDataInput-midSection-el{
 	margin-right: 2%;
 	display: inline;
-}
-
-#manDataInput-tolUnit{
-	cursor: pointer;
+	flex-grow: 1;
 }
 
 #manDataInput-ClSelect{
+	cursor: pointer;
+	flex-basis: 20%;
+}
+
+#manDataInput-charge{
+	flex-basis: 5%;
+}
+
+#manDataInput-ionSelection{
+	flex-basis: 20%;
+}
+
+#manDataInput-ionSelectionInput{
+	width: 100%;
+}
+
+#manDataInput-tolVal{
+	flex-basis: 10%;
+}
+
+#manDataInput-tolUnit{
+	flex-basis: 5%;
 	cursor: pointer;
 }
 
