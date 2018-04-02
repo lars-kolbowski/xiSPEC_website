@@ -453,7 +453,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 							}
 						}
 						//then check JSONdata annotation
-						if (!found){
+						if (!found && self.model.annotationData.modifications){
 							for (var i = 0; i < self.model.annotationData.modifications.length; i++) {
 								if(self.model.annotationData.modifications[i].id == row.id){
 									data = self.model.annotationData.modifications[i].massDifference;
@@ -485,7 +485,7 @@ var SpectrumSettingsView = Backbone.View.extend({
 							}
 						}
 						//then check JSONdata annotation
-						if (!found){
+						if (!found && self.model.annotationData.modifications){
 							aminoAcids = "";
 							for (var i = 0; i < self.model.annotationData.modifications.length; i++) {
 								if(self.model.annotationData.modifications[i].id == row.id){
