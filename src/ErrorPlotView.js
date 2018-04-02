@@ -29,6 +29,7 @@ var ErrorPlotView = Backbone.View.extend({
 		this.listenTo(CLMSUI.vent, 'QCabsErr', this.toggleAbsErr);
 		this.listenTo(CLMSUI.vent, 'QCPlotToggle', this.toggleView);
 		this.listenTo(window, 'resize', _.debounce(this.render));
+		this.listenTo(CLMSUI.vent, 'resize:spectrum', this.render);
 		this.listenTo(CLMSUI.vent, 'downloadQCSVG', this.downloadSVG);
 
 		var self = this;

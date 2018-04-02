@@ -49,8 +49,6 @@ var SpectrumSettingsView = Backbone.View.extend({
 
 		this.options = _.extend(defaultOptions, options);
 
-		this.options = _.extend({}, this.defaults, options);
-
 		SpectrumSettingsView.__super__.initialize.apply (this, arguments);
 		var self = this;
 

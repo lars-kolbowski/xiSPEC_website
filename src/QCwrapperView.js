@@ -19,20 +19,35 @@
 //
 //		QCwrapperView.js
 
+// ToDo: move Splitting to parent view?
+
 var QCwrapperView = Backbone.View.extend({
 
 	events : {
 		'click .toggle' : 'toggleView',
 		'click #minQC' : 'minView',
 		'click #dockQC' : 'showView',
-		// 'click .dockLeft' : 'dockLeft',
 		'click .dockRight' : 'dockRight',
 		'click .dockBottom' : 'dockBottom',
 		'change .plotSelectChkbox': 'updatePlots',
 		'click #downloadQCSVG': 'downloadQCSVG',
 	},
 
-	initialize: function() {
+	initialize: function(viewOptions) {
+
+		var defaultOptions = {
+			splitIds: ['#mainPlotDiv', '#QCdiv'],
+		};
+		this.options = _.extend(defaultOptions, viewOptions);
+
+		CLMSUI.plotSplit = Split(this.options.splitIds, {
+			sizes: [75, 25],
+			minSize: [250, 150],
+			gutterSize: 5,
+			direction: 'vertical',
+			onDragEnd: function(){ CLMSUI.vent.trigger('resize:spectrum'); }
+		});
+
 		this.dock = 'bottom';
 		this.isVisible = true;
 
@@ -126,12 +141,12 @@ var QCwrapperView = Backbone.View.extend({
 			CLMSUI.plotSplit.destroy();
 		}
 		catch(err){}
-		CLMSUI.plotSplit = Split(['#mainPlotDiv', '#QCdiv'], {
+		CLMSUI.plotSplit = Split(this.options.splitIds, {
 			sizes: [75, 25],
 			minSize: [500, 220],
 			gutterSize: 4,
 			direction: 'horizontal',
-			onDragEnd: function(){ window.trigger('resize'); }
+			onDragEnd: function(){ CLMSUI.vent.trigger('resize:spectrum'); }
 		});
 	},
 
@@ -140,12 +155,12 @@ var QCwrapperView = Backbone.View.extend({
 			CLMSUI.plotSplit.destroy();
 		}
 		catch(err){}
-		CLMSUI.plotSplit = Split(['#mainPlotDiv', '#QCdiv'], {
+		CLMSUI.plotSplit = Split(this.options.splitIds, {
 			sizes: [75, 25],
 			minSize: [250, 200],
 			gutterSize: 4,
 			direction: 'vertical',
-			onDragEnd: function(){ window.trigger('resize'); }
+			onDragEnd: function(){ CLMSUI.vent.trigger('resize:spectrum'); }
 		});
 	},
 
@@ -165,7 +180,7 @@ var QCwrapperView = Backbone.View.extend({
 		else{
 			this.splitVertical();
 		}
-		window.trigger('resize');
+		CLMSUI.vent.trigger('resize:spectrum');
 	},
 
 	minView: function(){
@@ -180,8 +195,9 @@ var QCwrapperView = Backbone.View.extend({
 		$(this.dockQCbtn[0]).show();
 		$(this.minQCbtn[0]).hide();
 		$(this.contentDiv[0]).hide();
-		CLMSUI.plotSplit.destroy();
-		window.trigger('resize');
+		if(CLMSUI.plotSplit)
+			CLMSUI.plotSplit.destroy();
+		CLMSUI.vent.trigger('resize:spectrum');
 	},
 
 	dockSide: function(){
@@ -189,7 +205,7 @@ var QCwrapperView = Backbone.View.extend({
 		$(this.el).parent().css('flex-direction', 'row');
 		$(this.contentDiv[0]).css('flex-direction', 'column');
 		this.splitHorizontal();
-		window.trigger('resize');
+		CLMSUI.vent.trigger('resize:spectrum');
 	},
 
 // dockLeft breaks splitting
@@ -221,14 +237,14 @@ var QCwrapperView = Backbone.View.extend({
 		$(this.el).removeClass('right');
 		$(this.contentDiv[0]).css('flex-direction', 'row');
 		this.splitVertical();
-		window.trigger('resize');
+		CLMSUI.vent.trigger('resize:spectrum');
 	},
 
 	updatePlots: function(e){
 		var plotId = $(e.target).attr('id');
 		var checked = $(e.target).is('checked');
 		CLMSUI.vent.trigger('QCPlotToggle', plotId);
-		window.trigger('resize');
+		CLMSUI.vent.trigger('resize:spectrum');
 	}
 
 });

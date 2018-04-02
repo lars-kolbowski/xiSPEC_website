@@ -6,14 +6,6 @@ _.extend (CLMSUI.vent, Backbone.Events);
 
 $(function() {
 
-	CLMSUI.plotSplit = Split(['#mainPlotDiv', '#QCdiv'], {
-		sizes: [75, 25],
-		minSize: [250, 150],
-		gutterSize: 5,
-		direction: 'vertical',
-		onDragEnd: function(){ window.trigger('resize'); }
-	});
-
 	//ToDo: spectrumControls -> BBView?
 	$('#setrange').submit(function (e){
 		e.preventDefault();
