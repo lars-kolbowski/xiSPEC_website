@@ -147,7 +147,7 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 		window.onresize = function() { window.trigger('resize') };
 
 		window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumPanel"});
-		window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
+		window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumMainPlotDiv"});
 		window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
 		window.QCwrapper = new QCwrapperView({el: '#QCdiv'});
 		window.ErrorIntensityPlot = new ErrorPlotView({
@@ -156,8 +156,6 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 			xData: 'Intensity',
 			margin: {top: 10, right: 30, bottom: 20, left: 65},
 			svg: "#errIntSVG",
-			alwaysShow: true,
-			wrapper: window.QCwrapper,
 		});
 		window.ErrorMzPlot = new ErrorPlotView({
 			model: SpectrumModel,
@@ -165,9 +163,8 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 			xData: 'm/z',
 			margin: {top: 10, right: 30, bottom: 20, left: 65},
 			svg: "#errMzSVG",
-			alwaysShow: true,
-			wrapper: window.QCwrapper,
 		});
+		CLMSUI.vent.trigger('show:QC', true);
 
 		window.SettingsView = new SpectrumSettingsView({
 			model: SettingsSpectrumModel,
@@ -251,7 +248,7 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 
 						</div>
 						<div class="plotsDiv">
-							<div id="mainPlotDiv">
+							<div id="spectrumMainPlotDiv">
 								<svg id="spectrumSVG"></svg>
 								<div id="measureTooltip"></div>
 							</div>

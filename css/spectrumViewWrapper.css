@@ -33,7 +33,16 @@
     vertical-align: middle;
 }
 
-#mainPlotDiv {
+.plotsDiv {
+    display: flex;
+    flex-direction: column;
+    flex-grow:  1;
+    flex-shrink:  0;
+    height: calc(100% - 35px);
+    position: relative;
+}
+
+#spectrumMainPlotDiv {
     display: flex;
     flex-flow: column;
     flex-grow: 1;
