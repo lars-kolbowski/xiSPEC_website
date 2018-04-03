@@ -71,3 +71,36 @@
 #QCdiv{
 	position: relative;
 }
+
+.subViewHeader .rightControls{
+  order;
+  float: right;
+  margin-right: 20px;
+}
+
+
+.right{
+  order: 1;
+  border-left: 1px solid;
+}
+
+.right .subViewContent-plot{
+  /* margin-top: 1em; */
+  flex-grow: 1;
+  display: flex;
+}
+
+.left{
+  order: -2;
+  border-right: 1px solid;
+}
+
+.left .subViewContent-plot{
+  margin-top: 1em;
+}
+
+.rightControls{
+  order;
+  float: right;
+  margin-right: 20px;
+}
