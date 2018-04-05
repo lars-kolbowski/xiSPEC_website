@@ -14,7 +14,7 @@
 	$ions = implode(';', $_POST['ions']);
 
 	//ToDo: only update rows which could not be parsed -> probably edge case either all fail or none
-	$stmt = $dbh->prepare("UPDATE identifications SET 'ionTypes'=:ions;");
+	$stmt = $dbh->prepare("UPDATE spectrum_identifications SET 'ions'=:ions;");
 	// $stmt->bindParam(':id', $i, PDO::PARAM_INT);
 	$stmt->bindParam(':ions', $ions, PDO::PARAM_STR);
 	try {

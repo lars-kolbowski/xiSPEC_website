@@ -111,7 +111,7 @@
 	$tol = array("tolerance" => $fragTol[0], "unit" => $fragTol[1]);
 
 	if ($result['pep2']){
-		$crosslinker_modmass = $result['crosslinker_modMass1'] + $result['crosslinker_modMass2'];
+		$crosslinker_modmass = $result['crosslinker_modmass1'] + $result['crosslinker_modmass2'];
 	}
 	else {
 		$crosslinker_modmass = 0;
