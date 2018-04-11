@@ -44,7 +44,7 @@
 					<h1 class="page-header accordionHead"><i <?php echo($example ? 'class="fa fa-plus-square"' : 'class="fa fa-minus-square"');?> aria-hidden="true"></i> Data Upload - Upload your data (identification & peak list file pair)</h1>
 					<div class="accordionContent" <?php echo ($example ? 'style="display: none;"' : '');?>>
 						<div style="margin-left: 1em; line-height: 1.7em;">
-							Supported identification file formats: <a title="HUPO-PIS: mzidentML" href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> and <a title="Show column headings" class="showCsvHeader" href="#">csv</a>.</br>
+							Supported identification file formats: <a title="HUPO-PIS: mzidentML" href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> and <a title="Show column headings" href="help.php#csv">csv</a>.</br>
 							Supported peak list file formats: <a title="HUPO-PIS: mzML" href="http://www.psidev.info/mzml" target="blank">mzML</a> and <a title="Mascot Generic Format" href="http://www.matrixscience.com/help/data_file_help.html#GEN">mgf</a> (+ zip/gz archives of mzML/mgf).</br>
 							<div style="font-size: 0.8em; line-height: 1.7em; margin-top:0.5em;">
 								mzML: Filter out MS1 spectra to reduce upload/parsing time. (e.g. 'MS level 2-' in <a title="Proteowizard download link" href="http://proteowizard.sourceforge.net/downloads.shtml">MSconvert</a>)</br>
@@ -197,41 +197,6 @@
 			</section>
 		</div> <!-- MAIN -->
 		<!-- Modals -->
-		<div id="csvHeaderModal" role="dialog" class="modal" style="display: none;">
-			<div class="header">
-				<h1>Peptide identification csv column headings</h1>
-			</div>
-			<div style="margin: 1em;">
-				<table class="myTable" id="csvTable">
-					<thead>
-						<tr><th>column</th><th>required</th><th>default</th><th>example(s)</th></tr>
-					</thead>
-					<tbody>
-						<tr><td>Id</td><td>Yes</td><td></td><td>SIR_1</td></tr>
-						<tr><td>Rank</td><td>No*</td><td>1</td><td>1</td></tr>
-						<tr><td>ScanNumber</td><td>Yes</td><td></td><td>2256</td></tr>
-						<tr><td>Charge</td><td>Yes</td><td></td><td>3</td></tr>
-						<tr><td>FragmentTolerance</td><td>No</td><td>10 ppm</td><td>10 ppm | 0.2 Da</td></tr>
-						<tr><td>IonTypes</td><td>No</td><td>peptide;b;y</td><td>peptide;c;z</td></tr>
-						<tr><td>PepSeq 1</td><td>Yes</td><td></td><td>LKECcmCcmEKPLLEK</td></tr>
-						<tr><td>PepSeq 2</td><td>No**</td><td></td><td>HPYFYAPELLFFAKR</td></tr>
-						<tr><td>LinkPos 1</td><td>No**</td><td></td><td>2</td></tr>
-						<tr><td>LinkPos 2</td><td>No**</td><td></td><td>14</td></tr>
-						<tr><td>CrossLinkerModMass</td><td>No**</td><td></td><td>138.06808</td></tr>
-						<tr><td>PassThreshold</td><td>No</td><td>TRUE</td><td>TRUE | FALSE</td></tr>
-						<tr><td>Score</td><td>No</td><td></td><td>10.5641</td></tr>
-						<tr><td>IsDecoy</td><td>No</td><td>FALSE</td><td>TRUE | FALSE</td></tr>
-						<tr><td>Protein 1</td><td>Yes</td><td></td><td>HSA</td></tr>
-						<tr><td>Protein 2</td><td>No**</td><td></td><td>HSA</td></tr>
-						<tr><td>RunName</td><td>No</td><td></td><td>example_file</td></tr>
-					</tbody>
-				</table>
-				<p style="font-size: small;line-height: 1.5em;">
-					*required if there are multiple alternative explanations for the same spectrum/id.</br>
-					**required for cross-linked peptides.
-				</p>
-			</div>
-		</div>
 		<div id="addCLModal" role="dialog" class="modal" style="display: none;">
 			<div class="header">
 				<h1>Add custom cross-linker</h1>

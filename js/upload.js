@@ -27,11 +27,6 @@ $( document ).ready(function() {
 		$('#errorLog').toggle();
 	})
 
-	$("#csvHeaderModal").easyModal();
-	$('.showCsvHeader').click(function(){
-		$("#csvHeaderModal").trigger('openModal');
-	});
-
 	$('#myCL').change(function(){
 		var value = $(this).val();
 		if (value == "add")
