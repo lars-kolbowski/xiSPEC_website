@@ -28,7 +28,7 @@ var altListTableView = DataTableView.extend({
 	initialize: function() {
 
 		this.listenTo(CLMSUI.vent, 'scoreChange', this.changeDisplayScore);
-		this.listenTo(CLMSUI.vent, 'loadSpectrum', this.updateTitle);
+		this.listenTo(CLMSUI.vent, 'updateAltTitle', this.updateTitle);
 
 		var self = this;
 
@@ -49,12 +49,12 @@ var altListTableView = DataTableView.extend({
 			"lengthMenu": [ 4, 6, 8, 10, 12 ],
 			"paging":   true,
 			//"ordering": true,
-			"order": [[2, "desc"], [9, "desc"]],
+			"order": [[2, "asc"], [9, "desc"]],
 			//"info":     false,
 			"ajax": "/php/getAltList.php?id=-1&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB'),
 			"columns": [
-				{ "title": "internal_id", "data": "id" },		//0
-				{ "title": "id", "data": "sprectrum_ref" }, 	//1
+				{ "title": "identifications id", "data": "identification_id", "name": "identifications_id" },		//0
+				{ "title": "spectrum id", "data": "sprectrum_ref", "name": "spectrum_id" }, 	//1
 				{ "title": "rank", "data": "rank", "className": "dt-center" },		//2
 				{ "title": "peptide 1", "data": "pep1", "name": "pep1" },	//3
 				{ "title": "peptide 2", "data": "pep2", "name": "pep2" },	//4
@@ -146,9 +146,13 @@ var altListTableView = DataTableView.extend({
 
 		// ToDo: move to BB event handling?
 		this.DataTable.on('click', 'tbody tr', function(e) {
+			// console.log('click');
 			self.DataTable.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
-			CLMSUI.vent.trigger('loadSpectrum', self.DataTable.row(this).data());
+
+			var row = self.DataTable.row(this).data()
+			CLMSUI.vent.trigger('loadSpectrum', row.identification_id);
+// 			CLMSUI.vent.trigger('updateAltCount', row.alt_count);
 		});
 
 		this.altListToolbar = d3.selectAll('.altListToolbar').attr('class', 'listToolbar').attr('id', 'altListId');
@@ -156,19 +160,19 @@ var altListTableView = DataTableView.extend({
 	},
 
 	render: function(){
-		var url = "/php/getAltList.php?id="+this.model.sid+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
+		// this.updateTitle();
+		var url = "/php/getAltList.php?id="+this.model.spectrum_id+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
 		this.DataTable.ajax.url( url ).load();
 	},
 
 	changeDisplayScore: function(scoreName){
 		console.log('altListTable - changeDisplayScore: '+scoreName);
-		var url = "/php/getAltList.php?id="+this.model.sid+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB')+'&scol='+scoreName;
+		var url = "/php/getAltList.php?id="+this.model.spectrum_id+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB')+'&scol='+scoreName;
 		this.DataTable.ajax.url( url ).load();
 	},
 
-	updateTitle: function(rowdata){
-		var sid = rowdata['sid'];
-		this.altListToolbar.text("Alternatives for "+rowdata['sid']);
+	updateTitle: function(title){
+		this.altListToolbar.text("Alternatives for scan: "+ title);
 	},
 	//
 	// userScoreChange: function(e){
