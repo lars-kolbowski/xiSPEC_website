@@ -28,11 +28,6 @@ $( document ).ready(function() {
 
 	$('#errorMsg').on('click','#showErrorLog', function(){
 		$('#errorLog').toggle();
-	})
-
-	$("#csvHeaderModal").easyModal();
-	$('.showCsvHeader').click(function(){
-		$("#csvHeaderModal").trigger('openModal');
 	});
 
 	$('#fileupload').fileupload({
