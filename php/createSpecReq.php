@@ -33,7 +33,29 @@
 	$dbh = new PDO($dir) or die("cannot open the database");
 	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-	$query = "SELECT * FROM identifications as i JOIN peakLists AS pl ON i.peakList_id = pl.id WHERE i.id ='".$_GET['id']."';";
+	// $query = "SELECT * FROM identifications as i
+	// JOIN peakLists AS pl ON i.peakList_id = pl.id
+	// WHERE i.id ='".$_GET['id']."';";
+	$si_id = $_GET['id'];
+
+	$query = "SELECT
+		pep1_table.seq_mods AS pep1,
+		pep2_table.seq_mods AS pep2,
+		pep1_table.link_site AS linkpos1,
+		pep2_table.link_site AS linkpos2,
+		si.charge_state AS charge,
+		sp.peak_list AS peak_list,
+		sp.frag_tol AS frag_tolerance,
+		pep1_table.crosslinker_modmass as crosslinker_modmass1,
+		pep2_table.crosslinker_modmass as crosslinker_modmass2,
+		si.ions as ion_types
+		FROM spectrum_identifications AS si
+		LEFT JOIN spectra AS sp ON (si.spectrum_id = sp.id)
+		LEFT JOIN peptides AS pep1_table ON (si.pep1_id = pep1_table.id)
+		LEFT JOIN peptides AS pep2_table ON (si.pep2_id = pep2_table.id)
+		WHERE si.id = $si_id;";
+
+	// die($query);
 
 	foreach ($dbh->query($query) as $row)
 	{
@@ -71,7 +93,7 @@
 
 
 	//peak block
-	$peaklist = explode("\n", $result['peakList']);
+	$peaklist = explode("\n", $result['peak_list']);
 
 	$peaks = array();
 	foreach ($peaklist as $peak) {
@@ -85,14 +107,21 @@
 
 
 	//annotation block
-	$fragTol = explode(' ', $result['fragTolerance'], 2);
+	$fragTol = explode(' ', $result['frag_tolerance'], 2);
 	$tol = array("tolerance" => $fragTol[0], "unit" => $fragTol[1]);
-	$cl = array('modMass' => $result['crosslinker_modMass']);
+
+	if ($result['pep2']){
+		$crosslinker_modmass = $result['crosslinker_modmass1'] + $result['crosslinker_modmass2'];
+	}
+	else {
+		$crosslinker_modmass = 0;
+	}
+	$cl = array('modMass' => $crosslinker_modmass);
 	$preCharge = intval($result['charge']);
 
 	$ions = array();
-	$ionTypes = explode(';', $result['ionTypes']);
-	foreach ($ionTypes as $ion) {
+	$ion_types = explode(';', $result['ion_types']);
+	foreach ($ion_types as $ion) {
 		array_push($ions, array('type' => ucfirst($ion).'Ion'));
 	}
 	//ToDo: get DB modifications only once from DB and save in model
@@ -100,7 +129,7 @@
 	$modifications = array();
 	foreach ($dbh->query($query) as $row)
 	{
-		array_push($modifications, array('aminoAcids' => str_split($row['residues']), 'id' => $row['name'], 'mass' => $row['mass']));
+		array_push($modifications, array('aminoAcids' => str_split($row['residues']), 'id' => $row['mod_name'], 'mass' => $row['mass']));
 
 	}
 

@@ -134,7 +134,7 @@ var FragmentationKeyView = Backbone.View.extend({
 						this.annotations[pepId][fragments[i].range[r].to].b.push(fragments[i]);
 				}
 			};
-			console.log(this.annotations);
+// 			console.log(this.annotations);
 
 			this.drawFragmentationEvents(0);
 			if(this.peptides[1])
