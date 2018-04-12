@@ -102,7 +102,7 @@ var specListTableView = DataTableView.extend({
 				{ "title": "passThreshold", "data": "pass_threshold", "name": "pass_threshold", "className": "dt-center toggable" },  //14
 				{ "title": "alt count", "data": "alt_count", "name": "alt_count", "searchable": false },    //15
 				{ "title": "dataRef", "className":"toggable", "data": "file", "name": "dataRef" },        //16
-				{ "title": "scan number", "data": "scan_id", "className": "dt-center toggable", "name": "scan_number" },    //17
+				{ "title": "scanId", "data": "scan_id", "className": "dt-center toggable", "name": "scan_id" },    //17
 			],
 
 			"createdRow": function( row, data, dataIndex ) {
@@ -114,7 +114,7 @@ var specListTableView = DataTableView.extend({
 			 	"columnDefs": [
 				{
 					"class": "invisible",
-					"targets": [ 0, 1, 11 ],
+					"targets": [ 0, 1, 11, 15 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
