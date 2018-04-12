@@ -72,7 +72,7 @@ var specListTableView = DataTableView.extend({
 				null, //linkpos1
 				null, //linkpos2
 				null, //charge
-				{ "search": "0" }, //is_decoy
+				null, // { "search": "(?!1).*", "escapeRegex": false }, //is_decoy .search( "(?!1).*" , true, false )
 				null, // decoy1
 				null, // decoy2
 				null, //score
@@ -273,7 +273,7 @@ var specListTableView = DataTableView.extend({
 		var dataFilter = specListToolbar.append('div').attr('id', 'data-filter');
 		var passThresholdBtn = '<label class="btn btn-1a" id="passThreshold"><input type="checkbox" checked>passing threshold</label>';
 		var hideLinearBtn = '<label class="btn btn-1a" id="hideLinear"><input type="checkbox">hide linear</label>';
-		var hideDecoysBtn = '<label class="btn btn-1a" id="hideDecoy"><input type="checkbox" checked>hide decoys</label>';
+		var hideDecoysBtn = '<label class="btn btn-1a" id="hideDecoy"><input type="checkbox">hide decoys</label>';
 		var dataFilterHTML = 'Filter: '+ passThresholdBtn + hideLinearBtn + hideDecoysBtn;
 		$("#data-filter").html(dataFilterHTML);
 
@@ -410,7 +410,7 @@ var specListTableView = DataTableView.extend({
 		if (e.target.checked){
 			//column.visible( false );
 			//$(".toggle-vis[data-column='7']").attr("checked", "");
-		    this.DataTable.columns( 'is_decoy:name' ).search( "0" ).draw();
+		    this.DataTable.columns( 'is_decoy:name' ).search( "(?!1).*" , true, false ).draw();
 		}
 		else{
 			//column.visible( true );
