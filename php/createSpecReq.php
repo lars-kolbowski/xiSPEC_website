@@ -48,7 +48,8 @@
 		sp.frag_tol AS frag_tolerance,
 		pep1_table.crosslinker_modmass as crosslinker_modmass1,
 		pep2_table.crosslinker_modmass as crosslinker_modmass2,
-		si.ions as ion_types
+		si.ions as ion_types,
+		si.exp_mz as exp_mz
 		FROM spectrum_identifications AS si
 		LEFT JOIN spectra AS sp ON (si.spectrum_id = sp.id)
 		LEFT JOIN peptides AS pep1_table ON (si.pep1_id = pep1_table.id)
@@ -146,6 +147,7 @@
 		'ions' => $ions,
 		'cross-linker' => $cl,
 		'precursorCharge' => $preCharge,
+		'precursorMZ' => floatval($result['exp_mz']),
 		'custom' => ['']
 	);
 
