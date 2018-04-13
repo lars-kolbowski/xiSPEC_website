@@ -120,7 +120,7 @@ var ErrorPlotView = Backbone.View.extend({
 			var svg_name = pepStrs.join("-") + "_z=" + charge;
 			svg_name += svgSel.node().id;
 			svg_name += ".svg";
-			download (svgXML, 'application/svg', svg_name);
+			download (svgXML, 'application/svg', svg_name, true);
 		};
 	},
 
