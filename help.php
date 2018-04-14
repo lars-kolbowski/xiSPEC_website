@@ -213,6 +213,34 @@
 						</p>
 					</ul>
 				</div>
+
+				<h1 class="page-header accordionHead">
+					<i class="fa fa-plus-square" aria-hidden="true"></i> mzIdentML support
+				</h1>
+				<div class="accordionContent" style="display: none;" id="mzIdSupport">
+					<table class="myTable" id="mzidSupportTable">
+						HUPO PSI provide <a href="http://www.psidev.info/tools-implementing-mzidentml">a list of tools that support mzIdentML</a>.
+						<br/>
+						We tested output from the following tools and confirmed that they successfully worked in xiSPEC. <a href="mailto:lars.b.kolbowski@campus.tu-berlin.de" title="Contact us">Contact us</a> if you noticed a tool missing from the list and we will add it.
+						<ul>
+							<li>
+								<a href="http://www.matrixscience.com/">Mascot (Matrix Science)</a>
+							</li>
+							<li>
+								<a href="http://www.proteomesoftware.com/products/scaffold/">Scaffold</a>
+							</li>
+							<li>
+								<a href="http://compomics.github.io/projects/peptide-shaker.html">PeptideShaker</a>
+							</li>
+							<li>
+								<a href="https://www.thermofisher.com/order/catalog/product/OPTON-30795">Proteome Discoverer</a>
+							</li>
+							<!-- <li>
+								<a href="https://github.com/Rappsilber-Laboratory/xiFDR">xiFDR</a>
+							</li> -->
+						</ul>
+					</table>
+				</div>
  			</div> <!-- CONTAINER -->
 		</div> <!-- MAIN -->
 
