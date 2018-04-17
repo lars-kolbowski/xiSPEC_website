@@ -277,6 +277,10 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 			<div class="content" id="saveModal_content">
 				<div id="saveDBerror"></div>
 				<form id='saveDB_form'>
+					Fill out the form to save your data for later access. <br />
+					<?php //if($db_size > 500000000){	}; ?>
+					Your data will be accessible for 3 months.<br />
+					If you provide an email address we will contact you before deletion with the possiblity to extend the time.<br />
 					<label class="flex-row label">
 						Name: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbName" autocomplete="off" name="dbName" type="text" placeholder="Enter a name for the dataset"></div>
 					</label>
@@ -285,7 +289,7 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 					</label>
 
 					<label class="flex-row label" style="line-height: 1.5em; margin: 1.5em 0em;">
-						Public: <input id="publicDBchkBox" class="pointer" name="public" type="checkbox"> <span style="text-transform: initial; letter-spacing: initial; color: #ccc;">(checking this will allow anyone who knows the name of the dataset to view it.)</span>
+						Public: <input id="publicDBchkBox" class="pointer" name="public" type="checkbox"> <span style="text-transform: initial; letter-spacing: initial; color: #ccc;"></span>
 					</label>
 					<label class="flex-row label" id="dbPassLabel">
 						Password: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbPass" name="dbPass" type="password" placeholder="Enter password"></div>
