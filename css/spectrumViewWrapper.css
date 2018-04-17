@@ -33,7 +33,16 @@
     vertical-align: middle;
 }
 
-#mainPlotDiv {
+.plotsDiv {
+    display: flex;
+    flex-direction: column;
+    flex-grow:  1;
+    flex-shrink:  0;
+    height: calc(100% - 35px);
+    position: relative;
+}
+
+#spectrumMainPlotDiv {
     display: flex;
     flex-flow: column;
     flex-grow: 1;
@@ -52,29 +61,6 @@
     width: 100%;
     height: 100%;
     flex-grow: 1;
-}
-
-.errSVG {
-    width: 100%;
-    flex-grow: 1;
-}
-
-.subViewContent {
-	flex-direction: row;
-	display:  flex;
-	height: calc(100% - 20px);
-	width: 100%;
-}
-
-#subViewContent-left {
-    flex-grow:  1;
-    display:  flex;
-}
-
-#subViewContent-right {
-    flex-grow:  1;
-    /* position: relative; */
-    display:  flex;
 }
 
 #measureTooltip {

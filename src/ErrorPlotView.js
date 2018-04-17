@@ -29,22 +29,23 @@ var ErrorPlotView = Backbone.View.extend({
 		this.listenTo(CLMSUI.vent, 'QCabsErr', this.toggleAbsErr);
 		this.listenTo(CLMSUI.vent, 'QCPlotToggle', this.toggleView);
 		this.listenTo(window, 'resize', _.debounce(this.render));
+		this.listenTo(CLMSUI.vent, 'resize:spectrum', this.render);
 		this.listenTo(CLMSUI.vent, 'downloadQCSVG', this.downloadSVG);
+		this.listenTo(CLMSUI.vent, 'show:QC', this.wrapperVisToggle);
 
 		var self = this;
 
 		var defaultOptions = {
-			alwaysShow: false,
+
 		};
 		this.options = _.extend(defaultOptions, viewOptions);
 
-		this.wrapper = this.options.wrapper;
 		this.absolute = false;
 		this.isVisible = true;
+		this.wrapperVisible = false;
 
 		var svgId = this.options.svg || this.el.getElementsByTagName("svg")[0];
 		this.svg = d3.select(svgId);
-		// this.svg = this.get('targetSvg') | d3.select(this.el.getElementsByTagName("svg")[0]);
 		var margin = this.options.margin;
 
 		var width = 960 - margin.left - margin.right;
@@ -56,13 +57,12 @@ var ErrorPlotView = Backbone.View.extend({
 			.attr('width', width)
 			.attr('height', height)
 			.attr('class', 'wrapper')
-			// .style("opacity", this.options.alwaysShow ? 1 : 0);
 
 		if (CLMSUI.compositeModelInst !== undefined)
 			this.tooltip = CLMSUI.compositeModelInst.get("tooltipModel");
 		else{
-			target = this.el; //this would get you #spectrumPanel
-			this.tooltip = d3.select(target).append("span")
+			// target = window; //this would get you #spectrumPanel
+			this.tooltip = d3.select("body").append("span")
 				.style("font-size", "small")
 				.style("padding", "0 5px")
 				.style("border-radius", "6px")
@@ -77,6 +77,11 @@ var ErrorPlotView = Backbone.View.extend({
 		this.listenTo(this.model, 'change', this.render);
 		this.listenTo(this.model, 'changed:ColorScheme', this.render);
 		this.listenTo(this.model, 'changed:Highlights', this.updateHighlights);
+	},
+
+	wrapperVisToggle: function(show){
+		this.wrapperVisible = show;
+// 		this.render();
 	},
 
 	//ToDo: duplicate with SpectrumView2 downloadSVG function
@@ -115,7 +120,7 @@ var ErrorPlotView = Backbone.View.extend({
 			var svg_name = pepStrs.join("-") + "_z=" + charge;
 			svg_name += svgSel.node().id;
 			svg_name += ".svg";
-			download (svgXML, 'application/svg', svg_name);
+			download (svgXML, 'application/svg', svg_name, true);
 		};
 	},
 
@@ -133,7 +138,7 @@ var ErrorPlotView = Backbone.View.extend({
 
 	render: function() {
 
-		if (this.model.JSONdata === undefined || this.model.JSONdata === null || !this.wrapper.isVisible)
+		if (this.model.JSONdata === undefined || this.model.JSONdata === null || !this.isVisible || !this.wrapperVisible)
 			return;
 
 		this.clear();
@@ -165,8 +170,6 @@ var ErrorPlotView = Backbone.View.extend({
 			});
 		});
 
-		// var cx = this.wrapper.node().parentNode.width.baseVal.value;
-		// var cy = this.wrapper.node().parentNode.height.baseVal.value;
 		var cx = $(this.el).width();
 		var cy = $(this.el).height();
 
@@ -310,7 +313,7 @@ var ErrorPlotView = Backbone.View.extend({
 	},
 
 	showTooltip: function(x, y, data){
-		if (this.model.showSpectrum && !this.options.alwaysShow)
+		if (this.model.showSpectrum)
 			return
 
 		var contents = [["charge", data.charge], ["error", data.error.toFixed(3)], [this.options.xData, data.x.toFixed(this.model.showDecimals)]];
@@ -327,6 +330,10 @@ var ErrorPlotView = Backbone.View.extend({
 		}
 		else{
 			var html = header.join(" ");
+			for (var i = 0; i < data.charge; i++){
+				html += "+";
+			}
+
 			for (var i = contents.length - 1; i >= 0; i--) {
 				html += "</br>";
 				html += contents[i].join(": ");
@@ -390,6 +397,8 @@ var ErrorPlotView = Backbone.View.extend({
 	},
 
 	updateHighlights: function(){
+		if(!this.isVisible || !this.wrapperVisible)
+			return;
 		this.clearHighlights();
 		for (var i = this.model.highlights.length - 1; i >= 0; i--) {
 			this.startHighlight(this.model.highlights[i].id);

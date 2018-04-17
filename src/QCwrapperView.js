@@ -19,22 +19,38 @@
 //
 //		QCwrapperView.js
 
+// ToDo: move Splitting to parent view?
+
 var QCwrapperView = Backbone.View.extend({
 
 	events : {
 		'click .toggle' : 'toggleView',
 		'click #minQC' : 'minView',
 		'click #dockQC' : 'showView',
-		// 'click .dockLeft' : 'dockLeft',
 		'click .dockRight' : 'dockRight',
 		'click .dockBottom' : 'dockBottom',
 		'change .plotSelectChkbox': 'updatePlots',
 		'click #downloadQCSVG': 'downloadQCSVG',
 	},
 
-	initialize: function() {
+	initialize: function(viewOptions) {
+
+		var defaultOptions = {
+			splitIds: ['#spectrumMainPlotDiv', '#QCdiv'],
+			showOnStartUp: true,
+		};
+		this.options = _.extend(defaultOptions, viewOptions);
+
+		this.plotSplit = Split(this.options.splitIds, {
+			sizes: [75, 25],
+			minSize: [250, 150],
+			gutterSize: 5,
+			direction: 'vertical',
+			onDragEnd: function(){ CLMSUI.vent.trigger('resize:spectrum'); }
+		});
+
 		this.dock = 'bottom';
-		this.isVisible = true;
+		// this.isVisible = true;
 
 		this.headerDiv = d3.select(this.el.getElementsByClassName("subViewHeader")[0]);
 		this.contentDiv = d3.select(this.el.getElementsByClassName("subViewContent")[0]);
@@ -45,14 +61,14 @@ var QCwrapperView = Backbone.View.extend({
 
 		this.controlsDiv = this.headerDiv.append("span");
 
-		var plotSelector = this.controlsDiv.append("div").attr("class", "mulitSelect_dropdown")
+		var plotSelector = this.controlsDiv.append("div").attr("class", "multiSelect_dropdown")
 		;
 		plotSelector.append("span")
 			.attr("type", "text")
 			.attr("class", "btn btn-1a")
-			.html('Select plots<i class="fa fa-chevron-down" aria-hidden="true"></i>')
+			.html('<i class="fa fa-chevron-down" aria-hidden="true"></i>')
 		;
-		var plotSelectorDropdown = plotSelector.append("div").attr("class", "mulitSelect_dropdown-content mutliSelect");
+		var plotSelectorDropdown = plotSelector.append("div").attr("class", "multiSelect_dropdown-content mutliSelect");
 		var plotSelectorList = plotSelectorDropdown.append("ul");
 		var plotOptions = [
 			{value: "int", text: "Intensity"},
@@ -92,6 +108,7 @@ var QCwrapperView = Backbone.View.extend({
 		this.dockBottomBtn = rightControls.append('i')
 			.attr('class', 'fa fa-window-maximize pointer dockBottom')
 			.attr('aria-hidden', 'true')
+			.attr('style', 'display:none;')
 			.attr('title', 'dock to bottom')
 		;
 		this.dockRightBtn = rightControls.append('i')
@@ -115,6 +132,9 @@ var QCwrapperView = Backbone.View.extend({
 			.attr('aria-hidden', 'true')
 			.attr('title', 'hide QC plots')
 		;
+
+		if(!this.options.showOnStartUp)
+			this.minView();
 	},
 
 	downloadQCSVG: function(){
@@ -123,34 +143,35 @@ var QCwrapperView = Backbone.View.extend({
 
 	splitHorizontal: function(){
 		try{
-			CLMSUI.plotSplit.destroy();
+			this.plotSplit.destroy();
 		}
 		catch(err){}
-		CLMSUI.plotSplit = Split(['#mainPlotDiv', '#QCdiv'], {
+		this.plotSplit = Split(this.options.splitIds, {
 			sizes: [75, 25],
 			minSize: [500, 220],
 			gutterSize: 4,
 			direction: 'horizontal',
-			onDragEnd: function(){ window.trigger('resize'); }
+			onDragEnd: function(){ CLMSUI.vent.trigger('resize:spectrum'); }
 		});
 	},
 
 	splitVertical: function(){
 		try{
-			CLMSUI.plotSplit.destroy();
+			this.plotSplit.destroy();
 		}
 		catch(err){}
-		CLMSUI.plotSplit = Split(['#mainPlotDiv', '#QCdiv'], {
+		this.plotSplit = Split(this.options.splitIds, {
 			sizes: [75, 25],
 			minSize: [250, 200],
 			gutterSize: 4,
 			direction: 'vertical',
-			onDragEnd: function(){ window.trigger('resize'); }
+			onDragEnd: function(){ CLMSUI.vent.trigger('resize:spectrum'); }
 		});
 	},
 
 	showView: function(){
-		this.isVisible = true;
+		// this.isVisible = true;
+		CLMSUI.vent.trigger('show:QC', true);
 		$(this.controlsDiv[0]).show();
 		$(this.dockQCbtn[0]).hide();
 		$(this.minQCbtn[0]).show();
@@ -165,11 +186,12 @@ var QCwrapperView = Backbone.View.extend({
 		else{
 			this.splitVertical();
 		}
-		window.trigger('resize');
+		CLMSUI.vent.trigger('resize:spectrum');
 	},
 
 	minView: function(){
-		this.isVisible = false;
+		// this.isVisible = false;
+		CLMSUI.vent.trigger('show:QC', false);
 		if(this.dock == 'left' || this.dock == 'right'){
 			$(this.el).parent().css('flex-direction', 'column');
 			$(this.el).removeClass('right');
@@ -180,8 +202,9 @@ var QCwrapperView = Backbone.View.extend({
 		$(this.dockQCbtn[0]).show();
 		$(this.minQCbtn[0]).hide();
 		$(this.contentDiv[0]).hide();
-		CLMSUI.plotSplit.destroy();
-		window.trigger('resize');
+		if(this.plotSplit)
+			this.plotSplit.destroy();
+		CLMSUI.vent.trigger('resize:spectrum');
 	},
 
 	dockSide: function(){
@@ -189,7 +212,7 @@ var QCwrapperView = Backbone.View.extend({
 		$(this.el).parent().css('flex-direction', 'row');
 		$(this.contentDiv[0]).css('flex-direction', 'column');
 		this.splitHorizontal();
-		window.trigger('resize');
+		CLMSUI.vent.trigger('resize:spectrum');
 	},
 
 // dockLeft breaks splitting
@@ -200,13 +223,15 @@ var QCwrapperView = Backbone.View.extend({
 // 		this.dockSide();
 // 		$(this.el).addClass('left');
 // 		$(this.el).removeClass('right');
-// // 		$('#mainPlotDiv').css('order', 5);
+// // 		$('#spectrumMainPlotDiv').css('order', 5);
 //
 //  		$('.gutter-horizontal').css('order', -1);
 // 	},
 
 	dockRight: function(){
 		this.dock = 'right';
+		$(this.dockBottomBtn[0]).show();
+		$(this.dockRightBtn[0]).hide();
 		this.dockSide();
 		$(this.el).addClass('right');
 		$(this.el).removeClass('left');
@@ -214,6 +239,8 @@ var QCwrapperView = Backbone.View.extend({
 	},
 
 	dockBottom: function(){
+		$(this.dockBottomBtn[0]).hide();
+		$(this.dockRightBtn[0]).show();
 		this.title.text("Quality control plots");
 		this.dock = 'bottom';
 		$(this.el).parent().css('flex-direction', 'column');
@@ -221,14 +248,14 @@ var QCwrapperView = Backbone.View.extend({
 		$(this.el).removeClass('right');
 		$(this.contentDiv[0]).css('flex-direction', 'row');
 		this.splitVertical();
-		window.trigger('resize');
+		CLMSUI.vent.trigger('resize:spectrum');
 	},
 
 	updatePlots: function(e){
 		var plotId = $(e.target).attr('id');
 		var checked = $(e.target).is('checked');
 		CLMSUI.vent.trigger('QCPlotToggle', plotId);
-		window.trigger('resize');
+		CLMSUI.vent.trigger('resize:spectrum');
 	}
 
 });

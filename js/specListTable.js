@@ -60,7 +60,7 @@ var specListTableView = DataTableView.extend({
 			"language": {
 				"lengthMenu": "_MENU_ entries per page"
 			},
-			"order": [[ 8, "desc" ]],
+			"order": [[ 10, "desc" ]],
 			"processing": true,
 			"serverSide": true,
 			"ajax": this.ajaxUrl,
@@ -72,37 +72,41 @@ var specListTableView = DataTableView.extend({
 				null, //linkpos1
 				null, //linkpos2
 				null, //charge
-				{ "search": "0" }, //isDecoy
+				null, // { "search": "(?!1).*", "escapeRegex": false }, //is_decoy .search( "(?!1).*" , true, false )
+				null, // decoy1
+				null, // decoy2
 				null, //score
-				null, //allScores
+				null, //scores
 				null, //protein1
 				null, //protein2
-				{ "search": "1" }, //passThreshold
+				{ "search": "1" }, //pass_threshold
 				null, //alt_count
 				null, //dataRef
-				null  //scanID
+				null  //scan_id
 			],
 			"columns": [
-				{ "title": "internal_id", "data": "id", "name": "internal_id", "searchable": false },	//0
-				{ "title": "id", "data": "sid", "name": "sid" },	//1
+				{ "title": "identification id", "data": "identification_id", "name": "identification_id", "searchable": false },	//0
+				{ "title": "spectrum id", "data": "spectrum_ref", "name": "spectrum_id" },	//1
 				{ "title": "peptide 1", "data": "pep1", "name": "pep1" },	//2
-				{ "title": "peptide 2", "data": "pep2", "name": "pep2" },	//3
-				{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center", "name": "linkpos1", "searchable": false },	//4
-				{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center", "name": "linkpos2", "searchable": false },	//5
-				{ "title": "charge", "data": "charge", "className": "dt-center", "name": "charge" },		//6
-				{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center", "name": "isDecoy" },	//7
-				{ "title": "score", "data": "score", "className": "dt-center", "name": "score" },    //8
-				{ "title": "allScores", "data": "allScores", "name": "allScores" },    //9
-				{ "title": "protein 1", "data": "protein1", "className": "dt-center", "name": "protein1" },  //10
-				{ "title": "protein 2", "data": "protein2", "className": "dt-center", "name": "protein2" },  //11
-				{ "title": "passThreshold", "data": "passThreshold", "name": "passThreshold" },  //12
-				{ "title": "alt_count", "data": "alt_count", "name": "alt_count", "searchable": false },    //13
-				{ "title": "dataRef", "data": "file", "name": "dataRef" },        //14
-				{ "title": "scanID", "data": "scanID", "className": "dt-center", "name": "scanID" },    //15
+				{ "title": "peptide 2", "data": "pep2", "className":"toggable", "name": "pep2" },	//3
+				{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center toggable", "name": "linkpos1", "searchable": false },	//4
+				{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center toggable", "name": "linkpos2", "searchable": false },	//5
+				{ "title": "charge", "data": "charge", "className": "dt-center toggable", "name": "charge" },		//6
+				{ "title": "isDecoy", "data": "is_decoy", "className": "dt-center toggable", "name": "is_decoy" },	//7
+				{ "title": "decoy 1", "data": "decoy1", "className": "dt-center toggable", "name": "decoy1" },	//8
+				{ "title": "decoy 2", "data": "decoy2", "className": "dt-center toggable", "name": "decoy2" },	//9
+				{ "title": "score", "data": "score", "className": "dt-center toggable", "name": "score" },    //10
+				{ "title": "scores", "data": "scores", "name": "scores" },    //11
+				{ "title": "protein 1", "data": "protein1", "className": "dt-center toggable", "name": "protein1" },  //12
+				{ "title": "protein 2", "data": "protein2", "className": "dt-center toggable", "name": "protein2" },  //13
+				{ "title": "passThreshold", "data": "pass_threshold", "name": "pass_threshold", "className": "dt-center toggable" },  //14
+				{ "title": "alt count", "data": "alt_count", "name": "alt_count", "searchable": false },    //15
+				{ "title": "dataRef", "className":"toggable", "data": "file", "name": "dataRef" },        //16
+				{ "title": "scanId", "data": "scan_id", "className": "dt-center toggable", "name": "scan_id" },    //17
 			],
 
 			"createdRow": function( row, data, dataIndex ) {
-				if ( data['passThreshold'] == 0 )
+				if ( data['pass_threshold'] == 0 )
 					$(row).addClass('red');
 				// if ( data['id'] == this.model.requestId)
 				// 	$(row).addClass("selected");
@@ -110,20 +114,37 @@ var specListTableView = DataTableView.extend({
 			 	"columnDefs": [
 				{
 					"class": "invisible",
-					"targets": [ 0, 9, 12, 13 ],
+					"targets": [ 0, 1, 11, 15 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
-						var uniprotAccessionPatt = /[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}/;
-						var regexMatch = uniprotAccessionPatt.exec(data);
-						if (regexMatch) {
-							return '<a target="_blank" class="uniprotAccession" title="Click to open Uniprot page" href="https://www.uniprot.org/uniprot/'+regexMatch[0]+'">'+data+"</a>";
-						}
-						else {
+						if(data === null)
 							return data;
-						}
+						var proteinArr = data.split(',');
+						var resultArr = [];
+						proteinArr.forEach(function(protein){
+							var uniprotAccessionPatt = /[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}/;
+							var regexMatch = uniprotAccessionPatt.exec(protein);
+							if (regexMatch) {
+								resultArr.push('<a target="_blank" class="uniprotAccession" title="Click to open Uniprot page for '+regexMatch[0]+'" href="https://www.uniprot.org/uniprot/'+regexMatch[0]+'">'+protein+"</a>");
+							}
+							else {
+								resultArr.push(protein);
+							}
+						});
+						return resultArr.join(", ");
 					},
-					"targets": [ 10, 11 ],
+					"targets": [ 12, 13 ],
+				},
+				{
+					"render": function ( data, type, row, meta ) {
+						if (data == "0")
+							return 'False';
+						else if (data == "1")
+							return 'True';
+						return '';
+					},
+					"targets": [ 7, 8, 9 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
@@ -132,71 +153,89 @@ var specListTableView = DataTableView.extend({
 						else
 							return 'True';
 					},
-					"targets": [ 7 ],
+					"targets": [ 14 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
-						var json = JSON.parse(row.allScores);
+						var json = JSON.parse(row.scores);
 						var result = new Array();
 						for (key in json) {
 							result.push(key+'='+json[key]);
 						}
 						return '<span title="'+result.join("; ")+'">'+data+'</span>'
 					},
-					"targets": [ 8 ],
+					"targets": [ 10 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
-						if (data == '-1')
+ 						if(!data)
+ 							return '';
+						data = parseInt(data);
+						if (data == -1)
 							return '';
+						if (data == 0)
+							return 'N';
+						if(meta.col == 4)
+							var pepSeq = row.pep1;
+						else if (meta.col == 5)
+							var pepSeq = row.pep2;
+						var AAlength = pepSeq.replace(/[^A-Z]/g, '').length;
+						if (data == (AAlength + 1))
+							return 'C';
 						else
-							return parseInt(data)+1;
+							return data;
 					},
 					"searchable": false,
+					"orderable": false,
 					"targets": [ 4, 5 ]
-					// "targets": [ 0, 4, 5, 6, 7, 8, 11, 12]
 				},
 
 			],
 			"initComplete": function(settings, json) {
-// 				if (json.data.length == 0){
-// 					console.log("db could not be found. Redirecting...");
-// 					window.location.href = "upload.php";
-// 				}
+				if (json.data.length == 0){
+					alert("empty results");
+					return;
+					// window.location.href = "upload.php";
+				}
 				window.initSpinner.stop();
 				$("#topDiv-overlay").css("z-index", -1);
 
 				//scoreSelector
 				self.createScoreSelector();
 
-				if(self.options.initId){
-// 					var row = self.DataTable.columns( 'sid:name' ).search( self.options.initId )[0][0];
-// 					CLMSUI.vent.trigger('loadSpectrum', self.DataTable.rows(row).data()[0]);
-					self.DataTable.columns( 'sid:name' ).data().filter( function(e){
-						 if (e == self.options.initId) return true;
-					});
-					$('.dataTables_filter input').val(self.options.initId);
-				}
+// 				if(self.options.initId){
+// // 					var row = self.DataTable.columns( 'spectrum_ref:name' ).search( self.options.initId )[0][0];
+// // 					CLMSUI.vent.trigger('loadSpectrum', self.DataTable.rows(row).data()[0]);
+// 					self.DataTable.columns( 'spectrum_ref:name' ).data().filter( function(e){
+// 						 if (e == self.options.initId) return true;
+// 					});
+// 					$('.dataTables_filter input').val(self.options.initId);
+// 				}
 // 				else{
-					CLMSUI.vent.trigger('loadSpectrum', self.DataTable.rows( { filter : 'applied'} ).data()[0]);
-					firstRow = $('#specListWrapper tr:first-child');
-					$(firstRow).addClass('selected');
+
+				// load first spectrum_identification
+					var row = self.DataTable.rows( { filter : 'applied'} ).data()[0];
+					CLMSUI.vent.trigger('loadSpectrum', row.identification_id);
+					CLMSUI.vent.trigger('updateAltCount', row.alt_count);
+					self.model.spectrum_id = row.spectrum_ref;
+// 					firstRow = $('#specListWrapper tr:first-child');
+// 					$(firstRow).addClass('selected');
 // 				}
 
 
-
-				if(self.isEmpty(self.DataTable.columns('dataRef:name').data()[0])){
-					var column = self.DataTable.columns('dataRef:name');
-					column.visible( false );
-				}
-				// self.initiateTable();
+				self.initiateTable();
 			},
 			"drawCallback": function( settings ) {
 				//check if currently displayed spectra is in the table page and highlight it
-				if (self.DataTable.columns('internal_id:name').data()[0].indexOf(self.model.requestId) != -1)
-					$(self.DataTable.row(self.DataTable.columns('internal_id:name').data()[0].indexOf(self.model.requestId)).node()).addClass('selected');
+				if (self.DataTable.columns('identification_id:name').data()[0].indexOf(self.model.requestId) != -1){
+					self.DataTable.$('tr.selected').removeClass('selected');
+					var rowNumber = self.DataTable.columns('identification_id:name').data()[0].indexOf(self.model.requestId);
+					$(self.DataTable.row(rowNumber).node()).addClass('selected');
+				}
 
-				self.hideEmptyColumns();
+
+				//ToDo: disabled -> rework needed
+				// self.hideEmptyColumns();
 
 				window.trigger('resize');
 			}
@@ -221,8 +260,12 @@ var specListTableView = DataTableView.extend({
 			self.DataTable.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
 
-			CLMSUI.vent.trigger('loadSpectrum', self.DataTable.row(this).data());
-
+			var row = self.DataTable.row(this).data();
+			self.model.spectrum_id = row.spectrum_ref;
+			var scan_identifier = row.scan_id + ' - ' + row.file;
+			CLMSUI.vent.trigger('updateAltTitle', scan_identifier);
+			CLMSUI.vent.trigger('loadSpectrum', row.identification_id);
+			CLMSUI.vent.trigger('updateAltCount', row.alt_count);
 		});
 
 		var specListToolbar = d3.selectAll('.specListToolbar').attr('class', 'listToolbar');
@@ -230,13 +273,13 @@ var specListTableView = DataTableView.extend({
 		var dataFilter = specListToolbar.append('div').attr('id', 'data-filter');
 		var passThresholdBtn = '<label class="btn btn-1a" id="passThreshold"><input type="checkbox" checked>passing threshold</label>';
 		var hideLinearBtn = '<label class="btn btn-1a" id="hideLinear"><input type="checkbox">hide linear</label>';
-		var hideDecoysBtn = '<label class="btn btn-1a" id="hideDecoy"><input type="checkbox" checked>hide decoys</label>';
+		var hideDecoysBtn = '<label class="btn btn-1a" id="hideDecoy"><input type="checkbox">hide decoys</label>';
 		var dataFilterHTML = 'Filter: '+ passThresholdBtn + hideLinearBtn + hideDecoysBtn;
 		$("#data-filter").html(dataFilterHTML);
 
 		var columnFilter = specListToolbar.append('div').attr('id', 'column-filter');
-		var colSelector = '<div class="mulitSelect_dropdown" id="specListColSelect"><span class="btn btn-1a">Select columns<i class="fa fa-chevron-down" aria-hidden="true"></i></span><div class="mulitSelect_dropdown-content mutliSelect"><ul></ul></div></div>';
-		var scoreSelector = '<div class="mulitSelect_dropdown" id="specListScoreSelect" style="display: none;"><span class="btn btn-1a">Select score<i class="fa fa-chevron-down" aria-hidden="true"></i></span><div class="mulitSelect_dropdown-content mutliSelect"><ul></ul></div></div>';
+		var colSelector = '<div class="multiSelect_dropdown" id="specListColSelect"><span class="btn btn-1a">Select columns<i class="fa fa-chevron-down" aria-hidden="true"></i></span><div class="multiSelect_dropdown-content mutliSelect"><ul></ul></div></div>';
+		var scoreSelector = '<div class="multiSelect_dropdown" id="specListScoreSelect" style="display: none!important;"><span class="btn btn-1a">Select score<i class="fa fa-chevron-down" aria-hidden="true"></i></span><div class="multiSelect_dropdown-content mutliSelect"><ul></ul></div></div>';
 
 		var colFilterHTML = colSelector + scoreSelector;
 
@@ -244,7 +287,7 @@ var specListTableView = DataTableView.extend({
 
 		// columnToggleSelector
 	 	this.DataTable.columns()[0].forEach(function(col){
-	 		if (!self.DataTable.columns().header()[col].classList.contains("invisible")){
+	 		if (self.DataTable.columns().header()[col].classList.contains("toggable")){
 		 		var colname =  self.DataTable.columns().header()[col].innerHTML;
 		 		$("#specListColSelect ul").append('<li><label><input type="checkbox" checked class="toggle-vis" data-column="'+col+'">'+colname+'</label></li>');
 	 		}
@@ -258,18 +301,18 @@ var specListTableView = DataTableView.extend({
 	},
 
 	createScoreSelector: function() {
-		var allScores = new Array();
-		var allScoresJSON = JSON.parse(this.DataTable.columns('allScores:name').data()[0][0])
-		for (var score in allScoresJSON) {
-			if (allScoresJSON.hasOwnProperty(score)) {
-				allScores.push(score);
+		var scores = new Array();
+		var scoresJSON = JSON.parse(this.DataTable.columns('scores:name').data()[0][0])
+		for (var score in scoresJSON) {
+			if (scoresJSON.hasOwnProperty(score)) {
+				scores.push(score);
 			}
 		}
 
-		if (allScores.length > 1){
+		if (scores.length > 1){
 			$("#specListScoreSelect").show();
 
-			allScores.forEach(function(score, i){
+			scores.forEach(function(score, i){
 				if (i == 0)
 					checked = 'checked';
 				else
@@ -289,20 +332,33 @@ var specListTableView = DataTableView.extend({
 	// 	CLMSUI.vent.trigger('scoreChange', parseInt($(e.target).attr('data-score')));
 	// },
 
-	// hideEmptyColumns: function(e) {
-	// 	if(this.isEmpty(this.DataTable.columns('pep2:name').data()[0])){
-	// 		this.DataTable.columns('pep2:name').visible( false );
-	// 		this.DataTable.columns('linkpos1:name').visible( false );
-	// 		this.DataTable.columns('linkpos2:name').visible( false );
-	// 		this.DataTable.columns('protein2:name').visible( false );
-	// 	}
-	// 	else{
-	// 		this.DataTable.columns('pep2:name').visible( true);
-	// 		this.DataTable.columns('linkpos1:name').visible( true );
-	// 		this.DataTable.columns('linkpos2:name').visible( true );
-	// 		this.DataTable.columns('protein2:name').visible( true );
-	// 	}
-	// },
+	hideEmptyColumns: function(e) {
+ 		//ToDo: change this to hide cross-link columns when it's a linear dataset by checking a database level isCrossLinkDataset variable
+		if(this.isEmpty(this.DataTable.columns('pep2:name').data()[0])){
+			this.DataTable.columns('pep2:name').visible( false );
+			$(".toggle-vis[data-column='3']")[0].checked = false;
+			this.DataTable.columns('linkpos1:name').visible( false );
+			$(".toggle-vis[data-column='4']")[0].checked = false;
+			this.DataTable.columns('linkpos2:name').visible( false );
+			$(".toggle-vis[data-column='5']")[0].checked = false;
+			this.DataTable.columns('decoy2:name').visible( false );
+			$(".toggle-vis[data-column='9']")[0].checked = false;
+			this.DataTable.columns('protein2:name').visible( false );
+			$(".toggle-vis[data-column='13']")[0].checked = false;
+		}
+		else{
+			this.DataTable.columns('pep2:name').visible( true );
+			$(".toggle-vis[data-column='3']")[0].checked = true;
+			this.DataTable.columns('linkpos1:name').visible( true );
+			$(".toggle-vis[data-column='4']")[0].checked = true;
+			this.DataTable.columns('linkpos2:name').visible( true );
+			$(".toggle-vis[data-column='5']")[0].checked = true;
+			this.DataTable.columns('decoy2:name').visible( true );
+			$(".toggle-vis[data-column='9']")[0].checked = true;
+			this.DataTable.columns('protein2:name').visible( true );
+			$(".toggle-vis[data-column='13']")[0].checked = true;
+		}
+	},
 
 	resize: function() {
 
@@ -322,13 +378,13 @@ var specListTableView = DataTableView.extend({
 	toggleThreshold: function(e){
 		if (e.target.checked){
 		    this.DataTable
-		        .columns( 'passThreshold:name' )
+		        .columns( 'pass_threshold:name' )
 		        .search( "1" )
 		        .draw();
 		}
 		else{
 		    this.DataTable
-		        .columns( 'passThreshold:name' )
+		        .columns( 'pass_threshold:name' )
 		        .search( "" )
 		        .draw();
 		}
@@ -350,24 +406,23 @@ var specListTableView = DataTableView.extend({
 	},
 
 	toggleDecoy: function(e){
-		var column = this.DataTable.column( 'isDecoy:name' );
+		var column = this.DataTable.column( 'is_decoy:name' );
 		if (e.target.checked){
 			//column.visible( false );
 			//$(".toggle-vis[data-column='7']").attr("checked", "");
-		    this.DataTable.columns( 'isDecoy:name' ).search( "0" ).draw();
+		    this.DataTable.columns( 'is_decoy:name' ).search( "(?!1).*" , true, false ).draw();
 		}
 		else{
 			//column.visible( true );
 			//$(".toggle-vis[data-column='7']").attr("checked", "checked");
-		    this.DataTable.columns( 'isDecoy:name').search( "" ).draw();
+		    this.DataTable.columns( 'is_decoy:name').search( "" ).draw();
 		}
 	},
 
 	toggleColumn: function(e){
 		// Get the column API object
 		var column = this.DataTable.column( $(e.target).attr('data-column') );
-		// Toggle the visibility
-		column.visible( ! column.visible() );
+		column.visible( e.target.checked );
 	},
 
 	prevSpectrum: function(e){
@@ -421,12 +476,16 @@ var specListTableView = DataTableView.extend({
 
 	},
 
-	// isEmpty: function(arr) {
-	// 	for(var i=0; i<arr.length; i++) {
-	// 		if(arr[i] !== "") return false;
-	// 	}
-	// 	return true;
+	// loadSpectrum: function(){
+	//
 	// },
+
+	isEmpty: function(arr) {
+		for(var i=0; i<arr.length; i++) {
+			if(arr[i] !== null) return false;
+		}
+		return true;
+	},
 
 
 });

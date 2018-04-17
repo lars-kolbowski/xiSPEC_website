@@ -16,16 +16,24 @@
 
    	 	<!-- Main -->
    	 	<div id="main">
-
 			<div class="container">
-
 				<h1 class="page-header accordionHead">
 					<i class="fa fa-plus-square" aria-hidden="true"></i> xiSPEC Feature support
 				</h1>
 				<div class="accordionContent" style="display: none;" id="features">
 					<ul>
+						<li><a href="#Hsave_db">Saving a dataset</a></li>
+						<li><a href="#Hzoom">Zooming</a></li>
+						<li><a href="#Hmeasure">Measure distances</a></li>
+						<li><a href="#HmoveLabels">Move labels</a></li>
+						<li><a href="#HclChange">Change cross-linker position</a></li>
+						<li><a href="#HmodChange">Change modification position</a></li>
+						<li><a href="#Hhighlight">Highlight fragments</h5></a></li>
+					</ul>
+					</br>
+					<ul>
 						<li>
-							<h5>Saving a dataset</h5>
+							<h5 id="Hsave_db">Saving a dataset <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
 						</li>
 						<p>
 							<img src="/images/gifs/saving.gif" />
@@ -38,7 +46,7 @@
 						</p>
 						<br/>
 						<li>
-							<h5>Zooming</h5>
+							<h5 id="Hzoom">Zooming <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
 						</li>
 						<p>
 							<img src="/images/gifs/zoom.gif" />
@@ -50,7 +58,34 @@
 						</p>
 						<br/>
 						<li>
-							<h5>Change cross-linker position</h5>
+							<h5 id="Hmeasure">Measure distances<a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
+						</li>
+						<p>
+							<img src="/images/gifs/measure.gif" />
+							<ul style="margin-left:30px;">
+								<li>Activate measuring mode by checking the 'Measure' option.</li>
+								<li>Your cursor will change to a crosshair.</li>
+								<li>Click and drag in the spectrum to measure distances between peaks.</li>
+								⇨ xiSPEC displays potential amino acid residue hits in the tooltip!
+							</ul>
+						</p>
+						<br/>
+
+						<li>
+							<h5 id="HmoveLabels">Move labels<a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
+						</li>
+						<p>
+							<img src="/images/gifs/moveLabels.gif" />
+							<ul style="margin-left:30px;">
+								<li>Activate moveable labels by checking the 'Move labels' option.</li>
+								<li>Click and drag labels to move them around.</li>
+								⇨ xiSPEC draws dashed lines to the corresponding peaks!
+							</ul>
+						</p>
+						<br/>
+
+						<li>
+							<h5 id="HclChange">Change cross-linker position <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
 						</li>
 						<p>
 							<img src="/images/gifs/changeCL.gif" />
@@ -63,7 +98,7 @@
 						</p>
 						<br/>
 						<li>
-							<h5>Change modification position</h5>
+							<h5 id="HmodChange">Change modification position <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
 						</li>
 						<p>
 							<img src="/images/gifs/changeMod.gif" />
@@ -76,7 +111,7 @@
 						</p>
 						<br/>
 						<li>
-							<h5>Highlight fragments</h5>
+							<h5 id="Hhighlight">Highlight fragments <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
 						</li>
 						<p>
 							<img src="/images/gifs/highlighting.gif" />
@@ -96,30 +131,37 @@
 				<div class="accordionContent" style="display: none;" id="csv">
 					<table class="myTable" id="csvTable">
 						<thead>
-							<tr><th>column</th><th>required</th><th>default</th><th>example(s)</th></tr>
+							<tr><th>column</th><th>required?</th><th>notes</th><th>default</th><th>example</th></tr>
 						</thead>
 						<tbody>
-							<tr><td>Id</td><td>Yes</td><td></td><td>SIR_1</td></tr>
-							<tr><td>Rank</td><td>No*</td><td>1</td><td>1</td></tr>
-							<tr><td>ScanNumber</td><td>Yes</td><td></td><td>2256</td></tr>
-							<tr><td>Charge</td><td>Yes</td><td></td><td>3</td></tr>
-							<tr><td>FragmentTolerance</td><td>No</td><td>10 ppm</td><td>10 ppm | 0.2 Da</td></tr>
-							<tr><td>IonTypes</td><td>No</td><td>peptide;b;y</td><td>peptide;c;z</td></tr>
-							<tr><td>PepSeq 1</td><td>Yes</td><td></td><td>LKECcmCcmEKPLLEK</td></tr>
-							<tr><td>PepSeq 2</td><td>No**</td><td></td><td>HPYFYAPELLFFAKR</td></tr>
-							<tr><td>LinkPos 1</td><td>No**</td><td></td><td>2</td></tr>
-							<tr><td>LinkPos 2</td><td>No**</td><td></td><td>14</td></tr>
-							<tr><td>CrossLinkerModMass</td><td>No**</td><td></td><td>138.06808</td></tr>
-							<tr><td>PassThreshold</td><td>No</td><td>TRUE</td><td>TRUE | FALSE</td></tr>
-							<tr><td>Score</td><td>No</td><td></td><td>10.5641</td></tr>
-							<tr><td>IsDecoy</td><td>No</td><td>FALSE</td><td>TRUE | FALSE</td></tr>
-							<tr><td>Protein 1</td><td>Yes</td><td></td><td>HSA</td></tr>
-							<tr><td>Protein 2</td><td>No**</td><td></td><td>HSA</td></tr>
-							<tr><td>RunName</td><td>No</td><td></td><td>example_file</td></tr>
+							<tr><td>PepSeq 1</td><td>Yes</td><td>Peptide sequence for peptide 1 in one letter amino acid code (uppercase) with modifications following the amino acid and consisting of the following characters: a-z:0-9.()\-</td><td>-</td><td>LKECcmCcmEKPLLEK</td></tr>
+							<tr><td>PepSeq 2</td><td>No**</td><td>Peptide sequence for peptide 2 in one letter amino acid code (uppercase) with modifications following the amino acid and consisting of the following characters: a-z:0-9.()\-</td><td>-</td><td>HPYFYAPELLFFAKR</td></tr>
+							<tr><td>LinkPos 1</td><td>No**</td><td>Position of cross-linked residue for peptide 1 (1-based)</td><td>-</td><td>2</td></tr>
+							<tr><td>LinkPos 2</td><td>No**</td><td>Position of cross-linked residue for peptide 2 (1-based)</td><td>-</td><td>14</td></tr>
+							<tr><td>Protein 1</td><td>Yes</td><td>Identifier for protein 1. Ambiguous results are represented by listing the alternative proteins separated by semi-colons</td><td>-</td><td>HSA</td></tr>
+							<tr><td>Protein 2</td><td>No**</td><td>Identifier for protein 2. Ambiguous results are represented by listing the alternative proteins separated by semi-colons</td><td>-</td><td>P02768;P13645</td></tr>
+							<tr><td>Decoy 1</td><td>No</td><td>Set to true if the peptide 1 is matched to a decoy sequence</td><td>FALSE</td><td>TRUE</td></tr>
+							<tr><td>Decoy 2</td><td>No</td><td>Set to true if the peptide 2 is matched to a decoy sequence</td><td>FALSE</td><td>TRUE</td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>Rank</td><td>No*</td><td>Rank of the identification quality as scored by the search engine (1 is the top rank)</td><td>1</td><td>1</td></tr>
+							<tr><td>Score</td><td>No</td><td>Confidence score for the identification (number)</td><td>0</td><td>10.5641</td></tr>
+							<tr><td>PassThreshold</td><td>No</td><td>True if the identification has passed a given threshold or been validated as correct</td><td>TRUE</td><td>FALSE</td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>Charge</td><td>Yes</td><td>Precursor charge state</td><td>-</td><td>3</td></tr>
+							<tr><td>CrossLinkerModMass</td><td>No**</td><td>Modification mass of the used cross-linker</td><td>0</td><td>138.06808</td></tr>
+							<tr><td>ExpMz</td><td>No</td><td>The mass-to-charge value measured in the experiment in Daltons / charge.</td><td>-</td><td>985.4341</td></tr>
+							<tr><td>CalcMz</td><td>No</td><td>The theoretical mass-to-charge value calculated for the peptide in Daltons / charge.</td><td>-</td><td>985.6531</td></tr>
+							<tr><td>FragmentTolerance</td><td>No</td><td>MS2 tolerance for annotating fragment peaks (in ppm or Da)</td><td>10 ppm</td><td>0.2 Da</td></tr>
+							<tr><td>IonTypes</td><td>No</td><td>Fragment ion types to be considered separated by semicolon</td><td>peptide;b;y</td><td>peptide;a;b;c;x;y;z</td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>ScanId</td><td>Yes</td><td>mzML: 1-based scan number; MGF: 0-based index in file</td><td>-</td><td>2256</td></tr>
+							<tr><td>PeakListFileName</td><td>Yes</td><td>File name of the associated peak list file that contains the scan</td><td>-</td><td>example_file.mzML</td></tr>
+
 						</tbody>
 					</table>
+					<br/>
 					<p style="font-size: small;line-height: 1.5em;">
-						*required if there are multiple alternative explanations for the same spectrum/id.</br>
+						*required if there are multiple alternative explanations for the same spectrum.</br>
 						**required for cross-linked peptides.
 					</p>
 				</div>

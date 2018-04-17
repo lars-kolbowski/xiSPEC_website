@@ -48,7 +48,7 @@ var FragmentationKeyView = Backbone.View.extend({
 		this.listenTo(this.model, 'changed:ColorScheme', this.updateColors);
 		this.listenTo(this.model, 'changed:HighlightColor', this.updateHighlightColors);
 		this.listenTo(window, 'resize', _.debounce(this.resize));
-
+		this.listenTo(CLMSUI.vent, 'resize:spectrum', this.resize);
 
 	},
 
@@ -134,7 +134,7 @@ var FragmentationKeyView = Backbone.View.extend({
 						this.annotations[pepId][fragments[i].range[r].to].b.push(fragments[i]);
 				}
 			};
-			console.log(this.annotations);
+// 			console.log(this.annotations);
 
 			this.drawFragmentationEvents(0);
 			if(this.peptides[1])

@@ -1,5 +1,5 @@
 <?php
-
+//ToDo: duplication formToJson.php amd processSpecPostData.php
 	require("functions.php");
 
 	$mods = [];

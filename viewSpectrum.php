@@ -1,14 +1,16 @@
 <?php
+$cacheBuster = '?v='.microtime(true);
 $root = realpath($_SERVER["DOCUMENT_ROOT"]);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
 $justSaved = 'false';
+$sid = false;
 if (empty($_POST)){
 	if (session_status() === PHP_SESSION_NONE){session_start();}
 	$dbView = true;
 	$sid = (isset($_GET['sid']) ? $_GET['sid'] : false);
-	
+
 	if(isset($_GET['s']) || isset($_GET['db'])){
 		$tmpDB = false;
 		#this includes a connection string to the sql database
@@ -40,7 +42,6 @@ else{
 	$dbView = FALSE;
 	require("$root/php/processSpecPostData.php");
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -59,6 +60,7 @@ else{
 			<link rel="stylesheet" href="/css/tooltip.css">
 			<link rel="stylesheet" href="/css/xiSPEC_tooltip.css">
 			<link rel="stylesheet" href="/css/spectrumViewWrapper.css">
+			<link rel="stylesheet" href="/css/QC.css">
 			<link rel="stylesheet" href="/css/validationPage.css">
 			<link rel="stylesheet" href="/css/dropdown.css">
 			<link rel="stylesheet" type="text/css" href="/vendor/bootstrap/css/bootstrap.min.css"/>
@@ -78,25 +80,25 @@ else{
 
 
 			<!-- Spectrum view .js files -->
-			<script type="text/javascript" src="/js/app.js"></script>
-			<script type="text/javascript" src="/src/model.js"></script>
-			<script type="text/javascript" src="/src/SpectrumView2.js"></script>
-			<script type="text/javascript" src="/src/FragmentationKeyView.js"></script>
-			<script type="text/javascript" src="/src/PrecursorInfoView.js"></script>
-			<script type="text/javascript" src="/src/SpectrumSettingsView.js"></script>
-			<script type="text/javascript" src="/js/PeptideView.js"></script>
-			<script type="text/javascript" src="/src/PepInputView.js"></script>
-			<script type="text/javascript" src="/src/QCwrapperView.js"></script>
-			<script type="text/javascript" src="/src/ErrorPlotView.js"></script>
-			<script type="text/javascript" src="/src/FragKey/KeyFragment.js"></script>
-			<script type="text/javascript" src="/src/graph/Graph.js"></script>
-			<script type="text/javascript" src="/src/graph/Peak.js"></script>
-			<script type="text/javascript" src="/src/graph/Fragment.js"></script>
+			<script type="text/javascript" src="/js/app.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/model.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/SpectrumView2.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/FragmentationKeyView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/PrecursorInfoView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/SpectrumSettingsView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/js/PeptideView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/PepInputView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/QCwrapperView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/ErrorPlotView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/FragKey/KeyFragment.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/graph/Graph.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/graph/Peak.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="/src/graph/Fragment.js<?php echo $cacheBuster ?>"></script>
 <?php if($dbView)
-echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
-		<script type="text/javascript" src="/src/DataTableView.js"></script>
-		<script type="text/javascript" src="/js/specListTable.js"></script>
-		<script type="text/javascript" src="/js/altListTable.js"></script>';
+echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuster.'"></script>
+		<script type="text/javascript" src="/src/DataTableView.js'.$cacheBuster.'"></script>
+		<script type="text/javascript" src="/js/specListTable.js'.$cacheBuster.'"></script>
+		<script type="text/javascript" src="/js/altListTable.js'.$cacheBuster.'"></script>';
 ?>
 			<script>
 
@@ -145,7 +147,7 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
 		window.onresize = function() { window.trigger('resize') };
 
 		window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumPanel"});
-		window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumPanel"});
+		window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumMainPlotDiv"});
 		window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
 		window.QCwrapper = new QCwrapperView({el: '#QCdiv'});
 		window.ErrorIntensityPlot = new ErrorPlotView({
@@ -154,8 +156,6 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
 			xData: 'Intensity',
 			margin: {top: 10, right: 30, bottom: 20, left: 65},
 			svg: "#errIntSVG",
-			alwaysShow: true,
-			wrapper: window.QCwrapper,
 		});
 		window.ErrorMzPlot = new ErrorPlotView({
 			model: SpectrumModel,
@@ -163,9 +163,8 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
 			xData: 'm/z',
 			margin: {top: 10, right: 30, bottom: 20, left: 65},
 			svg: "#errMzSVG",
-			alwaysShow: true,
-			wrapper: window.QCwrapper,
 		});
+		CLMSUI.vent.trigger('show:QC', true);
 
 		window.SettingsView = new SpectrumSettingsView({
 			model: SettingsSpectrumModel,
@@ -214,7 +213,7 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
 								<div class="dynDiv_resizeDiv_br draggableCorner"></div>
 							</div>
 						<div id="spectrumControls">
-							<i class="btn btn-1a btn-topNav fa fa-home fa-xi" style='top: 0px;' onclick="window.location = 'index.php';" title="Home"></i>
+							<i class="btn btn-1a btn-topNav fa fa-home fa-xi" style='top: 0px;' onclick="window.location = '/index.php';" title="Home"></i>
 							<i class="btn btn-1a btn-topNav fa fa-github fa-xi" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>
 							<i class="btn btn-1a btn-topNav fa fa-download" aria-hidden="true" id="downloadSVG" title="download SVG" style="cursor: pointer;"></i>
 							<label class="btn" title="toggle moveable labels on/off">Move Labels<input class="pointer" id="moveLabels" type="checkbox"></label>
@@ -232,23 +231,24 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
 
 							</form>
 								<!-- <button id="toggleView" title="Toggle between quality control/spectrum view" class="btn btn-1 btn-1a">error/int</button> -->
-							<i id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav fa fa-cog" aria-hidden="true"></i>
-							<span id="dbControls">
 								<?php
+								echo '<i id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav fa fa-cog" aria-hidden="true"></i>';
 								if($dbView){
+									echo '<span id="dbControls">';
 									if($tmpDB) echo '<div class="xispec_tooltip_wrapper"><span class="xispec_tooltip_tr" id="saveTooltip">Your dataset is temporary click here if you want to save it for later access!<i class="fa fa-times-circle closeButton"></i></span><i id="saveDB" title="Save" class="btn btn-1a btn-topNav fa fa-floppy-o" aria-hidden="true"></i></div>';
 									else echo '<i id="shareDB" title="Share" class="btn btn-1a btn-topNav fa fa-share-alt" aria-hidden="true"></i>';
+									// <i id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-left" aria-hidden="true"></i> -->
+									echo '<i id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav fa fa-bars" aria-hidden="true"></i>';
+									//  <i id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-right" aria-hidden="true"></i> -->
+									echo '</span>';
+									echo '<i id="revertAnnotation" title="revert to original annotation" class="btn btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>';
 								}
 								?>
-								<!-- <i id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-left" aria-hidden="true"></i> -->
-								<i id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav fa fa-bars" aria-hidden="true"></i>
-								<!-- <i id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-right" aria-hidden="true"></i> -->
-							</span>
-							<a href="help.php" target="_blank"><i title="Help" class="btn btn-1a btn-topNav fa fa-question" aria-hidden="true"></i></a>
-							<i id="revertAnnotation" title="revert to original annotation" class="btn btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>
+							<a href="/help.php" target="_blank"><i title="Help" class="btn btn-1a btn-topNav fa fa-question" aria-hidden="true"></i></a>
+
 						</div>
 						<div class="plotsDiv">
-							<div id="mainPlotDiv">
+							<div id="spectrumMainPlotDiv">
 								<svg id="spectrumSVG"></svg>
 								<div id="measureTooltip"></div>
 							</div>
@@ -278,8 +278,12 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js"></script>
 				<div id="saveDBerror"></div>
 				<form id='saveDB_form'>
 					<label class="flex-row label">
-						Name: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbName" name="dbName" type="text" placeholder="Enter a name for the dataset"></div>
+						Name: <div class="flex-grow"><input class="form-control" required length=30 id="saveDbName" autocomplete="off" name="dbName" type="text" placeholder="Enter a name for the dataset"></div>
 					</label>
+					<label class="flex-row label">
+						Email: <div class="flex-grow"><input class="form-control" length=128 id="saveDbEmail" name="dbEmail" type="text" placeholder="Enter your email address (optional)"></div>
+					</label>
+
 					<label class="flex-row label" style="line-height: 1.5em; margin: 1.5em 0em;">
 						Public: <input id="publicDBchkBox" class="pointer" name="public" type="checkbox"> <span style="text-transform: initial; letter-spacing: initial; color: #ccc;">(checking this will allow anyone who knows the name of the dataset to view it.)</span>
 					</label>

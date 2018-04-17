@@ -28,7 +28,7 @@ var altListTableView = DataTableView.extend({
 	initialize: function() {
 
 		this.listenTo(CLMSUI.vent, 'scoreChange', this.changeDisplayScore);
-		this.listenTo(CLMSUI.vent, 'loadSpectrum', this.updateTitle);
+		this.listenTo(CLMSUI.vent, 'updateAltTitle', this.updateTitle);
 
 		var self = this;
 
@@ -49,24 +49,24 @@ var altListTableView = DataTableView.extend({
 			"lengthMenu": [ 4, 6, 8, 10, 12 ],
 			"paging":   true,
 			//"ordering": true,
-			"order": [[2, "desc"], [9, "desc"]],
+			"order": [[2, "asc"], [9, "desc"]],
 			//"info":     false,
 			"ajax": "/php/getAltList.php?id=-1&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB'),
 			"columns": [
-				{ "title": "internal_id", "data": "id" },		//0
-				{ "title": "id", "data": "sid" }, 	//1
+				{ "title": "identifications id", "data": "identification_id", "name": "identifications_id" },		//0
+				{ "title": "spectrum id", "data": "sprectrum_ref", "name": "spectrum_id" }, 	//1
 				{ "title": "rank", "data": "rank", "className": "dt-center" },		//2
 				{ "title": "peptide 1", "data": "pep1", "name": "pep1" },	//3
 				{ "title": "peptide 2", "data": "pep2", "name": "pep2" },	//4
 				{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center", "name": "linkpos1" },	//5
 				{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center", "name": "linkpos2" },	//6
 				{ "title": "charge", "data": "charge", "className": "dt-center" },		//7
-				{ "title": "isDecoy", "data": "isDecoy", "className": "dt-center" },	//8
+				{ "title": "isDecoy", "data": "is_decoy", "className": "dt-center" },	//8
 				{ "title": "score", "data": "score", "className": "dt-center", "name": "score" },    //9
-				{ "title": "allScores", "data": "allScores", "name": "allScores" },    //10
+				{ "title": "scores", "data": "scores", "name": "scores" },    //10
 				{ "title": "protein1", "data": "protein1", "className": "dt-center", "name": "protein1" },	//11
 				{ "title": "protein2", "data": "protein2", "className": "dt-center", "name": "protein2" },	//12
-				{ "title": "passThreshold", "data": "passThreshold" },	//13
+				{ "title": "passThreshold", "data": "pass_threshold" , "className": "dt-center" },	//13
 				{ "title": "alt_count", "data": "alt_count" },		//14 needed?
 			],
 			"createdRow": function( row, data, dataIndex ) {
@@ -78,7 +78,7 @@ var altListTableView = DataTableView.extend({
 		    "columnDefs": [
 		    	{
 					"class": "invisible",
-					"targets": [ 0, 1, 10, 13, 14 ],
+					"targets": [ 0, 1, 10, 14 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
@@ -88,7 +88,30 @@ var altListTableView = DataTableView.extend({
 							return data;
 					},
 					"searchable": false,
-					"targets": [ 2, 5, 6, ]
+					"targets": [ 2 ]
+				},
+				{
+					"render": function ( data, type, row, meta ) {
+						if(!data)
+ 							return '';
+						data = parseInt(data)
+						if (data == -1)
+							return '';
+						if (data == 0)
+							return 'N';
+						if(meta.col == 5)
+							var pepSeq = row.pep1;
+						else if (meta.col == 6)
+							var pepSeq = row.pep2;
+						var AAlength = pepSeq.replace(/[^A-Z]/g, '').length;
+						if (data == (AAlength + 1))
+							return 'C';
+						else
+							return data;
+					},
+					"searchable": false,
+					"orderable": false,
+					"targets": [ 5, 6 ]
 				},
 				{
 					"render": function ( data, type, row, meta ) {
@@ -97,11 +120,11 @@ var altListTableView = DataTableView.extend({
 						else
 							return 'True';
 					},
-					"targets": [ 8 ],
+					"targets": [ 8, 13 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
-						var json = JSON.parse(row.allScores);
+						var json = JSON.parse(row.scores);
 						var result = new Array();
 						for (key in json) {
 							result.push(key+'='+json[key]);
@@ -123,9 +146,13 @@ var altListTableView = DataTableView.extend({
 
 		// ToDo: move to BB event handling?
 		this.DataTable.on('click', 'tbody tr', function(e) {
+			// console.log('click');
 			self.DataTable.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
-			CLMSUI.vent.trigger('loadSpectrum', self.DataTable.row(this).data());
+
+			var row = self.DataTable.row(this).data()
+			CLMSUI.vent.trigger('loadSpectrum', row.identification_id);
+// 			CLMSUI.vent.trigger('updateAltCount', row.alt_count);
 		});
 
 		this.altListToolbar = d3.selectAll('.altListToolbar').attr('class', 'listToolbar').attr('id', 'altListId');
@@ -133,19 +160,19 @@ var altListTableView = DataTableView.extend({
 	},
 
 	render: function(){
-		var url = "/php/getAltList.php?id="+this.model.sid+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
+		// this.updateTitle();
+		var url = "/php/getAltList.php?id="+this.model.spectrum_id+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
 		this.DataTable.ajax.url( url ).load();
 	},
 
 	changeDisplayScore: function(scoreName){
 		console.log('altListTable - changeDisplayScore: '+scoreName);
-		var url = "/php/getAltList.php?id="+this.model.sid+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB')+'&scol='+scoreName;
+		var url = "/php/getAltList.php?id="+this.model.spectrum_id+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB')+'&scol='+scoreName;
 		this.DataTable.ajax.url( url ).load();
 	},
 
-	updateTitle: function(rowdata){
-		var sid = rowdata['sid'];
-		this.altListToolbar.text("Alternatives for "+rowdata['sid']);
+	updateTitle: function(title){
+		this.altListToolbar.text("Alternatives for scan: "+ title);
 	},
 	//
 	// userScoreChange: function(e){

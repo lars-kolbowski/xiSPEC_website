@@ -27,6 +27,7 @@ var SpectrumView = Backbone.View.extend({
 		this.listenTo(this.model, 'change', this.render);
 		this.listenTo(this.model, "changed:Zoom", this.updateRange);
 		this.listenTo(window, 'resize', _.debounce(this.resize));
+		this.listenTo(CLMSUI.vent, 'resize:spectrum', this.resize);
 		this.listenTo(this.model, 'changed:ColorScheme', this.updateColors);
 		this.listenTo(this.model, 'changed:HighlightColor', this.updateHighlightColors);
 		this.listenTo(this.model, 'changed:Highlights', this.updateHighlights);
@@ -277,9 +278,11 @@ var SpectrumView = Backbone.View.extend({
 	},
 
 	enableRevertAnnotation: function(){
-		$(this.el).css('background-color', 'rgb(210, 224, 255)');
-		$('#revertAnnotation').addClass('btn-1a');
-		$('#revertAnnotation').removeClass('disabled');
+		if(this.model.get('database') || !this.model.get('standalone')){
+			$(this.el).css('background-color', 'rgb(210, 224, 255)');
+			$('#revertAnnotation').addClass('btn-1a');
+			$('#revertAnnotation').removeClass('disabled');
+		}
 	},
 
 	disableRevertAnnotation: function(){

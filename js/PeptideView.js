@@ -18,6 +18,11 @@
 //
 //
 //		PeptideView.js
+
+//  ToDo: could possibly be removed
+// (redundancy - trimmed down version of FragmentationKeyView)
+// (this.massInfo is similiar in functionality to PrecursorInfoView)
+// massInfo disabled for now - causing to many problems not that important
 var PeptideView = Backbone.View.extend({
 
 	events : {
@@ -44,8 +49,8 @@ var PeptideView = Backbone.View.extend({
 		this.listenTo(this.model, 'destroy', this.remove);
 		this.listenTo(this.model, 'changed:Highlights', this.updateHighlights);
 		this.listenTo(this.model, 'changed:ColorScheme', this.updateColors);
-		this.listenTo(this.model, 'changed:mass', this.renderInfo);
-		this.listenTo(this.model, 'changed:charge', this.renderInfo);
+		// this.listenTo(this.model, 'changed:mass', this.renderInfo);
+		// this.listenTo(this.model, 'change:charge', this.renderInfo);
 		this.listenTo(window, 'resize', _.debounce(this.resize));
 
 
@@ -82,14 +87,14 @@ var PeptideView = Backbone.View.extend({
 	},
 
 	renderInfo: function() {
-		if (this.model.mass == 0)
+		if (this.model.calc_precursor_mass == 0)
 			this.massInfo.html("");
-		else if($.isNumeric(this.model.mass)){
+		else if($.isNumeric(this.model.calc_precursor_mass)){
 			var html = "";
-			var M = this.model.mass.toFixed(2);
+			var M = this.model.calc_precursor_mass.toFixed(2);
 			html += "(M): "+M+"\t";
-			if($.isNumeric(this.model.charge)){
-				var charge = this.model.charge;
+			if($.isNumeric(this.model.precursorCharge)){
+				var charge = this.model.precursorCharge;
 				var ion = ((parseFloat(M)+charge)/charge).toFixed(2);
 				html += "(M+"+charge+"H)"+charge+"+: "+ion;
 			}
@@ -209,7 +214,7 @@ var PeptideView = Backbone.View.extend({
 				.style("cursor", "pointer");
 
 			//line for changing
-			this.changeCLline = this.g.append("line")
+			this.changeCLline = this.CL.append("line")
 				.attr("x1", this.xStep * (CLpos - 1))
 				.attr("y1", 25)
 				.attr("x2", this.xStep * (CLpos - 1))
@@ -272,7 +277,7 @@ var PeptideView = Backbone.View.extend({
 	},
 
 	align_peptides_to_CL: function(){
-		if (this.linkPos.length > 1){
+		if (this.linkPos.length > 1 && this.peptides.length > 1){
 			function arrayOfHashes(n){
 				var arr = [];
 				for (var a = 0; a < n; a++) {arr.push("#")}

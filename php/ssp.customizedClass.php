@@ -231,8 +231,10 @@ $where
 $extraWhere
 $groupBy
 $order";
-//echo $query;
+// echo $query;
+// die();
 }else{
+	// jsonCol could be changed to a joinQuery...
 	if ($jsonCol){
 		$fromModify = ', json_each('.$table.'.'.$jsonCol.')';
 	}
@@ -329,7 +331,7 @@ $sql = $bindings;
 // echo $sql;
 $stmt = $db->prepare( $sql );
 
-//echo $sql;
+// echo $sql;
 // Bind parameters
 if ( is_array( $bindings ) ) {
 for ( $i=0, $ien=count($bindings) ; $i<$ien ; $i++ ) {
