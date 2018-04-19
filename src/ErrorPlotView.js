@@ -313,8 +313,6 @@ var ErrorPlotView = Backbone.View.extend({
 	},
 
 	showTooltip: function(x, y, data){
-		if (this.model.showSpectrum)
-			return
 
 		var contents = [["charge", data.charge], ["error", data.error.toFixed(3)], [this.options.xData, data.x.toFixed(this.model.showDecimals)]];
 
