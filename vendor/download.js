@@ -35,11 +35,11 @@ function downloadResidueCount(){
 function download(content, contentType, fileName, modernWeb) {
     //var b64svg = window.btoa(content);
 	console.log ("svg filename", fileName, modernWeb);
-	
+
 	if (!modernWeb) {
 		// because btoa borks on unicode characters > 1 byte. http://ecmanaut.blogspot.co.uk/2006/07/encoding-decoding-utf8-in-javascript.html
 		var b64svg = window.btoa(unescape(encodeURIComponent(content)));
-		var path = "./php/download.php";
+		var path = "/php/download.php";
 		var method = method || "post"; // Set method to post by default if not specified.
 
 
@@ -79,7 +79,7 @@ function download(content, contentType, fileName, modernWeb) {
 		}
 
 		var blob = dataURItoBlob(content);
-		
+
 		if (navigator.msSaveOrOpenBlob) {
 			navigator.msSaveOrOpenBlob (blob, fileName);
 		} else {
@@ -125,8 +125,8 @@ function getMatchesCSV () {
                 + '","' + (+pp2 + match.linkPos2 - 1)
                 + '","' + pp2 + '","'
                 + (match.matchedPeptides[1]? match.matchedPeptides[1].seq_mods : "") + '","' + match.linkPos2 + '","'
-                + match.score + '","' + match.precursorCharge + '","'  + match.expMZ() + '","' + match.expMass() + '","' 
-                + match.matchMZ() + '","' + match.matchMass() + '","' + match.massError() + '","' 
+                + match.score + '","' + match.precursorCharge + '","'  + match.expMZ() + '","' + match.expMass() + '","'
+                + match.matchMZ() + '","' + match.matchMass() + '","' + match.massError() + '","'
                 + match.autovalidated + '","' + match.validated + '","'
                 + match.searchId + '","' + match.runName() + '","' + match.scanNumber + '"\r\n';
         }
@@ -137,7 +137,7 @@ function getMatchesCSV () {
 
 function getLinksCSV(){
     var validatedTypes = ["A", "B", "C", "?", "R"];
-    
+
     var headerArray = ["Protein 1","SeqPos 1","LinkedRes 1","Protein 2","SeqPos 2","LinkedRes 2","Highest Score","Match Count","AutoValidated","Validated","Link FDR","3D Distance","From Chain","To Chain", "PDB SeqPos 1", "PDB SeqPos 2"];
     var searchIds = Array.from (CLMSUI.compositeModelInst.get("clmsModel").get("searches").keys());
     for (var i = 0; i < searchIds.length; i++ ) {
@@ -151,7 +151,7 @@ function getLinksCSV(){
     var physicalDistances = CLMSUI.compositeModelInst.getCrossLinkDistances (crossLinks, {includeUndefineds: true, returnChainInfo: true, calcDecoyProteinDistances: true});
     //console.log ("pd", physicalDistances);
     var distance2dp = d3.format(".2f");
-    
+
     /*
     crossLinks.forEach (function (crossLink, i) {
         var linear = crossLink.isLinearLink();
@@ -204,13 +204,13 @@ function getLinksCSV(){
         csv += '"\r\n';
     }, this);
     */
-    
+
      var rows = crossLinks.map (function (crossLink, i) {
         var row = [];
         var linear = crossLink.isLinearLink();
         var filteredMatchesAndPepPos = crossLink.filteredMatches_pp;
         row.push (
-            mostReadableId(crossLink.fromProtein), crossLink.fromResidue, crossLink.fromProtein.sequence[crossLink.fromResidue - 1], 
+            mostReadableId(crossLink.fromProtein), crossLink.fromResidue, crossLink.fromProtein.sequence[crossLink.fromResidue - 1],
             (linear ? "" : mostReadableId(crossLink.toProtein)), crossLink.toResidue,
             !linear && crossLink.toResidue ? crossLink.toProtein.sequence[crossLink.toResidue - 1] : ""
         );
@@ -237,7 +237,7 @@ function getLinksCSV(){
             row.push (distance2dp (pDist.distance), chain.from, chain.to, chain.fromRes + 1, chain.toRes + 1);  // +1 to return to 1-INDEXED
 		} else {
             row.push ("", "", "", "", "");
-		}     
+		}
 
         for (var s = 0; s < searchIds.length; s++){
             row.push (searchesFound.has(searchIds[s]) ? "X" : "");
@@ -245,7 +245,7 @@ function getLinksCSV(){
 
         return '"' + row.join('","') + '"';
     }, this);
-    
+
     rows.unshift (headerRow);
     var csv = rows.join("\r\n") + '\r\n';
     return csv;
@@ -322,4 +322,3 @@ mostReadableId = function (protein) {
         return protein.id;
     }
 }
-

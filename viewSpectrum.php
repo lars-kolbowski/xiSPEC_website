@@ -230,7 +230,6 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 								<button id="reset" title="Reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
 
 							</form>
-								<!-- <button id="toggleView" title="Toggle between quality control/spectrum view" class="btn btn-1 btn-1a">error/int</button> -->
 								<?php
 								echo '<i id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav fa fa-cog" aria-hidden="true"></i>';
 								if($dbView){

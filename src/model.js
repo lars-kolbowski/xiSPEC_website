@@ -32,7 +32,6 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 		this.showDecimals = 2;
 		this.moveLabels = false;
 		this.measureMode = false;
-		this.showSpectrum = true;
 		this.showAllFragmentsHighlight = true;
 
 		this.pepStrs = [];
