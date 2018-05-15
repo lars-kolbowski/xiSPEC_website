@@ -54,6 +54,7 @@
 		<div id="main">
 			<div class="container">
 				<h1 class="page-header">Visualizing mass spectrometry data.</h1>
+				Citation: <a target="_blank" href="https://doi.org/10.1093/nar/gky353"> Lars Kolbowski, Colin Combe, Juri Rappsilber; xiSPEC: web-based visualization, analysis and sharing of proteomics data, Nucleic Acids Research, gky353</a></br>
 				xiSPEC is an interactive tool for visualizing and analyzing mass spectrometry data.
 				<ul>
 					<li>Analyse mass spectra intuitively and test hypotheses.</li>
@@ -61,6 +62,8 @@
 					<li>Download annotated spectra in publication quality (vector graphic).</li>
 			 </ul>
 				<p>xiSPEC is an open source project on <a href="https://github.com/Rappsilber-Laboratory/xiSPEC" >GitHub</a>. Report issues and request features <a href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues">here</a>.</p>
+				<p>
+									</p>
 				<div style="text-align: center;">
 					<div class="sliderWrapper">
 					<img class="sliderImg" alt="Interactive highlighting between all views" src="images/slider/interactiveViews.png">
