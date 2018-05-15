@@ -121,7 +121,7 @@ var TableWrapperView = Backbone.View.extend({
 		if(alt_count > 1){
 			$('#nav-altListTable').removeClass('disabled');
 			$('#altExpNum').text("(" + (parseInt(alt_count)-1) + ")");
-			// window.TableWrapper.altListTable.DataTable.ajax.url( "/php/getAltList.php?id=" + mzid + "&db=" + window.SpectrumModel.get('database')+"&tmp=" + window.SpectrumModel.get('tmpDB')).load();
+			// window.TableWrapper.altListTable.DataTable.ajax.url( "./php/getAltList.php?id=" + mzid + "&db=" + window.SpectrumModel.get('database')+"&tmp=" + window.SpectrumModel.get('tmpDB')).load();
 		}
 		else{
 			$('#altExpNum').text("(0)");

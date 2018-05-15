@@ -121,7 +121,7 @@ $( document ).ready(function() {
 		e.preventDefault();
 		var fd = $(this).serialize();
 		$.ajax({
-			url: "/php/submitModDataForCSV.php",
+			url: "./php/submitModDataForCSV.php",
 			type: 'POST',
 			data: fd,
 			success: function (data) {
@@ -136,7 +136,7 @@ $( document ).ready(function() {
 		var spinner = new Spinner({scale: 0.3}).spin();
 		var target = d3.select('#ionsFormSubmit').node();
 		$.ajax({
-			url: "/php/updateIons.php",
+			url: "./php/updateIons.php",
 			type: 'POST',
 			data: fd,
 			beforeSend: function(){
@@ -169,11 +169,22 @@ $( document ).ready(function() {
 
 	});
 
+    $('.ionSelectChkboxSubmit').change(function(){
+    		var ionSelectionArr = new Array();
+    		$('.ionSelectChkboxSubmit:checkbox:checked').each(function(){
+    			ionSelectionArr.push($(this).val());
+    		});
+    		if (ionSelectionArr.length == 0)
+    			$('#ionSelectionSubmit').val("Select ions...");
+    		else
+    			$('#ionSelectionSubmit').val(ionSelectionArr.join(", "));
+    });
+
 	CLMSUI.startParser = function(form_data){
 	var spinner = new Spinner({scale: 5}).spin();
 	var target = d3.select("#processDataInfo > .spinnerWrapper").node();
 	$.ajax({
-		url: "/php/parseData.php",
+		url: "./php/parseData.php",
 		type: 'POST',
 		data: form_data,
 		//async: false,
@@ -233,6 +244,6 @@ $( document ).ready(function() {
 		}
 		});
 		return false;
-}
+    }; 
 
 });
