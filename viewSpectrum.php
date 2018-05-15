@@ -1,6 +1,5 @@
 <?php
 $cacheBuster = '?v='.microtime(true);
-$root = realpath($_SERVER["DOCUMENT_ROOT"]);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
@@ -15,9 +14,9 @@ if (empty($_POST)){
 		$tmpDB = false;
 		#this includes a connection string to the sql database
 		require('xiSPEC_sql_conn.php');
-		require("$root/php/checkAuth.php");
+		require("./php/checkAuth.php");
 		//log access
-		require("$root/php/logAccess.php");
+		require("./php/logAccess.php");
 
 		if(isset($_SESSION[$_GET['db']])){
 			unset($_SESSION[$_GET['db']]);
@@ -40,7 +39,7 @@ if (empty($_POST)){
 }
 else{
 	$dbView = FALSE;
-	require("$root/php/processSpecPostData.php");
+	require("./php/processSpecPostData.php");
 }
 ?>
 
@@ -54,56 +53,55 @@ else{
 			<meta name="apple-mobile-web-app-capable" content="yes">
 			<meta name="apple-mobile-web-app-status-bar-style" content="black">
 			<link rel="icon" type="image/ico" href="/images/logos/favicon.ico">
-			<link rel="stylesheet" href="/css/style.css" />
-			<link rel="stylesheet" href="/css/style2.css" />
-			<link rel="stylesheet" href="/css/settings.css" />
-			<link rel="stylesheet" href="/css/tooltip.css">
-			<link rel="stylesheet" href="/css/xiSPEC_tooltip.css">
-			<link rel="stylesheet" href="/css/spectrumViewWrapper.css">
-			<link rel="stylesheet" href="/css/QC.css">
-			<link rel="stylesheet" href="/css/validationPage.css">
-			<link rel="stylesheet" href="/css/dropdown.css">
-			<link rel="stylesheet" type="text/css" href="/vendor/bootstrap/css/bootstrap.min.css"/>
-			<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css"/>
-			<?php include("$root/xiSPEC_scripts.php");?>
+			<link rel="stylesheet" href="./css/style.css" />
+			<link rel="stylesheet" href="./css/style2.css" />
+			<link rel="stylesheet" href="./css/settings.css" />
+			<link rel="stylesheet" href="./css/tooltip.css">
+			<link rel="stylesheet" href="./css/xiSPEC_tooltip.css">
+			<link rel="stylesheet" href="./css/spectrumViewWrapper.css">
+			<link rel="stylesheet" href="./css/QC.css">
+			<link rel="stylesheet" href="./css/validationPage.css">
+			<link rel="stylesheet" href="./css/dropdown.css">
+			<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
+			<link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css"/>
+			<?php include("./xiSPEC_scripts.php");?>
 
-			<script type="text/javascript" src="/vendor/jscolor.min.js"></script>
-			<script type="text/javascript" src="/vendor/c3.js"></script>
-			<script type="text/javascript" src="/vendor/split.min.js"></script>
-			<script type="text/javascript" src="/vendor/svgexp.js"></script>
-			<script type="text/javascript" src="/vendor/spin.js"></script>
-			<script type="text/javascript" src="/vendor/byrei-dyndiv_1.0rc1.js"></script>
-			<script type="text/javascript" src="/vendor/download.js"></script>
-			<script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.min.js"></script>
-			<script type="text/javascript" src="/vendor/dataTables.bootstrap.min.js"></script>
+			<script type="text/javascript" src="./vendor/jscolor.min.js"></script>
+			<script type="text/javascript" src="./vendor/split.min.js"></script>
+			<script type="text/javascript" src="./vendor/svgexp.js"></script>
+			<script type="text/javascript" src="./vendor/spin.js"></script>
+			<script type="text/javascript" src="./vendor/byrei-dyndiv_1.0rc1.js"></script>
+			<script type="text/javascript" src="./vendor/download.js"></script>
+			<script type="text/javascript" src="./vendor/bootstrap/js/bootstrap.min.js"></script>
+			<script type="text/javascript" src="./vendor/dataTables.bootstrap.min.js"></script>
 			<!-- <script type="text/javascript" src="cdn.datatables.net/plug-ins/1.10.16/api/fnFindCellRowIndexes.js"></script> -->
 
 
 			<!-- Spectrum view .js files -->
-			<script type="text/javascript" src="/js/app.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="/src/model.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="/src/SpectrumView2.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="/src/FragmentationKeyView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="/src/PrecursorInfoView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="/src/SpectrumSettingsView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="/js/PeptideView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="/src/PepInputView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="/src/QCwrapperView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="/src/ErrorPlotView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="/src/FragKey/KeyFragment.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="/src/graph/Graph.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="/src/graph/Peak.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="/src/graph/Fragment.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./js/app.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./src/model.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./src/SpectrumView2.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./src/FragmentationKeyView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./src/PrecursorInfoView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./src/SpectrumSettingsView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./js/PeptideView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./src/PepInputView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./src/QCwrapperView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./src/ErrorPlotView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./src/FragKey/KeyFragment.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./src/graph/Graph.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./src/graph/Peak.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./src/graph/Fragment.js<?php echo $cacheBuster ?>"></script>
 <?php if($dbView)
-echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuster.'"></script>
-		<script type="text/javascript" src="/src/DataTableView.js'.$cacheBuster.'"></script>
-		<script type="text/javascript" src="/js/specListTable.js'.$cacheBuster.'"></script>
-		<script type="text/javascript" src="/js/altListTable.js'.$cacheBuster.'"></script>';
+echo 	'<script type="text/javascript" src="./src/TableWrapperView.js'.$cacheBuster.'"></script>
+		<script type="text/javascript" src="./src/DataTableView.js'.$cacheBuster.'"></script>
+		<script type="text/javascript" src="./js/specListTable.js'.$cacheBuster.'"></script>
+		<script type="text/javascript" src="./js/altListTable.js'.$cacheBuster.'"></script>';
 ?>
 			<script>
 
 		var model_vars = {
-			baseDir: "/",
+			baseDir: "./",
 			xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/",
 			<?php if(isset($dbName)) echo 'database: "'.$dbName.'",'; ?>
 			<?php if(isset($tmpDB)) echo 'tmpDB: "'.$tmpDB.'",'; ?>
@@ -213,7 +211,7 @@ echo 	'<script type="text/javascript" src="/src/TableWrapperView.js'.$cacheBuste
 								<div class="dynDiv_resizeDiv_br draggableCorner"></div>
 							</div>
 						<div id="spectrumControls">
-							<i class="btn btn-1a btn-topNav fa fa-home fa-xi" style='top: 0px;' onclick="window.location = '/index.php';" title="Home"></i>
+							<i class="btn btn-1a btn-topNav fa fa-home fa-xi" style='top: 0px;' onclick="window.location = './index.php';" title="Home"></i>
 							<i class="btn btn-1a btn-topNav fa fa-github fa-xi" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>
 							<i class="btn btn-1a btn-topNav fa fa-download" aria-hidden="true" id="downloadSVG" title="download SVG" style="cursor: pointer;"></i>
 							<label class="btn" title="toggle moveable labels on/off">Move Labels<input class="pointer" id="moveLabels" type="checkbox"></label>

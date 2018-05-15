@@ -6,10 +6,10 @@
 			<meta name="apple-mobile-web-app-capable" content="yes">
 			<meta name="apple-mobile-web-app-status-bar-style" content="black">
 			<link rel="icon" type="image/ico" href="/images/logos/favicon.ico">
-			<link rel="stylesheet" href="/css/reset.css" />
-			<link rel="stylesheet" href="/css/noscript.css" />
-			<link rel="stylesheet" href="/css/style.css" />
-			<link rel="stylesheet" href="/css/responsive.css" />
+			<link rel="stylesheet" href="./css/reset.css" />
+			<link rel="stylesheet" href="./css/noscript.css" />
+			<link rel="stylesheet" href="./css/style.css" />
+			<link rel="stylesheet" href="./css/responsive.css" />
 			<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
 <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
 <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>

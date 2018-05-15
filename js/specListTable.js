@@ -48,7 +48,7 @@ var specListTableView = DataTableView.extend({
 		this.wrapper = d3.select(this.el);
 		this.userPageLen = 8;
 
-		this.ajaxUrl = "/php/specListSSprocessing.php?db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
+		this.ajaxUrl = this.model.get('baseDir') + "/php/specListSSprocessing.php?db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
 
 		this.tableVars = {
 			//"ordering": false,
