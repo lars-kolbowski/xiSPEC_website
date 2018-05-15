@@ -19,7 +19,7 @@
 	if(!in_array($_GET['db'], $_SESSION['access'])){
 		//if no valid authentication re-test authentication
 		//this includes a connection string to the sql database
-		require('../../xiSPEC_sql_conn.php');
+		require('../xiSPEC_sql_conn.php');
 		require('checkAuth.php');
 	}
 	// re-check authentication
