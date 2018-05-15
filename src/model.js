@@ -2,7 +2,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 
 	defaults: function() {
     return {
-      baseDir:  '',
+      baseDir:  './',
 	  xiAnnotatorBaseURL: 'http://xi3.bio.ed.ac.uk/xiAnnotator/',
       JSONdata: false,
 	  standalone: true,
@@ -641,7 +641,7 @@ var AnnotatedSpectrumModel = Backbone.Model.extend({
 	create_annotation_request: function(id){
 		var self = this;
 		$.ajax({
-			url: '/php/createSpecReq.php?id='+id + "&db=" + this.get('database')+"&tmp=" + this.get('tmpDB'),
+			url:  this.get('baseDir') + '/php/createSpecReq.php?id='+id + "&db=" + this.get('database')+"&tmp=" + this.get('tmpDB'),
 			type: 'GET',
 			async: false,
 			cache: false,

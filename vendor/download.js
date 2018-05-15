@@ -39,7 +39,7 @@ function download(content, contentType, fileName, modernWeb) {
 	if (!modernWeb) {
 		// because btoa borks on unicode characters > 1 byte. http://ecmanaut.blogspot.co.uk/2006/07/encoding-decoding-utf8-in-javascript.html
 		var b64svg = window.btoa(unescape(encodeURIComponent(content)));
-		var path = "/php/download.php";
+		var path = "./php/download.php";
 		var method = method || "post"; // Set method to post by default if not specified.
 
 
