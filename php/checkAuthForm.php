@@ -1,7 +1,7 @@
 <?php
 
 	#this includes a connection string to the sql database
-	require('../../xiSPEC_sql_conn.php');
+	require('../xiSPEC_sql_conn.php');
 	$xiSPECdb = new PDO("mysql:host=localhost;dbname=".$DBname, $DBuser, $DBpass) or die("cannot open the database");
 	$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 

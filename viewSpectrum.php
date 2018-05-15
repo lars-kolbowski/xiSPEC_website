@@ -14,7 +14,7 @@ if (empty($_POST)){
 	if(isset($_GET['s']) || isset($_GET['db'])){
 		$tmpDB = false;
 		#this includes a connection string to the sql database
-		require('../xiSPEC_sql_conn.php');
+		require('xiSPEC_sql_conn.php');
 		require("$root/php/checkAuth.php");
 		//log access
 		require("$root/php/logAccess.php");
