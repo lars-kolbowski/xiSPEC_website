@@ -12,6 +12,10 @@ apache2
 mysql
 php
 
+### Note
+
+Annotation of spectra is done per default via xiAnnotator (https://github.com/Rappsilber-Laboratory/xiAnnotator) set up on http://xi3.bio.ed.ac.uk/xiAnnotator/annotate/FULL. Instructions for setting up your own copy of the xiAnnotator can be found here: https://github.com/Rappsilber-Laboratory/xiAnnotator/blob/master/doc/SysV/Readme.md
+
 ### Installation
 
 Clone git repository into your web-server directory (e.g. /var/www/html):
