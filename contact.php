@@ -46,14 +46,14 @@
 										<td>
 											<div class="contact contact-center no-hover">
 												<ul id="navlist"  class="no-hover">
-													<li><a href="mailto:lars.b.kolbowski@campus.tu-berlin.de" title="Email Colin!">
+													<li><a href="mailto:colin.combe@ed.ac.uk" title="Email Colin!">
 														<img src="images/team/colin-combe.jpg" class="grayscale" />
 													</a></li>
 												</ul>
 												<div class="external-link">
 													<p>
 														<strong>Colin Combe</strong>
-														<br/><a href="mailto:colin.combe@edi.ac.uk">colin.combe@edi.ac.uk</a>
+														<br/><a href="mailto:colin.combe@ed.ac.uk">colin.combe@ed.ac.uk</a>
 														<br/>Developer
 														<br/>University of Edinburgh
 														<br/>Room 4.17
