@@ -54,7 +54,7 @@ else{
 			<meta name="apple-mobile-web-app-status-bar-style" content="black">
 			<link rel="icon" type="image/ico" href="/images/logos/favicon.ico">
 			<link rel="stylesheet" href="./css/style.css" />
-			<link rel="stylesheet" href="./css/style2.css" />
+			<link rel="stylesheet" href="./css/spectrum.css" />
 			<link rel="stylesheet" href="./css/settings.css" />
 			<link rel="stylesheet" href="./css/tooltip.css">
 			<link rel="stylesheet" href="./css/xiSPEC_tooltip.css">

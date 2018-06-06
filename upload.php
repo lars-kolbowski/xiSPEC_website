@@ -32,6 +32,7 @@
 		<script src="./vendor/jQueryFileUploadMin/jquery.iframe-transport.js"></script>
 		<script src="./vendor/jQueryFileUploadMin/jquery.fileupload.js"></script>
 
+		<link rel="stylesheet" href="./css/upload.css" />
 		<link rel="stylesheet" href="./css/dropdown.css" />
 		<link rel="stylesheet" href="./css/manDataInput.css" />
 	</head>
