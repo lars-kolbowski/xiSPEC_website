@@ -7,9 +7,8 @@
 		<title>xiSPEC - authenticate</title>
 		<link rel="icon" type="image/ico" href="/images/logos/favicon.ico">
 		<link rel="stylesheet" href="/css/auth.css" />
-		<link rel="stylesheet" href="/css/style2.css" />
+		<link rel="stylesheet" href="/css/spectrum.css" />
 		<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css"/>
-		<link rel="stylesheet" href="/css/validationPage.css">
 	</head>
 	<body>
 

@@ -54,13 +54,12 @@ else{
 			<meta name="apple-mobile-web-app-status-bar-style" content="black">
 			<link rel="icon" type="image/ico" href="/images/logos/favicon.ico">
 			<link rel="stylesheet" href="./css/style.css" />
-			<link rel="stylesheet" href="./css/style2.css" />
+			<link rel="stylesheet" href="./css/spectrum.css" />
 			<link rel="stylesheet" href="./css/settings.css" />
 			<link rel="stylesheet" href="./css/tooltip.css">
 			<link rel="stylesheet" href="./css/xiSPEC_tooltip.css">
 			<link rel="stylesheet" href="./css/spectrumViewWrapper.css">
 			<link rel="stylesheet" href="./css/QC.css">
-			<link rel="stylesheet" href="./css/validationPage.css">
 			<link rel="stylesheet" href="./css/dropdown.css">
 			<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
 			<link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css"/>
@@ -305,7 +304,7 @@ echo 	'<script type="text/javascript" src="./src/TableWrapperView.js'.$cacheBust
 				<div id='justSavedMsg' style="line-height: 2em;"></div>
 				<?php
 
-					$link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://". $_SERVER['SERVER_NAME'] . "/db/" . $dbName;
+					$link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://". $_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI];
 					if (isset($public)){
 						echo 'This dataset is public - you can go ahead and share the link below</br><label class="flex-row label">url: <div class="flex-grow"><input type="text" class="form-control shareURL" value="'.$link.'" readonly onClick="this.select();"></div></label>';
 					}
