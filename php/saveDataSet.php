@@ -66,14 +66,15 @@
 	$stmt->bindParam(':dates', $date, PDO::PARAM_STR);
 
 	try {
-		$stmt->execute();
-
 		$db_path = 	$xiSPEC_ms_parser_dir.'/dbs/';
 		$tmpDB = $db_path."tmp/".session_id().".db";
 		$newDB = $db_path."saved/".$dbname.".db";
 		if (!copy($tmpDB, $newDB)) {
-				$json['error'] = "Error saving database!";
+			$json['error'] = "Error saving database!";
+			die(json_encode($json));
 		}
+
+		$stmt->execute();
 		if(!isset($_SESSION['access'])) $_SESSION['access'] = array();
 		if(!in_array($dbname, $_SESSION['access'])){
 			$_SESSION['access'][] = $dbname;
