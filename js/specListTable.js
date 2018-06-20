@@ -373,6 +373,7 @@ var specListTableView = DataTableView.extend({
 	initiateTable: function() {
 	    var table = $.fn.dataTable.fnTables(true);
 	    $(table).dataTable().fnAdjustColumnSizing();
+		CLMSUI.vent.trigger('tableUpdate_done');
 	},
 
 	toggleThreshold: function(e){
