@@ -68,6 +68,14 @@ var altListTableView = DataTableView.extend({
 				{ "title": "protein2", "data": "protein2", "className": "dt-center", "name": "protein2" },	//12
 				{ "title": "passThreshold", "data": "pass_threshold" , "className": "dt-center" },	//13
 				{ "title": "alt_count", "data": "alt_count" },		//14 needed?
+
+				{ "title": "crosslinker_modmass1", "data": "crosslinker_modmass1", "name": "crosslinker_modmass1", "searchable": false },    //15
+				{ "title": "crosslinker_modmass2", "data": "crosslinker_modmass2", "name": "crosslinker_modmass2", "searchable": false },    //16
+				{ "title": "ion_types", "data": "ion_types", "name": "ion_types", "searchable": false },    //17
+				{ "title": "exp_mz", "data": "exp_mz", "name": "exp_mz" },    //18
+				{ "title": "frag_tol", "data": "frag_tol", "name": "frag_tol", "searchable": false },    //19
+				{ "title": "spectrum_id", "data": "spectrum_id", "name": "spectrum_id", "searchable": false },    //20
+
 			],
 			"createdRow": function( row, data, dataIndex ) {
 				if ( data[6] == "0" )
@@ -78,7 +86,7 @@ var altListTableView = DataTableView.extend({
 		    "columnDefs": [
 		    	{
 					"class": "invisible",
-					"targets": [ 0, 1, 10, 14 ],
+					"targets": [ 0, 1, 10, 14, 15, 16, 17, 18, 19, 20 ],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
@@ -151,7 +159,7 @@ var altListTableView = DataTableView.extend({
 			$(this).addClass('selected');
 
 			var row = self.DataTable.row(this).data()
-			CLMSUI.vent.trigger('loadSpectrum', row.identification_id);
+			self.model.loadSpectrum(row);
 // 			CLMSUI.vent.trigger('updateAltCount', row.alt_count);
 		});
 
