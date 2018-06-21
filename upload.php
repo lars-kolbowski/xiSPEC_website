@@ -47,8 +47,8 @@
 					<h1 class="page-header accordionHead"><i <?php echo($example ? 'class="fa fa-plus-square"' : 'class="fa fa-minus-square"');?> aria-hidden="true"></i> Data Upload - Upload your data (identification & peak list file pair)</h1>
 					<div class="accordionContent" <?php echo ($example ? 'style="display: none;"' : '');?>>
 						<div style="margin-left: 1em; line-height: 1.7em;">
-							Supported identification file formats: <a title="HUPO-PIS: mzidentML" href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> and <a title="Show column headings" href="help.php#csv">csv</a>.</br>
-							Supported peak list file formats: <a title="HUPO-PIS: mzML" href="http://www.psidev.info/mzml" target="blank">mzML</a> and <a title="Mascot Generic Format" href="http://www.matrixscience.com/help/data_file_help.html#GEN">mgf</a> (+ zip/gz archives of mzML/mgf).</br>
+							Supported identification file formats: <a title="HUPO-PSI: mzidentML" href="http://www.psidev.info/mzidentml" target="blank">mzIdentML</a> and <a title="Show column headings" href="help.php#csv">csv</a>.</br>
+							Supported peak list file formats: <a title="HUPO-PSI: mzML" href="http://www.psidev.info/mzml" target="blank">mzML</a> and <a title="Mascot Generic Format" href="http://www.matrixscience.com/help/data_file_help.html#GEN">mgf</a> (+ zip/gz archives of mzML/mgf).</br>
 							Maximum file size: 500 Mb <br />
 							Privacy: Your uploaded data will be kept private unless you choose to make it publicly available upon saving. We will not make use of your data or provide access to others.<br />
 							<div style="font-size: 0.8em; line-height: 1.7em; margin-top:0.5em;">
