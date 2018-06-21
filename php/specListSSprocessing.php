@@ -40,7 +40,16 @@
 		array( 'db' => 'pep2_ev.protein',	'dt' => 'protein2', 'field' => 'protein2', 'as' => 'protein2'),
 		array( 'db' => 'si.pass_threshold',	'dt' => 'pass_threshold', 'field' => 'pass_threshold', 'as' => 'pass_threshold'),
 		array( 'db' => 'sp.peak_list_file_name',	'dt' => 'file', 'field' => 'file', 'as' => 'file'),
-		array( 'db' => 'sp.scan_id',		'dt' => 'scan_id', 'field' => 'scan_id', 'as' => 'scan_id')
+		array( 'db' => 'sp.scan_id',		'dt' => 'scan_id', 'field' => 'scan_id', 'as' => 'scan_id'),
+
+		array( 'db' => 'pep1_table.crosslinker_modmass',	'dt' => 'crosslinker_modmass1', 'field' => 'crosslinker_modmass1', 'as' => 'crosslinker_modmass1'),
+		array( 'db' => 'pep2_table.crosslinker_modmass',		'dt' => 'crosslinker_modmass2', 'field' => 'crosslinker_modmass2', 'as' => 'crosslinker_modmass2'),
+		array( 'db' => 'si.ions',	'dt' => 'ion_types', 'field' => 'ion_types', 'as' => 'ion_types'),
+		array( 'db' => 'si.exp_mz',		'dt' => 'exp_mz', 'field' => 'exp_mz', 'as' => 'exp_mz'),
+		array( 'db' => 'sp.frag_tol',		'dt' => 'frag_tol', 'field' => 'frag_tol', 'as' => 'frag_tol'),
+		array( 'db' => 'si.spectrum_id',		'dt' => 'spectrum_id', 'field' => 'spectrum_id', 'as' => 'spectrum_id'),
+
+
 	);
 
 	if (session_status() === PHP_SESSION_NONE){session_start();}

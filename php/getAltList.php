@@ -63,9 +63,15 @@
 				pep1_ev.protein AS protein1,
 				pep2_ev.protein AS protein2,
 				si.pass_threshold AS pass_threshold,
-				si.rank AS rank
+				si.rank AS rank,
 				sp.peak_list_file_name AS file,
-				sp.scan_id AS scan_id
+				sp.scan_id AS scan_id,
+				pep1_table.crosslinker_modmass as crosslinker_modmass1,
+				pep2_table.crosslinker_modmass as crosslinker_modmass2,
+				si.ions as ion_types,
+				si.exp_mz as exp_mz,
+				sp.frag_tol as frag_tol,
+				si.spectrum_id as spectrum_id
 				FROM spectrum_identifications AS si, json_each(si.scores)
 				LEFT JOIN spectra AS sp ON (si.spectrum_id = sp.id)
 				LEFT JOIN peptides AS pep1 ON (si.pep1_id = pep1_table.id)
@@ -102,7 +108,15 @@
 				pep1_ev.protein AS protein1,
 				pep2_ev.protein AS protein2,
 				si.pass_threshold AS pass_threshold,
-				si.rank AS rank
+				si.rank AS rank,
+				sp.peak_list_file_name AS file,
+				sp.scan_id AS scan_id,
+				pep1_table.crosslinker_modmass as crosslinker_modmass1,
+				pep2_table.crosslinker_modmass as crosslinker_modmass2,
+				si.ions as ion_types,
+				si.exp_mz as exp_mz,
+				sp.frag_tol as frag_tol,
+				si.spectrum_id as spectrum_id
 				FROM spectrum_identifications AS si, json_each(si.scores)
 				LEFT JOIN spectra AS sp ON (si.spectrum_id = sp.id)
 				LEFT JOIN peptides AS pep1_table ON (si.pep1_id = pep1_table.id)

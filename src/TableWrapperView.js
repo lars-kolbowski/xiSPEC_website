@@ -32,9 +32,14 @@ var TableWrapperView = Backbone.View.extend({
 		var defaultOptions = {
 			initId: false,
 		};
+
+		this.spinner = new Spinner({scale: 1});
+		this.spinner.spin(d3.select(this.el).node());
+
 		this.options = _.extend(defaultOptions, viewOptions);
 
 		this.listenTo(CLMSUI.vent, 'updateAltCount', this.updateNav);
+		this.listenTo(CLMSUI.vent, 'tableUpdate_done', this.tableUpdate_done);
 		this.listenTo(CLMSUI.vent, 'toggleTableView', this.toggleView);
 
 		var d3el = d3.select(this.el);
@@ -127,6 +132,10 @@ var TableWrapperView = Backbone.View.extend({
 			$('#altExpNum').text("(0)");
 			$('#nav-altListTable').addClass('disabled');
 		}
-	}
+	},
+
+	tableUpdate_done: function(){
+		this.spinner.stop();
+	},
 
 });
