@@ -111,7 +111,7 @@ var specListTableView = DataTableView.extend({
 				{ "title": "crosslinker_modmass1", "data": "crosslinker_modmass1", "name": "crosslinker_modmass1", "searchable": false },    //18
 				{ "title": "crosslinker_modmass2", "data": "crosslinker_modmass2", "name": "crosslinker_modmass2", "searchable": false },    //19
 				{ "title": "ion_types", "data": "ion_types", "name": "ion_types", "searchable": false },    //20
-				{ "title": "exp_mz", "data": "exp_mz", "name": "exp_mz" },    //21
+				{ "title": "exp_mz", "className":"toggable", "data": "exp_mz", "name": "exp_mz" },    //21
 				{ "title": "frag_tol", "data": "frag_tol", "name": "frag_tol", "searchable": false },    //22
 				{ "title": "spectrum_id", "data": "spectrum_id", "name": "spectrum_id", "searchable": false },    //23
 			],
