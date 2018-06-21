@@ -159,7 +159,7 @@ var altListTableView = DataTableView.extend({
 			$(this).addClass('selected');
 
 			var row = self.DataTable.row(this).data()
-			self.model.loadSpectrum(row);
+			self.model.loadSpectrum(row, true);
 // 			CLMSUI.vent.trigger('updateAltCount', row.alt_count);
 		});
 
