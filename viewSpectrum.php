@@ -12,10 +12,10 @@ if (empty($_POST)){
 
 	if(isset($_GET['s']) || isset($_GET['db'])){
 		$tmpDB = false;
-		#this includes a connection string to the sql database
+		// this includes a connection string to the sql database
 		require('xiSPEC_sql_conn.php');
 		require("./php/checkAuth.php");
-		//log access
+		// log access
 		require("./php/logAccess.php");
 
 		if(isset($_SESSION[$_GET['db']])){
@@ -40,6 +40,7 @@ if (empty($_POST)){
 else{
 	$dbView = FALSE;
 	require("./php/processSpecPostData.php");
+
 }
 ?>
 
@@ -122,11 +123,14 @@ echo 	'<script type="text/javascript" src="./spectrum/src/TableWrapperView.js'.$
 			}
 			else{
 				echo 'window.dbView = false;';
-				echo 'var json_data = '.$response.';';
+				echo 'var post_data = '.json_encode($_POST).';';
 				echo 'var json_req = '.$postJSON.';';
 			}
 		?>
 		$(function() {
+
+			_.extend(window, Backbone.Events);
+			window.onresize = function() { window.trigger('resize') };
 
 			var model_vars = {
 				baseDir: "./",
@@ -136,22 +140,9 @@ echo 	'<script type="text/javascript" src="./spectrum/src/TableWrapperView.js'.$
 			};
 
 			xiSPEC.init("spectrumPanel", model_vars );
-
 			// xispec_extra_spectrumControls
 			$('#xispec_extra_spectrumControls_before').html('<a href="index.php"><i class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-home fa-xi" style="top: 0px;" title="Home"></i></a><a href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues" target="_blank"><i class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-github fa-xi" title="GitHub issue tracker" style="cursor:pointer;"></i></a>');
 
-			<?php
-			// if($dbView){
-			// 	echo '<span id="dbControls">';
-			// 	if($tmpDB) echo '<div class="xispec_tooltip_wrapper"><span class="xispec_tooltip_tr" id="saveTooltip">Your dataset is temporary click here if you want to save it for later access!<i class="fa fa-times-circle closeButton"></i></span><i id="saveDB" title="Save" class="btn btn-1a btn-topNav fa fa-floppy-o" aria-hidden="true"></i></div>';
-			// 	else echo '<i id="shareDB" title="Share" class="btn btn-1a btn-topNav fa fa-share-alt" aria-hidden="true"></i>';
-			// 	// <i id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-left" aria-hidden="true"></i> -->
-			// 	echo '<i id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav fa fa-bars" aria-hidden="true"></i>';
-			// 	//  <i id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-right" aria-hidden="true"></i> -->
-			// 	echo '</span>';
-			// 	echo '<i id="revertAnnotation" title="revert to original annotation" class="btn btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>';
-			// }
-			?>
 			if (dbView){
 				var db_controls = '<span id="dbControls">';
 				if(tmpDB) db_controls += '<div class="xispec_tooltip_wrapper"><span class="xispec_tooltip_tr" id="saveTooltip">Your dataset is temporary click here if you want to save it for later access!<i class="fa fa-times-circle closeButton"></i></span><i id="saveDB" title="Save" class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-floppy-o" aria-hidden="true"></i></div>';
@@ -160,40 +151,23 @@ echo 	'<script type="text/javascript" src="./spectrum/src/TableWrapperView.js'.$
 				db_controls += '<i id="revertAnnotation" title="revert to original annotation" class="xispec_btn xispec_btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>';
 				db_controls += '</span>';
 				$('#xispec_extra_spectrumControls_after').html(db_controls);
-			}
 
-
-
-			if(dbView){
-				// window.SpectrumModel.requestId = "0";
 				$('#bottomDiv').show();
 				window.initSpinner = new Spinner({scale: 5}).spin (d3.select("#topDiv").node());
+
+				window.TableWrapper = new TableWrapperView({
+					model: xiSPEC.SpectrumModel,
+					el:"#bottomDiv",
+					initId: "<?php echo $sid; ?>"		//ToDo: remove? -> not used yet
+				});
 			}
 			else{
-				console.log(json_req);
 				$("#topDiv-overlay").css("z-index", -1);
 				$('#dbControls').hide();
 				$('#bottomDiv').hide();
 				$('#altDiv').hide();
-			}
+				xiSPEC.SpectrumModel.request_annotation(json_req);
 
-			_.extend(window, Backbone.Events);
-			window.onresize = function() { window.trigger('resize') };
-
-			if(!dbView){
-				xiSPEC.SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
-				var json_data_copy = jQuery.extend({}, json_data);
-				xiSPEC.SpectrumModel.otherModel = xiSPEC.SettingsSpectrumModel;
-				xiSPEC.SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
-				xiSPEC.SettingsSpectrumModel.otherModel = xiSPEC.SpectrumModel;
-				xiSPEC.SettingsView.render();
-			}
-			else {
-				window.TableWrapper = new TableWrapperView({
-					model: xiSPEC.SpectrumModel,
-					el:"#bottomDiv",
-					initId: "<?php echo $sid; ?>"		//ToDo: remove?
-				});
 			}
 
 		});
