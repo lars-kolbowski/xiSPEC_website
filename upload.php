@@ -27,7 +27,6 @@
 		<script type="text/javascript" src="./spectrum/src/model.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./js/upload.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./js/accordion.js<?php echo $cacheBuster ?>"></script>
-		<script type="text/javascript" src="./vendor/spin.js"></script>
 		<script src="./vendor/jQueryFileUploadMin/jquery.ui.widget.js"></script>
 		<script src="./vendor/jQueryFileUploadMin/jquery.iframe-transport.js"></script>
 		<script src="./vendor/jQueryFileUploadMin/jquery.fileupload.js"></script>

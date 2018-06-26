@@ -65,19 +65,10 @@ else{
 			<?php include("./xiSPEC_scripts.php");?>
 
 			<!-- modular xiSPEC files -->
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
-		    <script type="text/javascript" src="./spectrum/vendor/underscore.js"></script>
-		    <script type="text/javascript" src="./spectrum/vendor/backbone.js"></script>
-		    <script type="text/javascript" src="./spectrum/vendor/d3.js"></script>
 		    <script type="text/javascript" src="./spectrum/vendor/byrei-dyndiv_1.0rc1.js"></script>
-		    <script type="text/javascript" src="./spectrum/vendor/colorbrewer.js"></script>
-		    <script type="text/javascript" src="./spectrum/vendor/js.cookie.js"></script>
-		    <script type="text/javascript" src="./spectrum/vendor/DataTables-1.10.12/datatables.min.js"></script>
-		    <link rel="stylesheet" type="text/css" href="./spectrum/vendor/dt-1.10.12_datatables.min.css"/>
 		    <script type="text/javascript" src="./spectrum/vendor/jscolor.min.js"></script>
 		    <script type="text/javascript" src="./spectrum/vendor/split.min.js"></script>
 		    <script type="text/javascript" src="./spectrum/vendor/svgexp.js"></script>
-		    <script type="text/javascript" src="./spectrum/vendor/spin.js"></script>
 		    <script type="text/javascript" src="./spectrum/vendor/download.js"></script>
 		    <script type="text/javascript" src="./spectrum/vendor/bootstrap/js/bootstrap.min.js"></script>
 		    <script type="text/javascript" src="./spectrum/vendor/dataTables.bootstrap.min.js"></script>
