@@ -212,13 +212,6 @@ body, input, select, textarea {
     padding-left:10px;
 }
 
-.btn-topNav{
-    top: 3px;
-    font-size: 1.2em;
-    padding: 3px 4px;
-    margin: 2px 2px 0px 2px;
-}
-
 #revertAnnotation{
   color: rgb(154, 186, 255);
 }
@@ -396,9 +389,9 @@ body, input, select, textarea {
     font-size: 1.5em;
 }
 
-.listWrapper{
+.xispec_listWrapper{
     padding: 1px 10px;
-    color: #000;
+    color: #000!important;
     overflow-x: auto;
 }
 
