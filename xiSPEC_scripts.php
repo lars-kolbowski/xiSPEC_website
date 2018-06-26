@@ -1,4 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+<script type="text/javascript" src="./spectrum/vendor/jquery.min.js"></script>
 <script type="text/javascript" src="./vendor/jquery.easyModal.js"></script>
 <script type="text/javascript" src="./spectrum/vendor/underscore.js"></script>
 <script type="text/javascript" src="./spectrum/vendor/backbone.js"></script>
