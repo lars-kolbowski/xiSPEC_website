@@ -841,20 +841,6 @@ form table td {
     color: #333333;
     background: #fff;
 }
-.btn-1a-inverse:active, .btn-1a-inverse:hover {
-    color: #333333;
-    background: #fff;
-    border: 1px solid #333333;
-}
-.btn-1a-inputbtn {
-    border: none;
-}
-.btn-1a-inputbtn:active, .btn-1a-inputbtn:hover {
-    color: #fff;
-    background: #333333;
-    margin: 0;
-    padding: 0;
-}
 .invisible {
     visibility: hidden;
     display: none;

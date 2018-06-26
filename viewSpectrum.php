@@ -56,7 +56,6 @@ else{
 			<link rel="icon" type="image/ico" href="/images/logos/favicon.ico">
 			<link rel="stylesheet" href="./css/style.css" />
 			<link rel="stylesheet" href="./css/spectrum.css" />
-			<link rel="stylesheet" href="./css/tooltip.css">
 			<link rel="stylesheet" href="./css/xiSPEC_tooltip.css">
 			<link rel="stylesheet" href="./css/spectrumViewWrapper.css">
 			<link rel="stylesheet" href="./css/dropdown.css">
