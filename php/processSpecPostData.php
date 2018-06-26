@@ -1,5 +1,4 @@
 <?php
-//ToDo: duplication formToJson.php amd processSpecPostData.php
 	require("functions.php");
 
 	$mods = [];
@@ -62,20 +61,13 @@
 
 	$cl = array('modMass' => $clModMass);
 
-	// if ($tolUnit == "Da"){
-	// 	$customCfg = "LOWRESOLUTION:true\n";
-	// }
-	// else {
-	// 	$customCfg = "LOWRESOLUTION:false\n";
-	// }
-
 	$annotation = array(
 		'fragmentTolerance' => $tol,
 		'modifications' => $modifications,
 		'ions' => $ions,
 		'cross-linker' => $cl,
 		'precursorCharge' => $preCharge,
-		'custom' => ['']
+		// 'custom' => ''
 	);
 
 	//final array
@@ -87,37 +79,4 @@
 	);
 
 	$postJSON = json_encode($postData);
-	//var_dump(json_encode($postData));
-	//die();
-
-
-	// The data to send to the API
-	$url = 'http://xi3.bio.ed.ac.uk/xiAnnotator/annotate/FULL';
-	// Setup cURL
-	$ch = curl_init($url);
-	curl_setopt_array($ch, array(
-		CURLOPT_POST => TRUE,
-		CURLOPT_RETURNTRANSFER => TRUE,
-		CURLOPT_HTTPHEADER => array(
-				'Content-Type: application/json'
-		),
-		CURLOPT_POSTFIELDS => $postJSON
-	));
-
-
-	// Send the request
-	$response = curl_exec($ch);
-
-	// Check for errors
-	if($response === FALSE){
-			die(curl_error($ch));
-	}
-	$errorQuery = "java.lang.NullPointerException";
-	if ($response === "" || substr($response, 0, strlen(($errorQuery))) === $errorQuery){
-		var_dump($response);
-
-		echo ("<p>xiAnnotator experienced a problem. Please try again later!</p><br/>");
-		var_dump($postJSON);
-		die();
-	}
 ?>

@@ -12,10 +12,10 @@ if (empty($_POST)){
 
 	if(isset($_GET['s']) || isset($_GET['db'])){
 		$tmpDB = false;
-		#this includes a connection string to the sql database
+		// this includes a connection string to the sql database
 		require('xiSPEC_sql_conn.php');
 		require("./php/checkAuth.php");
-		//log access
+		// log access
 		require("./php/logAccess.php");
 
 		if(isset($_SESSION[$_GET['db']])){
@@ -40,6 +40,7 @@ if (empty($_POST)){
 else{
 	$dbView = FALSE;
 	require("./php/processSpecPostData.php");
+
 }
 ?>
 
@@ -55,217 +56,124 @@ else{
 			<link rel="icon" type="image/ico" href="/images/logos/favicon.ico">
 			<link rel="stylesheet" href="./css/style.css" />
 			<link rel="stylesheet" href="./css/spectrum.css" />
-			<link rel="stylesheet" href="./css/settings.css" />
 			<link rel="stylesheet" href="./css/tooltip.css">
 			<link rel="stylesheet" href="./css/xiSPEC_tooltip.css">
 			<link rel="stylesheet" href="./css/spectrumViewWrapper.css">
-			<link rel="stylesheet" href="./css/QC.css">
 			<link rel="stylesheet" href="./css/dropdown.css">
 			<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
 			<link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css"/>
 			<?php include("./xiSPEC_scripts.php");?>
 
-			<script type="text/javascript" src="./vendor/jscolor.min.js"></script>
-			<script type="text/javascript" src="./vendor/split.min.js"></script>
-			<script type="text/javascript" src="./vendor/svgexp.js"></script>
-			<script type="text/javascript" src="./vendor/spin.js"></script>
-			<script type="text/javascript" src="./vendor/byrei-dyndiv_1.0rc1.js"></script>
-			<script type="text/javascript" src="./vendor/download.js"></script>
-			<script type="text/javascript" src="./vendor/bootstrap/js/bootstrap.min.js"></script>
-			<script type="text/javascript" src="./vendor/dataTables.bootstrap.min.js"></script>
-			<!-- <script type="text/javascript" src="cdn.datatables.net/plug-ins/1.10.16/api/fnFindCellRowIndexes.js"></script> -->
+			<!-- modular xiSPEC files -->
+		    <script type="text/javascript" src="./spectrum/vendor/byrei-dyndiv_1.0rc1.js"></script>
+		    <script type="text/javascript" src="./spectrum/vendor/jscolor.min.js"></script>
+		    <script type="text/javascript" src="./spectrum/vendor/split.min.js"></script>
+		    <script type="text/javascript" src="./spectrum/vendor/svgexp.js"></script>
+		    <script type="text/javascript" src="./spectrum/vendor/download.js"></script>
+		    <script type="text/javascript" src="./spectrum/vendor/bootstrap/js/bootstrap.min.js"></script>
+		    <script type="text/javascript" src="./spectrum/vendor/dataTables.bootstrap.min.js"></script>
 
+			<link rel="stylesheet" href="./spectrum/css/spectrum.css" />
+			<link rel="stylesheet" href="./spectrum/css/settings.css" />
+			<link rel="stylesheet" href="./spectrum/css/QC.css">
+			<link rel="stylesheet" href="./spectrum/css/dropdown.css">
+			<link rel="stylesheet" type="text/css" href="./spectrum/vendor/bootstrap/css/bootstrap.min.css"/>
+			<link rel="stylesheet" type="text/css" href="./spectrum/css/font-awesome.min.css"/>
 
-			<!-- Spectrum view .js files -->
-			<script type="text/javascript" src="./js/app.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./src/model.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./src/SpectrumView2.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./src/FragmentationKeyView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./src/PrecursorInfoView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./src/SpectrumSettingsView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./js/PeptideView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./src/PepInputView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./src/QCwrapperView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./src/ErrorPlotView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./src/FragKey/KeyFragment.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./src/graph/Graph.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./src/graph/Peak.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./src/graph/Fragment.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/Wrapper.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/model.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/SpectrumView2.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/FragmentationKeyView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/PrecursorInfoView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/SpectrumSettingsView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/PepInputView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/QCwrapperView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/ErrorPlotView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/FragKey/KeyFragment.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/graph/Graph.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/graph/Peak.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/graph/Fragment.js<?php echo $cacheBuster ?>"></script>
 <?php if($dbView)
-echo 	'<script type="text/javascript" src="./src/TableWrapperView.js'.$cacheBuster.'"></script>
-		<script type="text/javascript" src="./src/DataTableView.js'.$cacheBuster.'"></script>
+echo 	'<script type="text/javascript" src="./spectrum/src/TableWrapperView.js'.$cacheBuster.'"></script>
+		<script type="text/javascript" src="./spectrum/src/DataTableView.js'.$cacheBuster.'"></script>
+
 		<script type="text/javascript" src="./js/specListTable.js'.$cacheBuster.'"></script>
 		<script type="text/javascript" src="./js/altListTable.js'.$cacheBuster.'"></script>';
 ?>
-			<script>
+			<script type="text/javascript" src="./vendor/jquery.easyModal.js"></script>
 
-		var model_vars = {
-			baseDir: "./",
-			xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/",
-			<?php if(isset($dbName)) echo 'database: "'.$dbName.'",'; ?>
-			<?php if(isset($tmpDB)) echo 'tmpDB: "'.$tmpDB.'",'; ?>
-		};
-
-		SpectrumModel = new AnnotatedSpectrumModel(model_vars);
-		SettingsSpectrumModel = new AnnotatedSpectrumModel(model_vars);
-
-		SpectrumModel.otherModel = SettingsSpectrumModel;
-		SettingsSpectrumModel.otherModel = SpectrumModel;
+		<script>
 
 		<?php
 			//ToDo: php vars to js - find nicer way to handle this
 			if($dbView){
+				if ($tmpDB) echo 'window.tmpDB = true;';
+				else echo 'window.tmpDB = false;';
 				echo 'window.dbView = true;';
 				echo 'window.justSaved = '.$justSaved.';';
 			}
 			else{
 				echo 'window.dbView = false;';
-				echo 'var json_data = '.$response.';';
+				echo 'var post_data = '.json_encode($_POST).';';
 				echo 'var json_req = '.$postJSON.';';
 			}
 		?>
 		$(function() {
 
-		if(dbView){
-			window.SpectrumModel.requestId = "0";
-			$('#bottomDiv').show();
-			window.initSpinner = new Spinner({scale: 5}).spin (d3.select("#topDiv").node());
-		}
-		else{
-			console.log(json_req);
-			$("#topDiv-overlay").css("z-index", -1);
-			$('#dbControls').hide();
-			$('#bottomDiv').hide();
-			$('#altDiv').hide();
-		}
+			_.extend(window, Backbone.Events);
+			window.onresize = function() { window.trigger('resize') };
 
+			var model_vars = {
+				baseDir: "./",
+				xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/",
+				<?php if(isset($dbName)) echo 'database: "'.$dbName.'",'; ?>
+				<?php if(isset($tmpDB)) echo 'tmpDB: "'.$tmpDB.'",'; ?>
+			};
 
-		_.extend(window, Backbone.Events);
-		window.onresize = function() { window.trigger('resize') };
+			xiSPEC.init("spectrumPanel", model_vars );
+			// xispec_extra_spectrumControls
+			$('#xispec_extra_spectrumControls_before').html('<a href="index.php"><i class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-home fa-xi" style="top: 0px;" title="Home"></i></a><a href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues" target="_blank"><i class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-github fa-xi" title="GitHub issue tracker" style="cursor:pointer;"></i></a>');
 
-		window.Spectrum = new SpectrumView({model: SpectrumModel, el:"#spectrumPanel"});
-		window.FragmentationKey = new FragmentationKeyView({model: SpectrumModel, el:"#spectrumMainPlotDiv"});
-		window.InfoView = new PrecursorInfoView ({model: SpectrumModel, el:"#spectrumPanel"});
-		window.QCwrapper = new QCwrapperView({el: '#QCdiv'});
-		window.ErrorIntensityPlot = new ErrorPlotView({
-			model: SpectrumModel,
-			el:"#subViewContent-left",
-			xData: 'Intensity',
-			margin: {top: 10, right: 30, bottom: 20, left: 65},
-			svg: "#errIntSVG",
+			if (dbView){
+				var db_controls = '<span id="dbControls">';
+				if(tmpDB) db_controls += '<div class="xispec_tooltip_wrapper"><span class="xispec_tooltip_tr" id="saveTooltip">Your dataset is temporary click here if you want to save it for later access!<i class="fa fa-times-circle closeButton"></i></span><i id="saveDB" title="Save" class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-floppy-o" aria-hidden="true"></i></div>';
+				else db_controls += '<i id="shareDB" title="Share" class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-share-alt" aria-hidden="true"></i>';
+				db_controls += '<i id="toggleSpecList" title="Show/Hide Spectra list" class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-bars" aria-hidden="true"></i>';
+				db_controls += '<i id="revertAnnotation" title="revert to original annotation" class="xispec_btn xispec_btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>';
+				db_controls += '</span>';
+				$('#xispec_extra_spectrumControls_after').html(db_controls);
+
+				$('#bottomDiv').show();
+				window.initSpinner = new Spinner({scale: 5}).spin (d3.select("#topDiv").node());
+
+				window.TableWrapper = new TableWrapperView({
+					model: xiSPEC.SpectrumModel,
+					el:"#bottomDiv",
+					initId: "<?php echo $sid; ?>"		//ToDo: remove? -> not used yet
+				});
+			}
+			else{
+				$("#topDiv-overlay").css("z-index", -1);
+				$('#dbControls').hide();
+				$('#bottomDiv').hide();
+				$('#altDiv').hide();
+				xiSPEC.SpectrumModel.request_annotation(json_req);
+
+			}
+
 		});
-		window.ErrorMzPlot = new ErrorPlotView({
-			model: SpectrumModel,
-			el:"#subViewContent-right",
-			xData: 'm/z',
-			margin: {top: 10, right: 30, bottom: 20, left: 65},
-			svg: "#errMzSVG",
-		});
-		CLMSUI.vent.trigger('show:QC', true);
-
-		window.SettingsView = new SpectrumSettingsView({
-			model: SettingsSpectrumModel,
-			el:"#settingsWrapper",
-			showCustomCfg: false,
-		});
-
-		if(!dbView){
-			SpectrumModel.set({JSONdata: json_data, JSONrequest: json_req});
-			var json_data_copy = jQuery.extend({}, json_data);
-			//SpectrumModel.otherModel = SettingsSpectrumModel;
-			SettingsSpectrumModel.set({JSONdata: json_data_copy, JSONrequest: json_req});
-			//SettingsSpectrumModel.otherModel = SpectrumModel;
-			//window.SettingsView.render();
-		}
-		else {
-			window.TableWrapper = new TableWrapperView({
-				model: SpectrumModel,
-				el:"#bottomDiv",
-				initId: "<?php echo $sid; ?>"
-			});
-			// window.specListTable = new specListTableView({model: SpectrumModel, el:"#specListWrapper"});
-			// window.altListTable = new altListTableView({model: SpectrumModel, el:"#altListWrapper"});
-		}
-
-});
 
 		</script>
-		</head>
+	</head>
 
-		<body>
-			<!-- Main -->
-			<div id="mainView">
-				<div class="mainContent">
-						<div class="overlay" id="topDiv-overlay"></div>
-						<div id="spectrumPanel">
-
-							<div class="dynDiv" id="settingsWrapper">
-								<div class="dynDiv_moveParentDiv">
-									<span class="dynTitle">Settings</span>
-									<i class="fa fa-times-circle settingsCancel" id="closeSettings"></i>
-								</div>
-								<div class="dynDiv_resizeDiv_tl draggableCorner"></div>
-								<div class="dynDiv_resizeDiv_tr draggableCorner"></div>
-								<div class="dynDiv_resizeDiv_bl draggableCorner"></div>
-								<div class="dynDiv_resizeDiv_br draggableCorner"></div>
-							</div>
-						<div id="spectrumControls">
-							<i class="btn btn-1a btn-topNav fa fa-home fa-xi" style='top: 0px;' onclick="window.location = './index.php';" title="Home"></i>
-							<i class="btn btn-1a btn-topNav fa fa-github fa-xi" onclick="window.open('https://github.com/Rappsilber-Laboratory/xiSPEC/issues', '_blank');" title="GitHub issue tracker" style="cursor:pointer;"></i>
-							<i class="btn btn-1a btn-topNav fa fa-download" aria-hidden="true" id="downloadSVG" title="download SVG" style="cursor: pointer;"></i>
-							<label class="btn" title="toggle moveable labels on/off">Move Labels<input class="pointer" id="moveLabels" type="checkbox"></label>
-							<button id="clearHighlights" class="btn btn-1 btn-1a">Clear Highlights</button>
-							<label class="btn" title="toggle measure mode on/off">Measure<input class="pointer" id="measuringTool" type="checkbox"></label>
-							<form id="setrange">
-								<label class="btn" title="m/z range" style="cursor: default;">m/z:</label>
-								<label class="btn" for="lockZoom" title="Lock current zoom level" id="lock" class="btn">🔓</label><input id="lockZoom" type="checkbox" style="display: none;">
-								<input type="text" id="xleft" size="5" title="m/z range from:">
-								<span>-</span>
-								<input type="text" id="xright" size="5" title="m/z range to:">
-								<input type="submit" id="rangeSubmit" value="Set" class="btn btn-1 btn-1a" style="display: none;">
-								<span id="range-error"></span>
-								<button id="reset" title="Reset to initial zoom level" class="btn btn-1 btn-1a">Reset Zoom</button>
-
-							</form>
-								<?php
-								echo '<i id="toggleSettings" title="Show/Hide Settings" class="btn btn-1a btn-topNav fa fa-cog" aria-hidden="true"></i>';
-								if($dbView){
-									echo '<span id="dbControls">';
-									if($tmpDB) echo '<div class="xispec_tooltip_wrapper"><span class="xispec_tooltip_tr" id="saveTooltip">Your dataset is temporary click here if you want to save it for later access!<i class="fa fa-times-circle closeButton"></i></span><i id="saveDB" title="Save" class="btn btn-1a btn-topNav fa fa-floppy-o" aria-hidden="true"></i></div>';
-									else echo '<i id="shareDB" title="Share" class="btn btn-1a btn-topNav fa fa-share-alt" aria-hidden="true"></i>';
-									// <i id="prevSpectrum" title="Previous Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-left" aria-hidden="true"></i> -->
-									echo '<i id="toggleSpecList" title="Show/Hide Spectra list" class="btn btn-1a btn-topNav fa fa-bars" aria-hidden="true"></i>';
-									//  <i id="nextSpectrum" title="Next Spectrum" class="btn btn-1a btn-topNav fa fa-arrow-right" aria-hidden="true"></i> -->
-									echo '</span>';
-									echo '<i id="revertAnnotation" title="revert to original annotation" class="btn btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>';
-								}
-								?>
-							<a href="/help.php" target="_blank"><i title="Help" class="btn btn-1a btn-topNav fa fa-question" aria-hidden="true"></i></a>
-
-						</div>
-						<div class="plotsDiv">
-							<div id="spectrumMainPlotDiv">
-								<svg id="spectrumSVG"></svg>
-								<div id="measureTooltip"></div>
-							</div>
-							<div id="QCdiv">
-								<div class="subViewHeader"></div>
-								<div class="subViewContent">
-									<div class="subViewContent-plot" id="subViewContent-left">
-										<!-- <i class="fa fa-times closeButton" aria-hidden="true"></i> -->
-										<svg id="errIntSVG" class="errSVG"></svg>
-									</div>
-									<div class="subViewContent-plot" id="subViewContent-right">
-										<!-- <i class="fa fa-times closeButton" aria-hidden="true"></i> -->
-										<svg id="errMzSVG" class="errSVG"></svg>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+	<body>
+		<div id="mainView">
+			<div class="mainContent">
+				<div class="overlay" id="topDiv-overlay"></div>
+				<div id="spectrumPanel"></div>
 				<div id="bottomDiv" class="tableDiv"></div>
 			</div>
-		</div><!-- MAIN -->
+		</div>
 
 		<!-- Save Modal -->
 		<div id="saveModal" role="dialog" class="modal">
@@ -274,7 +182,6 @@ echo 	'<script type="text/javascript" src="./src/TableWrapperView.js'.$cacheBust
 				<div id="saveDBerror"></div>
 				<form id='saveDB_form'>
 					Fill out the form to save your data for later access. <br />
-					<?php //if($db_size > 500000000){	}; ?>
 					Your data will be accessible for 3 months.<br />
 					If you provide an email address we will contact you before deletion with the possiblity to extend the time.<br />
 					<label class="flex-row label">
@@ -323,7 +230,8 @@ echo 	'<script type="text/javascript" src="./src/TableWrapperView.js'.$cacheBust
 				 <div style="display:none;">
 				 <label><input type="checkbox" id="shareInclSid"/>Include currently selected spectrum in link</label>
 				 </div>
-						</div>
+		</div>
 		<!-- End Share Modal -->
 	</body>
+	<script type="text/javascript" src="./js/app.js<?php echo $cacheBuster ?>"></script>
 </html>
