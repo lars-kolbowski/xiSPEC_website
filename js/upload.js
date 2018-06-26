@@ -32,7 +32,7 @@ $( document ).ready(function() {
 
 	$('#fileupload').fileupload({
 		dataType: 'json',
-		fileTypes: "mzid|mzml|mgf|csv|zip|gz",
+		fileTypes: "mzid|mzml|mgf|ms2|csv|zip|gz",
 		maxChunkSize: 100000000,	//100MB
 		progressall: function (e, data) {
 			var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -51,7 +51,7 @@ $( document ).ready(function() {
 				data.submit();
 			}
 
-			if(new RegExp("\.(mzml|mgf|zip)(.gz)?$", 'i').test(data.files[0].name)){
+			if(new RegExp("\.(mzml|mgf|ms2|zip)(.gz)?$", 'i').test(data.files[0].name)){
 				$('#mzml_checkbox').prop( "checked", false ).change();
 				$('#mzml_fileBox .fileName').html(data.files[0].name);
 				data.context = $('#mzml_fileBox .statusBox').html('<div class="loader"></div>');
@@ -244,6 +244,6 @@ $( document ).ready(function() {
 		}
 		});
 		return false;
-    }; 
+    };
 
 });
