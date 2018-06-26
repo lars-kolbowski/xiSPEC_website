@@ -2,7 +2,6 @@
 
 Citation: Lars Kolbowski, Colin Combe, Juri Rappsilber; xiSPEC: web-based visualization, analysis and sharing of proteomics data, Nucleic Acids Research, gky353, https://doi.org/10.1093/nar/gky353
 
-
 ### Dependency
 
 parser back-end (https://github.com/Rappsilber-Laboratory/xiSPEC_ms_parser)
@@ -12,12 +11,19 @@ apache2
 mysql
 php
 
+### Submodule
+
+modular spectrum viewer (https://github.com/Rappsilber-Laboratory/xiSPEC_spectrumViewer)
+
+### Note
+
+Annotation of spectra is done per default via xiAnnotator (https://github.com/Rappsilber-Laboratory/xiAnnotator) set up on http://xi3.bio.ed.ac.uk/xiAnnotator/annotate/FULL. Instructions for setting up your own copy of the xiAnnotator can be found here: https://github.com/Rappsilber-Laboratory/xiAnnotator/blob/master/doc/SysV/Readme.md
+
 ### Installation
 
 Clone git repository into your web-server directory (e.g. /var/www/html):
 
-```git clone https://github.com/Rappsilber-Laboratory/xiSPEC.git```
-
+```git clone --recursive https://github.com/Rappsilber-Laboratory/xiSPEC_website.git```
 
 
 MySQL database:
