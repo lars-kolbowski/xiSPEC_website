@@ -93,8 +93,8 @@ else{
 			<script type="text/javascript" src="./spectrum/src/graph/Peak.js<?php echo $cacheBuster ?>"></script>
 			<script type="text/javascript" src="./spectrum/src/graph/Fragment.js<?php echo $cacheBuster ?>"></script>
 <?php if($dbView)
-echo 	'<script type="text/javascript" src="./spectrum/src/TableWrapperView.js'.$cacheBuster.'"></script>
-		<script type="text/javascript" src="./spectrum/src/DataTableView.js'.$cacheBuster.'"></script>
+echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuster.'"></script>
+		<script type="text/javascript" src="./js/DataTableView.js'.$cacheBuster.'"></script>
 
 		<script type="text/javascript" src="./js/specListTable.js'.$cacheBuster.'"></script>
 		<script type="text/javascript" src="./js/altListTable.js'.$cacheBuster.'"></script>';
