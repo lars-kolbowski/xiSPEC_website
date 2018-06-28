@@ -58,7 +58,7 @@ var PeptideView = Backbone.View.extend({
 
 	render: function() {
 		this.clear();
-		if (this.model.JSONdata){
+		if (this.model.get("JSONdata")){
 			this.setData();
 
 			//instructions
@@ -106,13 +106,13 @@ var PeptideView = Backbone.View.extend({
 
 		var self = this;
 
-		var pepCount = self.model.peptides.length;
-		this.linkPos = self.model.JSONdata.LinkSite;
+		var pepCount = self.model.get("JSONdata").peptides.length;
+		this.linkPos = self.model.get("JSONdata").JSONdata.LinkSite;
 		this.changeCL = false;
 		this.changeMod = false;
 		this.pepModsArray = [];
 		this.peptideStrs = self.model.pepStrs;	//contains the aa sequences of the peptides in string form without modifications
-		var fragments = self.model.JSONdata.fragments;
+		var fragments = self.model.get("JSONdata").fragments;
 		this.annotations = [];
 		this.peptides = [];
 		for (var i = 0; i < this.peptideStrs.length; i++) {
