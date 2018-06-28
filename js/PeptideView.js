@@ -106,8 +106,8 @@ var PeptideView = Backbone.View.extend({
 
 		var self = this;
 
-		var pepCount = self.model.get("JSONdata").peptides.length;
-		this.linkPos = self.model.get("JSONdata").JSONdata.LinkSite;
+		var pepCount = self.model.get("JSONdata").Peptides.length;
+		this.linkPos = self.model.get("JSONdata").LinkSite;
 		this.changeCL = false;
 		this.changeMod = false;
 		this.pepModsArray = [];
