@@ -19,6 +19,8 @@
 //
 //		DataTableView.js
 
+var xiSPEC = xiSPEC || {};
+
 var DataTableView = Backbone.View.extend({
 
 	events : {
@@ -63,6 +65,50 @@ var DataTableView = Backbone.View.extend({
 			if(arr[i] !== "") return false;
 		}
 		return true;
+	},
+
+	loadSpectrum: function(rowData){
+
+		var formatted_data = {};
+
+		formatted_data.sequence1 = rowData.pep1;
+		if (rowData.pep2 !== null)
+			formatted_data.sequence2 = rowData.pep2;
+
+		// if (rowData.linkpos1 != -1){
+			formatted_data.linkPos1 = rowData.linkpos1;
+			if (rowData.linkpos2 !== null)
+				formatted_data.linkPos2 = rowData.linkpos2;
+		// }
+
+		formatted_data.crossLinkerModMass = 0.0;
+		if (rowData.crosslinker_modmass1) formatted_data.crossLinkerModMass += parseFloat(rowData.crosslinker_modmass1);
+		if (rowData.crosslinker_modmass2) formatted_data.crossLinkerModMass += parseFloat(rowData.crosslinker_modmass2);
+
+		formatted_data.modifications = this.model.knownModifications.modifications;
+		formatted_data.precursorCharge = rowData.charge;
+		var fragTolArr = rowData.frag_tol.split(" ");
+		formatted_data.fragmentTolerance = {"tolerance":+fragTolArr[0], "unit":fragTolArr[1]};
+
+		formatted_data.ionTypes = rowData.ion_types;
+		formatted_data.precursorMZ = rowData.exp_mz;
+
+		var self = this;
+		$.ajax({
+			url:  this.model.get('baseDir') + '/php/getPeakList.php?spectrum_id='+rowData.spectrum_id + "&db=" + this.model.get('database')+"&tmp=" + this.model.get('tmpDB'),
+			type: 'GET',
+			async: false,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function (returndata) {
+
+				formatted_data.peaklist = JSON.parse(returndata);
+				console.log(formatted_data);
+				xiSPEC.setData(formatted_data);
+			}
+		});
+
 	},
 
 });

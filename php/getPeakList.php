@@ -56,7 +56,8 @@
 			if ($peak != ""){
 					$parts = preg_split('/\s+/', $peak);
 					if(count($parts) > 1)
-							array_push($peaks, array('mz' => floatval($parts[0]), 'intensity' => floatval($parts[1])));
+						array_push($peaks, array(floatval($parts[0]), floatval($parts[1])));
+						// array_push($peaks, array('mz' => floatval($parts[0]), 'intensity' => floatval($parts[1])));
 			}
 	}
 

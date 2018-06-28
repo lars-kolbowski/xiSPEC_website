@@ -226,7 +226,7 @@ var specListTableView = DataTableView.extend({
 
 				// load first spectrum_identification
 					var row = self.DataTable.rows( { filter : 'applied'} ).data()[0];
-					self.model.loadSpectrum(row, true);
+					self.loadSpectrum(row, true);
 					CLMSUI.vent.trigger('updateAltCount', row.alt_count);
 					self.model.spectrum_id = row.spectrum_ref;
 // 					firstRow = $('#specListWrapper tr:first-child');
@@ -274,7 +274,7 @@ var specListTableView = DataTableView.extend({
 			self.model.spectrum_id = row.spectrum_ref;
 			var scan_identifier = row.scan_id + ' - ' + row.file;
 			CLMSUI.vent.trigger('updateAltTitle', scan_identifier);
-			self.model.loadSpectrum(row, true);
+			self.loadSpectrum(row, true);
 			CLMSUI.vent.trigger('updateAltCount', row.alt_count);
 		});
 
