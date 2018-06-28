@@ -545,7 +545,7 @@ var ManualDataInputView = Backbone.View.extend({
 	},
 
 	changeCrossLinker: function(event){
-		var value = event.originalEvent.srcElement.value;
+		var value = event.target.value;
 		if (value == "add")
 			$("#addCLModal").trigger('openModal');
 		else
@@ -553,7 +553,7 @@ var ManualDataInputView = Backbone.View.extend({
 	},
 
 	changeCharge: function(event){
-		var value = event.originalEvent.srcElement.value;
+		var value = event.target.value;
 		this.model.set("charge", parseInt(value));
 	},
 
