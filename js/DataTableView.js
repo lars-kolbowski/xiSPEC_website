@@ -85,7 +85,7 @@ var DataTableView = Backbone.View.extend({
 		if (rowData.crosslinker_modmass1) formatted_data.crossLinkerModMass += parseFloat(rowData.crosslinker_modmass1);
 		if (rowData.crosslinker_modmass2) formatted_data.crossLinkerModMass += parseFloat(rowData.crosslinker_modmass2);
 
-		formatted_data.modifications = this.model.knownModifications.modifications;
+		formatted_data.modifications = this.model.knownModifications;
 		formatted_data.precursorCharge = rowData.charge;
 		var fragTolArr = rowData.frag_tol.split(" ");
 		formatted_data.fragmentTolerance = {"tolerance":+fragTolArr[0], "unit":fragTolArr[1]};

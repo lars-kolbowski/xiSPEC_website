@@ -304,22 +304,17 @@ var ManualDataInputView = Backbone.View.extend({
 	initializeModTable: function(){
 		var self = this;
 		var modTableVars = {
-			// "scrollY": '130px',
 			"scrollCollapse": true,
 			"paging":   false,
 			"ordering": false,
-			"info":	 false,
+			"info":     false,
 			"searching":false,
-			"processing": true,
-			"serverSide": true,
-			"ajax": self.model.baseDir + "php/convertModsToJSON.php?peps=",
 			"columns": [
-				{ "title": "Mod-Input", "data": "id" },
+				{ "title": "Mod-Input" ,"className": "invisible"},
 				{ "title": "Modification", "className": "dt-center" },
 				{ "title": "Mass", "className": "dt-center" },
-				{ "title": "Specificity", "data": "aminoAcid", "className": "dt-center" },
+				{ "title": "Specificity", "className": "dt-center" },
 			],
-
 			"columnDefs": [
 				{
 					"render": function ( data, type, row, meta ) {
@@ -330,26 +325,22 @@ var ManualDataInputView = Backbone.View.extend({
 				},
 				{
 					"render": function ( data, type, row, meta ) {
-						return row['id']+'<i class="fa fa-undo resetMod" title="reset modification to default" aria-hidden="true"></i></span>';
+						return row[0]+'<i class="fa fa-undo resetMod" title="reset modification to default" aria-hidden="true"></i></span>';
 					},
 					"targets": 1,
 				},
 				{
 					"render": function ( data, type, row, meta ) {
 						data = 0;
-						var found = false;
+
 						var rowNode = self.modTable.rows( meta.row ).nodes().to$();
-						for (var i = 0; i < self.model.userModifications.length; i++) {
-							if(self.model.userModifications[i].id == row.id){
-								data = self.model.userModifications[i].mass;
-								found = true;
-								displayModified(rowNode);
-							}
-						}
-						if (!found){
-							for (var i = 0; i < self.model.knownModifications['modifications'].length; i++) {
-								if(self.model.knownModifications['modifications'][i].id == row.id)
-									data = self.model.knownModifications['modifications'][i].mass;
+
+						for (var i = 0; i < self.model.knownModifications.length; i++) {
+							if(self.model.knownModifications[i].id == row[0]){
+								data = self.model.knownModifications[i].mass;
+								if (self.model.knownModifications[i].changed){
+									displayModified(rowNode);
+								}
 							}
 						}
 						data = parseFloat(data.toFixed(10).toString()); // limit to 10 decimal places and get rid of tailing zeroes
@@ -363,20 +354,18 @@ var ManualDataInputView = Backbone.View.extend({
 				},
 				{
 					"render": function ( data, type, row, meta ) {
-						for (var i = 0; i < self.model.userModifications.length; i++) {
-							if(self.model.userModifications[i].id == row.id){
-								data = self.model.userModifications[i].aminoAcids;
-								var found = true;
-							}
-						}
-						if (!found){
-							for (var i = 0; i < self.model.knownModifications['modifications'].length; i++) {
-								if(self.model.knownModifications['modifications'][i].id == row.id){
-									data = data.split(",");
-									data = _.union(data, self.model.knownModifications['modifications'][i].aminoAcids);
-									data.sort();
-									data = data.join("");
-
+						if(self.model.knownModifications !== undefined){
+							for (var i = 0; i < self.model.knownModifications.length; i++) {
+								if(self.model.knownModifications[i].id == row[0]){
+									data = data.split("");
+									if (self.model.knownModifications[i].aminoAcids == '*')
+										data = '*';
+									else{
+										data = _.union(data, self.model.knownModifications[i].aminoAcids);
+										data.sort();
+										data = data.join("");
+									}
+									var found = true;
 								}
 							}
 						}
@@ -385,13 +374,12 @@ var ManualDataInputView = Backbone.View.extend({
 					},
 					"targets": 3,
 				}
-		]
-	};
+			]
+		};
 
-		this.modTable = $('#modificationTable').DataTable( modTableVars );
+	    this.modTable = $('#modificationTable').DataTable( modTableVars );
 
-
-		//ToDo: change to BB event handling
+	    //ToDo: change to BB event handling
 		$('#modificationTable').on('input', 'input', function() {
 
 			var row = this.getAttribute("row");
@@ -399,10 +387,11 @@ var ManualDataInputView = Backbone.View.extend({
 			var modMass = parseFloat($('#modMass_'+row).val());
 			var modSpec = $('#modSpec_'+row).val();
 
-			var mod = {'id': modName, 'mass': modMass, 'aminoAcids': modSpec};
+			var mod = {'id': modName, 'mass': modMass, 'aminoAcids': modSpec.split('')};
 
-			self.model.updateUserModifications(mod, false);
-			displayModified($(this).closest("tr"));
+			var updatedMod = self.model.updateModification(mod);
+			if (!updatedMod.userMod)
+				displayModified($(this).closest("tr"));
 
 		 });
 
@@ -413,16 +402,17 @@ var ManualDataInputView = Backbone.View.extend({
 
 		$('#modificationTable').on('click', '.resetMod', function() {
 			var modId = $(this).parent()[0].innerText;
-			self.model.delUserModification(modId, false);
-			self.modTable.ajax.reload();
+			self.model.resetModification(modId);
+			self.renderModTable();
 		});
+
 
 	},
 
 	render: function() {
 
 		this.pepInputView.render();
-		this.modTable.ajax.url( this.model.baseDir + "php/convertModsToJSON.php?peps="+encodeURIComponent(this.model.pepStrsMods.join(";"))).load();
+		this.renderModTable();
 		//ions
 		this.model.fragmentIons.forEach(function(ion){
 			$('#'+ion.type).attr('checked', true);
@@ -443,6 +433,44 @@ var ManualDataInputView = Backbone.View.extend({
 
 		// this.crossLinkerModMass[0][0].value = this.crossLinkerModMass;
 
+	},
+
+	renderModTable: function(){
+		//ToDo: duplicate of SpectrumSettingsView function...
+
+		var modifications = new Array();
+
+		var joinedPepStrMods = this.model.pepStrsMods.join('');
+
+		var re = /[^A-Z]+/g;
+		var result;
+		while (result = re.exec(joinedPepStrMods)) {
+
+			new_mod = {};
+			new_mod.id = result[0];
+			new_mod.aminoAcids = joinedPepStrMods[result.index - 1];
+
+			var found = false;
+			for (var i=0; i < modifications.length; i++) {
+				if (modifications[i].id === new_mod.id) {
+					var found = true;
+					if (modifications[i].aminoAcids.indexOf(new_mod.aminoAcids) == -1)
+						modifications[i].aminoAcids += new_mod.aminoAcids;
+					break;
+				}
+			}
+			if (!found) modifications.push(new_mod);
+		}
+		var self = this;
+		this.modTable.clear();
+		modifications.forEach(function(mod){
+			self.modTable.row.add( [
+				mod.id,
+				mod.id,
+				0,
+				mod.aminoAcids,
+			] ).draw( false );
+		});
 	},
 
 	updateIons: function(event){
