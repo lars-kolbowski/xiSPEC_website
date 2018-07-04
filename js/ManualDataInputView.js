@@ -434,21 +434,17 @@ var ManualDataInputView = Backbone.View.extend({
 		// this.crossLinkerModMass[0][0].value = this.crossLinkerModMass;
 
 	},
-
-	renderModTable: function(){
-		//ToDo: duplicate of SpectrumSettingsView function...
-
+	
+	extractModsFromPepStr: function(pepStrMods){
 		var modifications = new Array();
-
-		var joinedPepStrMods = this.model.pepStrsMods.join('');
 
 		var re = /[^A-Z]+/g;
 		var result;
-		while (result = re.exec(joinedPepStrMods)) {
+		while (result = re.exec(pepStrMods)) {
 
 			new_mod = {};
 			new_mod.id = result[0];
-			new_mod.aminoAcids = joinedPepStrMods[result.index - 1];
+			new_mod.aminoAcids = pepStrMods[result.index - 1];
 
 			var found = false;
 			for (var i=0; i < modifications.length; i++) {
@@ -461,16 +457,31 @@ var ManualDataInputView = Backbone.View.extend({
 			}
 			if (!found) modifications.push(new_mod);
 		}
+
+		return modifications;
+	},
+
+	renderModTable: function(){
+		//ToDo: duplicate of SpectrumSettingsView function...
+
+		var modifications = this.extractModsFromPepStr(this.model.pepStrsMods.join(''));
+
 		var self = this;
 		this.modTable.clear();
-		modifications.forEach(function(mod){
-			self.modTable.row.add( [
-				mod.id,
-				mod.id,
-				0,
-				mod.aminoAcids,
-			] ).draw( false );
-		});
+
+		if(modifications.length == 0) {
+			this.modTable.draw( false );
+		}
+		else{
+			modifications.forEach(function(mod){
+				self.modTable.row.add( [
+					mod.id,
+					mod.id,
+					0,
+					mod.aminoAcids,
+				] ).draw( false );
+			});
+		}
 	},
 
 	updateIons: function(event){
@@ -492,6 +503,8 @@ var ManualDataInputView = Backbone.View.extend({
 	},
 
 	clExample: function(){
+
+		this.model.knownModifications = [{"id":"cm","mass":57.0215,"aminoAcids":["K","H","C","D","E","S","T","Y"]}];
 
 		$("#manDataInput-pepSeq").val("QNCcmELFEQLGEYK#FQNALLVR;K#QTALVELVK");
 		$.get("example/cl-peaklist.txt",function(data){
@@ -517,6 +530,9 @@ var ManualDataInputView = Backbone.View.extend({
 	},
 
 	linExample: function(){
+
+		this.model.knownModifications = [{"id":"cm","mass":57.0215,"aminoAcids":["K","H","C","D","E","S","T","Y"]}];
+
 		//ToDo: refactor to get rid of jquery calls?
 		$("#manDataInput-pepSeq").val("VHTECcmCcmHGDLLECcmADDRADLAK");
 		$.get("example/linear-peaklist.txt",function(data){
@@ -534,12 +550,15 @@ var ManualDataInputView = Backbone.View.extend({
 		$('#YIon').prop('checked', true);
 		this.updateIons();
 
+
 		$("#manDataInput-tolVal").val("20.0");
 		$("#manDataInput-tolUnit").val("ppm");
 
 	},
 
 	reset: function(){
+		this.model.knownModifications = [];
+
 		//ToDo: refactor to get rid of jquery calls?
 		//ToDo: change to model reset?
 		$("#manDataInput-pepSeq").val("");

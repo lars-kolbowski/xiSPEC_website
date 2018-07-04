@@ -125,7 +125,15 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 			var model_vars = {
 				baseDir: "./",
 				xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/",
-				<?php if(isset($dbName)) echo 'database: "'.$dbName.'",'; ?>
+				<?php if(isset($dbName)){
+					echo 'database: "'.$dbName.'",';
+					echo 'knownModificationsURL: "./php/getModifications.php?db='.$dbName.'&tmp='.$tmpDB.'",';
+				}
+				else{
+
+					echo 'knownModifications: '.json_encode($modifications).',';
+				}
+				  ?>
 				<?php if(isset($tmpDB)) echo 'tmpDB: "'.$tmpDB.'",'; ?>
 			};
 
