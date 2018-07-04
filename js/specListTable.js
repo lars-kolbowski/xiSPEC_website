@@ -63,7 +63,10 @@ var specListTableView = DataTableView.extend({
 			"order": [[ 10, "desc" ]],
 			"processing": true,
 			"serverSide": true,
-			"ajax": this.ajaxUrl,
+			"ajax":  {
+				"url": this.ajaxUrl,
+				"method": "POST"
+			},
 			"searchCols": [
 				null, //internal_id
 				null, //id

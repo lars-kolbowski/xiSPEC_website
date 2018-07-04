@@ -111,7 +111,7 @@
 
 	$json = json_encode(
 	    SSP::simple(
-			$_GET,
+			$_POST,
 			$sql_details,
 			$table,
 			$primaryKey,
