@@ -123,8 +123,7 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 			window.onresize = function() { window.trigger('resize') };
 
 			var model_vars = {
-				baseDir: "./",
-				xiAnnotatorBaseURL: "http://xi3.bio.ed.ac.uk/xiAnnotator/",
+				xiAnnotatorBaseURL: "https://xi3.bio.ed.ac.uk/xiAnnotator/",
 				<?php if(isset($dbName)){
 					echo 'database: "'.$dbName.'",';
 					echo 'knownModificationsURL: "./php/getModifications.php?db='.$dbName.'&tmp='.$tmpDB.'",';

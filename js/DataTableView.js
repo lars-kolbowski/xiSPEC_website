@@ -95,7 +95,7 @@ var DataTableView = Backbone.View.extend({
 
 		var self = this;
 		$.ajax({
-			url:  this.model.get('baseDir') + '/php/getPeakList.php?spectrum_id='+rowData.spectrum_id + "&db=" + this.model.get('database')+"&tmp=" + this.model.get('tmpDB'),
+			url:  this.model.get('baseDir') + 'php/getPeakList.php?spectrum_id='+rowData.spectrum_id + "&db=" + this.model.get('database')+"&tmp=" + this.model.get('tmpDB'),
 			type: 'GET',
 			async: false,
 			cache: false,
