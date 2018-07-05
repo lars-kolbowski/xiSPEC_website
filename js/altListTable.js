@@ -34,6 +34,8 @@ var altListTableView = DataTableView.extend({
 
 		this.wrapper = d3.select(this.el);
 
+		this.ajaxURL =  this.model.get('baseDir') + "php/getAltList.php?id="+this.model.spectrum_id+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
+
 		/* Create an array with the values of all the input boxes in a column, parsed as numbers */
 		$.fn.dataTable.ext.order['dom-text-numeric'] = function  ( settings, col )
 		{
@@ -51,7 +53,7 @@ var altListTableView = DataTableView.extend({
 			//"ordering": true,
 			"order": [[2, "asc"], [9, "desc"]],
 			//"info":     false,
-			"ajax":  this.model.get('baseDir') + "php/getAltList.php?id=-1&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB'),
+			"ajax":  this.ajaxURL,
 			"columns": [
 				{ "title": "identifications id", "data": "identification_id", "name": "identifications_id" },		//0
 				{ "title": "spectrum id", "data": "sprectrum_ref", "name": "spectrum_id" }, 	//1
@@ -169,23 +171,17 @@ var altListTableView = DataTableView.extend({
 
 	render: function(){
 		// this.updateTitle();
-		var url =  this.model.get('baseDir') + "php/getAltList.php?id="+this.model.spectrum_id+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
-		this.DataTable.ajax.url( url ).load();
+		this.DataTable.ajax.url( this.ajaxURL ).load();
 	},
 
 	changeDisplayScore: function(scoreName){
 		console.log('altListTable - changeDisplayScore: '+scoreName);
-		var url =  this.model.get('baseDir') + "php/getAltList.php?id="+this.model.spectrum_id+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB')+'&scol='+scoreName;
-		this.DataTable.ajax.url( url ).load();
+		this.ajaxURL =  this.model.get('baseDir') + "php/getAltList.php?id="+this.model.spectrum_id+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB')+'&scol='+scoreName;
 	},
 
 	updateTitle: function(title){
 		this.altListToolbar.text("Alternatives for scan: "+ title);
 	},
-	//
-	// userScoreChange: function(e){
-	// 	CLMSUI.vent.trigger('scoreChange', parseInt($(e.target).attr('data-score')));
-	// },
 	//
 	// hideEmptyColumns: function(e) {
 	// 	if (this.DataTable === undefined)
