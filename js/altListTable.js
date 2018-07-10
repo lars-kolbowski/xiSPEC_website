@@ -25,7 +25,11 @@ var altListTableView = DataTableView.extend({
 
 	},
 
-	initialize: function() {
+	initialize: function(viewOptions) {
+
+		var defaultOptions = {
+		};
+		this.options = _.extend(defaultOptions, viewOptions);
 
 		this.listenTo(CLMSUI.vent, 'scoreChange', this.changeDisplayScore);
 		this.listenTo(CLMSUI.vent, 'updateAltTitle', this.updateTitle);
@@ -74,9 +78,14 @@ var altListTableView = DataTableView.extend({
 				{ "title": "crosslinker_modmass1", "data": "crosslinker_modmass1", "name": "crosslinker_modmass1", "searchable": false },    //15
 				{ "title": "crosslinker_modmass2", "data": "crosslinker_modmass2", "name": "crosslinker_modmass2", "searchable": false },    //16
 				{ "title": "ion_types", "data": "ion_types", "name": "ion_types", "searchable": false },    //17
-				{ "title": "exp_mz", "data": "exp_mz", "name": "exp_mz" },    //18
+				{ "title": "exp_mz", "className": "dt-center", "data": "exp_mz", "name": "exp_mz" },    //18
 				{ "title": "frag_tol", "data": "frag_tol", "name": "frag_tol", "searchable": false },    //19
 				{ "title": "spectrum_id", "data": "spectrum_id", "name": "spectrum_id", "searchable": false },    //20
+
+				{ "title": this.options.meta_cols[0], "className": (this.options.meta_cols[0] != -1) ? "dt-center": "invisible", "data": "meta1", "name": "meta1" },    //21
+				{ "title": this.options.meta_cols[1], "className": (this.options.meta_cols[1] != -1) ? "dt-center": "invisible", "data": "meta2", "name": "meta2" },    //22
+				{ "title": this.options.meta_cols[2], "className": (this.options.meta_cols[2] != -1) ? "dt-center": "invisible", "data": "meta3", "name": "meta3" },    //23
+
 
 			],
 			"createdRow": function( row, data, dataIndex ) {

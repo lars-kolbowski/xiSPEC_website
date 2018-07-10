@@ -114,9 +114,14 @@ var specListTableView = DataTableView.extend({
 				{ "title": "crosslinker_modmass1", "data": "crosslinker_modmass1", "name": "crosslinker_modmass1", "searchable": false },    //18
 				{ "title": "crosslinker_modmass2", "data": "crosslinker_modmass2", "name": "crosslinker_modmass2", "searchable": false },    //19
 				{ "title": "ion_types", "data": "ion_types", "name": "ion_types", "searchable": false },    //20
-				{ "title": "exp_mz", "className":"toggable", "data": "exp_mz", "name": "exp_mz" },    //21
+				{ "title": "exp_mz", "className": "dt-center toggable", "data": "exp_mz", "name": "exp_mz" },    //21
 				{ "title": "frag_tol", "data": "frag_tol", "name": "frag_tol", "searchable": false },    //22
 				{ "title": "spectrum_id", "data": "spectrum_id", "name": "spectrum_id", "searchable": false },    //23
+
+				{ "title": this.options.meta_cols[0], "className": (this.options.meta_cols[0] != -1) ? "dt-center toggable": "invisible", "data": "meta1", "name": "meta1" },    //24
+				{ "title": this.options.meta_cols[1], "className": (this.options.meta_cols[1] != -1) ? "dt-center toggable": "invisible", "data": "meta2", "name": "meta2" },    //25
+				{ "title": this.options.meta_cols[2], "className": (this.options.meta_cols[2] != -1) ? "dt-center toggable": "invisible", "data": "meta3", "name": "meta3" },    //26
+
 			],
 
 			"createdRow": function( row, data, dataIndex ) {
@@ -386,7 +391,7 @@ var specListTableView = DataTableView.extend({
 	initiateTable: function() {
 	    var table = $.fn.dataTable.fnTables(true);
 	    $(table).dataTable().fnAdjustColumnSizing();
-		CLMSUI.vent.trigger('tableUpdate_done');
+		// CLMSUI.vent.trigger('tableUpdate_done');
 	},
 
 	toggleThreshold: function(e){

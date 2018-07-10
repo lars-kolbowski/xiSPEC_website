@@ -68,7 +68,10 @@
 			si.ions as ion_types,
 			si.exp_mz as exp_mz,
 			sp.frag_tol as frag_tol,
-			si.spectrum_id as spectrum_id
+			si.spectrum_id as spectrum_id,
+			si.meta1 as meta1,
+			si.meta2 as meta2,
+			si.meta3 as meta3
 			FROM spectrum_identifications AS si, json_each(si.scores)
 			LEFT JOIN spectra AS sp ON (si.spectrum_id = sp.id)
 			LEFT JOIN peptides AS pep1_table ON (si.pep1_id = pep1_table.id)

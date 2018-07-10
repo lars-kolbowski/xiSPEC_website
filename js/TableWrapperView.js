@@ -69,12 +69,6 @@ var TableWrapperView = Backbone.View.extend({
 			.attr("class", "xispec_listWrapper")
 			.attr("id", "specListWrapper")
 		;
-		this.specListTable = new specListTableView({
-			model: this.model,
-			el:"#specListWrapper",
-			wrapper: this,
-			initId: this.options.initId,
-		});
 
 		var altListTab = contentDiv.append("div")
 			.attr("class", "tab-pane fade in")
@@ -84,11 +78,40 @@ var TableWrapperView = Backbone.View.extend({
 			.attr("class", "xispec_listWrapper")
 			.attr("id", "altListWrapper")
 		;
-		this.altListTable = new altListTableView({
-			model: this.model,
-			el:"#altListWrapper",
-			wrapper: this,
+
+		var self = this;
+
+		$.ajax({
+			type: "GET",
+			datatype: "json",
+			url: this.model.get('baseDir')+"php/getMetaData.php?db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB'),
+			success: function(response) {
+				response = JSON.parse(response);
+				console.log(response);
+				var meta_cols = [
+					response.sid_meta1_name,
+					response.sid_meta2_name,
+					response.sid_meta3_name
+				];
+				self.contains_crosslinks = response.contains_crosslinks;
+
+				self.specListTable = new specListTableView({
+					model: self.model,
+					el:"#specListWrapper",
+					// wrapper: this,
+					initId: self.options.initId,
+					meta_cols:meta_cols,
+				});
+
+				self.altListTable = new altListTableView({
+					model: self.model,
+					el:"#altListWrapper",
+					// wrapper: this,
+					meta_cols: meta_cols,
+				});
+			}
 		});
+
 	},
 
 	hideView: function(){
