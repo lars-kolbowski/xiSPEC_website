@@ -76,9 +76,9 @@ var DataTableView = Backbone.View.extend({
 			formatted_data.sequence2 = rowData.pep2;
 
 		// if (rowData.linkpos1 != -1){
-			formatted_data.linkPos1 = rowData.linkpos1;
+			formatted_data.linkPos1 = rowData.linkpos1 - 1;
 			if (rowData.linkpos2 !== null)
-				formatted_data.linkPos2 = rowData.linkpos2;
+				formatted_data.linkPos2 = rowData.linkpos2 - 1;
 		// }
 
 		formatted_data.crossLinkerModMass = 0.0;
