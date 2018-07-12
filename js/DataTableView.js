@@ -75,11 +75,12 @@ var DataTableView = Backbone.View.extend({
 		if (rowData.pep2 !== null)
 			formatted_data.sequence2 = rowData.pep2;
 
-		// if (rowData.linkpos1 != -1){
-			formatted_data.linkPos1 = rowData.linkpos1 - 1;
-			if (rowData.linkpos2 !== null)
-				formatted_data.linkPos2 = rowData.linkpos2 - 1;
-		// }
+		// database is mzid like cross-link is treated as modification with 0 being n-terminal and len()+1 being C-terminal
+		//
+		formatted_data.linkPos1 = rowData.linkpos1 - 1;
+		if (rowData.linkpos2 !== null)
+			formatted_data.linkPos2 = rowData.linkpos2 - 1;
+
 
 		formatted_data.crossLinkerModMass = 0.0;
 		if (rowData.crosslinker_modmass1) formatted_data.crossLinkerModMass += parseFloat(rowData.crosslinker_modmass1);
