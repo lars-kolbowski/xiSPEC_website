@@ -179,7 +179,7 @@
 				</div>
 				<div id="submitDataControls">
 					<button id="cancelUpload" class="btn btn-2" href="#">Cancel</button>
-					<a id="gitHubIssue" class="btn btn-1a" style="display:none;" href='https://github.com/Rappsilber-Laboratory/xiSPEC/issues'>
+					<a id="gitHubIssue" class="btn btn-1a" style="display:none;" href='https://github.com/Rappsilber-Laboratory/xiSPEC_ms_parser/issues'>
 						<i class="fa fa-github" aria-hidden="true"></i>Create issue
 					</a>
 					<button id="continueToDB" class="btn btn-2" href="#">Continue</button>
