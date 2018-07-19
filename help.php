@@ -149,14 +149,17 @@
 							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
 							<tr><td>Charge</td><td>Yes</td><td>Precursor charge state</td><td>-</td><td>3</td></tr>
 							<tr><td>CrossLinkerModMass</td><td>No**</td><td>Modification mass of the used cross-linker</td><td>0</td><td>138.06808</td></tr>
-							<tr><td>ExpMz</td><td>No</td><td>The mass-to-charge value measured in the experiment in Daltons / charge.</td><td>-</td><td>985.4341</td></tr>
+							<tr><td>ExpMz</td><td>No</td><td>The mass-to-charge value measured in the experiment in Daltons / charge</td><td>-</td><td>985.4341</td></tr>
 							<tr><td>CalcMz</td><td>No</td><td>The theoretical mass-to-charge value calculated for the peptide in Daltons / charge.</td><td>-</td><td>985.6531</td></tr>
 							<tr><td>FragmentTolerance</td><td>No</td><td>MS2 tolerance for annotating fragment peaks (in ppm or Da)</td><td>10 ppm</td><td>0.2 Da</td></tr>
 							<tr><td>IonTypes</td><td>No</td><td>Fragment ion types to be considered separated by semicolon</td><td>peptide;b;y</td><td>peptide;a;b;c;x;y;z</td></tr>
 							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
 							<tr><td>ScanId</td><td>Yes</td><td>mzML: 1-based scan number; MGF: 0-based index in file</td><td>-</td><td>2256</td></tr>
 							<tr><td>PeakListFileName</td><td>Yes</td><td>File name of the associated peak list file that contains the scan</td><td>-</td><td>example_file.mzML</td></tr>
-
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>meta_xxx</td><td>No</td><td>Up to 3 user defined columns are allowed (using prefix meta_)</td><td>-</td><td></td></tr>
+							<tr><td>meta_yyy</td><td>No</td><td>Up to 3 user defined columns are allowed (using prefix meta_)</td><td>-</td><td></td></tr>
+							<tr><td>meta_zzz</td><td>No</td><td>Up to 3 user defined columns are allowed (using prefix meta_)</td><td>-</td><td></td></tr>
 						</tbody>
 					</table>
 					<br/>

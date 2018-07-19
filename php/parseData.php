@@ -34,7 +34,7 @@
 		$target_dir = "../uploads/".session_id()."/";
 		$id_arg = $target_dir . escapeshellarg($id_file);
 		$pl_arg = $target_dir . escapeshellarg($pl_file);
-		$upload_arg = session_id();
+		$session_id = session_id();
 		$ftp_arg = '';
 	}
 	elseif ( isset($_POST['res_ftp']) && isset($_POST['peakFile_ftp']) ) {
@@ -43,7 +43,7 @@
 
 		$id_arg = escapeshellarg($_POST['res_ftp']);
 		$pl_arg = escapeshellarg($_POST['peakFile_ftp']);
-		$upload_arg = session_id();
+		$session_id = session_id();
 		$ftp_arg = '-f';
 	}
 	else {
@@ -80,7 +80,7 @@
 
 	$stmt->execute();
 
-	$argStr = implode(' ', [$ftp_arg, $id_arg, $pl_arg, $upload_arg]);
+	$argStr = $ftp_arg.' -i '.$id_arg.' -p '.$pl_arg.' -s '.$session_id;
 
 	$command = $xiSPEC_ms_parser_dir.'python_env/bin/python '.$xiSPEC_ms_parser_dir.'parser.py '.$argStr;
 	// die($command);

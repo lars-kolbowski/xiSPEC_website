@@ -44,45 +44,51 @@
 
 	$JSON = array();
 
-	if (isset($_GET['sname'])){
-		$scoreName = $_GET['sname'];
+	$baseSQL = "SELECT
+			si.id AS identification_id,
+			sp.spectrum_ref AS sprectrum_ref,
+			pep1_table.seq_mods AS pep1,
+			pep2_table.seq_mods AS pep2,
+			pep1_table.link_site AS linkpos1,
+			pep2_table.link_site AS linkpos2,
+			si.charge_state AS charge,
+			MAX(pep1_ev.decoy, COALESCE(pep2_ev.decoy, 0)) as is_decoy,
+			pep1_ev.decoy AS decoy1,
+			pep2_ev.decoy AS decoy2,
+			atom AS score,
+			si.scores AS scores,
+			pep1_ev.protein AS protein1,
+			pep2_ev.protein AS protein2,
+			si.pass_threshold AS pass_threshold,
+			si.rank AS rank,
+			sp.peak_list_file_name AS file,
+			sp.scan_id AS scan_id,
+			pep1_table.crosslinker_modmass as crosslinker_modmass1,
+			pep2_table.crosslinker_modmass as crosslinker_modmass2,
+			si.ions as ion_types,
+			si.exp_mz as exp_mz,
+			sp.frag_tol as frag_tol,
+			si.spectrum_id as spectrum_id,
+			si.meta1 as meta1,
+			si.meta2 as meta2,
+			si.meta3 as meta3
+			FROM spectrum_identifications AS si, json_each(si.scores)
+			LEFT JOIN spectra AS sp ON (si.spectrum_id = sp.id)
+			LEFT JOIN peptides AS pep1_table ON (si.pep1_id = pep1_table.id)
+			LEFT JOIN
+				(SELECT peptide_ref, group_concat(DISTINCT protein_accession) AS protein,
+				group_concat(DISTINCT is_decoy) AS decoy
+				FROM peptide_evidences GROUP BY peptide_ref) AS pep1_ev ON (si.pep1_id = pep1_ev.peptide_ref)
+			LEFT JOIN peptides AS pep2_table ON (si.pep2_id = pep2_table.id)
+			LEFT JOIN
+				(SELECT peptide_ref, group_concat(DISTINCT protein_accession) AS protein,
+				group_concat(DISTINCT is_decoy) AS decoy FROM peptide_evidences GROUP BY peptide_ref) AS pep2_ev ON (si.pep2_id = pep2_ev.peptide_ref)
+			";
 
-		$sql = "SELECT
-				si.id AS identification_id,
-				sp.spectrum_ref AS spectrum_ref,
-				pep1_table.seq_mods AS pep1,
-				pep2_table.seq_mods AS pep2,
-				pep1_table.link_site AS linkpos1,
-				pep2_table.link_site AS linkpos2,
-				si.charge_state AS charge,
-				MAX(pep1_ev.decoy, COALESCE(pep2_ev.decoy, 0)) as is_decoy,
-				pep1_ev.decoy AS decoy1,
-				pep2_ev.decoy AS decoy2,
-				atom AS score,
-				si.scores AS scores,
-				pep1_ev.protein AS protein1,
-				pep2_ev.protein AS protein2,
-				si.pass_threshold AS pass_threshold,
-				si.rank AS rank,
-				sp.peak_list_file_name AS file,
-				sp.scan_id AS scan_id,
-				pep1_table.crosslinker_modmass as crosslinker_modmass1,
-				pep2_table.crosslinker_modmass as crosslinker_modmass2,
-				si.ions as ion_types,
-				si.exp_mz as exp_mz,
-				sp.frag_tol as frag_tol,
-				si.spectrum_id as spectrum_id
-				FROM spectrum_identifications AS si, json_each(si.scores)
-				LEFT JOIN spectra AS sp ON (si.spectrum_id = sp.id)
-				LEFT JOIN peptides AS pep1 ON (si.pep1_id = pep1_table.id)
-				LEFT JOIN
-					(SELECT peptide_ref, group_concat(DISTINCT protein_accession) AS protein,
-					group_concat(DISTINCT is_decoy) AS decoy
-					FROM peptide_evidences GROUP BY peptide_ref) AS pep1_ev ON (si.pep1_id = pep1_ev.peptide_ref)
-				LEFT JOIN peptides AS pep2 ON (si.pep2_id = pep2.id)
-				LEFT JOIN
-					(SELECT peptide_ref, group_concat(DISTINCT protein_accession) AS protein,
-					group_concat(DISTINCT is_decoy) AS decoy FROM peptide_evidences GROUP BY peptide_ref) AS pep2_ev ON (si.pep2_id = pep2_ev.peptide_ref)
+	if (isset($_GET['scol'])){
+		$scoreName = $_GET['scol'];
+
+		$sql = $baseSQL."
 				WHERE json_each.key LIKE :scoreName AND sp.spectrum_ref=:spec_ref
 				ORDER BY si.rank";
 
@@ -92,48 +98,9 @@
 	}
 
 	else {
-		$sql = "SELECT
-				si.id AS identification_id,
-				sp.spectrum_ref AS sprectrum_ref,
-				pep1_table.seq_mods AS pep1,
-				pep2_table.seq_mods AS pep2,
-				pep1_table.link_site AS linkpos1,
-				pep2_table.link_site AS linkpos2,
-				si.charge_state AS charge,
-				MAX(pep1_ev.decoy, COALESCE(pep2_ev.decoy, 0)) as is_decoy,
-				pep1_ev.decoy AS decoy1,
-				pep2_ev.decoy AS decoy2,
-				atom AS score,
-				si.scores AS scores,
-				pep1_ev.protein AS protein1,
-				pep2_ev.protein AS protein2,
-				si.pass_threshold AS pass_threshold,
-				si.rank AS rank,
-				sp.peak_list_file_name AS file,
-				sp.scan_id AS scan_id,
-				pep1_table.crosslinker_modmass as crosslinker_modmass1,
-				pep2_table.crosslinker_modmass as crosslinker_modmass2,
-				si.ions as ion_types,
-				si.exp_mz as exp_mz,
-				sp.frag_tol as frag_tol,
-				si.spectrum_id as spectrum_id
-				FROM spectrum_identifications AS si, json_each(si.scores)
-				LEFT JOIN spectra AS sp ON (si.spectrum_id = sp.id)
-				LEFT JOIN peptides AS pep1_table ON (si.pep1_id = pep1_table.id)
-				LEFT JOIN
-					(SELECT peptide_ref, group_concat(DISTINCT protein_accession) AS protein,
-					group_concat(DISTINCT is_decoy) AS decoy
-					FROM peptide_evidences GROUP BY peptide_ref) AS pep1_ev ON (si.pep1_id = pep1_ev.peptide_ref)
-				LEFT JOIN peptides AS pep2_table ON (si.pep2_id = pep2_table.id)
-				LEFT JOIN
-					(SELECT peptide_ref, group_concat(DISTINCT protein_accession) AS protein,
-					group_concat(DISTINCT is_decoy) AS decoy FROM peptide_evidences GROUP BY peptide_ref) AS pep2_ev ON (si.pep2_id = pep2_ev.peptide_ref)
-				WHERE sp.spectrum_ref=:spec_ref
+		$sql = $baseSQL."
+		 		WHERE json_each.id == 2 AND sp.spectrum_ref=:spec_ref
 				ORDER BY si.rank";
-		// $sql = "SELECT identifications.id, sid, pep1, pep2, linkpos1, linkpos2, charge, isDecoy, atom AS score, allScores, protein1, protein2, passThreshold, rank
-		// 	FROM identifications, json_each(identifications.allScores)
-		// 	WHERE sid=:sid
-		// 	ORDER BY identifications.id,rank";
 		// echo($sql);
 		$stmt = $dbh->prepare($sql);
 		$stmt->bindParam(':spec_ref', $spectrum_ref);

@@ -23,33 +23,35 @@
 	// indexes
 
 	$columns = array(
-		array( 'db' => 'si.id',		'dt' => 'identification_id', 'field' => 'identification_id', 'as' => 'identification_id'),
+		array( 'db' => 'si.id',	'dt' => 'identification_id', 'field' => 'identification_id', 'as' => 'identification_id'),
 		array( 'db' => 'sid_count.counted',	'dt' => 'alt_count', 'field' => 'alt_count', 'as' => 'alt_count'),
-		array( 'db' => 'sp.spectrum_ref',			'dt' => 'spectrum_ref', 'field' => 'spectrum_ref', 'as' => 'spectrum_ref'),
-		array( 'db' => 'pep1_table.seq_mods',			'dt' => 'pep1', 'field' => 'pep1', 'as' => 'pep1'),
-		array( 'db' => 'pep2_table.seq_mods',			'dt' => 'pep2', 'field' => 'pep2', 'as' => 'pep2'),
+		array( 'db' => 'sp.spectrum_ref',	'dt' => 'spectrum_ref', 'field' => 'spectrum_ref', 'as' => 'spectrum_ref'),
+		array( 'db' => 'pep1_table.seq_mods',	'dt' => 'pep1', 'field' => 'pep1', 'as' => 'pep1'),
+		array( 'db' => 'pep2_table.seq_mods',	'dt' => 'pep2', 'field' => 'pep2', 'as' => 'pep2'),
 		array( 'db' => 'pep1_table.link_site',	'dt' => 'linkpos1', 'field' => 'linkpos1', 'as' => 'linkpos1'),
 		array( 'db' => 'pep2_table.link_site',	'dt' => 'linkpos2', 'field' => 'linkpos2', 'as' => 'linkpos2'),
-		array( 'db' => 'si.charge_state',		'dt' => 'charge', 'field' => 'charge', 'as' => 'charge'),
+		array( 'db' => 'si.charge_state',	'dt' => 'charge', 'field' => 'charge', 'as' => 'charge'),
 		array( 'db' => 'MAX(pep1_ev.decoy, COALESCE(pep2_ev.decoy, 0))',		'dt' => 'is_decoy', 'field' => 'is_decoy', 'as' => 'is_decoy'),
-		array( 'db' => 'pep1_ev.decoy',		'dt' => 'decoy1', 'field' => 'decoy1', 'as' => 'decoy1'),
-		array( 'db' => 'pep2_ev.decoy',		'dt' => 'decoy2', 'field' => 'decoy2', 'as' => 'decoy2'),
-		array( 'db' => 'atom',		'dt' => 'score', 'field' => 'score', 'as' => 'score'),
-		array( 'db' => 'si.scores',		'dt' => 'scores', 'field' => 'scores', 'as' => 'scores'),
+		array( 'db' => 'pep1_ev.decoy',	'dt' => 'decoy1', 'field' => 'decoy1', 'as' => 'decoy1'),
+		array( 'db' => 'pep2_ev.decoy',	'dt' => 'decoy2', 'field' => 'decoy2', 'as' => 'decoy2'),
+		array( 'db' => 'atom',	'dt' => 'score', 'field' => 'score', 'as' => 'score'),
+		array( 'db' => 'si.scores',	'dt' => 'scores', 'field' => 'scores', 'as' => 'scores'),
 		array( 'db' => 'pep1_ev.protein',	'dt' => 'protein1', 'field' => 'protein1', 'as' => 'protein1'),
 		array( 'db' => 'pep2_ev.protein',	'dt' => 'protein2', 'field' => 'protein2', 'as' => 'protein2'),
 		array( 'db' => 'si.pass_threshold',	'dt' => 'pass_threshold', 'field' => 'pass_threshold', 'as' => 'pass_threshold'),
 		array( 'db' => 'sp.peak_list_file_name',	'dt' => 'file', 'field' => 'file', 'as' => 'file'),
-		array( 'db' => 'sp.scan_id',		'dt' => 'scan_id', 'field' => 'scan_id', 'as' => 'scan_id'),
+		array( 'db' => 'sp.scan_id',	'dt' => 'scan_id', 'field' => 'scan_id', 'as' => 'scan_id'),
 
 		array( 'db' => 'pep1_table.crosslinker_modmass',	'dt' => 'crosslinker_modmass1', 'field' => 'crosslinker_modmass1', 'as' => 'crosslinker_modmass1'),
-		array( 'db' => 'pep2_table.crosslinker_modmass',		'dt' => 'crosslinker_modmass2', 'field' => 'crosslinker_modmass2', 'as' => 'crosslinker_modmass2'),
+		array( 'db' => 'pep2_table.crosslinker_modmass',	'dt' => 'crosslinker_modmass2', 'field' => 'crosslinker_modmass2', 'as' => 'crosslinker_modmass2'),
 		array( 'db' => 'si.ions',	'dt' => 'ion_types', 'field' => 'ion_types', 'as' => 'ion_types'),
-		array( 'db' => 'si.exp_mz',		'dt' => 'exp_mz', 'field' => 'exp_mz', 'as' => 'exp_mz'),
-		array( 'db' => 'sp.frag_tol',		'dt' => 'frag_tol', 'field' => 'frag_tol', 'as' => 'frag_tol'),
-		array( 'db' => 'si.spectrum_id',		'dt' => 'spectrum_id', 'field' => 'spectrum_id', 'as' => 'spectrum_id'),
+		array( 'db' => 'si.exp_mz',	'dt' => 'exp_mz', 'field' => 'exp_mz', 'as' => 'exp_mz'),
+		array( 'db' => 'sp.frag_tol',	'dt' => 'frag_tol', 'field' => 'frag_tol', 'as' => 'frag_tol'),
+		array( 'db' => 'si.spectrum_id',	'dt' => 'spectrum_id', 'field' => 'spectrum_id', 'as' => 'spectrum_id'),
 
-
+		array( 'db' => 'si.meta1',	'dt' => 'meta1', 'field' => 'meta1', 'as' => 'meta1'),
+		array( 'db' => 'si.meta2',	'dt' => 'meta2', 'field' => 'meta2', 'as' => 'meta2'),
+		array( 'db' => 'si.meta3',	'dt' => 'meta3', 'field' => 'meta3', 'as' => 'meta3'),
 	);
 
 	if (session_status() === PHP_SESSION_NONE){session_start();}
@@ -111,7 +113,7 @@
 
 	$json = json_encode(
 	    SSP::simple(
-			$_GET,
+			$_POST,
 			$sql_details,
 			$table,
 			$primaryKey,
