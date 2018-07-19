@@ -67,7 +67,7 @@
 		'ions' => $ions,
 		'cross-linker' => $cl,
 		'precursorCharge' => $preCharge,
-		// 'custom' => ''
+		'requestID' => '1'
 	);
 
 	//final array
