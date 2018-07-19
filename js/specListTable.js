@@ -217,7 +217,7 @@ var specListTableView = DataTableView.extend({
 					return;
 					// window.location.href = "upload.php";
 				}
-				window.initSpinner.stop();
+				xiSPEC.initSpinner.stop();
 				$("#topDiv-overlay").css("z-index", -1);
 
 				//scoreSelector
