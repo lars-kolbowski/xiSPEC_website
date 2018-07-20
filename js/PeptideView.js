@@ -49,8 +49,8 @@ var PeptideView = Backbone.View.extend({
 		this.listenTo(this.model, 'destroy', this.remove);
 		this.listenTo(this.model, 'changed:Highlights', this.updateHighlights);
 		this.listenTo(this.model, 'changed:ColorScheme', this.updateColors);
-		// this.listenTo(this.model, 'changed:mass', this.renderInfo);
-		// this.listenTo(this.model, 'change:charge', this.renderInfo);
+// 		this.listenTo(this.model, 'changed:mass', this.renderInfo);
+// 		this.listenTo(this.model, 'change:charge', this.renderInfo);
 		this.listenTo(window, 'resize', _.debounce(this.resize));
 
 
@@ -87,16 +87,15 @@ var PeptideView = Backbone.View.extend({
 	},
 
 	renderInfo: function() {
-		if (this.model.calc_precursor_mass == 0)
+		if (this.model.precursorCalcMass == 0)
 			this.massInfo.html("");
-		else if($.isNumeric(this.model.calc_precursor_mass)){
+		else if($.isNumeric(this.model.precursor.calcMass)){
 			var html = "";
-			var M = this.model.calc_precursor_mass.toFixed(2);
+			var M = this.model.precursor.calcMass.toFixed(2);
 			html += "(M): "+M+"\t";
-			if($.isNumeric(this.model.precursorCharge)){
-				var charge = this.model.precursorCharge;
-				var ion = ((parseFloat(M)+charge)/charge).toFixed(2);
-				html += "(M+"+charge+"H)"+charge+"+: "+ion;
+			if($.isNumeric(this.model.precursor.calcMz)){
+				var charge = this.model.precursor.charge;
+				html += "(M+"+charge+"H)"+charge+"+: "+this.model.precursor.calcMz.toFixed(2);
 			}
 			this.massInfo.html(html);
 		}
