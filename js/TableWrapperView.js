@@ -84,7 +84,7 @@ var TableWrapperView = Backbone.View.extend({
 		$.ajax({
 			type: "GET",
 			datatype: "json",
-			url: this.model.get('baseDir')+"php/getMetaData.php?db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB'),
+			url: self.model.get('baseDir')+"php/getMetaData.php?db="+self.model.get('database')+'&tmp='+this.model.get('tmpDB'),
 			success: function(response) {
 				response = JSON.parse(response);
 				console.log(response);

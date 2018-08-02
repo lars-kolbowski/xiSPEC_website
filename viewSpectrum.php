@@ -122,7 +122,8 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 			_.extend(window, Backbone.Events);
 			window.onresize = function() { window.trigger('resize') };
 
-			var model_vars = {
+			var xispec_options = {
+				targetDiv: "spectrumPanel",
 				xiAnnotatorBaseURL: "https://xi3.bio.ed.ac.uk/xiAnnotator/",
 				<?php if(isset($dbName)){
 					echo 'database: "'.$dbName.'",';
@@ -136,7 +137,7 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 				<?php if(isset($tmpDB)) echo 'tmpDB: "'.$tmpDB.'",'; ?>
 			};
 
-			xiSPEC.init("spectrumPanel", model_vars );
+			xiSPEC.init(xispec_options);
 			// xispec_extra_spectrumControls
 			$('#xispec_extra_spectrumControls_before').html('<a href="index.php"><i class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-home fa-xi" style="top: 0px;" title="Home"></i></a><a href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues" target="_blank"><i class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-github fa-xi" title="GitHub issue tracker" style="cursor:pointer;"></i></a>');
 

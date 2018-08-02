@@ -104,7 +104,7 @@ var DataTableView = Backbone.View.extend({
 			processData: false,
 			success: function (returndata) {
 
-				formatted_data.peaklist = JSON.parse(returndata);
+				formatted_data.peakList = JSON.parse(returndata);
 				console.log(formatted_data);
 				xiSPEC.setData(formatted_data);
 			}
