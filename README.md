@@ -2,6 +2,10 @@
 
 Citation: Lars Kolbowski, Colin Combe, Juri Rappsilber; xiSPEC: web-based visualization, analysis and sharing of proteomics data, Nucleic Acids Research, gky353, https://doi.org/10.1093/nar/gky353
 
+This is the repository for the xiSPEC website hosted on https://spectrumviewer.org.
+If you are looking to implement xiSPEC as a spectrum viewer module into your website go [here](https://github.com/Rappsilber-Laboratory/xiSPEC_spectrumViewer).
+
+
 ### Dependency
 
 parser back-end (https://github.com/Rappsilber-Laboratory/xiSPEC_ms_parser)
