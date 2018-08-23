@@ -66,11 +66,10 @@
 	$xiSPECdb = new PDO("mysql:host=localhost;dbname=".$DBname, $DBuser, $DBpass) or die("cannot open the database");
 	$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-	$stmt = $xiSPECdb->prepare("INSERT INTO `upload_log`(`id_file`, `pl_file`, `ip`, `hostname`, `country`, `region`, `city`, `org`, `date`)
-															VALUES (:id_file, :pl_file, :ip, :hostname, :country, :region, :city, :org, :dates);");
+	$stmt = $xiSPECdb->prepare("INSERT INTO `upload_log`(`id_file`, `pl_file`, `hostname`, `country`, `region`, `city`, `org`, `date`)
+															VALUES (:id_file, :pl_file, :hostname, :country, :region, :city, :org, :dates);");
 	$stmt->bindParam(':id_file', $id_file, PDO::PARAM_STR);
 	$stmt->bindParam(':pl_file', $pl_file, PDO::PARAM_STR);
-	$stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
 	$stmt->bindParam(':hostname', $ipInfo->hostname, PDO::PARAM_STR);
 	$stmt->bindParam(':country', $ipInfo->country, PDO::PARAM_STR);
 	$stmt->bindParam(':region', $ipInfo->region, PDO::PARAM_STR);
