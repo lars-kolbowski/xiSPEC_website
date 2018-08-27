@@ -24,7 +24,7 @@
 		<script type="text/javascript" src="./spectrum/src/PrecursorInfoView.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./js/ManualDataInputView.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./js/PrideSelectionView.js<?php echo $cacheBuster ?>"></script>
-		<script type="text/javascript" src="./spectrum/src/model.js<?php echo $cacheBuster ?>"></script>
+		<script type="text/javascript" src="./spectrum/src/AnnotatedSpectrumModel.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./js/upload.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./js/accordion.js<?php echo $cacheBuster ?>"></script>
 		<script src="./vendor/jQueryFileUploadMin/jquery.ui.widget.js"></script>
