@@ -124,7 +124,7 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 
 			var xispec_options = {
 				targetDiv: "spectrumPanel",
-				xiAnnotatorBaseURL: "https://spectrumviewer.org/xiAnnotator/",
+				xiAnnotatorBaseURL: "/xiAnnotator/",
 				<?php if(isset($dbName)){
 					echo 'database: "'.$dbName.'",';
 					echo 'knownModificationsURL: "./php/getModifications.php?db='.$dbName.'&tmp='.$tmpDB.'",';
