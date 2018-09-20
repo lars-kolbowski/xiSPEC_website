@@ -235,8 +235,13 @@ $( document ).ready(function() {
 					$('#modificationsInfo').show();
 					$('#modificationsMsg').html("Please provide the mass(es) for the following " + resp.modifications.length + " modification(s):");
 					resp.modifications.forEach(function (mod){
+						var defVal = 0;
+						var numberMatch = /^[0-9\.]+$/.exec(mod)
+						if(numberMatch){
+							defVal = numberMatch;
+						}
 						var modNameInput = '<input class="form-control" name="mods[]" readonly type="text" value='+mod+'>';
-						var modMassInput = '<input class="form-control" name="modMasses[]" type="text" pattern="[0-9\.]+" value="0" required autocomplete=off>';
+						var modMassInput = '<input class="form-control" name="modMasses[]" type="text" pattern="[0-9\.]+" value="'+ defVal +'" required autocomplete=off>';
 						$('#csvModificationsForm').append('<div style="margin-bottom: 5px;">' + modNameInput + modMassInput + '</div>');
 					})
 					$('#csvModificationsForm').append('<input type="submit" value="update modifications" class="btn btn-1a btn-2" id="updateModsSubmit">');
