@@ -94,6 +94,12 @@ var TableWrapperView = Backbone.View.extend({
 					response.sid_meta3_name
 				];
 				self.contains_crosslinks = response.contains_crosslinks;
+				//ToDo: use contains_crosslinks to modify columns shown!
+
+				if (response.customConfig){
+					customConfig = response.customConfig.split('\n');
+					xiSPEC.setCustomConfigOverwrite(customConfig);
+				}
 
 				self.specListTable = new specListTableView({
 					model: self.model,
