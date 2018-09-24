@@ -185,7 +185,7 @@ $( document ).ready(function() {
 	var spinner = new Spinner({scale: 5}).spin();
 	var target = d3.select("#processDataInfo > .spinnerWrapper").node();
 	$.ajax({
-		url: "./php/parseData.php",
+		url: "php/parseData.php",
 		type: 'POST',
 		data: form_data,
 		//async: false,
@@ -222,12 +222,12 @@ $( document ).ready(function() {
 						}
 						$('#errorLog').append("warning type: " + warn.type + "\nmessage: "+ warn.message + '\nid: ' + warn.id + '\n\n');
 
-					})
+					});
 
 					resp.errors.forEach(function (error){
 						$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message + '\nid: ' + error.id + '\n\n');
 
-					})
+					});
 				}
 
 				if (resp.modifications.length > 0){
