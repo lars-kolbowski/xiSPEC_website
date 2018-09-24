@@ -2,6 +2,10 @@
 
 Citation: Lars Kolbowski, Colin Combe, Juri Rappsilber; xiSPEC: web-based visualization, analysis and sharing of proteomics data, Nucleic Acids Research, gky353, https://doi.org/10.1093/nar/gky353
 
+This is the repository for the xiSPEC website hosted on https://spectrumviewer.org.
+If you are looking to implement xiSPEC as a spectrum viewer module into your website go [here](https://github.com/Rappsilber-Laboratory/xiSPEC_spectrumViewer).
+
+
 ### Dependency
 
 parser back-end (https://github.com/Rappsilber-Laboratory/xiSPEC_ms_parser)
@@ -37,7 +41,6 @@ CREATE TABLE dbs (
  email varchar(256) DEFAULT NULL,
  pass text,
  share varchar(64) DEFAULT NULL,
- ip varchar(39) DEFAULT NULL,
  hostname varchar(128) DEFAULT NULL,
  country varchar(64) DEFAULT NULL,
  region varchar(64) DEFAULT NULL,
@@ -53,7 +56,6 @@ CREATE TABLE dbs (
 
 CREATE TABLE access_log (
  id int(11) NOT NULL AUTO_INCREMENT,
- ip varchar(39) DEFAULT NULL,
  hostname varchar(128) DEFAULT NULL,
  country varchar(64) DEFAULT NULL,
  region varchar(64) DEFAULT NULL,
@@ -69,7 +71,6 @@ CREATE TABLE upload_log (
  id int(11) NOT NULL AUTO_INCREMENT,
  id_file varchar(256) NOT NULL,
  pl_file varchar(256) NOT NULL,
- ip varchar(39) NOT NULL,
  hostname varchar(128) DEFAULT NULL,
  country int(64) DEFAULT NULL,
  region int(64) DEFAULT NULL,
@@ -80,8 +81,7 @@ CREATE TABLE upload_log (
 );
 ```
 
-Open xiSPEC_sql_conn.php.default, 
+Open xiSPEC_sql_conn.php.default,
 enter your database credentials into it and save it as xiSPEC_sql_conn.php
 
 Visit http://localhost/xiSPEC/index.php
-

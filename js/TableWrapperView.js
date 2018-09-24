@@ -84,7 +84,7 @@ var TableWrapperView = Backbone.View.extend({
 		$.ajax({
 			type: "GET",
 			datatype: "json",
-			url: this.model.get('baseDir')+"php/getMetaData.php?db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB'),
+			url: self.model.get('baseDir')+"php/getMetaData.php?db="+self.model.get('database')+'&tmp='+this.model.get('tmpDB'),
 			success: function(response) {
 				response = JSON.parse(response);
 				console.log(response);
@@ -94,6 +94,12 @@ var TableWrapperView = Backbone.View.extend({
 					response.sid_meta3_name
 				];
 				self.contains_crosslinks = response.contains_crosslinks;
+				//ToDo: use contains_crosslinks to modify columns shown!
+
+				if (response.customConfig){
+					customConfig = response.customConfig.split('\n');
+					xiSPEC.setCustomConfigOverwrite(customConfig);
+				}
 
 				self.specListTable = new specListTableView({
 					model: self.model,
@@ -144,7 +150,6 @@ var TableWrapperView = Backbone.View.extend({
 		if(alt_count > 1){
 			$('#nav-altListTable').removeClass('disabled');
 			$('#altExpNum').text("(" + (parseInt(alt_count)-1) + ")");
-			// window.TableWrapper.altListTable.DataTable.ajax.url( "/php/getAltList.php?id=" + mzid + "&db=" + window.SpectrumModel.get('database')+"&tmp=" + window.SpectrumModel.get('tmpDB')).load();
 		}
 		else{
 			$('#altExpNum').text("(0)");

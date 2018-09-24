@@ -52,12 +52,11 @@
 	$xiSPECdb = new PDO("mysql:host=localhost;dbname=".$DBname, $DBuser, $DBpass) or die("cannot open the database");
 	$xiSPECdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-	$stmt = $xiSPECdb->prepare("INSERT INTO `dbs`(`name`, `pass`, `email`, `ip`, `hostname`, `country`, `region`, `city`, `org`, `date`)
-															VALUES (:name, :pass, :email, :ip, :hostname, :country, :region, :city, :org, :dates);");
+	$stmt = $xiSPECdb->prepare("INSERT INTO `dbs`(`name`, `pass`, `email`, `hostname`, `country`, `region`, `city`, `org`, `date`)
+															VALUES (:name, :pass, :email, :hostname, :country, :region, :city, :org, :dates);");
 	$stmt->bindParam(':name', $dbname, PDO::PARAM_STR);
 	$stmt->bindParam(':pass', $passHash, PDO::PARAM_STR);
 	$stmt->bindParam(':email', $_POST['dbEmail'], PDO::PARAM_STR);
-	$stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
 	$stmt->bindParam(':hostname', $ipInfo->hostname, PDO::PARAM_STR);
 	$stmt->bindParam(':country', $ipInfo->country, PDO::PARAM_STR);
 	$stmt->bindParam(':region', $ipInfo->region, PDO::PARAM_STR);

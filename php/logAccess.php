@@ -45,9 +45,8 @@
 		$org = (property_exists($ipInfo, 'org')) ? $ipInfo->org : '' ;
 
 		$date = date('Y-m-d H:i:s');
-		$stmt = $xiSPECdb->prepare("INSERT INTO `access_log`(`ip`, `hostname`, `country`, `region`, `city`, `org`, `date`, `db_id`)
-																VALUES (:ip, :hostname, :country, :region, :city, :org, :dates, :dbid);");
-		$stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
+		$stmt = $xiSPECdb->prepare("INSERT INTO `access_log`(`hostname`, `country`, `region`, `city`, `org`, `date`, `db_id`)
+																VALUES (:hostname, :country, :region, :city, :org, :dates, :dbid);");
 		$stmt->bindParam(':hostname', $ipInfo->hostname, PDO::PARAM_STR);
 		$stmt->bindParam(':country', $ipInfo->country, PDO::PARAM_STR);
 		$stmt->bindParam(':region', $ipInfo->region, PDO::PARAM_STR);

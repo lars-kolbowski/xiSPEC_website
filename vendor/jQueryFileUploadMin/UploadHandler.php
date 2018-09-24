@@ -529,16 +529,18 @@ class UploadHandler
             $index, $content_range) {
         $name = $this->trim_file_name($file_path, $name, $size, $type, $error,
             $index, $content_range);
-        return $this->get_unique_filename(
-            $file_path,
-            $this->fix_file_extension($file_path, $name, $size, $type, $error,
-                $index, $content_range),
-            $size,
-            $type,
-            $error,
-            $index,
-            $content_range
-        );
+
+        return $this -> trim_file_name($file_path, $name, $size, $type, $error, $index, $content_range);
+        // return $this->get_unique_filename(
+        //     $file_path,
+        //     $this->fix_file_extension($file_path, $name, $size, $type, $error,
+        //         $index, $content_range),
+        //     $size,
+        //     $type,
+        //     $error,
+        //     $index,
+        //     $content_range
+        // );
     }
 
     protected function get_scaled_image_file_paths($file_name, $version) {

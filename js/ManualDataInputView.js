@@ -271,7 +271,7 @@ var ManualDataInputView = Backbone.View.extend({
 		}
 
 		//peptideStr
-		var invalidChar = invalidChars(formData['peps'].value, /([^GALMFWKQESPVICYHRNDTa-z;#0-9(.)\-]+)/);
+		var invalidChar = invalidChars(formData['peps'].value, /([^GALMFWKQESPVICYHRNDTXa-z;#0-9(.)\-]+)/);
 		if (invalidChar){
 			alert('Invalid character(s) in peptide sequence: ' + invalidChar);
 			return false;
@@ -434,7 +434,7 @@ var ManualDataInputView = Backbone.View.extend({
 		// this.crossLinkerModMass[0][0].value = this.crossLinkerModMass;
 
 	},
-	
+
 	extractModsFromPepStr: function(pepStrMods){
 		var modifications = new Array();
 

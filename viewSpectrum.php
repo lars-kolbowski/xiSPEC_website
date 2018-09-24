@@ -80,7 +80,8 @@ else{
 			<link rel="stylesheet" type="text/css" href="./spectrum/css/font-awesome.min.css"/>
 
 			<script type="text/javascript" src="./spectrum/src/Wrapper.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/model.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/AnnotatedSpectrumModel.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/SpectrumControlsView.js<?php echo $cacheBuster ?>"></script>
 			<script type="text/javascript" src="./spectrum/src/SpectrumView2.js<?php echo $cacheBuster ?>"></script>
 			<script type="text/javascript" src="./spectrum/src/FragmentationKeyView.js<?php echo $cacheBuster ?>"></script>
 			<script type="text/javascript" src="./spectrum/src/PrecursorInfoView.js<?php echo $cacheBuster ?>"></script>
@@ -122,8 +123,9 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 			_.extend(window, Backbone.Events);
 			window.onresize = function() { window.trigger('resize') };
 
-			var model_vars = {
-				xiAnnotatorBaseURL: "https://xi3.bio.ed.ac.uk/xiAnnotator/",
+			var xispec_options = {
+				targetDiv: "spectrumPanel",
+				xiAnnotatorBaseURL: "/xiAnnotator/",
 				<?php if(isset($dbName)){
 					echo 'database: "'.$dbName.'",';
 					echo 'knownModificationsURL: "./php/getModifications.php?db='.$dbName.'&tmp='.$tmpDB.'",';
@@ -136,7 +138,7 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 				<?php if(isset($tmpDB)) echo 'tmpDB: "'.$tmpDB.'",'; ?>
 			};
 
-			xiSPEC.init("spectrumPanel", model_vars );
+			xiSPEC.init(xispec_options);
 			// xispec_extra_spectrumControls
 			$('#xispec_extra_spectrumControls_before').html('<a href="index.php"><i class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-home fa-xi" style="top: 0px;" title="Home"></i></a><a href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues" target="_blank"><i class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-github fa-xi" title="GitHub issue tracker" style="cursor:pointer;"></i></a>');
 
@@ -145,14 +147,14 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 				if(tmpDB) db_controls += '<div class="xispec_tooltip_wrapper"><span class="xispec_tooltip_tr" id="saveTooltip">Your dataset is temporary click here if you want to save it for later access!<i class="fa fa-times-circle closeButton"></i></span><i id="saveDB" title="Save" class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-floppy-o" aria-hidden="true"></i></div>';
 				else db_controls += '<i id="shareDB" title="Share" class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-share-alt" aria-hidden="true"></i>';
 				db_controls += '<i id="toggleSpecList" title="Show/Hide Spectra list" class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-bars" aria-hidden="true"></i>';
-				db_controls += '<i id="xispec_revertAnnotation" title="revert to original annotation" class="xispec_btn xispec_btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>';
+				// db_controls += '<i id="xispec_revertAnnotation" title="revert to original annotation" class="xispec_btn xispec_btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>';
 				db_controls += '</span>';
 				$('#xispec_extra_spectrumControls_after').html(db_controls);
 
 				$('#bottomDiv').show();
-				window.initSpinner = new Spinner({scale: 5}).spin (d3.select("#topDiv").node());
+				xiSPEC.initSpinner = new Spinner({scale: 5}).spin (d3.select("#topDiv").node());
 
-				window.TableWrapper = new TableWrapperView({
+				xiSPEC.TableWrapper = new TableWrapperView({
 					model: xiSPEC.SpectrumModel,
 					el:"#bottomDiv",
 					initId: "<?php echo $sid; ?>"		//ToDo: remove? -> not used yet
@@ -163,7 +165,7 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 				$('#dbControls').hide();
 				$('#bottomDiv').hide();
 				$('#altDiv').hide();
-				xiSPEC.SpectrumModel.request_annotation(json_req);
+				xiSPEC.SpectrumModel.request_annotation(json_req, true);
 
 			}
 

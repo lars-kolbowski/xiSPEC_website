@@ -36,6 +36,7 @@ $( document ).ready(function() {
 		maxChunkSize: 100000000,	//100MB
 		progressall: function (e, data) {
 			var progress = parseInt(data.loaded / data.total * 100, 10);
+			if (progress > 100) progress = 100; //quick&dirty fix to limit % to 100 (can happen if file is reuploaded)
 			$('#uploadProgress .file_upload_bar').css(
 				'width',
 				progress + '%'
@@ -184,7 +185,7 @@ $( document ).ready(function() {
 	var spinner = new Spinner({scale: 5}).spin();
 	var target = d3.select("#processDataInfo > .spinnerWrapper").node();
 	$.ajax({
-		url: "./php/parseData.php",
+		url: "php/parseData.php",
 		type: 'POST',
 		data: form_data,
 		//async: false,
@@ -221,12 +222,12 @@ $( document ).ready(function() {
 						}
 						$('#errorLog').append("warning type: " + warn.type + "\nmessage: "+ warn.message + '\nid: ' + warn.id + '\n\n');
 
-					})
+					});
 
 					resp.errors.forEach(function (error){
 						$('#errorLog').append("error type: " + error.type + "\nmessage: "+ error.message + '\nid: ' + error.id + '\n\n');
 
-					})
+					});
 				}
 
 				if (resp.modifications.length > 0){
@@ -234,8 +235,13 @@ $( document ).ready(function() {
 					$('#modificationsInfo').show();
 					$('#modificationsMsg').html("Please provide the mass(es) for the following " + resp.modifications.length + " modification(s):");
 					resp.modifications.forEach(function (mod){
+						var defVal = 0;
+						var numberMatch = /^[0-9\.]+$/.exec(mod)
+						if(numberMatch){
+							defVal = numberMatch;
+						}
 						var modNameInput = '<input class="form-control" name="mods[]" readonly type="text" value='+mod+'>';
-						var modMassInput = '<input class="form-control" name="modMasses[]" type="number" step=0.000001 value="0" required autocomplete=off>';
+						var modMassInput = '<input class="form-control" name="modMasses[]" type="text" pattern="[0-9\.]+" value="'+ defVal +'" required autocomplete=off>';
 						$('#csvModificationsForm').append('<div style="margin-bottom: 5px;">' + modNameInput + modMassInput + '</div>');
 					})
 					$('#csvModificationsForm').append('<input type="submit" value="update modifications" class="btn btn-1a btn-2" id="updateModsSubmit">');

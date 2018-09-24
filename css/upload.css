@@ -156,6 +156,12 @@
 #csvModificationsForm .form-control{
     margin: 0em 2em;
 }
+
+#modificationsInfo{
+    overflow-y: auto;
+    max-height: 300px;
+}
+
 #fileUploadWrapper{
     display: flex;
     margin-top: 0.9em;
