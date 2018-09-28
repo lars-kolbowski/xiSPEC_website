@@ -165,7 +165,7 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 				$('#dbControls').hide();
 				$('#bottomDiv').hide();
 				$('#altDiv').hide();
-				xiSPEC.SpectrumModel.request_annotation(json_req, true);
+				xiSPEC.request_annotation(json_req, true);
 
 			}
 
