@@ -1,11 +1,18 @@
 <?php
 	require("functions.php");
 
-	$mods = [];
+	$post_mods = [];
 	if(isset($_POST['mods'])){
-			$mods = $_POST['mods'];
-			$modMasses = $_POST['modMasses'];
-			$modSpecificities = $_POST['modSpecificities'];
+	    $post_mods = $_POST['mods'];
+	    $modMasses = $_POST['modMasses'];
+	    $modSpecificities = $_POST['modSpecificities'];
+	}
+
+	$post_losses = [];
+	if(isset($_POST['losses'])){
+	    $post_losses = $_POST['losses'];
+	    $lossMasses = $_POST['lossMasses'];
+	    $lossSpecificities = $_POST['lossSpecificities'];
 	}
 
 	$pepsStr = $_POST["peps"];
@@ -29,7 +36,6 @@
 			$i++;
 	}
 
-
 	//peak block
 	$peaks = array();
 	foreach ($peaklist as $peak) {
@@ -43,15 +49,34 @@
 
 	//annotation block
 	$tol = array("tolerance" => $ms2Tol, "unit" => $tolUnit);
+
 	$modifications = array();
-	$i = 0;
-	//var_dump(str_split($modSpecificities[$i]))
-	//var_dump(implode(",", str_split($modSpecificities[$i]));
-	//die();
-	foreach ($mods as $mod) {
-			array_push($modifications, array('aminoAcids' => str_split($modSpecificities[$i]), 'id' => $mod, 'mass' => $modMasses[$i]));
-			$i++;
-	}
+    $i = 0;
+    foreach ($post_mods as $mod) {
+        array_push(
+            $modifications,
+            array(
+                'aminoAcids' => str_split($modSpecificities[$i]),
+                'id' => $mod,
+                'mass' => $modMasses[$i]
+            )
+        );
+        $i++;
+    }
+
+	    $losses = array();
+	    $i = 0;
+	    foreach ($post_losses as $loss) {
+	        array_push(
+	            $losses,
+	            array(
+	                'specificity' => array_map('trim',explode(",",$lossSpecificities[$i])),
+	                'id' => $loss,
+	                'mass' => floatval($lossMasses[$i])
+	            )
+	        );
+	        $i++;
+	    }
 
 	$ions = array();
 	foreach ($_POST['ions'] as $iontype) {
@@ -65,8 +90,9 @@
 		'fragmentTolerance' => $tol,
 		'modifications' => $modifications,
 		'ions' => $ions,
-		'cross-linker' => $cl,
+		'crosslinker' => $cl,
 		'precursorCharge' => $preCharge,
+		'losses' => $losses,
 		'requestID' => '1'
 	);
 
@@ -79,4 +105,5 @@
 	);
 
 	$postJSON = json_encode($postData);
+
 ?>
