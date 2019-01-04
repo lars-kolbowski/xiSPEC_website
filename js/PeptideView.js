@@ -169,7 +169,7 @@ var PeptideView = Backbone.View.extend({
 				.attr("y1", 25)
 				.attr("x2", -1)
 				.attr("y2", 55)
-				.attr("stroke", self.model.highlightColour)
+				.attr("stroke", self.model.get('highlightColor'))
 				.attr("stroke-width", 10)
 				.attr("opacity", 0)
 				.style("cursor", "pointer");
@@ -207,7 +207,7 @@ var PeptideView = Backbone.View.extend({
 				.attr("y1", 25)
 				.attr("x2", this.xStep * (CLpos - 1))
 				.attr("y2", 55)
-				.attr("stroke", self.model.highlightColour)
+				.attr("stroke", self.model.get('highlightColor'))
 				.attr("stroke-width", 10)
 				.attr("opacity", 0)
 				.style("cursor", "pointer");
@@ -346,7 +346,7 @@ var PeptideView = Backbone.View.extend({
 				.attr('class', "pepLetterG")
 				.on("click", function(d) {
 					if(self.changeCL != false){
-						changeCrossLink();
+						self.model.changeLinkPos(self.changeCL);
 					}
 					//if changeMod is active and the mod is from the same peptide and it's a valid modification for this aa
 					//if(self.changeMod !== false && self.validModChange){
@@ -373,7 +373,7 @@ var PeptideView = Backbone.View.extend({
 				.attr("fill", pep.color)
 				.attr("class", 'pepLetterHighlight')
 				.attr("stroke-width", "2px")
-				.attr("stroke", self.model.highlightColour)
+				.attr("stroke", self.model.get('highlightColor'))
 				.attr("opacity", 0)
 				.style("cursor", "default")
 				.text(function(d) {
@@ -395,11 +395,6 @@ var PeptideView = Backbone.View.extend({
 						return d.aminoAcid;
 				})
 			;
-
-			function changeCrossLink(){
-				var newlinkpos = new Array(self.changeCL[0].linkSite, self.changeCL[1].linkSite);
-				self.model.changeLinkPos(newlinkpos);
-			};
 
 			function changeMod(d){
 				var offset = self.pepoffset[self.changeMod.pepIndex];
@@ -527,7 +522,7 @@ var PeptideView = Backbone.View.extend({
 				.attr("class", "modLetterHighlight")
 				.attr("y", pep.y[1])
 				.attr("text-anchor", "middle")
-				.attr("stroke", self.model.highlightColour)
+				.attr("stroke",self.model.get('highlightColor'))
 				.style("font-size", "0.7em")
 				.style("cursor", "pointer")
 				.text(function(d){ return d.mod; })
