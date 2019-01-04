@@ -49,7 +49,7 @@ var PrideSelectionView = Backbone.View.extend({
 								return true;
 						}
 						else if (f.fileType == "PEAK"){
-							if (new RegExp(/(\.mgf|\.mzml|\.zip)(\.gz|\.zip)?$/i).test(f.fileName))
+							if (new RegExp(/(\.mgf|\.mzml|\.ms2|\.zip)(\.gz|\.zip)?$/i).test(f.fileName))
 								return true;
 						}
 					});
