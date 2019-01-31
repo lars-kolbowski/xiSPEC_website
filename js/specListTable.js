@@ -43,7 +43,7 @@ var specListTableView = DataTableView.extend({
 		this.options = _.extend(defaultOptions, viewOptions);
 
 		this.listenTo(window, 'resize', this.resize);
-		this.listenTo(CLMSUI.vent, 'scoreChange', this.changeDisplayScore);
+		this.listenTo(xiSPEC.vent, 'scoreChange', this.changeDisplayScore);
 
 		this.wrapper = d3.select(this.el);
 		this.userPageLen = 8;
@@ -225,7 +225,7 @@ var specListTableView = DataTableView.extend({
 
 // 				if(self.options.initId){
 // // 					var row = self.DataTable.columns( 'spectrum_ref:name' ).search( self.options.initId )[0][0];
-// // 					CLMSUI.vent.trigger('loadSpectrum', self.DataTable.rows(row).data()[0]);
+// // 					xiSPEC.vent.trigger('loadSpectrum', self.DataTable.rows(row).data()[0]);
 // 					self.DataTable.columns( 'spectrum_ref:name' ).data().filter( function(e){
 // 						 if (e == self.options.initId) return true;
 // 					});
@@ -236,7 +236,7 @@ var specListTableView = DataTableView.extend({
 				// load first spectrum_identification
 					var row = self.DataTable.rows( { filter : 'applied'} ).data()[0];
 					self.loadSpectrum(row, true);
-					CLMSUI.vent.trigger('updateAltCount', row.alt_count);
+					xiSPEC.vent.trigger('updateAltCount', row.alt_count);
 					self.model.spectrum_id = row.spectrum_ref;
 // 					firstRow = $('#specListWrapper tr:first-child');
 // 					$(firstRow).addClass('selected');
@@ -251,7 +251,6 @@ var specListTableView = DataTableView.extend({
 					var rowNumber = self.DataTable.columns('identification_id:name').data()[0].indexOf(self.model.requestId);
 					$(self.DataTable.row(rowNumber).node()).addClass('selected');
 				}
-
 
 				//ToDo: disabled -> rework needed
 				// self.hideEmptyColumns();
@@ -282,9 +281,9 @@ var specListTableView = DataTableView.extend({
 			var row = self.DataTable.row(this).data();
 			self.model.spectrum_id = row.spectrum_ref;
 			var scan_identifier = row.scan_id + ' - ' + row.file;
-			CLMSUI.vent.trigger('updateAltTitle', scan_identifier);
+			xiSPEC.vent.trigger('updateAltTitle', scan_identifier);
 			self.loadSpectrum(row, true);
-			CLMSUI.vent.trigger('updateAltCount', row.alt_count);
+			xiSPEC.vent.trigger('updateAltCount', row.alt_count);
 		});
 
 		var specListToolbar = d3.selectAll('.specListToolbar').attr('class', 'listToolbar');
@@ -348,7 +347,7 @@ var specListTableView = DataTableView.extend({
 	},
 
 	// userScoreChange: function(e){
-	// 	CLMSUI.vent.trigger('scoreChange', parseInt($(e.target).attr('data-score')));
+	// 	xiSPEC.vent.trigger('scoreChange', parseInt($(e.target).attr('data-score')));
 	// },
 
 	hideEmptyColumns: function(e) {
@@ -392,7 +391,7 @@ var specListTableView = DataTableView.extend({
 	initiateTable: function() {
 	    var table = $.fn.dataTable.fnTables(true);
 	    $(table).dataTable().fnAdjustColumnSizing();
-		// CLMSUI.vent.trigger('tableUpdate_done');
+		// xiSPEC.vent.trigger('tableUpdate_done');
 	},
 
 	toggleThreshold: function(e){
@@ -454,10 +453,10 @@ var specListTableView = DataTableView.extend({
 	// 	});
 	//
 	// 	if (curIndex == -1){
-	// 		CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[0]);
+	// 		xiSPEC.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[0]);
 	// 	}
 	// 	else if (curIndex - 1 >= 0){
-	// 		CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[curIndex-1]);
+	// 		xiSPEC.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[curIndex-1]);
 	//
 	// 		//change pagination to show cur selected spectrum
 	// 		if (!(this.DataTable.page.info().start < (curIndex-1) &&  (curIndex-1) < this.DataTable.page.info().end)){
@@ -480,10 +479,10 @@ var specListTableView = DataTableView.extend({
 	// 	});
 	//
 	// 	if (curIndex == -1){
-	// 		CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[0]);
+	// 		xiSPEC.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[0]);
 	// 	}
 	// 	else if (curIndex + 1 < this.DataTable.rows( { filter : 'applied'} ).data().length){
-	// 		CLMSUI.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[curIndex+1]);
+	// 		xiSPEC.vent.trigger('loadSpectrum', this.DataTable.rows( { filter : 'applied'} ).data()[curIndex+1]);
 	//
 	// 		//change pagination to show cur selected spectrum
 	// 		if (!(this.DataTable.page.info().start < (curIndex+1) &&  (curIndex+1) < this.DataTable.page.info().end)){

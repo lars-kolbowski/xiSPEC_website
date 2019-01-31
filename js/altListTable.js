@@ -31,8 +31,8 @@ var altListTableView = DataTableView.extend({
 		};
 		this.options = _.extend(defaultOptions, viewOptions);
 
-		this.listenTo(CLMSUI.vent, 'scoreChange', this.changeDisplayScore);
-		this.listenTo(CLMSUI.vent, 'updateAltTitle', this.updateTitle);
+		this.listenTo(xiSPEC.vent, 'scoreChange', this.changeDisplayScore);
+		this.listenTo(xiSPEC.vent, 'updateAltTitle', this.updateTitle);
 
 		var self = this;
 
@@ -171,7 +171,7 @@ var altListTableView = DataTableView.extend({
 
 			var row = self.DataTable.row(this).data()
 			self.loadSpectrum(row, true);
-// 			CLMSUI.vent.trigger('updateAltCount', row.alt_count);
+// 			xiSPEC.vent.trigger('updateAltCount', row.alt_count);
 		});
 
 		this.altListToolbar = d3.selectAll('.altListToolbar').attr('class', 'listToolbar').attr('id', 'altListId');
