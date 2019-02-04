@@ -496,6 +496,7 @@ A.btn {
 	flex-grow: 1;
 	display: flex;
 	flex-flow: column;
+    min-height: 0px;
 }
 
 .dropdown LI label.btn {
