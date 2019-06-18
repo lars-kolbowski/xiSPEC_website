@@ -40,7 +40,7 @@ var DataTableView = Backbone.View.extend({
 	// },
 
 	userScoreChange: function(e){
-		CLMSUI.vent.trigger('scoreChange', $(e.target).attr('data-score'));
+		xiSPEC.vent.trigger('scoreChange', $(e.target).attr('data-score'));
 	},
 
 	hideEmptyColumns: function(e) {

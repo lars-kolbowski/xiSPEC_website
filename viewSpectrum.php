@@ -146,7 +146,7 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 				var db_controls = '<span id="dbControls">';
 				if(tmpDB) db_controls += '<div class="xispec_tooltip_wrapper"><span class="xispec_tooltip_tr" id="saveTooltip">Your dataset is temporary click here if you want to save it for later access!<i class="fa fa-times-circle closeButton"></i></span><i id="saveDB" title="Save" class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-floppy-o" aria-hidden="true"></i></div>';
 				else db_controls += '<i id="shareDB" title="Share" class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-share-alt" aria-hidden="true"></i>';
-				db_controls += '<i id="toggleSpecList" title="Show/Hide Spectra list" class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-bars" aria-hidden="true"></i>';
+				db_controls += '<i id="xispec_toggleSpecList" title="Show/Hide Spectra list" class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-bars" aria-hidden="true"></i>';
 				// db_controls += '<i id="xispec_revertAnnotation" title="revert to original annotation" class="xispec_btn xispec_btn-topNav fa fa-undo disabled"  aria-hidden="true"></i>';
 				db_controls += '</span>';
 				$('#xispec_extra_spectrumControls_after').html(db_controls);

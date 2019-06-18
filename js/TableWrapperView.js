@@ -34,8 +34,8 @@ var TableWrapperView = Backbone.View.extend({
 		};
 		this.options = _.extend(defaultOptions, viewOptions);
 
-		this.listenTo(CLMSUI.vent, 'updateAltCount', this.updateNav);
-		this.listenTo(CLMSUI.vent, 'toggleTableView', this.toggleView);
+		this.listenTo(xiSPEC.vent, 'updateAltCount', this.updateNav);
+		this.listenTo(xiSPEC.vent, 'toggleTableView', this.toggleView);
 
 		var d3el = d3.select(this.el);
 
