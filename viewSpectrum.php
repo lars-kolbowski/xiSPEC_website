@@ -124,6 +124,7 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 			window.onresize = function() { window.trigger('resize') };
 
 			var xispec_options = {
+				showCustomConfig: true,
 				targetDiv: "spectrumPanel",
 				xiAnnotatorBaseURL: "/xiAnnotator/",
 				<?php if(isset($dbName)){
