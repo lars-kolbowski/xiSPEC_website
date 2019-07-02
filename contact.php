@@ -24,21 +24,21 @@
 										<td>
 											<div class="contact no-hover">
 												<ul id="navlist"  class="no-hover">
-													<li><a href="mailto:lars.b.kolbowski@campus.tu-berlin.de" title="Email Lars!">
+													<li><a href="mailto:lars.kolbowski@campus.tu-berlin.de" title="Email Lars!">
 														<img src="images/team/lars-kolbowski.jpg" class="grayscale" />
 													</a></li>
 												</ul>
 												<div class="external-link">
 													<p>
 														<strong>Lars Kolbowski</strong>
-														<br/><a href="mailto:lkolbows@ed.ac.uk">lkolbows@ed.ac.uk</a>
+														<br/><a href="mailto:lars.kolbowski@campus.tu-berlin.de">lars.kolbowski@campus.tu-berlin.de</a>
 														<br/>Developer
-														<br/>University of Edinburgh
-														<br/>Room 4.17
-														<br/>Michael Swann Building
-														<br/>King’s Buildings
-														<br/>Edinburgh
-														<br/>EH9 3JR
+														<br/>TU-Berlin
+														<br/>Sekr. TIB 4/4-3
+														<br/>Gustav-Meyer-Allee 25
+														<br/>13355 Berlin
+														<br/>TIB Gebäude 17, Etage
+														<br/>Raum 472
 													</p>
 												</div>
 											</div>
