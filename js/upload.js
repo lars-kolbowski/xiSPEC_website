@@ -19,7 +19,9 @@ $( document ).ready(function() {
 
 	$("#submitDataModal").easyModal({
 		overlayClose: false,
-		closeOnEscape: false
+		closeOnEscape: false,
+		// bugfix for unclickable overlay caused by some browser extensions
+		zIndex: function(){return 10000;},
 	});
 
 	$('#cancelUpload').click(function(){
