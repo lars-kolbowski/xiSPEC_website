@@ -39,6 +39,7 @@ var specListTableView = DataTableView.extend({
 
 		var defaultOptions = {
 			initId: false,
+			contains_crosslink: true,
 		};
 		this.options = _.extend(defaultOptions, viewOptions);
 
@@ -49,6 +50,12 @@ var specListTableView = DataTableView.extend({
 		this.userPageLen = 8;
 
 		this.ajaxUrl = this.model.get('baseDir') + "php/specListSSprocessing.php?db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
+
+		this.invisibleColumns = [ 0, 1, 11, 15, 18, 19, 20, 22, 23 ];
+		if (!this.options.contains_crosslink) {
+			// this.invisibleColumns = this.invisibleColumns.concat([ 3, 4, 5, 8, 9, 13 ]);
+			this.invisibleColumns = [ 0, 1, 3, 4, 5, 8, 9, 11, 13, 15, 18, 19, 20, 22, 23 ];
+		}
 
 		this.tableVars = {
 			//"ordering": false,
@@ -96,32 +103,32 @@ var specListTableView = DataTableView.extend({
 				{ "title": "identification id", "data": "identification_id", "name": "identification_id", "searchable": false },	//0
 				{ "title": "spectrum id", "data": "spectrum_ref", "name": "spectrum_id" },	//1
 				{ "title": "peptide 1", "data": "pep1", "name": "pep1" },	//2
-				{ "title": "peptide 2", "data": "pep2", "className":"toggable", "name": "pep2" },	//3
-				{ "title": "CL pos 1", "data": "linkpos1", "className": "dt-center toggable", "name": "linkpos1", "searchable": false },	//4
-				{ "title": "CL pos 2", "data": "linkpos2", "className": "dt-center toggable", "name": "linkpos2", "searchable": false },	//5
-				{ "title": "charge", "data": "charge", "className": "dt-center toggable", "name": "charge" },		//6
-				{ "title": "isDecoy", "data": "is_decoy", "className": "dt-center toggable", "name": "is_decoy" },	//7
-				{ "title": "decoy 1", "data": "decoy1", "className": "dt-center toggable", "name": "decoy1" },	//8
-				{ "title": "decoy 2", "data": "decoy2", "className": "dt-center toggable", "name": "decoy2" },	//9
-				{ "title": "score", "data": "score", "className": "dt-center toggable", "name": "score" },    //10
+				{ "title": "peptide 2", "data": "pep2", "name": "pep2" },	//3
+				{ "title": "CL pos 1", "data": "linkpos1", "name": "linkpos1", "searchable": false },	//4
+				{ "title": "CL pos 2", "data": "linkpos2", "name": "linkpos2", "searchable": false },	//5
+				{ "title": "charge", "data": "charge", "name": "charge" },		//6
+				{ "title": "isDecoy", "data": "is_decoy", "name": "is_decoy" },	//7
+				{ "title": "decoy 1", "data": "decoy1", "name": "decoy1" },	//8
+				{ "title": "decoy 2", "data": "decoy2", "name": "decoy2" },	//9
+				{ "title": "score", "data": "score", "name": "score" },    //10
 				{ "title": "scores", "data": "scores", "name": "scores" },    //11
-				{ "title": "protein 1", "data": "protein1", "className": "dt-center toggable", "name": "protein1" },  //12
-				{ "title": "protein 2", "data": "protein2", "className": "dt-center toggable", "name": "protein2" },  //13
-				{ "title": "passThreshold", "data": "pass_threshold", "name": "pass_threshold", "className": "dt-center toggable" },  //14
+				{ "title": "protein 1", "data": "protein1", "name": "protein1" },  //12
+				{ "title": "protein 2", "data": "protein2", "name": "protein2" },  //13
+				{ "title": "passThreshold", "data": "pass_threshold", "name": "pass_threshold"},  //14
 				{ "title": "alt count", "data": "alt_count", "name": "alt_count", "searchable": false },    //15
-				{ "title": "dataRef", "className":"toggable", "data": "file", "name": "dataRef" },        //16
-				{ "title": "scanId", "data": "scan_id", "className": "dt-center toggable", "name": "scan_id" },    //17
+				{ "title": "dataRef", "data": "file", "name": "dataRef" },        //16
+				{ "title": "scanId", "data": "scan_id", "name": "scan_id" },    //17
 
 				{ "title": "crosslinker_modmass1", "data": "crosslinker_modmass1", "name": "crosslinker_modmass1", "searchable": false },    //18
 				{ "title": "crosslinker_modmass2", "data": "crosslinker_modmass2", "name": "crosslinker_modmass2", "searchable": false },    //19
 				{ "title": "ion_types", "data": "ion_types", "name": "ion_types", "searchable": false },    //20
-				{ "title": "exp_mz", "className": "dt-center toggable", "data": "exp_mz", "name": "exp_mz" },    //21
+				{ "title": "exp_mz", "data": "exp_mz", "name": "exp_mz" },    //21
 				{ "title": "frag_tol", "data": "frag_tol", "name": "frag_tol", "searchable": false },    //22
 				{ "title": "spectrum_id", "data": "spectrum_id", "name": "spectrum_id", "searchable": false },    //23
 
-				{ "title": this.options.meta_cols[0], "className": (this.options.meta_cols[0] != -1) ? "dt-center toggable": "invisible", "data": "meta1", "name": "meta1" },    //24
-				{ "title": this.options.meta_cols[1], "className": (this.options.meta_cols[1] != -1) ? "dt-center toggable": "invisible", "data": "meta2", "name": "meta2" },    //25
-				{ "title": this.options.meta_cols[2], "className": (this.options.meta_cols[2] != -1) ? "dt-center toggable": "invisible", "data": "meta3", "name": "meta3" },    //26
+				{ "title": this.options.meta_cols[0], "className": (this.options.meta_cols[0] != -1) ? "dt-center": "invisible", "data": "meta1", "name": "meta1" },    //24
+				{ "title": this.options.meta_cols[1], "className": (this.options.meta_cols[1] != -1) ? "dt-center": "invisible", "data": "meta2", "name": "meta2" },    //25
+				{ "title": this.options.meta_cols[2], "className": (this.options.meta_cols[2] != -1) ? "dt-center": "invisible", "data": "meta3", "name": "meta3" },    //26
 
 			],
 
@@ -134,7 +141,12 @@ var specListTableView = DataTableView.extend({
 			 	"columnDefs": [
 				{
 					"class": "invisible",
-					"targets": [ 0, 1, 11, 15, 18, 19, 20, 22, 23 ],
+					// "visible": false,
+					"targets": this.invisibleColumns,
+				},
+				{
+					"class": "toggable dt-center",
+					"targets": [ 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 17, 21, 24, 25, 26],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
