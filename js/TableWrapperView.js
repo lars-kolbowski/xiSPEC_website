@@ -93,8 +93,10 @@ var TableWrapperView = Backbone.View.extend({
 					response.sid_meta2_name,
 					response.sid_meta3_name
 				];
-				self.contains_crosslinks = response.contains_crosslinks;
-				//ToDo: use contains_crosslinks to modify columns shown!
+				self.contains_crosslink = false
+				if (response.contains_crosslink == 1) {
+					self.contains_crosslink = true;
+				}
 
 				// old databases
 				if (response.customConfig){
@@ -113,6 +115,7 @@ var TableWrapperView = Backbone.View.extend({
 					// wrapper: this,
 					initId: self.options.initId,
 					meta_cols:meta_cols,
+					contains_crosslink: self.contains_crosslink,
 				});
 
 				self.altListTable = new altListTableView({
@@ -120,6 +123,7 @@ var TableWrapperView = Backbone.View.extend({
 					el:"#altListWrapper",
 					// wrapper: this,
 					meta_cols: meta_cols,
+					contains_crosslink: self.contains_crosslink,
 				});
 			}
 		});
