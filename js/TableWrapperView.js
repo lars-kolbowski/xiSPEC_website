@@ -96,8 +96,14 @@ var TableWrapperView = Backbone.View.extend({
 				self.contains_crosslinks = response.contains_crosslinks;
 				//ToDo: use contains_crosslinks to modify columns shown!
 
+				// old databases
 				if (response.customConfig){
 					customConfig = response.customConfig.split('\n');
+					xiSPEC.setCustomConfigOverwrite(customConfig);
+				}
+				// new databases
+				else if (response.custom_config){
+					customConfig = response.custom_config.split('\n');
 					xiSPEC.setCustomConfigOverwrite(customConfig);
 				}
 
