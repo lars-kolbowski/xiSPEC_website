@@ -146,7 +146,7 @@ var specListTableView = DataTableView.extend({
 				},
 				{
 					"class": "toggable dt-center",
-					"targets": [ 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 17, 21, 24, 25, 26],
+					"targets": [ 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 16, 17, 21, 24, 25, 26],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
