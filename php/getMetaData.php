@@ -45,7 +45,7 @@
 			$result['sid_meta1_name'] = '-1';
 			$result['sid_meta2_name'] = '-1';
 			$result['sid_meta3_name'] = '-1';
-			$result['contains_crosslinks'] = 1;
+			$result['contains_crosslink'] = 1;
 		}
 
 		echo json_encode($result);
