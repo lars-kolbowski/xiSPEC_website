@@ -118,7 +118,7 @@
 						<div id="myManualDataInput" >
 							<div id="addCLModal" role="dialog" class="modal" style="display: none;">
 								<div class="header">
-									<h1>Add custom cross-linker</h1>
+									<h1>Add custom crosslinker</h1>
 								</div>
 								<form id="addCustomCLform" action="#">
 									<div style="text-align:center;">

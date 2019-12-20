@@ -126,8 +126,8 @@ var ManualDataInputView = Backbone.View.extend({
 		;
 
 		var ClOptions = [
-			{value: "", text: "Select cross-linker..."},
-			{value: "add", text: "add your own cross-linker..."},
+			{value: "", text: "Select crosslinker..."},
+			{value: "add", text: "add your own crosslinker..."},
 			{value: "0", text: "none (linear peptide)"},
 			{value: "138.068080", text: "BS3/DSS [138.068080 Da]"},
 			{value: "142.093177", text: "BS3/DSS-d4 [142.093177 Da]"},
@@ -242,7 +242,7 @@ var ManualDataInputView = Backbone.View.extend({
 
 		var bottomControlsButtonData = [
 			{value: "View Spectrum", id: "manDataInput-submit", type: "submit"},
-			{value: "cross-link example", id: "manDataInput-clExample", type: "button"},
+			{value: "crosslink example", id: "manDataInput-clExample", type: "button"},
 			{value: "linear example", id: "manDataInput-linExample", type: "button"},
 			{value: "reset", id: "manDataInput-clearForm", type: "button"},
 		];

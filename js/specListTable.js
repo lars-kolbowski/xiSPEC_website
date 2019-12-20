@@ -363,7 +363,7 @@ var specListTableView = DataTableView.extend({
 	// },
 
 	hideEmptyColumns: function(e) {
- 		//ToDo: change this to hide cross-link columns when it's a linear dataset by checking a database level isCrossLinkDataset variable
+ 		//ToDo: change this to hide crosslink columns when it's a linear dataset by checking a database level isCrossLinkDataset variable
 		if(this.isEmpty(this.DataTable.columns('pep2:name').data()[0])){
 			this.DataTable.columns('pep2:name').visible( false );
 			$(".toggle-vis[data-column='3']")[0].checked = false;
