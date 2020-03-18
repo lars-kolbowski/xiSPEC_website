@@ -28,6 +28,7 @@
 						<li><a href="#HmoveLabels">Move labels</a></li>
 						<li><a href="#HclChange">Change crosslinker position</a></li>
 						<li><a href="#HmodChange">Change modification position</a></li>
+						<li><a href="#Hbutterfly">Compare annotations using butterfly plot</a></li>
 						<li><a href="#Hhighlight">Highlight fragments</h5></a></li>
 					</ul>
 					</br>
@@ -107,6 +108,18 @@
 								<li>Move the mouse over the desired modified amino acids.</li>
 								<li>Click on the amino acid to confirm the position.</li>
 								⇨ xiSPEC updates the annotated spectrum!
+							</ul>
+						</p>
+						<br/>
+						<li>
+							<h5 id="Hbutterfly">Compare annotations using butterfly plot <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
+						</li>
+						<p>
+							<img src="/images/gifs/butterfly.gif" />
+							<ul style="margin-left:30px;">
+								<li>Change the annotation of the spectrum (e.g. changing annotated ions).</li>
+								<li>Click on butterfly or check the adjacent checkbox.</li>
+								⇨ xiSPEC will show you both annotations for direct comparison of annotations!
 							</ul>
 						</p>
 						<br/>
