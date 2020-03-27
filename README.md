@@ -47,7 +47,6 @@ CREATE TABLE dbs (
  city varchar(64) DEFAULT NULL,
  org varchar(128) DEFAULT NULL,
  date datetime DEFAULT NULL,
- size int(11) NOT NULL,
  PRIMARY KEY (id),
  UNIQUE KEY name (name),
  UNIQUE KEY share (share)
