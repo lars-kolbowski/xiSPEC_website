@@ -26,8 +26,9 @@
 						<li><a href="#Hzoom">Zooming</a></li>
 						<li><a href="#Hmeasure">Measure distances</a></li>
 						<li><a href="#HmoveLabels">Move labels</a></li>
-						<li><a href="#HclChange">Change cross-linker position</a></li>
+						<li><a href="#HclChange">Change crosslinker position</a></li>
 						<li><a href="#HmodChange">Change modification position</a></li>
+						<li><a href="#Hbutterfly">Compare annotations using butterfly plot</a></li>
 						<li><a href="#Hhighlight">Highlight fragments</h5></a></li>
 					</ul>
 					</br>
@@ -85,13 +86,13 @@
 						<br/>
 
 						<li>
-							<h5 id="HclChange">Change cross-linker position <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
+							<h5 id="HclChange">Change crosslinker position <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
 						</li>
 						<p>
 							<img src="/images/gifs/changeCL.gif" />
 							<ul style="margin-left:30px;">
-								<li>Click on the cross-link line.</li>
-								<li>Move the mouse over the desired cross-linked amino acids.</li>
+								<li>Click on the crosslink line.</li>
+								<li>Move the mouse over the desired crosslinked amino acids.</li>
 								<li>Click on the amino acid to confirm the position(s).</li>
 								⇨ xiSPEC updates the annotated spectrum!
 							</ul>
@@ -107,6 +108,18 @@
 								<li>Move the mouse over the desired modified amino acids.</li>
 								<li>Click on the amino acid to confirm the position.</li>
 								⇨ xiSPEC updates the annotated spectrum!
+							</ul>
+						</p>
+						<br/>
+						<li>
+							<h5 id="Hbutterfly">Compare annotations using butterfly plot <a href="#" title="back to top"><i class="fa fa-arrow-up"></i></a></h5>
+						</li>
+						<p>
+							<img src="/images/gifs/butterfly.gif" />
+							<ul style="margin-left:30px;">
+								<li>Change the annotation of the spectrum (e.g. changing annotated ions).</li>
+								<li>Click on butterfly or check the adjacent checkbox.</li>
+								⇨ xiSPEC will show you both annotations for direct comparison of annotations!
 							</ul>
 						</p>
 						<br/>
@@ -165,7 +178,7 @@
 					<br/>
 					<p style="font-size: small;line-height: 1.5em;">
 						*required if there are multiple alternative explanations for the same spectrum.</br>
-						**required for cross-linked peptides.
+						**required for crosslinked peptides.
 					</p>
 				</div>
 
@@ -199,7 +212,7 @@
 								<td rowspan="2" style="vertical-align: middle">K#LM;DAHK#SEVR</td>
 							</tr>
 							<tr>
-								<td>cross-linked residue</td>
+								<td>crosslinked residue</td>
 								<td>#</td>
 							</tr>
 						</table>

@@ -24,6 +24,9 @@ var CLMSUI = CLMSUI || {};
 var ManualDataInputView = Backbone.View.extend({
 //ToDo: recfator to load examples as json into model?
 	events : {
+		'click #toggleModifications' : 'toggleModTable',
+		'click #toggleLosses' : 'toggleLossTable',
+		'click #addNewLoss': 'addNewLoss',
 		'change .ionSelectChkbox': 'updateIons',
 		'change #manDataInput-ClSelect': 'changeCrossLinker',
 		'change #manDataInput-charge': 'changeCharge',
@@ -126,8 +129,8 @@ var ManualDataInputView = Backbone.View.extend({
 		;
 
 		var ClOptions = [
-			{value: "", text: "Select cross-linker..."},
-			{value: "add", text: "add your own cross-linker..."},
+			{value: "", text: "Select crosslinker..."},
+			{value: "add", text: "add your own crosslinker..."},
 			{value: "0", text: "none (linear peptide)"},
 			{value: "138.068080", text: "BS3/DSS [138.068080 Da]"},
 			{value: "142.093177", text: "BS3/DSS-d4 [142.093177 Da]"},
@@ -212,7 +215,7 @@ var ManualDataInputView = Backbone.View.extend({
 		this.toleranceUnit.append("option").attr("value", "ppm").text("ppm");
 		this.toleranceUnit.append("option").attr("value", "Da").text("Da");
 
-		//modTable
+		// modTable section
 		var modificationSection = this.mainForm.append("section");
 		var modTableWrapper = modificationSection.append("div")
 			.attr("class", "form-control dataTables_wrapper")
@@ -223,7 +226,28 @@ var ManualDataInputView = Backbone.View.extend({
 			.attr("style", "width: 100%")
 		;
 		this.initializeModTable();
+		// end modTable
 
+		// lossTable section
+		var lossSection = this.mainForm.append("section");
+		// var lossToggle = lossSection.append('div')
+		// 	.attr('id', 'toggleLosses')
+		// 	.attr('class', 'pointer')
+		// ;
+		// lossToggle.append('i').attr("class", "fa fa-plus-square pointer").attr("aria-hidden", "true");
+		// lossToggle.append('span').text(' Losses:').append('span');
+
+		this.lossTableWrapper = lossSection.append("div")
+			.attr("class", "form-control dataTables_wrapper")
+			.attr("id", "manDataInput-lossTable_wrapperOuter")
+			// .style('display', 'none')
+		;
+		var lossTable = this.lossTableWrapper.append("table")
+			.attr("id", "lossTable")
+			.attr("style", "width: 100%")
+		;
+		this.initializeLossTable();
+		//end lossTable
 
 		d3.select(this.el).selectAll("input[type=text]")
 			.classed ("form-control", true)
@@ -242,7 +266,7 @@ var ManualDataInputView = Backbone.View.extend({
 
 		var bottomControlsButtonData = [
 			{value: "View Spectrum", id: "manDataInput-submit", type: "submit"},
-			{value: "cross-link example", id: "manDataInput-clExample", type: "button"},
+			{value: "crosslink example", id: "manDataInput-clExample", type: "button"},
 			{value: "linear example", id: "manDataInput-linExample", type: "button"},
 			{value: "reset", id: "manDataInput-clearForm", type: "button"},
 		];
@@ -409,10 +433,70 @@ var ManualDataInputView = Backbone.View.extend({
 
 	},
 
+	initializeLossTable: function(){
+		var self = this;
+		var tableVars = {
+			"scrollCollapse": true,
+			"paging":   false,
+			"ordering": false,
+			"info":     false,
+			"searching":false,
+			"data": this.model.losses,
+			"columns": [
+				{},
+				{
+					"title": 'Neutral Loss <i id="addNewLoss" class="fa fa-plus-circle" aria-hidden="true" title="add new neutral loss"></i>' ,
+					"className": "dt-center"
+				},
+				{ "title": "Mass", "className": "dt-center" },
+				{ "title": "Specificity", "className": "dt-center" },
+			],
+			"columnDefs": [
+				{
+					"render": function ( data, type, row, meta ) {
+						return '<i class="fa fa-trash deleteLoss" title="delete neutral loss" aria-hidden="true">';
+					},
+					"targets": 0,
+				},
+				{
+					"render": function ( data, type, row, meta ) {
+						return '<input class="form-control" style="width:100px" id="lossName_'+meta.row+'" title="neutral loss name" name="losses[]" type="text" value='+data+'>';
+					},
+					"targets": 1,
+				},
+				{
+					"render": function ( data, type, row, meta ) {
+						return '<input class="form-control stepInput" style="width:120px" id="lossMass_'+meta.row+'" row="'+meta.row+'" title="neutral loss mass" name="lossMasses[]" type="text" required value='+data+' autocomplete=off>';
+					},
+					"targets": 2,
+				},
+				{
+					"render": function ( data, type, row, meta ) {
+						data = data.join(", ");
+						return '<input class="form-control" id="lossSpec_'+meta.row+'" row="'+meta.row+'" title="neutral loss specificity" name="lossSpecificities[]" type="text" required value="'+data+'" autocomplete=off>'
+					},
+					"targets": 3,
+				}
+			]
+		};
+
+	    this.lossTable = $('#lossTable').DataTable( tableVars );
+
+		$('#lossTable ').on('click', '.deleteLoss', function() {
+			self.lossTable
+				.row( $(this).parents('tr') )
+		        .remove()
+		        .draw();
+		});
+
+	},
+
 	render: function() {
+
 
 		this.pepInputView.render();
 		this.renderModTable();
+		this.renderLossTable();
 		//ions
 		this.model.fragmentIons.forEach(function(ion){
 			$('#'+ion.type).attr('checked', true);
@@ -484,6 +568,66 @@ var ManualDataInputView = Backbone.View.extend({
 		}
 	},
 
+	hideModTable: function(){
+		$('#toggleModifications').find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
+		$(this.modTableWrapper.node()).hide();
+	},
+
+	showModTable: function(){
+		$('#toggleModifications').find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
+		$(this.modTableWrapper.node()).show();
+	},
+
+	toggleModTable: function(){
+		if($(this.modTableWrapper.node()).is(":visible")){
+			$('#toggleModifications').find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
+		}
+		else{
+			$('#toggleModifications').find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
+		}
+		$(this.modTableWrapper.node()).toggle();
+	},
+
+	addNewLoss: function(){
+		console.log('new loss');
+		this.lossTable.row.add( [
+			'',
+			'',
+			0,
+			[],
+		] ).draw( false );
+	},
+
+	toggleLossTable: function(){
+		if($(this.lossTableWrapper.node()).is(":visible")){
+			$('#toggleLosses').find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
+		}
+		else{
+			$('#toggleLosses').find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
+		}
+		$(this.lossTableWrapper.node()).toggle();
+	},
+
+	renderLossTable: function(){
+		var self = this;
+		var losses = this.model.losses;
+		this.lossTable.clear();
+
+		if(losses.length == 0) {
+			this.lossTable.draw( false );
+		}
+		else{
+			losses.forEach(function(loss){
+				self.lossTable.row.add( [
+					'',
+					loss.id,
+					loss.mass,
+					loss.specificity,
+				] ).draw( false );
+			});
+		}
+	},
+
 	updateIons: function(event){
 
 		var ionSelectionArr = new Array();
@@ -504,8 +648,14 @@ var ManualDataInputView = Backbone.View.extend({
 
 	clExample: function(){
 
+		// set modifications and losses
 		this.model.knownModifications = [{"id":"cm","mass":57.0215,"aminoAcids":["K","H","C","D","E","S","T","Y"]}];
-
+		this.model.losses = [
+			{'id': "CH3SOH", 'specificity': ["Mox"], 'mass': 63.99828547},
+			{'id': "H20", 'specificity': ["S", "T", "D", "E", "CTerm"], 'mass': 18.01056027},
+			{'id': "NH3", 'specificity': ["R", "K", "N", "Q", "NTerm"], 'mass': 17.02654493}
+		];
+		console.log(this.model);
 		$("#manDataInput-pepSeq").val("QNCcmELFEQLGEYK#FQNALLVR;K#QTALVELVK");
 		$.get("example/cl-peaklist.txt",function(data){
 			$("#manDataInput-peakList").val(data);
@@ -531,7 +681,13 @@ var ManualDataInputView = Backbone.View.extend({
 
 	linExample: function(){
 
+		// set modifications and losses
 		this.model.knownModifications = [{"id":"cm","mass":57.0215,"aminoAcids":["K","H","C","D","E","S","T","Y"]}];
+		this.model.losses = [
+			{id: "CH3SOH", specificity: ["Mox"], mass: 63.99828547},
+			{id: "H20", specificity: ["S", "T", "D", "E", "CTerm"], mass: 18.01056027},
+			{id: "NH3", specificity: ["R", "K", "N", "Q", "NTerm"], mass: 17.02654493}
+		];
 
 		//ToDo: refactor to get rid of jquery calls?
 		$("#manDataInput-pepSeq").val("VHTECcmCcmHGDLLECcmADDRADLAK");
@@ -550,7 +706,6 @@ var ManualDataInputView = Backbone.View.extend({
 		$('#YIon').prop('checked', true);
 		this.updateIons();
 
-
 		$("#manDataInput-tolVal").val("20.0");
 		$("#manDataInput-tolUnit").val("ppm");
 
@@ -558,7 +713,7 @@ var ManualDataInputView = Backbone.View.extend({
 
 	reset: function(){
 		this.model.knownModifications = [];
-
+		this.model.losses = [];
 		//ToDo: refactor to get rid of jquery calls?
 		//ToDo: change to model reset?
 		$("#manDataInput-pepSeq").val("");

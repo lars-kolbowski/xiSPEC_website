@@ -95,6 +95,10 @@
 	height: auto;
 }
 
+#manDataInput-lossTable_wrapperOuter{
+	height: auto;
+}
+
 #manDataInput-bottomControls{
 	background-color: #555;
 	margin-top: 30px;

@@ -69,10 +69,10 @@ var PeptideView = Backbone.View.extend({
 					for (var i = 0; i < this.pepLetters.length; i++) {
 						this.pepLetters[i].style("cursor", "pointer");
 					}
-					html += "Set the cross-link position by clicking on the amino acids.<br/>";
+					html += "Set the crosslink position by clicking on the amino acids.<br/>";
 				}
 				if (this.linkPos.length > 1)
-					html += "Click on the cross-link line to change the position.<br/>";
+					html += "Click on the crosslink line to change the position.<br/>";
 			}
 			var modifications = false;
 			for (var i = 0; i < this.pepModsArray.length; i++) {
@@ -284,7 +284,7 @@ var PeptideView = Backbone.View.extend({
 			}
 		    // #==========================================================================
 		    // #    account for crosslink shift
-		    // #    this alings the peptide sequences at the cross-link site
+		    // #    this alings the peptide sequences at the crosslink site
 		    // #==========================================================================
 		    var shift = this.linkPos[0].linkSite - this.linkPos[1].linkSite;
 		    var spaceArray = arrayOfHashes(Math.abs(shift));
