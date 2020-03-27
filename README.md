@@ -10,10 +10,12 @@ If you are looking to implement xiSPEC as a spectrum viewer module into your web
 
 parser back-end (https://github.com/Rappsilber-Laboratory/xiSPEC_ms_parser)
 
-linux
-apache2
-mysql
-php
+- linux
+- apache2
+- mysql
+- php
+- sqlite
+
 
 ### Submodule
 
