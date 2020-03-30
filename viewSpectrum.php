@@ -153,7 +153,9 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 				$('#xispec_extra_spectrumControls_after').html(db_controls);
 
 				$('#bottomDiv').show();
-				xiSPEC.initSpinner = new Spinner({scale: 5}).spin (d3.select("#topDiv").node());
+				// start the initSpinner
+				xiSPEC.initSpinner = new Spinner({scale: 5}).spin(
+					d3.select("#xispec_spectrumMainPlotDiv").node());
 
 				xiSPEC.TableWrapper = new TableWrapperView({
 					model: xiSPEC.SpectrumModel,
