@@ -141,12 +141,15 @@ var specListTableView = DataTableView.extend({
 			 	"columnDefs": [
 				{
 					"class": "invisible",
-					// "visible": false,
 					"targets": this.invisibleColumns,
 				},
 				{
+					"class": "non_default toggable dt-center",
+					"targets": [8, 9, 14],
+				},
+				{
 					"class": "toggable dt-center",
-					"targets": [ 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 16, 17, 21, 24, 25, 26],
+					"targets": [ 2, 3, 4, 5, 6, 7, 10, 12, 13, 16, 17, 21, 24, 25, 26],
 				},
 				{
 					"render": function ( data, type, row, meta ) {
@@ -317,13 +320,22 @@ var specListTableView = DataTableView.extend({
 
 		// columnToggleSelector
 	 	this.DataTable.columns()[0].forEach(function(col){
-	 		if (self.DataTable.columns().header()[col].classList.contains("toggable")){
+			var col_classes = self.DataTable.columns().header()[col].classList;
+	 		if (col_classes.contains("toggable")){
 		 		var colname =  self.DataTable.columns().header()[col].innerHTML;
-		 		$("#specListColSelect ul").append('<li><label><input type="checkbox" checked class="toggle-vis" data-column="'+col+'">'+colname+'</label></li>');
+
+				// deselect non_default columns
+				var chk = 'checked';
+				if (col_classes.contains("non_default")) {
+					var chk = '';
+					self.DataTable.column(col).visible(false);
+				}
+
+				// create the list element
+		 		$("#specListColSelect ul").append(
+					'<li><label><input type="checkbox" class="toggle-vis" data-column="'+col+'" '+chk+'>'+colname+'</label></li>');
 	 		}
 	 	});
-
-		// $('div.dataTables_filter input').addClass('form-control');
 	},
 
 	render: function(){
