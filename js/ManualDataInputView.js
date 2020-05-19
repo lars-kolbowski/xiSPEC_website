@@ -22,7 +22,7 @@
 var CLMSUI = CLMSUI || {};
 
 var ManualDataInputView = Backbone.View.extend({
-//ToDo: recfator to load examples as json into model?
+// ToDo: refactor to load examples as json into model?
 	events : {
 		'click #toggleModifications' : 'toggleModTable',
 		'click #toggleLosses' : 'toggleLossTable',
@@ -41,7 +41,7 @@ var ManualDataInputView = Backbone.View.extend({
 
 	initialize: function(options) {
 
-		var defaultOptions = {
+		const defaultOptions = {
 			showCustomCfg: true,
 		};
 
@@ -546,7 +546,7 @@ var ManualDataInputView = Backbone.View.extend({
 	},
 
 	renderModTable: function(){
-		//ToDo: duplicate of SpectrumSettingsView function...
+		//ToDo: duplicate of DataSettingsView function...
 
 		var modifications = this.extractModsFromPepStr(this.model.pepStrsMods.join(''));
 

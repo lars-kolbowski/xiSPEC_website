@@ -1,8 +1,8 @@
 var CLMSUI = CLMSUI || {};
 
 // http://stackoverflow.com/questions/11609825/backbone-js-how-to-communicate-between-views
-xiSPEC.vent = {};
-_.extend (xiSPEC.vent, Backbone.Events);
+xiSPECUI.vent = {};
+_.extend (xiSPECUI.vent, Backbone.Events);
 
 $(function() {
 

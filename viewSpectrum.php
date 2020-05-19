@@ -80,12 +80,15 @@ else{
 			<link rel="stylesheet" type="text/css" href="./spectrum/css/font-awesome.min.css"/>
 
 			<script type="text/javascript" src="./spectrum/src/Wrapper.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/SpectrumWrapper.js<?php echo $cacheBuster ?>"></script>
 			<script type="text/javascript" src="./spectrum/src/AnnotatedSpectrumModel.js<?php echo $cacheBuster ?>"></script>
 			<script type="text/javascript" src="./spectrum/src/SpectrumControlsView.js<?php echo $cacheBuster ?>"></script>
 			<script type="text/javascript" src="./spectrum/src/SpectrumView2.js<?php echo $cacheBuster ?>"></script>
 			<script type="text/javascript" src="./spectrum/src/FragmentationKeyView.js<?php echo $cacheBuster ?>"></script>
 			<script type="text/javascript" src="./spectrum/src/PrecursorInfoView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/SpectrumSettingsView.js<?php echo $cacheBuster ?>"></script>
+            <script type="text/javascript" src="./spectrum/src/SettingsView.js<?php echo $cacheBuster ?>"></script>
+            <script type="text/javascript" src="./spectrum/src/AppearanceSettingsView.js<?php echo $cacheBuster ?>"></script>
+			<script type="text/javascript" src="./spectrum/src/DataSettingsView.js<?php echo $cacheBuster ?>"></script>
 			<script type="text/javascript" src="./spectrum/src/PepInputView.js<?php echo $cacheBuster ?>"></script>
 			<script type="text/javascript" src="./spectrum/src/QCwrapperView.js<?php echo $cacheBuster ?>"></script>
 			<script type="text/javascript" src="./spectrum/src/ErrorPlotView.js<?php echo $cacheBuster ?>"></script>
@@ -139,7 +142,8 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 				<?php if(isset($tmpDB)) echo 'tmpDB: "'.$tmpDB.'",'; ?>
 			};
 
-			xiSPEC.init(xispec_options);
+			window.xiSPEC = new xiSPEC_wrapper(xispec_options);
+
 			// xispec_extra_spectrumControls
 			$('#xispec_extra_spectrumControls_before').html('<a href="index.php"><i class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-home fa-xi" style="top: 0px;" title="Home"></i></a><a href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues" target="_blank"><i class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-github fa-xi" title="GitHub issue tracker" style="cursor:pointer;"></i></a>');
 
@@ -154,11 +158,11 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 
 				$('#bottomDiv').show();
 				// start the initSpinner
-				xiSPEC.initSpinner = new Spinner({scale: 5}).spin(
+				xiSPECUI.initSpinner = new Spinner({scale: 5}).spin(
 					d3.select("#xispec_spectrumMainPlotDiv").node());
 
 				xiSPEC.TableWrapper = new TableWrapperView({
-					model: xiSPEC.SpectrumModel,
+					model: xiSPEC.activeSpectrum.models['Spectrum'],
 					el:"#bottomDiv",
 					initId: "<?php echo $sid; ?>"		//ToDo: remove? -> not used yet
 				});
@@ -168,8 +172,7 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 				$('#dbControls').hide();
 				$('#bottomDiv').hide();
 				$('#altDiv').hide();
-				xiSPEC.request_annotation(json_req, true);
-
+				xiSPECUI.vent.trigger('requestAnnotation', json_req, true);
 			}
 
 		});

@@ -780,11 +780,11 @@ input.file {
       border-color: #750000;
   }
 .form-control::-moz-selection {
-    background-color: #091d42;
+    background-color: #750000;
     color: #fff;
 }
 .form-control::selection {
-    background-color: #091d42;
+    background-color: #750000;
     color: #fff;
 }
 .btn {
