@@ -1,5 +1,5 @@
 <?php
-$cacheBuster = '?v='.microtime(true);
+$cacheBuster = ''; // '?v='.microtime(true);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
@@ -172,7 +172,7 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 				$('#dbControls').hide();
 				$('#bottomDiv').hide();
 				$('#altDiv').hide();
-				xiSPECUI.vent.trigger('requestAnnotation', json_req, true);
+				xiSPECUI.vent.trigger('requestAnnotation', json_req, xiSPEC.activeSpectrum.models['Spectrum'].get('annotatorURL'), true);
 			}
 
 		});
