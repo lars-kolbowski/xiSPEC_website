@@ -64,19 +64,19 @@
         $i++;
     }
 
-	    $losses = array();
-	    $i = 0;
-	    foreach ($post_losses as $loss) {
-	        array_push(
-	            $losses,
-	            array(
-	                'specificity' => array_map('trim',explode(",",$lossSpecificities[$i])),
-	                'id' => $loss,
-	                'mass' => floatval($lossMasses[$i])
-	            )
-	        );
-	        $i++;
-	    }
+    $losses = array();
+    $i = 0;
+    foreach ($post_losses as $loss) {
+        array_push(
+            $losses,
+            array(
+                'specificity' => array_map('trim',explode(",",$lossSpecificities[$i])),
+                'id' => $loss,
+                'mass' => floatval($lossMasses[$i])
+            )
+        );
+        $i++;
+    }
 
 	$ions = array();
 	foreach ($_POST['ions'] as $iontype) {
