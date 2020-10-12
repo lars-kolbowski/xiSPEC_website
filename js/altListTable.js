@@ -32,13 +32,12 @@ var altListTableView = DataTableView.extend({
 		this.options = _.extend(defaultOptions, viewOptions);
 
 		this.listenTo(xiSPECUI.vent, 'scoreChange', this.changeDisplayScore);
-		this.listenTo(xiSPECUI.vent, 'updateAltTitle', this.updateTitle);
 
 		var self = this;
 
 		this.wrapper = d3.select(this.el);
 
-		this.ajaxURL =  this.model.get('baseDir') + "php/getAltList.php?id="+this.model.spectrum_id+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
+		this.ajaxURL =  this.model.get('baseDir') + "php/getAltList.php?id="+this.model.get('spectrum_id')+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
 
 		/* Create an array with the values of all the input boxes in a column, parsed as numbers */
 		$.fn.dataTable.ext.order['dom-text-numeric'] = function  ( settings, col )
@@ -143,9 +142,9 @@ var altListTableView = DataTableView.extend({
 				},
 				{
 					"render": function ( data, type, row, meta ) {
-						var json = JSON.parse(row.scores);
-						var result = new Array();
-						for (key in json) {
+						let json = JSON.parse(row.scores);
+						let result = [];
+						for (let key in json) {
 							result.push(key+'='+json[key]);
 						}
 						return '<span title="'+result.join("; ")+'">'+data+'</span>'
@@ -158,18 +157,17 @@ var altListTableView = DataTableView.extend({
 			}
 		};
 
-		var main = this.wrapper.append('div').attr('id', 'altList_main');
-		var table = main.append('table').attr('id', 'altListTable').attr('class', 'display').attr('style', 'width:100%;');
+		let main = this.wrapper.append('div').attr('id', 'altList_main');
+		let table = main.append('table').attr('id', 'altListTable').attr('class', 'display').attr('style', 'width:100%;');
 
 		this.DataTable = $(table[0]).DataTable(tableVars);
 
 		// ToDo: move to BB event handling?
 		this.DataTable.on('click', 'tbody tr', function(e) {
-			// console.log('click');
 			self.DataTable.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
 
-			var row = self.DataTable.row(this).data()
+			let row = self.DataTable.row(this).data()
 			self.loadSpectrum(row, true);
 // 			xiSPECUI.vent.trigger('updateAltCount', row.alt_count);
 		});
@@ -179,18 +177,15 @@ var altListTableView = DataTableView.extend({
 	},
 
 	render: function(){
-		// this.updateTitle();
-		this.DataTable.ajax.url( this.ajaxURL ).load();
+		this.altListToolbar.text("Alternatives for scan: " + this.model.get('spectrum_title'));
+		let ajaxURL = this.model.get('baseDir') + "php/getAltList.php?id="+this.model.get('spectrum_id')+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB');
+		this.DataTable.ajax.url(ajaxURL).load();
 	},
 
 	changeDisplayScore: function(scoreName){
 		console.log('altListTable - changeDisplayScore: '+scoreName);
-		this.ajaxURL =  this.model.get('baseDir') + "php/getAltList.php?id="+this.model.spectrum_id+"&db="+this.model.get('database')+'&tmp='+this.model.get('tmpDB')+'&scol='+scoreName;
 	},
 
-	updateTitle: function(title){
-		this.altListToolbar.text("Alternatives for scan: "+ title);
-	},
 	//
 	// hideEmptyColumns: function(e) {
 	// 	if (this.DataTable === undefined)

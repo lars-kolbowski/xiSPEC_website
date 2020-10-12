@@ -93,6 +93,8 @@ var DataTableView = Backbone.View.extend({
 		formatted_data.ionTypes = rowData.ion_types;
 		formatted_data.precursorMZ = rowData.exp_mz;
 
+		formatted_data.spectrum_id = rowData.spectrum_ref;
+
 		$.ajax({
 			url:  this.model.get('baseDir') + 'php/getPeakList.php?spectrum_id='+rowData.spectrum_id + "&db=" + this.model.get('database')+"&tmp=" + this.model.get('tmpDB'),
 			type: 'GET',

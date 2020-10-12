@@ -324,8 +324,6 @@ var specListTableView = DataTableView.extend({
 
             var row = self.DataTable.row(this).data();
             self.model.spectrum_id = row.spectrum_ref;
-            var scan_identifier = row.scan_id + ' - ' + row.file;
-            xiSPECUI.vent.trigger('updateAltTitle', scan_identifier);
             self.loadSpectrum(row, true);
             xiSPECUI.vent.trigger('updateAltCount', row.alt_count);
         });
