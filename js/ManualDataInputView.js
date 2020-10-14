@@ -160,7 +160,7 @@ var ManualDataInputView = Backbone.View.extend({
 
 		var ionSelector = midSection.append("div")
 			.attr("id", "manDataInput-ionSelection")
-			.attr("class", "multiSelect_dropdown manDataInput-midSection-el")
+			.attr("class", "xispec_multiSelect_dropdown manDataInput-midSection-el")
 
 		;
 		this.ionSelectorInput = ionSelector.append("input")
@@ -170,7 +170,7 @@ var ManualDataInputView = Backbone.View.extend({
 			.attr("value", "Select ions...")
 			.attr("readonly", "")
 		;
-		var ionSelectorDropdown = ionSelector.append("div").attr("class", "multiSelect_dropdown-content mutliSelect");
+		var ionSelectorDropdown = ionSelector.append("div").attr("class", "xispec_multiSelect_dropdown-content");
 		var ionSelectorList = ionSelectorDropdown.append("ul").attr("id", 'ionList');
 		var ionOptions = [
 			{value: "peptide", text: "Peptide Ion"},
