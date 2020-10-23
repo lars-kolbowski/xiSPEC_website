@@ -236,14 +236,22 @@ $( document ).ready(function() {
 					$('#continueToDB').prop('disabled', true);
 					$('#modificationsInfo').show();
 					$('#modificationsMsg').html("Please provide the mass(es) for the following " + resp.modifications.length + " modification(s):");
+					let def_mods = {
+						"cm": 57.021464,
+						"carbamidomethyl": 57.021464,
+						"ox": 15.99491,
+						"oxidation": 15.99491,
+						"bs3nh2": 155.094619105,
+						"bs3oh": 156.0786347,
+					}
 					resp.modifications.forEach(function (mod){
-						var defVal = 0;
-						var numberMatch = /^[0-9\.]+$/.exec(mod)
+						let defVal = def_mods.hasOwnProperty(mod) ? eval('def_mods.'+mod) : 0;
+						let numberMatch = /^[0-9.]+$/.exec(mod)
 						if(numberMatch){
 							defVal = numberMatch;
 						}
-						var modNameInput = '<input class="form-control" name="mods[]" readonly type="text" value='+mod+'>';
-						var modMassInput = '<input class="form-control" name="modMasses[]" type="text" pattern="[0-9\.]+" value="'+ defVal +'" required autocomplete=off>';
+						let modNameInput = '<input class="form-control" name="mods[]" readonly type="text" value='+mod+'>';
+						let modMassInput = '<input class="form-control" name="modMasses[]" type="text" pattern="[0-9\.]+" value="'+ defVal +'" required autocomplete=off>';
 						$('#csvModificationsForm').append('<div style="margin-bottom: 5px;">' + modNameInput + modMassInput + '</div>');
 					})
 					$('#csvModificationsForm').append('<input type="submit" value="update modifications" class="btn btn-1a btn-2" id="updateModsSubmit">');
