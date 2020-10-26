@@ -94,7 +94,7 @@ var TableWrapperView = Backbone.View.extend({
 					response.sid_meta3_name
 				];
 
-				self.contains_crosslink = response.contains_crosslink === "1";
+				self.contains_crosslink = parseInt(response.contains_crosslink) === 1;
 
 				// old databases
 				if (response.customConfig){
