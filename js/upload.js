@@ -237,12 +237,19 @@ $( document ).ready(function() {
 					$('#modificationsInfo').show();
 					$('#modificationsMsg').html("Please provide the mass(es) for the following " + resp.modifications.length + " modification(s):");
 					let def_mods = {
+						// ToDo: could just use annotator knownModifications here
 						"cm": 57.021464,
 						"carbamidomethyl": 57.021464,
 						"ox": 15.99491,
 						"oxidation": 15.99491,
+						"deam": 0.984016,
+						"met": 14.015650,
 						"bs3nh2": 155.094619105,
 						"bs3oh": 156.0786347,
+						'dssonh2': 175.030313905,
+						'dssonh': 175.030313905,
+						'dssooh': 176.0143295,
+						'ac': 42.010565
 					}
 					resp.modifications.forEach(function (mod){
 						let defVal = def_mods.hasOwnProperty(mod) ? eval('def_mods.'+mod) : 0;
