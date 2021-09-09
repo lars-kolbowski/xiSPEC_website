@@ -102,7 +102,8 @@
 							<div id="pxd_submit" style="display: none;">
 								<div id="pxd_submitInfo">
 								Please Select 1 RESULT and 1 PEAK file then press Submit selected files.</br>
-								Files belonging together usually share the same assayAccession!</div>
+								<!-- ToDo: PRIDE seems to have removed the assayAccession
+								Files belonging together usually share the same assayAccession!</div> -->
 								<button type="submit" id="pxd_submitBtn" class="btn btn-2">Submit selected files</button>
 							</div>
 							<table id="pxdFileTable" class="display" width="100%" style="text-align:center;"></table>
