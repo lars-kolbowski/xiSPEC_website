@@ -80,7 +80,7 @@ var ManualDataInputView = Backbone.View.extend({
 			.attr("placeholder", "Peptide Sequence1[;Peptide Sequence2]")
 			.attr("name", "peps")
 		;
-		this.pepInputView = new PepInputView({
+		this.pepInputView = xispec.createPepInputView({
 			model: this.model,
 			el: this.pepInputViewEl[0]
 		});

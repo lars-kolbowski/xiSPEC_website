@@ -3,7 +3,7 @@ var CLMSUI = CLMSUI || {};
 $( document ).ready(function() {
 	_.extend(window, Backbone.Events);
 	window.onresize = function() { window.trigger('resize') };
-	window.peptide = new AnnotatedSpectrumModel({
+	window.peptide = xispec.createAnnotatedSpectrumModel({
 		standalone: false //to use knownModifications from xiAnnotator here. Should probably be changed in the future to unimod?
 	});
 
