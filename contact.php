@@ -24,14 +24,14 @@
 										<td>
 											<div class="contact no-hover">
 												<ul id="navlist"  class="no-hover">
-													<li><a href="mailto:lars.kolbowski@campus.tu-berlin.de" title="Email Lars!">
+													<li><a href="mailto:lars.kolbowski@tu-berlin.de" title="Email Lars!">
 														<img src="images/team/lars-kolbowski.jpg" class="grayscale" />
 													</a></li>
 												</ul>
 												<div class="external-link">
 													<p>
 														<strong>Lars Kolbowski</strong>
-														<br/><a href="mailto:lars.kolbowski@campus.tu-berlin.de">lars.kolbowski@campus.tu-berlin.de</a>
+														<br/><a href="mailto:lars.kolbowski@tu-berlin.de">lars.kolbowski@tu-berlin.de</a>
 														<br/>Developer
 														<br/>TU-Berlin
 														<br/>Sekr. TIB 4/4-3
@@ -97,7 +97,7 @@
 						<div class="container">
 							<div class="external-link">
 								<h4>Support</h4>
-								<p>For support email <a href="mailto:lkolbows@ed.ac.uk">lkolbows@ed.ac.uk</a>. You may also use <a target="_blank" href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues"> issue tracking at GitHub</a>.</p>
+								<p>For support email <a href="mailto:lars.kolbowski@tu-berlin.de">lars.kolbowski@tu-berlin.de</a>. You may also use <a target="_blank" href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues"> issue tracking at GitHub</a>.</p>
 							</div>
 							<br>
 						</div>
