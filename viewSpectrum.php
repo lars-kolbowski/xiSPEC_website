@@ -64,11 +64,13 @@ else{
 			<!-- modular xiSPEC -->
 			<script type="text/javascript" src="./spectrum/dist/xispec.js"></script>
 <?php if($dbView)
-echo 	'<script type="text/javascript" src="./js/TableWrapperView.js"></script>
+echo 	'
+        <script type="text/javascript" src="./js/spectrumPanelView.js"></script>
 		<script type="text/javascript" src="./js/DataTableView.js"></script>
-
-		<script type="text/javascript" src="./js/specListTable.js></script>
-		<script type="text/javascript" src="./js/altListTable.js"></script>';
+		<script type="text/javascript" src="./js/specListTable.js"></script>
+		<script type="text/javascript" src="./js/altListTable.js"></script>
+		<script type="text/javascript" src="./js/TableWrapperView.js"></script>
+		';
 ?>
 			<script type="text/javascript" src="./vendor/jquery.easyModal.js"></script>
 
