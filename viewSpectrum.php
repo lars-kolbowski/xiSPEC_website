@@ -128,8 +128,8 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js"></script>
 				xiSPECUI.initSpinner = new Spinner({scale: 5}).spin(
 					d3.select("#xispec_spectrumMainPlotDiv").node());
 
-				xiSPEC.TableWrapper = new TableWrapperView({
-					model: xiSPEC.activeSpectrum.models['Spectrum'],
+				window.xiSPEC.TableWrapper = new TableWrapperView({
+					model: window.xiSPEC.activeSpectrum.models['Spectrum'],
 					el:"#bottomDiv",
 					initId: "<?php echo $sid; ?>"		//ToDo: remove? -> not used yet
 				});
@@ -139,7 +139,7 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js"></script>
 				$('#dbControls').hide();
 				$('#bottomDiv').hide();
 				$('#altDiv').hide();
-				xiSPECUI.vent.trigger('requestAnnotation', json_req, xiSPEC.activeSpectrum.models['Spectrum'].get('annotatorURL'), true);
+				xiSPECUI.vent.trigger('requestAnnotation', json_req, window.xiSPEC.activeSpectrum.models['Spectrum'].get('annotatorURL'), true);
 			}
 
 		});
