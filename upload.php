@@ -19,12 +19,9 @@
 		};
 		?>
 		<?php include("./xiSPEC_scripts.php");?>
-		<script type="text/javascript" src="./spectrum/src/PepInputView.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./js/PeptideView.js<?php echo $cacheBuster ?>"></script>
-		<script type="text/javascript" src="./spectrum/src/PrecursorInfoView.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./js/ManualDataInputView.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./js/PrideSelectionView.js<?php echo $cacheBuster ?>"></script>
-		<script type="text/javascript" src="./spectrum/src/AnnotatedSpectrumModel.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./js/upload.js<?php echo $cacheBuster ?>"></script>
 		<script type="text/javascript" src="./js/accordion.js<?php echo $cacheBuster ?>"></script>
 		<script src="./vendor/jQueryFileUploadMin/jquery.ui.widget.js"></script>
@@ -32,7 +29,6 @@
 		<script src="./vendor/jQueryFileUploadMin/jquery.fileupload.js"></script>
 
 		<link rel="stylesheet" href="./css/upload.css" />
-		<link rel="stylesheet" href="./css/dropdown.css" />
 		<link rel="stylesheet" href="./css/manDataInput.css" />
 	</head>
 	<body>
@@ -102,7 +98,8 @@
 							<div id="pxd_submit" style="display: none;">
 								<div id="pxd_submitInfo">
 								Please Select 1 RESULT and 1 PEAK file then press Submit selected files.</br>
-								Files belonging together usually share the same assayAccession!</div>
+								<!-- ToDo: PRIDE seems to have removed the assayAccession
+								Files belonging together usually share the same assayAccession!</div> -->
 								<button type="submit" id="pxd_submitBtn" class="btn btn-2">Submit selected files</button>
 							</div>
 							<table id="pxdFileTable" class="display" width="100%" style="text-align:center;"></table>
@@ -148,9 +145,9 @@
 				<div id="ionsInfo"  style="display: none;">
 					<div id="ionsMsg"></div>
 					<form id="ionsForm" method="post" action="php/updateIons.php">
-						<div class="multiSelect_dropdown" style="margin-right:2%;">
+						<div class="xispec_multiSelect_dropdown" style="margin-right:2%;">
 							<input type="text" class="form-control btn-drop" id="ionSelectionSubmit" title="fragment ion types" value="peptide, b, y" readonly>
-							<div class="multiSelect_dropdown-content mutliSelect">
+							<div class="xispec_multiSelect_dropdown-content">
 								<ul>
 									<li>
 										<label><input type="checkbox" class="ionSelectChkboxSubmit" value="peptide" checked id="PeptideIonSubmit" name="ions[]" />Peptide ion</label></li>

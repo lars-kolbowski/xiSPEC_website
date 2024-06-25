@@ -29,13 +29,13 @@ var TableWrapperView = Backbone.View.extend({
 	initialize: function(viewOptions) {
 
 		//ToDo: need to check if initId is alternative explanation or not
-		var defaultOptions = {
+		const defaultOptions = {
 			initId: false,
 		};
 		this.options = _.extend(defaultOptions, viewOptions);
 
-		this.listenTo(xiSPEC.vent, 'updateAltCount', this.updateNav);
-		this.listenTo(xiSPEC.vent, 'toggleTableView', this.toggleView);
+		this.listenTo(xiSPECUI.vent, 'updateAltCount', this.updateNav);
+		this.listenTo(xiSPECUI.vent, 'toggleTableView', this.toggleView);
 
 		var d3el = d3.select(this.el);
 
@@ -93,20 +93,18 @@ var TableWrapperView = Backbone.View.extend({
 					response.sid_meta2_name,
 					response.sid_meta3_name
 				];
-				self.contains_crosslink = false
-				if (response.contains_crosslink == 1) {
-					self.contains_crosslink = true;
-				}
+
+				self.contains_crosslink = parseInt(response.contains_crosslink) === 1;
 
 				// old databases
 				if (response.customConfig){
 					customConfig = response.customConfig.split('\n');
-					xiSPEC.setCustomConfigOverwrite(customConfig);
+					xiSPECUI.vent.trigger('setCustomConfigOverwrite', customConfig);
 				}
 				// new databases
 				else if (response.custom_config){
 					customConfig = response.custom_config.split('\n');
-					xiSPEC.setCustomConfigOverwrite(customConfig);
+					xiSPECUI.vent.trigger('setCustomConfigOverwrite', customConfig);
 				}
 
 				self.specListTable = new specListTableView({

@@ -48,7 +48,7 @@ var PeptideView = Backbone.View.extend({
 		this.listenTo(this.model, 'changed:data', this.render);
 		this.listenTo(this.model, 'destroy', this.remove);
 		this.listenTo(this.model, 'changed:Highlights', this.updateHighlights);
-		this.listenTo(this.model, 'changed:ColorScheme', this.updateColors);
+		this.listenTo(this.model, 'change:colors', this.updateColors);
 // 		this.listenTo(this.model, 'changed:mass', this.renderInfo);
 // 		this.listenTo(this.model, 'change:charge', this.renderInfo);
 		this.listenTo(window, 'resize', _.debounce(this.resize));

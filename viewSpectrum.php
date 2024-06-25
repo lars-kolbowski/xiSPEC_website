@@ -1,5 +1,4 @@
 <?php
-$cacheBuster = '?v='.microtime(true);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
@@ -58,47 +57,20 @@ else{
 			<link rel="stylesheet" href="./css/spectrum.css" />
 			<link rel="stylesheet" href="./css/xiSPEC_tooltip.css">
 			<link rel="stylesheet" href="./css/spectrumViewWrapper.css">
-			<link rel="stylesheet" href="./css/dropdown.css">
 			<link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css"/>
 			<link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css"/>
 			<?php include("./xiSPEC_scripts.php");?>
 
-			<!-- modular xiSPEC files -->
-		    <script type="text/javascript" src="./spectrum/vendor/byrei-dyndiv_1.0rc1.js"></script>
-		    <script type="text/javascript" src="./spectrum/vendor/jscolor.min.js"></script>
-		    <script type="text/javascript" src="./spectrum/vendor/split.min.js"></script>
-		    <script type="text/javascript" src="./spectrum/vendor/svgexp.js"></script>
-		    <script type="text/javascript" src="./spectrum/vendor/download.js"></script>
-		    <script type="text/javascript" src="./spectrum/vendor/bootstrap/js/bootstrap.min.js"></script>
-		    <script type="text/javascript" src="./spectrum/vendor/dataTables.bootstrap.min.js"></script>
-
-			<link rel="stylesheet" href="./spectrum/css/spectrum.css" />
-			<link rel="stylesheet" href="./spectrum/css/settings.css" />
-			<link rel="stylesheet" href="./spectrum/css/QC.css">
-			<link rel="stylesheet" href="./spectrum/css/dropdown.css">
-			<link rel="stylesheet" type="text/css" href="./spectrum/vendor/bootstrap/css/bootstrap.min.css"/>
-			<link rel="stylesheet" type="text/css" href="./spectrum/css/font-awesome.min.css"/>
-
-			<script type="text/javascript" src="./spectrum/src/Wrapper.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/AnnotatedSpectrumModel.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/SpectrumControlsView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/SpectrumView2.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/FragmentationKeyView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/PrecursorInfoView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/SpectrumSettingsView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/PepInputView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/QCwrapperView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/ErrorPlotView.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/FragKey/KeyFragment.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/graph/Graph.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/graph/Peak.js<?php echo $cacheBuster ?>"></script>
-			<script type="text/javascript" src="./spectrum/src/graph/Fragment.js<?php echo $cacheBuster ?>"></script>
+			<!-- modular xiSPEC -->
+			<script type="text/javascript" src="./spectrum/dist/xispec.js"></script>
 <?php if($dbView)
-echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuster.'"></script>
-		<script type="text/javascript" src="./js/DataTableView.js'.$cacheBuster.'"></script>
-
-		<script type="text/javascript" src="./js/specListTable.js'.$cacheBuster.'"></script>
-		<script type="text/javascript" src="./js/altListTable.js'.$cacheBuster.'"></script>';
+echo 	'
+        <script type="text/javascript" src="./js/spectrumPanelView.js"></script>
+		<script type="text/javascript" src="./js/DataTableView.js"></script>
+		<script type="text/javascript" src="./js/specListTable.js"></script>
+		<script type="text/javascript" src="./js/altListTable.js"></script>
+		<script type="text/javascript" src="./js/TableWrapperView.js"></script>
+		';
 ?>
 			<script type="text/javascript" src="./vendor/jquery.easyModal.js"></script>
 
@@ -139,7 +111,8 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 				<?php if(isset($tmpDB)) echo 'tmpDB: "'.$tmpDB.'",'; ?>
 			};
 
-			xiSPEC.init(xispec_options);
+			window.xiSPEC = xispec.createApp(xispec_options);
+
 			// xispec_extra_spectrumControls
 			$('#xispec_extra_spectrumControls_before').html('<a href="index.php"><i class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-home fa-xi" style="top: 0px;" title="Home"></i></a><a href="https://github.com/Rappsilber-Laboratory/xiSPEC/issues" target="_blank"><i class="xispec_btn xispec_btn-1a xispec_btn-topNav fa fa-github fa-xi" title="GitHub issue tracker" style="cursor:pointer;"></i></a>');
 
@@ -153,10 +126,12 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 				$('#xispec_extra_spectrumControls_after').html(db_controls);
 
 				$('#bottomDiv').show();
-				xiSPEC.initSpinner = new Spinner({scale: 5}).spin (d3.select("#topDiv").node());
+				// start the initSpinner
+				xiSPECUI.initSpinner = new Spinner({scale: 5}).spin(
+					d3.select("#xispec_spectrumMainPlotDiv").node());
 
-				xiSPEC.TableWrapper = new TableWrapperView({
-					model: xiSPEC.SpectrumModel,
+				window.xiSPEC.TableWrapper = new TableWrapperView({
+					model: window.xiSPEC.activeSpectrum.models['Spectrum'],
 					el:"#bottomDiv",
 					initId: "<?php echo $sid; ?>"		//ToDo: remove? -> not used yet
 				});
@@ -166,8 +141,7 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 				$('#dbControls').hide();
 				$('#bottomDiv').hide();
 				$('#altDiv').hide();
-				xiSPEC.request_annotation(json_req, true);
-
+				xiSPECUI.vent.trigger('requestAnnotation', json_req, window.xiSPEC.activeSpectrum.models['Spectrum'].get('annotatorURL'), true);
 			}
 
 		});
@@ -242,5 +216,5 @@ echo 	'<script type="text/javascript" src="./js/TableWrapperView.js'.$cacheBuste
 		</div>
 		<!-- End Share Modal -->
 	</body>
-	<script type="text/javascript" src="./js/app.js<?php echo $cacheBuster ?>"></script>
+	<script type="text/javascript" src="./js/app.js"></script>
 </html>

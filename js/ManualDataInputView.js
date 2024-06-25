@@ -22,7 +22,7 @@
 var CLMSUI = CLMSUI || {};
 
 var ManualDataInputView = Backbone.View.extend({
-//ToDo: recfator to load examples as json into model?
+// ToDo: refactor to load examples as json into model?
 	events : {
 		'click #toggleModifications' : 'toggleModTable',
 		'click #toggleLosses' : 'toggleLossTable',
@@ -41,7 +41,7 @@ var ManualDataInputView = Backbone.View.extend({
 
 	initialize: function(options) {
 
-		var defaultOptions = {
+		const defaultOptions = {
 			showCustomCfg: true,
 		};
 
@@ -80,7 +80,7 @@ var ManualDataInputView = Backbone.View.extend({
 			.attr("placeholder", "Peptide Sequence1[;Peptide Sequence2]")
 			.attr("name", "peps")
 		;
-		this.pepInputView = new PepInputView({
+		this.pepInputView = xispec.createPepInputView({
 			model: this.model,
 			el: this.pepInputViewEl[0]
 		});
@@ -160,7 +160,7 @@ var ManualDataInputView = Backbone.View.extend({
 
 		var ionSelector = midSection.append("div")
 			.attr("id", "manDataInput-ionSelection")
-			.attr("class", "multiSelect_dropdown manDataInput-midSection-el")
+			.attr("class", "xispec_multiSelect_dropdown manDataInput-midSection-el")
 
 		;
 		this.ionSelectorInput = ionSelector.append("input")
@@ -170,7 +170,7 @@ var ManualDataInputView = Backbone.View.extend({
 			.attr("value", "Select ions...")
 			.attr("readonly", "")
 		;
-		var ionSelectorDropdown = ionSelector.append("div").attr("class", "multiSelect_dropdown-content mutliSelect");
+		var ionSelectorDropdown = ionSelector.append("div").attr("class", "xispec_multiSelect_dropdown-content");
 		var ionSelectorList = ionSelectorDropdown.append("ul").attr("id", 'ionList');
 		var ionOptions = [
 			{value: "peptide", text: "Peptide Ion"},
@@ -546,7 +546,7 @@ var ManualDataInputView = Backbone.View.extend({
 	},
 
 	renderModTable: function(){
-		//ToDo: duplicate of SpectrumSettingsView function...
+		//ToDo: duplicate of DataSettingsView function...
 
 		var modifications = this.extractModsFromPepStr(this.model.pepStrsMods.join(''));
 

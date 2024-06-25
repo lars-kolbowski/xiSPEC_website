@@ -10,10 +10,12 @@ If you are looking to implement xiSPEC as a spectrum viewer module into your web
 
 parser back-end (https://github.com/Rappsilber-Laboratory/xiSPEC_ms_parser)
 
-linux
-apache2
-mysql
-php
+- linux
+- apache2
+- mysql
+- php
+- sqlite
+
 
 ### Submodule
 
@@ -47,7 +49,6 @@ CREATE TABLE dbs (
  city varchar(64) DEFAULT NULL,
  org varchar(128) DEFAULT NULL,
  date datetime DEFAULT NULL,
- size int(11) NOT NULL,
  PRIMARY KEY (id),
  UNIQUE KEY name (name),
  UNIQUE KEY share (share)

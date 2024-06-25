@@ -43,12 +43,12 @@ var PrideSelectionView = Backbone.View.extend({
 					$('#pxd_error').html("Could not access this dataset! Double check the accession number and make sure it's publicly available!");
 				},
 				"dataSrc": function ( json ) {
-					return json.list.filter(function(f){
-						if (f.fileType == "RESULT"){
+					return json.filter(function(f){
+						if (f.fileCategory.value == "RESULT"){
 							if (new RegExp(/(\.mzid)(\.gz|\.zip)?$/i).test(f.fileName))
 								return true;
 						}
-						else if (f.fileType == "PEAK"){
+						else if (f.fileCategory.value == "PEAK"){
 							if (new RegExp(/(\.mgf|\.mzml|\.ms2|\.zip)(\.gz|\.zip)?$/i).test(f.fileName))
 								return true;
 						}
@@ -56,47 +56,41 @@ var PrideSelectionView = Backbone.View.extend({
 				}
 			},
 			"columns": [
-					{ "title": "select", "data": null },
-					{ "data": "assayAccession", "title": "assayAccession" },
-					{ "data": "fileType", "title": "type", "name": "fileType"},
-					{ "data": "fileName", "title": "name"},
-					{ "data": "fileSize", "title": "size"},
-					{ "data": "downloadLink", "name": "downloadLink"}
+				{ "title": "select", "data": null },
+				{ "data": "fileCategory.value", "title": "type", "name": "fileType"},
+				{ "data": "fileName", "title": "name"},
+				{ "data": "fileSizeBytes", "title": "size"},
 			],
 			"columnDefs": [
-			 {
-				 "class": "invisible",
-				 "targets": [ 5 ],
-			 },
-			{
-				"render": function ( data, type, row, meta ) {
-						if (row.fileType == 'PEAK')
-							return '<input type="checkbox" name=pxdPeakFile[] class="pxdPeakFileChkbx" data-row="'+meta.row+'"/>';
-						if (row.fileType == 'RESULT')
-							return '<input type="checkbox" name=pxdResFile[] class="pxdResChkbx" data-row="'+meta.row+'"/>';
-					},
-				// "searchable": true,
-				"targets": [ 0 ]
-			},
-			{
-				"render": function ( data, type, row, meta ) {
-						return (parseFloat(data)/(1024*1024)).toFixed(2) + ' MB';
-					},
-				"targets": [ 4 ]
-			},
+				{
+					"render": function ( data, type, row, meta ) {
+							if (row.fileCategory.value == 'PEAK')
+								return '<input type="checkbox" name=pxdPeakFile[] class="pxdPeakFileChkbx" data-row="'+meta.row+'"/>';
+							if (row.fileCategory.value == 'RESULT')
+								return '<input type="checkbox" name=pxdResFile[] class="pxdResChkbx" data-row="'+meta.row+'"/>';
+						},
+					// "searchable": true,
+					"targets": [ 0 ]
+				},
+				{
+					"render": function ( data, type, row, meta ) {
+							return (parseFloat(data)/(1024*1024)).toFixed(2) + ' MB';
+						},
+					"targets": [ 3 ]
+				},
 		 ]
 		});
 
 		this.pxdFileTable.on('click', '.pxdPeakFileChkbx', function(e) {
 			$('.pxdPeakFileChkbx:checkbox:checked').each(function(){
-				$(this).prop('checked', false);;
+				$(this).prop('checked', false);
 			});
 			$(this).prop('checked', true);
 		});
 
 		this.pxdFileTable.on('click', '.pxdResChkbx', function(e) {
 			$('.pxdResChkbx:checkbox:checked').each(function(){
-				$(this).prop('checked', false);;
+				$(this).prop('checked', false);
 			});
 			$(this).prop('checked', true);
 		});
@@ -112,11 +106,11 @@ var PrideSelectionView = Backbone.View.extend({
 		}
 		else {
 			$('#pxd_error').html('not a valid accession number');
-		};
+		}
 	},
 
 	load_project_files: function(pxd){
-		var pxd_api_files_url = 'https://www.ebi.ac.uk:443/pride/ws/archive/file/list/project/' + pxd;
+		var pxd_api_files_url = 'https://www.ebi.ac.uk/pride/ws/archive/v2/files/byProject?accession=' + pxd;
 		$('#pxd_error').html("");
 
 		if(this.pxdFileTable === undefined){
@@ -129,20 +123,23 @@ var PrideSelectionView = Backbone.View.extend({
 
 	submit_files: function(e){
 		e.preventDefault();
-		var $pxdResChkbx = $('.pxdResChkbx:checkbox:checked');
-		var $pxdPeakFileChkbx = $('.pxdPeakFileChkbx:checkbox:checked');
-		if ($pxdResChkbx.length == 1 && $pxdPeakFileChkbx.length == 1){
-			var resRowNum = $pxdResChkbx.data('row');
-			var peakFileRowNum = $pxdPeakFileChkbx.data('row');
+		let $pxdResChkbx = $('.pxdResChkbx:checkbox:checked');
+		let $pxdPeakFileChkbx = $('.pxdPeakFileChkbx:checkbox:checked');
+		if ($pxdResChkbx.length === 1 && $pxdPeakFileChkbx.length === 1){
+			let resRowNum = $pxdResChkbx.data('row');
+			let peakFileRowNum = $pxdPeakFileChkbx.data('row');
 
-			if(this.pxdFileTable.row(resRowNum).data().assayAccession !== this.pxdFileTable.row(peakFileRowNum).data().assayAccession){
-				console.log('Warning: different assays');
-			}
+			// ToDo: PRIDE seems to have removed the assayAccession
+			// if(this.pxdFileTable.row(resRowNum).data().assayAccession !== this.pxdFileTable.row(peakFileRowNum).data().assayAccession){
+			// 	console.log('Warning: different assays');
+			// }
 
-			var resFTP = this.pxdFileTable.row(resRowNum).data().downloadLink;
-			var peakFileFTP = this.pxdFileTable.row(peakFileRowNum).data().downloadLink;
+			let resFTP = this.pxdFileTable.row(resRowNum).data().publicFileLocations.filter(function(f) {
+				return f.accession === 'PRIDE:0000469';})[0].value;
+			let peakFileFTP = this.pxdFileTable.row(peakFileRowNum).data().publicFileLocations.filter(function(f) {
+				return f.accession === 'PRIDE:0000469';})[0].value;
 
-			var formData = new FormData();
+			let formData = new FormData();
 			formData.append("peakFile_ftp", peakFileFTP);
 			formData.append("res_ftp", resFTP);
 			CLMSUI.startParser(formData);
@@ -153,7 +150,7 @@ var PrideSelectionView = Backbone.View.extend({
 	},
 
 	load_project_info: function(pxd){
-		var pxd_api_project_url = 'https://www.ebi.ac.uk:443/pride/ws/archive/project/' + pxd;
+		var pxd_api_project_url = 'https://www.ebi.ac.uk/pride/ws/archive/v2/projects/' + pxd;
 		$.get(pxd_api_project_url, function(res){
 			console.log(res);
 			var pxd_project_url = 'https://www.ebi.ac.uk/pride/archive/projects/' + res.accession;

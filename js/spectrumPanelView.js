@@ -17,7 +17,7 @@
 //		authors: Lars Kolbowski
 //
 //
-//		sepctrumPanelView.js
+//		spectrumPanelView.js
 
 var specListTableView = Backbone.View.extend({
 

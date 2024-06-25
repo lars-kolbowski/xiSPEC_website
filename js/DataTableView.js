@@ -19,7 +19,7 @@
 //
 //		DataTableView.js
 
-var xiSPEC = xiSPEC || {};
+var xiSPECUI = xiSPECUI || {};
 
 var DataTableView = Backbone.View.extend({
 
@@ -40,7 +40,7 @@ var DataTableView = Backbone.View.extend({
 	// },
 
 	userScoreChange: function(e){
-		xiSPEC.vent.trigger('scoreChange', $(e.target).attr('data-score'));
+		xiSPECUI.vent.trigger('scoreChange', $(e.target).attr('data-score'));
 	},
 
 	hideEmptyColumns: function(e) {
@@ -93,7 +93,8 @@ var DataTableView = Backbone.View.extend({
 		formatted_data.ionTypes = rowData.ion_types;
 		formatted_data.precursorMZ = rowData.exp_mz;
 
-		var self = this;
+		formatted_data.spectrum_id = rowData.spectrum_ref;
+
 		$.ajax({
 			url:  this.model.get('baseDir') + 'php/getPeakList.php?spectrum_id='+rowData.spectrum_id + "&db=" + this.model.get('database')+"&tmp=" + this.model.get('tmpDB'),
 			type: 'GET',
@@ -101,11 +102,11 @@ var DataTableView = Backbone.View.extend({
 			cache: false,
 			contentType: false,
 			processData: false,
-			success: function (returndata) {
-
-				formatted_data.peakList = JSON.parse(returndata);
+			success: function (return_data) {
+				formatted_data.peakList = JSON.parse(return_data);
+				formatted_data.spectrum_title = rowData.file + ' - ' + rowData.scan_id;
 				console.log(formatted_data);
-				xiSPEC.setData(formatted_data);
+				xiSPECUI.vent.trigger('loadSpectrum', formatted_data);
 			}
 		});
 

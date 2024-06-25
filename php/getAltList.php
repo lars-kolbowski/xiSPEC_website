@@ -101,11 +101,10 @@
 		$sql = $baseSQL."
 		 		WHERE json_each.id == 2 AND sp.spectrum_ref=:spec_ref
 				ORDER BY si.rank";
-		// echo($sql);
 		$stmt = $dbh->prepare($sql);
 		$stmt->bindParam(':spec_ref', $spectrum_ref);
 	}
-
+    // echo($sql);
 	// echo $sid;
 
 	if ($stmt->execute()) {

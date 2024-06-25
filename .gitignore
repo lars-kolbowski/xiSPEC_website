@@ -4,3 +4,5 @@
 *.mzML
 
 xiSPEC_sql_conn\.php
+
+.idea/
